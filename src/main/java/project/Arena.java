@@ -64,8 +64,9 @@ public class Arena {
     {
         throw new NotImplementedException("TODO");
     }
+
     /**
-     * Builds a tower at the grid where a specified pixel is located.
+     * Builds a Tower at the grid where a specified pixel is located.
      * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
      * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
      * @see Coordinates
@@ -76,7 +77,36 @@ public class Arena {
     }
 
     /**
-     * Spawns a monster at the starting position of the arena.
+     * Destroys the specified Tower.
+     * @param Tower The Tower to be destroyed.
+     */
+    // public void destroyTower(Tower tower)
+    // {
+    //      towers.remove(tower);
+    // }
+
+    /**
+     * Creates a Projectile at a specified pixel.
+     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @see Coordinates
+     */
+    public void createProjectile(int x, int y)
+    {
+
+    }
+
+    /**
+     * Removes the specified Projectile from the arena.
+     * @param Projectile The Projectile to be removed.
+     */
+    public void removeProjectile(Projectile projectile)
+    {
+        projectiles.remove(projectile);
+    }
+
+    /**
+     * Spawns a Monster at the starting position of the arena.
      */
     public void spawnMonster()
     {
@@ -84,11 +114,12 @@ public class Arena {
     }
 
     /**
-     * Kills a monster.
+     * Removes the specified Monster from the arena.
+     * @param monster The Monster to be removed.
      */
-    public void killMonster()
+    public void removeMonster(Monster monster)
     {
-        throw new NotImplementedException("TODO");
+        monsters.remove(monster);
     }
 
     /**
