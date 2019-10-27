@@ -53,7 +53,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     // testFX - https://github.com/TestFX/TestFX
-    testCompile  group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
+    testCompile group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
 
 }
 
