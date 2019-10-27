@@ -1,4 +1,4 @@
-package sample;
+package project;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,7 +12,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 
-public class MyController {
+public class UIController {
     @FXML
     private Button buttonNextFrame;
 
