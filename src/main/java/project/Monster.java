@@ -23,13 +23,27 @@ public abstract class Monster implements AppearsInArena {
     public Coordinates getCoordinates() { return coordinates; }
 
     /**
+     * Accesses the health of the monster.
+     * @return The health of the monster.
+     */
+    public int getHealth() { return health; }
+
+    /**
+     * Accesses the speed of the monster.
+     * @return The speed of the monster.
+     */
+    public int getSpeed() { return speed; }
+    
+    /**
      * Moves the Monster by one time step.
      */
-    public void move() {
-        if (futurePath.isEmpty()) return;
+    public void move() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
 
-        coordinates = futurePath.removeFirst();
-    }
+    /**
+     * Causes the Monster to take damage.
+     * @param amount The amount of damage to be taken.
+     */
+    public void takeDamage(int amount) { health -= amount; }
 
     /**
      * Recalculates the future path of the Monster. This is only needed if Tower placement changes.

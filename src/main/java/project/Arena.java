@@ -14,4 +14,11 @@ public class Arena {
     public Arena() {
 
     }
+
+    /**
+     * Updates the arena by one time step.
+     */
+    public void update() {
+
+    }
 }

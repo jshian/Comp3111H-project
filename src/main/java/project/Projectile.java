@@ -1,7 +1,5 @@
 package project;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear afterwards.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
