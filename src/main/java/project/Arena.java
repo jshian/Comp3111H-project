@@ -34,3 +34,31 @@ public class Arena {
 
     }
 }
+
+/**
+ * Interface for objects that exist in the arena.
+ */
+interface ExistsInArena {
+    /**
+     * Accesses the image path of the object.
+     * @return The file path to the image relative to the project root.
+     */
+    String getImagePath();
+
+    /**
+     * Accesses the coordinates of the object.
+     * @return The coordinates of the object.
+     * @see Coordinates
+     */
+    Coordinates getCoordinates();
+}
+
+/**
+ * Interface for objects that can move in the arena.
+ */
+interface MovesInArena extends ExistsInArena {
+    /**
+     * Moves the object by one frame.
+     */
+    void MoveOneFrame();
+}
