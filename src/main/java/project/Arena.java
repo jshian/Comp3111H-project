@@ -93,7 +93,7 @@ public class Arena {
      */
     public void createProjectile(int x, int y)
     {
-
+        throw new NotImplementedException("TODO");
     }
 
     /**
