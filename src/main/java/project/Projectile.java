@@ -6,7 +6,7 @@ import org.apache.commons.lang3.*;
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear afterwards.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
-public class Projectile implements ExistsInArena {
+public class Projectile implements MovesInArena {
     // Position
     private Coordinates coordinates;
 
@@ -16,14 +16,18 @@ public class Projectile implements ExistsInArena {
     // Target to pursue
     private Monster target;
 
+    /**
+     * Constructor for the Projectile class.
+     * @param arena The arena the Projectile is in.
+     */
+    public Projectile(Arena arena) {
+        this.coordinates = new Coordinates(arena);
+    }
+
     // Inferface implementation
     public String getImagePath() { return new String(); }
     public Coordinates getCoordinates() { return coordinates; }
-
-    /**
-     * Moves the Projectile by one time step.
-     */
-    public void move() {
+    public void MoveOneFrame() {
         Coordinates other = target.getCoordinates();
         double distance = coordinates.distanceFrom(other);
 

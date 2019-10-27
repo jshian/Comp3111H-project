@@ -17,21 +17,33 @@ public class Arena {
 
     }
 
+    /**
+     * Finds all objects that are located at a pixel.
+     * @param x The horizontal coordinate of the pixel, increasing towards the right.
+     * @param y The vertical coordinate of the pixel, increasing towards the bottom.
+     * @return A linked list containing all objects that satisfy the above criteria.
+     */
     public LinkedList<Object> getObjectsAtPixel(int x, int y)
     {
         throw new NotImplementedException("TODO");
     }
 
+    /**
+     * Finds all objects that are located inside the grid where a pixel is located.
+     * @param x The horizontal coordinate of the pixel, increasing towards the right.
+     * @param y The vertical coordinate of the pixel, increasing towards the bottom.
+     * @return A linked list containing all objects that satisfy the above criteria.
+     */
     public LinkedList<Object> getObjectsInGrid(int x, int y)
     {
         throw new NotImplementedException("TODO");
     }
 
     /**
-     * Updates the arena by one time step.
+     * Updates the arena by one frame.
      */
-    public void update() {
-
+    public void nextFrame() {
+        throw new NotImplementedException("TODO");
     }
 }
 

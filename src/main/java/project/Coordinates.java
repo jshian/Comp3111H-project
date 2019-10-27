@@ -30,10 +30,10 @@ public class Coordinates {
     public Coordinates(int x, int y) { update(x, y); }
 
     /**
-     * Finds all objects that occupy (not necessarily located at) the specified coordinate in the arena.
+     * Finds all objects that occupy the specified coordinate in the arena.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
-     * @return A linked list containing all objects that satisfy the above criteria.
+     * @return A linked list containing all objects that satisfy the above criteria. Note that they do not have to be located at said coordinate.
      */
     public LinkedList<Object> findObjectsOccupying(int x, int y)
     {
