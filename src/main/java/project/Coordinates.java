@@ -1,18 +1,26 @@
 package project;
 
+import java.util.*;
+
+import org.apache.commons.lang3.*;
+
 /**
- * Custom class to store 2D Cartesian coordinates of objects in the arena.
- * @see AppearsInArena
+ * Custom class to store 2D Cartesian coordinates of objects in the arena. Also
+ * stores a link to the arena itself.
+ * 
+ * @see ExistsInArena
  */
 public class Coordinates {
 
+    private Arena arena;
     private int x = 0;
     private int y = 0;
 
     /**
-     * Default constructor for the Coordinate class. Both coordinates default to 0.
+     * Constructor for the Coordinate class. Both coordinates default to 0.
+     * @param arena The arena that the Coordinate is linked to.
      */
-    public Coordinates() {}
+    public Coordinates(Arena arena) { this.arena = arena; }
 
     /**
      * Parametized onstructor for the Coordinate class.
@@ -20,6 +28,17 @@ public class Coordinates {
      * @param y The vertical coordinate, increasing towards the bottom.
      */
     public Coordinates(int x, int y) { update(x, y); }
+
+    /**
+     * Finds all objects that occupy (not necessarily located at) the specified coordinate in the arena.
+     * @param x The horizontal coordinate, increasing towards the right.
+     * @param y The vertical coordinate, increasing towards the bottom.
+     * @return A linked list containing all objects that satisfy the above criteria.
+     */
+    public LinkedList<Object> findObjectsOccupying(int x, int y)
+    {
+        throw new NotImplementedException("TODO");
+    }
 
     /**
      * Accesses the horizontal coordinate.

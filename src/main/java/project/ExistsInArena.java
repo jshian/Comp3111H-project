@@ -1,9 +1,9 @@
 package project;
 
 /**
- * Interface for objects that appear in the arena.
+ * Interface for objects that exist in the arena.
  */
-public interface AppearsInArena {
+public interface ExistsInArena {
     /**
      * Accesses the image path of the object.
      * @return The file path to the image relative to the project root.

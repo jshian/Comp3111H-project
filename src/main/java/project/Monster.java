@@ -2,13 +2,13 @@ package project;
 
 import java.util.LinkedList;
 
-import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.*;
 
 /**
  * Monsters spawn at the starting point and try to reach the end-point of the arena. If they succeed, the game is lost.
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
-public abstract class Monster implements AppearsInArena {
+public abstract class Monster implements ExistsInArena {
     // Position
     private Coordinates coordinates;
 
