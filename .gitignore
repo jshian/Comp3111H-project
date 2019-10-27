@@ -5,6 +5,7 @@ bin/**
 *.class
 .gradle/
 .eclipse/
+.vs/
 .idea/
 .settings/
 out/
