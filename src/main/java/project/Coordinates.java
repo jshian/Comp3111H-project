@@ -7,12 +7,12 @@ import org.apache.commons.lang3.*;
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the arena. Also
  * stores a link to the arena itself.
- * 
- * @see ExistsInArena
+ * @see Arena
  */
 public class Coordinates {
 
     private Arena arena;
+    
     private int x = 0;
     private int y = 0;
 
@@ -24,15 +24,16 @@ public class Coordinates {
 
     /**
      * Parametized onstructor for the Coordinate class.
+     * @param arena The arena that the Coordinate is linked to.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
      */
-    public Coordinates(int x, int y) { update(x, y); }
+    public Coordinates(Arena arena, int x, int y) { this.arena = arena; update(x, y); }
 
     /**
      * Finds all objects that occupy the specified coordinate in the arena.
-     * @param x The horizontal coordinate, increasing towards the right.
-     * @param y The vertical coordinate, increasing towards the bottom.
+     * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
+     * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
      * @return A linked list containing all objects that satisfy the above criteria. Note that they do not have to be located at said coordinate.
      */
     public LinkedList<Object> findObjectsOccupying(int x, int y)
@@ -41,21 +42,21 @@ public class Coordinates {
     }
 
     /**
-     * Accesses the horizontal coordinate.
-     * @return The horizontal coordinate, increasing towards the right.
+     * Accesses the x-coordinate.
+     * @return The horizontal coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
     public int getX() { return x; }
 
     /**
-     * Accesses the vertical coordinate.
-     * @return The vertical coordinate, increasing towards the bottom.
+     * Accesses the y-coordinate.
+     * @return The vertical coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
     public int getY() { return y; }
 
     /**
      * Updates both coordinates.
-     * @param x The horizontal coordinate, increasing towards the right.
-     * @param y The vertical coordinate, increasing towards the bottom.
+     * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
+     * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
     public void update(int x, int y) {
         this.x = x;

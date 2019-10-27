@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import org.apache.commons.lang3.*;
 
 /**
- * Monsters spawn at the starting point and try to reach the end-point of the arena. If they succeed, the game is lost.
+ * Monsters spawn at the starting position and try to reach the end-zone of the arena. If they succeed, the game is lost.
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 public abstract class Monster implements MovesInArena {
@@ -20,7 +20,7 @@ public abstract class Monster implements MovesInArena {
 
     /**
      * Constructor for the Monster class.
-     * @param arena The arena the Monster is in.
+     * @param arena The arena in which the Monster exists.
      */
     public Monster(Arena arena) {
         this.coordinates = new Coordinates(arena);
@@ -42,7 +42,6 @@ public abstract class Monster implements MovesInArena {
      * @return The speed of the monster.
      */
     public int getSpeed() { return speed; }
-    
 
     /**
      * Causes the Monster to take damage.
@@ -51,7 +50,7 @@ public abstract class Monster implements MovesInArena {
     public void takeDamage(int amount) { health -= amount; }
 
     /**
-     * Recalculates the future path of the Monster. This is only needed if Tower placement changes.
+     * Recalculates the future path of the Monster.
      */
     public void recalculateFuturePath() {
         throw new NotImplementedException("TODO: A* Search");

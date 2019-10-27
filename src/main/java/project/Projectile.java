@@ -3,7 +3,7 @@ package project;
 import org.apache.commons.lang3.*;
 
 /**
- * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear afterwards.
+ * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 public class Projectile implements MovesInArena {
@@ -18,7 +18,7 @@ public class Projectile implements MovesInArena {
 
     /**
      * Constructor for the Projectile class.
-     * @param arena The arena the Projectile is in.
+     * @param arena The arena in which the Projectile exists.
      */
     public Projectile(Arena arena) {
         this.coordinates = new Coordinates(arena);
