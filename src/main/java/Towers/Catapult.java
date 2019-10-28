@@ -1,9 +1,9 @@
 package Towers;
 
-public class catapult extends basicTower{
+public class Catapult extends BasicTower{
     private int reload,shootLimit;
 
-    public catapult(int x, int y){
+    public Catapult(int x, int y){
         super(x,y);
         this.reload = 10;
         this.shootLimit = 50;

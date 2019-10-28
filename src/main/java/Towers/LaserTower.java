@@ -1,9 +1,9 @@
 package Towers;
 
-public class laserTower extends basicTower{
+public class LaserTower extends BasicTower{
     private int consume;
 
-    public laserTower(int x, int y){
+    public LaserTower(int x, int y){
         super(x,y);
         super.attackPower = 30;
         super.buildingCost = 20;

@@ -1,9 +1,9 @@
 package Towers;
 
-public class iceTower extends basicTower{
+public class IceTower extends BasicTower{
     private int slowDown;
 
-    public iceTower(int x, int y){
+    public IceTower(int x, int y){
         super(x,y);
         super.buildingCost=20;
         this.slowDown = 10;

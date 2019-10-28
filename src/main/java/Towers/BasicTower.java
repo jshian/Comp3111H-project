@@ -1,15 +1,14 @@
 package Towers;
 
 
-
-public class basicTower {
+public class BasicTower {
     protected int attackPower, buildingCost, shootingRange, x, y;
 
-    protected basicTower(){
+    protected BasicTower(){
 
     }
 
-    public basicTower(int x , int y){
+    public BasicTower(int x , int y){
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;
