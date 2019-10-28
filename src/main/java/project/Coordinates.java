@@ -78,6 +78,6 @@ public class Coordinates {
      * @return The angle in radians from this object to the other object, as if this object is at the origin of a polar coordinate system.
      */
     public double angleFrom(Coordinates other) {
-        return Math.atan2(this.y - other.y, this.x - other.x);
+        return Math.atan2(other.y - this.y, other.x - this.x);
     }
 }
