@@ -25,12 +25,12 @@ jar {
     manifest {
         attributes 'Implementation-Title': baseName,
                 'Implementation-Version': version,
-                'Main-Class': 'sample.Main'
+                'Main-Class': 'project.Main'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-mainClassName = 'sample.Main'
+mainClassName = 'project.Main'
 
 repositories {
     mavenCentral()
@@ -41,7 +41,7 @@ task debug(type:JavaExec) {
     group 'application'
     description 'debug'
     jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099'
-    main = 'sample.Main'
+    main = 'project.Main'
     classpath = sourceSets.main.runtimeClasspath
 }
 
@@ -53,7 +53,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     // testFX - https://github.com/TestFX/TestFX
-    testCompile  group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
+    testCompile group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
 
 }
 
