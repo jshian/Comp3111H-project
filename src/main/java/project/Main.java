@@ -1,4 +1,4 @@
-package sample;
+package project;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ public class Main extends Application {
         primaryStage.setTitle("Tower Defence");
         primaryStage.setScene(new Scene(root, 600, 480));
         primaryStage.show();
-        MyController appController = (MyController)loader.getController();
+        UIController appController = (UIController)loader.getController();
         appController.createArena();
     }
 
