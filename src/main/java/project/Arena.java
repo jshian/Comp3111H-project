@@ -3,6 +3,7 @@ package project;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
+import project.Towers.BasicTower;
 
 /**
  * The area where most of the action takes place in the game.
@@ -17,7 +18,7 @@ public class Arena {
     private static final int END_ZONE_Y = 0;
 
     // Objects in the arena
-    // private LinkedList<Tower> towers = new LinkedList<>();
+    private LinkedList<BasicTower> towers = new LinkedList<>();
     private LinkedList<Projectile> projectiles = new LinkedList<>();
     private LinkedList<Monster> monsters = new LinkedList<>();
     
