@@ -2,9 +2,10 @@ package project.towers;
 
 import project.*;
 
-public class BasicTower {
+public class BasicTower implements Arena.ExistsInArena {
     // Position
     private Coordinates coordinates;
+
     // States
     protected int attackPower, buildingCost, shootingRange;
 
@@ -23,6 +24,9 @@ public class BasicTower {
         this.coordinates = new Coordinates(arena);
     }
 
+    // Inferface implementation
+    public String getImagePath() { return new String(); }
+    public Coordinates getCoordinates() { return coordinates; }
 
     /**
      * Upgrade the tower.

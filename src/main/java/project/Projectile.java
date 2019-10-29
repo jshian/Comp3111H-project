@@ -13,7 +13,7 @@ public class Projectile implements Arena.MovesInArena {
     private Coordinates coordinates;
 
     // Stats
-    private int speed;
+    private double speed;
 
     // Target to pursue
     private Monster target;

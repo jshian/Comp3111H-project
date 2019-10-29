@@ -15,7 +15,8 @@ public abstract class Monster implements Arena.MovesInArena {
     private Coordinates coordinates;
 
     // Stats
-    private int health, speed;
+    private int health;
+    private double speed;
 
     // Pathfinding
     private LinkedList<Coordinates> futurePath = new LinkedList<>();
@@ -43,7 +44,7 @@ public abstract class Monster implements Arena.MovesInArena {
      * Accesses the speed of the monster.
      * @return The speed of the monster.
      */
-    public int getSpeed() { return speed; }
+    public double getSpeed() { return speed; }
 
     /**
      * Causes the Monster to take damage.
