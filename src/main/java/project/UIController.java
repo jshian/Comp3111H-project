@@ -37,12 +37,12 @@ public class UIController {
     @FXML
     private Label labelLaserTower;
 
-    protected static final int ARENA_WIDTH = 480;
-    protected static final int ARENA_HEIGHT = 480;
-    protected static final int GRID_WIDTH = 40;
-    protected static final int GRID_HEIGHT = 40;
-    protected static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
-    protected static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
+    static final int ARENA_WIDTH = 480;
+    static final int ARENA_HEIGHT = 480;
+    static final int GRID_WIDTH = 40;
+    static final int GRID_HEIGHT = 40;
+    static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
+    static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena
     private int x = -1, y = 0; //where is my monster
