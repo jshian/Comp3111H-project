@@ -1,5 +1,7 @@
 package project.towers;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import project.*;
 
 public class BasicTower implements Arena.ExistsInArena {
@@ -25,7 +27,7 @@ public class BasicTower implements Arena.ExistsInArena {
     }
 
     // Inferface implementation
-    public String getImagePath() { return new String(); }
+    public Runnable refreshDisplay() { throw new NotImplementedException("TODO"); }
     public Coordinates getCoordinates() { return coordinates; }
 
     /**

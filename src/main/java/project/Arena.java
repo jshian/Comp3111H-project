@@ -64,18 +64,15 @@ public class Arena {
                     list.add(t);
         }
         
-        if (filter.contains(TypeFilter.Projectile)) {
+        if (filter.contains(TypeFilter.Projectile))
             for (Projectile p : projectiles)
                 if (coordinates.isAt(p.getCoordinates()))
-                        list.add(p);
-    
-        }
+                    list.add(p);
 
-        if (filter.contains(TypeFilter.Monster)) {
+        if (filter.contains(TypeFilter.Monster))
             for (Monster m : monsters)
                 if (coordinates.isAt(m.getCoordinates()))
                     list.add(m);
-        }
 
         return list;
     }
@@ -115,18 +112,15 @@ public class Arena {
             }
         }
         
-        if (filter.contains(TypeFilter.Projectile)) {
+        if (filter.contains(TypeFilter.Projectile))
             for (Projectile p : projectiles)
                 if (coordinates.isAt(p.getCoordinates()))
-                        list.add(p);
-    
-        }
+                    list.add(p);
 
-        if (filter.contains(TypeFilter.Monster)) {
+        if (filter.contains(TypeFilter.Monster))
             for (Monster m : monsters)
                 if (coordinates.isAt(m.getCoordinates()))
                     list.add(m);
-        }
 
         return list;
     }
@@ -209,10 +203,10 @@ public class Arena {
      */
     public interface ExistsInArena {
         /**
-         * Accesses the image path of the object.
-         * @return The file path to the image relative to the project root.
+         * A method reference to the method that updates the corresponding UI object.
+         * @return The method reference to the method that updates the corresponding UI object.
          */
-        public String getImagePath();
+        public Runnable refreshDisplay();
     
         /**
          * Accesses the coordinates of the object.

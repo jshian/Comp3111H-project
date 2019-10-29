@@ -15,7 +15,9 @@ public abstract class Monster implements Arena.MovesInArena {
     private Coordinates coordinates;
 
     // Stats
+    private static int maxHealth;
     private int health;
+    private static double maxSpeed;
     private double speed;
 
     // Pathfinding
@@ -30,7 +32,7 @@ public abstract class Monster implements Arena.MovesInArena {
     }
     
     // Inferface implementation
-    public String getImagePath() { return new String(); }
+    public Runnable refreshDisplay() { throw new NotImplementedException("TODO"); }
     public Coordinates getCoordinates() { return coordinates; }
     public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
 
@@ -51,6 +53,12 @@ public abstract class Monster implements Arena.MovesInArena {
      * @param amount The amount of damage to be taken.
      */
     public void takeDamage(int amount) { health -= amount; }
+
+    /**
+     * Determines whether the Monster has died.
+     * @return Whether the Monster has died.
+     */
+    public boolean hasDied() { return health <= 0; }
 
     /**
      * Recalculates the future path of the Monster.
