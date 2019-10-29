@@ -1,12 +1,14 @@
 package project;
 
+import project.monsters.*;
+
 import org.apache.commons.lang3.*;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
-public class Projectile implements MovesInArena {
+public class Projectile implements Arena.MovesInArena {
     // Position
     private Coordinates coordinates;
 

@@ -1,9 +1,11 @@
 package project;
 
+import project.monsters.*;
+
 import java.util.*;
 
 import org.apache.commons.lang3.*;
-import project.Towers.BasicTower;
+import project.towers.BasicTower;
 
 /**
  * The area where most of the action takes place in the game.
@@ -129,32 +131,32 @@ public class Arena {
     public void nextFrame() {
         throw new NotImplementedException("TODO");
     }
-}
-
-/**
- * Interface for objects that exist in the arena.
- */
-interface ExistsInArena {
-    /**
-     * Accesses the image path of the object.
-     * @return The file path to the image relative to the project root.
-     */
-    String getImagePath();
 
     /**
-     * Accesses the coordinates of the object.
-     * @return The coordinates of the object.
-     * @see Coordinates
+     * Interface for objects that exist inside an Arena.
      */
-    Coordinates getCoordinates();
-}
-
-/**
- * Interface for objects that can move in the arena.
- */
-interface MovesInArena extends ExistsInArena {
+    public interface ExistsInArena {
+        /**
+         * Accesses the image path of the object.
+         * @return The file path to the image relative to the project root.
+         */
+        public String getImagePath();
+    
+        /**
+         * Accesses the coordinates of the object.
+         * @return The coordinates of the object.
+         * @see Coordinates
+         */
+        public Coordinates getCoordinates();
+    }
+    
     /**
-     * Moves the object by one frame.
+     * Interface for objects that can move inside an Arena.
      */
-    void MoveOneFrame();
+    public interface MovesInArena extends ExistsInArena {
+        /**
+         * Moves the object by one frame.
+         */
+        public void MoveOneFrame();
+    }
 }
