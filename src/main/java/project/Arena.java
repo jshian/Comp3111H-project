@@ -26,13 +26,12 @@ public class Arena {
 
     /**
      * Finds the grid position corresponding to a specified pixel.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @return An int array that contains the x- and y- position of the grid at indices 0 and 1 respectively.
      * @see Coordinates
      */
-    private int[] getGrid(int x, int y) {
-        return new int[] { x / UIController.GRID_WIDTH, y / UIController.GRID_HEIGHT };
+    private int[] getGrid(Coordinates coordinates) {
+        return new int[] { coordinates.getX() / UIController.GRID_WIDTH, coordinates.getY() / UIController.GRID_HEIGHT };
     }
 
     /**
@@ -49,43 +48,33 @@ public class Arena {
 
     /**
      * Finds all objects that are located at a specified pixel.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see Coordinates
      * @see TypeFilter
      */
-    public LinkedList<Object> getObjectsAtPixel(int x, int y, EnumSet<TypeFilter> filter)
+    public LinkedList<Object> getObjectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
         if (filter.contains(TypeFilter.Tower)) {
-            for (BasicTower t : towers) {
-                Coordinates c = t.getCoordinates();
-    
-                if (c.getX() == x && c.getY() == y)
+            for (BasicTower t : towers)
+                if (coordinates.isAt(t.getCoordinates()))
                     list.add(t);
-            }
         }
         
         if (filter.contains(TypeFilter.Projectile)) {
-            for (Projectile p : projectiles) {
-                Coordinates c = p.getCoordinates();
-    
-                if (c.getX() == x && c.getY() == y)
-                    list.add(p);
-            }
+            for (Projectile p : projectiles)
+                if (coordinates.isAt(p.getCoordinates()))
+                        list.add(p);
     
         }
 
         if (filter.contains(TypeFilter.Monster)) {
-            for (Monster m : monsters) {
-                Coordinates c = m.getCoordinates();
-    
-                if (c.getX() == x && c.getY() == y)
+            for (Monster m : monsters)
+                if (coordinates.isAt(m.getCoordinates()))
                     list.add(m);
-            }
         }
 
         return list;
@@ -93,14 +82,13 @@ public class Arena {
 
     /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see Coordinates
      * @see TypeFilter
      */
-    public LinkedList<Object> getObjectsInGrid(int x, int y, EnumSet<TypeFilter> filter)
+    public LinkedList<Object> getObjectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
@@ -108,16 +96,19 @@ public class Arena {
             for (BasicTower t : towers) {
                 Coordinates c = t.getCoordinates();
     
-                if (c.getX() == x && c.getY() == y)
+                if (coordinates.isAt(c))
                     list.add(t);
                 else {
-                    int[] gridPosition = getGrid(c.getX(), c.getY());
+                    int[] gridPosition = getGrid(c);
     
                     int xMin = gridPosition[0] * UIController.GRID_WIDTH;
                     int xMax = xMin + UIController.GRID_WIDTH;
                     int yMin = gridPosition[1] * UIController.GRID_HEIGHT;
                     int yMax = yMin + UIController.GRID_HEIGHT;
-    
+                    
+                    int x = coordinates.getX();
+                    int y = coordinates.getY();
+
                     if (xMin <= x && x <= xMax && yMin <= y && y <= yMax)
                         list.add(t);
                 }
@@ -125,22 +116,16 @@ public class Arena {
         }
         
         if (filter.contains(TypeFilter.Projectile)) {
-            for (Projectile p : projectiles) {
-                Coordinates c = p.getCoordinates();
-    
-                if (c.getX() == x && c.getY() == y)
-                    list.add(p);
-            }
+            for (Projectile p : projectiles)
+                if (coordinates.isAt(p.getCoordinates()))
+                        list.add(p);
     
         }
 
         if (filter.contains(TypeFilter.Monster)) {
-            for (Monster m : monsters) {
-                Coordinates c = m.getCoordinates();
-    
-                if (c.getX() == x && c.getY() == y)
+            for (Monster m : monsters)
+                if (coordinates.isAt(m.getCoordinates()))
                     list.add(m);
-            }
         }
 
         return list;
@@ -148,23 +133,21 @@ public class Arena {
 
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      * @see Coordinates
      */
-    public boolean canBuildTower(int x, int y)
+    public boolean canBuildTower(Coordinates coordinates)
     {
-        return getObjectsInGrid(x, y, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
+        return getObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
     /**
      * Builds a Tower at the grid where a specified pixel is located.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @see Coordinates
      */
-    public void buildTower(int x, int y)
+    public void buildTower(Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
@@ -180,11 +163,10 @@ public class Arena {
 
     /**
      * Creates a Projectile at a specified pixel.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @see Coordinates
      */
-    public void createProjectile(int x, int y)
+    public void createProjectile(Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
