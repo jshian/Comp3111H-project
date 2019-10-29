@@ -31,7 +31,7 @@ public abstract class Projectile implements Arena.MovesInArena {
     }
 
     // Inferface implementation
-    public Runnable refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public Coordinates getCoordinates() { return coordinates; }
     public void MoveOneFrame() {
         Coordinates other = target.getCoordinates();

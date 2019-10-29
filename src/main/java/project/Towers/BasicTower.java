@@ -27,7 +27,7 @@ public class BasicTower implements Arena.ExistsInArena {
     }
 
     // Inferface implementation
-    public Runnable refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public Coordinates getCoordinates() { return coordinates; }
 
     /**
