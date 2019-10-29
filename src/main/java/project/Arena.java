@@ -204,10 +204,9 @@ public class Arena {
      */
     public interface ExistsInArena {
         /**
-         * A reference to the method that updates the corresponding UI object.
-         * @return The method reference. The method should have the object that exists inside the Arena as the sole parameter.
+         * Updates the corresponding UI object.
          */
-        public Consumer<Object> refreshDisplay();
+        public void refreshDisplay();
     
         /**
          * Accesses the coordinates of the object.
