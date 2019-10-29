@@ -23,7 +23,7 @@ public class Coordinates {
     public Coordinates(Arena arena) { this.arena = arena; }
 
     /**
-     * Parametized onstructor for the Coordinate class.
+     * Parametized constructor for the Coordinate class.
      * @param arena The arena that the Coordinate is linked to.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
