@@ -3,6 +3,7 @@ package project;
 import project.monsters.*;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.*;
 import project.towers.BasicTower;
@@ -203,10 +204,10 @@ public class Arena {
      */
     public interface ExistsInArena {
         /**
-         * A method reference to the method that updates the corresponding UI object.
-         * @return The method reference to the method that updates the corresponding UI object.
+         * A reference to the method that updates the corresponding UI object.
+         * @return The method reference. The method should have the object that exists inside the Arena as the sole parameter.
          */
-        public Runnable refreshDisplay();
+        public Consumer<Object> refreshDisplay();
     
         /**
          * Accesses the coordinates of the object.
