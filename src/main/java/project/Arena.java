@@ -1,9 +1,12 @@
 package project;
 
+import project.monsters.*;
+
 import java.util.*;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.*;
-import project.Towers.BasicTower;
+import project.towers.BasicTower;
 
 /**
  * The area where most of the action takes place in the game.
@@ -21,7 +24,16 @@ public class Arena {
     private LinkedList<BasicTower> towers = new LinkedList<>();
     private LinkedList<Projectile> projectiles = new LinkedList<>();
     private LinkedList<Monster> monsters = new LinkedList<>();
-    
+
+    /**
+     * Finds the grid position corresponding to a specified pixel.
+     * @param coordinates The coordinates of the pixel.
+     * @return An int array that contains the x- and y- position of the grid at indices 0 and 1 respectively.
+     * @see Coordinates
+     */
+    private int[] getGrid(Coordinates coordinates) {
+        return new int[] { coordinates.getX() / UIController.GRID_WIDTH, coordinates.getY() / UIController.GRID_HEIGHT };
+    }
 
     /**
      * The default constructor of the Arena class.
@@ -31,75 +43,132 @@ public class Arena {
     }
 
     /**
-     * Finds all objects that are located at a specified pixel.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @return A linked list containing all objects that satisfy the above criteria.
-     * @see Coordinates
+     * An enum for filtering objects in the Arena according to type.
      */
-    public LinkedList<Object> getObjectsAtPixel(int x, int y)
+    public enum TypeFilter { Tower, Projectile, Monster }
+
+    /**
+     * Finds all objects that are located at a specified pixel.
+     * @param coordinates The coordinates of the pixel.
+     * @param filter Only the types that are specified will be included in the result.
+     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @see Coordinates
+     * @see TypeFilter
+     */
+    public LinkedList<Object> getObjectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
-        throw new NotImplementedException("TODO");
+        LinkedList<Object> list = new LinkedList<>();
+
+        if (filter.contains(TypeFilter.Tower)) {
+            for (BasicTower t : towers)
+                if (coordinates.isAt(t.getCoordinates()))
+                    list.add(t);
+        }
+        
+        if (filter.contains(TypeFilter.Projectile))
+            for (Projectile p : projectiles)
+                if (coordinates.isAt(p.getCoordinates()))
+                    list.add(p);
+
+        if (filter.contains(TypeFilter.Monster))
+            for (Monster m : monsters)
+                if (coordinates.isAt(m.getCoordinates()))
+                    list.add(m);
+
+        return list;
     }
 
     /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @return A linked list containing all objects that satisfy the above criteria.
+     * @param coordinates The coordinates of the pixel.
+     * @param filter Only the types that are specified will be included in the result.
+     * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see Coordinates
+     * @see TypeFilter
      */
-    public LinkedList<Object> getObjectsInGrid(int x, int y)
+    public LinkedList<Object> getObjectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
-        throw new NotImplementedException("TODO");
+        LinkedList<Object> list = new LinkedList<>();
+
+        if (filter.contains(TypeFilter.Tower)) {
+            for (BasicTower t : towers) {
+                Coordinates c = t.getCoordinates();
+    
+                if (coordinates.isAt(c))
+                    list.add(t);
+                else {
+                    int[] gridPosition = getGrid(c);
+    
+                    int xMin = gridPosition[0] * UIController.GRID_WIDTH;
+                    int xMax = xMin + UIController.GRID_WIDTH;
+                    int yMin = gridPosition[1] * UIController.GRID_HEIGHT;
+                    int yMax = yMin + UIController.GRID_HEIGHT;
+                    
+                    int x = coordinates.getX();
+                    int y = coordinates.getY();
+
+                    if (xMin <= x && x <= xMax && yMin <= y && y <= yMax)
+                        list.add(t);
+                }
+            }
+        }
+        
+        if (filter.contains(TypeFilter.Projectile))
+            for (Projectile p : projectiles)
+                if (coordinates.isAt(p.getCoordinates()))
+                    list.add(p);
+
+        if (filter.contains(TypeFilter.Monster))
+            for (Monster m : monsters)
+                if (coordinates.isAt(m.getCoordinates()))
+                    list.add(m);
+
+        return list;
     }
 
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      * @see Coordinates
      */
-    public boolean canBuildTower(int x, int y)
+    public boolean canBuildTower(Coordinates coordinates)
     {
-        throw new NotImplementedException("TODO");
+        return getObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
     /**
      * Builds a Tower at the grid where a specified pixel is located.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @see Coordinates
      */
-    public void buildTower(int x, int y)
+    public void buildTower(Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
 
     /**
      * Destroys the specified Tower.
-     * @param Tower The Tower to be destroyed.
+     * @param tower The Tower to be destroyed.
      */
-    // public void destroyTower(Tower tower)
-    // {
-    //      towers.remove(tower);
-    // }
+    public void destroyTower(BasicTower tower)
+    {
+        towers.remove(tower);
+    }
 
     /**
      * Creates a Projectile at a specified pixel.
-     * @param x The x-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate of the pixel, as defined in {@link Coordinates#Coordinates()}.
+     * @param coordinates The coordinates of the pixel.
      * @see Coordinates
      */
-    public void createProjectile(int x, int y)
+    public void createProjectile(Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
 
     /**
      * Removes the specified Projectile from the arena.
-     * @param Projectile The Projectile to be removed.
+     * @param projectile The Projectile to be removed.
      */
     public void removeProjectile(Projectile projectile)
     {
@@ -129,32 +198,31 @@ public class Arena {
     public void nextFrame() {
         throw new NotImplementedException("TODO");
     }
-}
-
-/**
- * Interface for objects that exist in the arena.
- */
-interface ExistsInArena {
-    /**
-     * Accesses the image path of the object.
-     * @return The file path to the image relative to the project root.
-     */
-    String getImagePath();
 
     /**
-     * Accesses the coordinates of the object.
-     * @return The coordinates of the object.
-     * @see Coordinates
+     * Interface for objects that exist inside an Arena.
      */
-    Coordinates getCoordinates();
-}
-
-/**
- * Interface for objects that can move in the arena.
- */
-interface MovesInArena extends ExistsInArena {
+    public interface ExistsInArena {
+        /**
+         * Updates the corresponding UI object.
+         */
+        public void refreshDisplay();
+    
+        /**
+         * Accesses the coordinates of the object.
+         * @return The coordinates of the object.
+         * @see Coordinates
+         */
+        public Coordinates getCoordinates();
+    }
+    
     /**
-     * Moves the object by one frame.
+     * Interface for objects that can move inside an Arena.
      */
-    void MoveOneFrame();
+    public interface MovesInArena extends ExistsInArena {
+        /**
+         * Moves the object by one frame.
+         */
+        public void MoveOneFrame();
+    }
 }

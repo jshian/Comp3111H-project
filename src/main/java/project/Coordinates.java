@@ -23,7 +23,7 @@ public class Coordinates {
     public Coordinates(Arena arena) { this.arena = arena; }
 
     /**
-     * Parametized onstructor for the Coordinate class.
+     * Parametized constructor for the Coordinate class.
      * @param arena The arena that the Coordinate is linked to.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
@@ -32,11 +32,10 @@ public class Coordinates {
 
     /**
      * Finds all objects that occupy the specified coordinate in the arena.
-     * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
-     * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
-     * @return A linked list containing all objects that satisfy the above criteria. Note that they do not have to be located at said coordinate.
+     * @param coordinates The specified coordinates.
+     * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
      */
-    public LinkedList<Object> findObjectsOccupying(int x, int y)
+    public LinkedList<Object> findObjectsOccupying(Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
@@ -64,8 +63,17 @@ public class Coordinates {
     }
 
     /**
-     * Calculates the distance between the coordinates represented by the two Coordinate objects.
-     * @param other The Coordinates of the other object.
+     * Determines whether two Coordinate objects represent the same coordinates.
+     * @param other The other object.
+     * @return Whether two Coordinate objects represent the same coordinates.
+     */
+    public boolean isAt(Coordinates other) {
+        return this.arena == other.arena && ((int) distanceFrom(other)) == 0;
+    }
+
+    /**
+     * Calculates the distance between the coordinates represented by two Coordinate objects.
+     * @param other The other object.
      * @return The distance between the coordinates represented by the two Coordinate objects.
      */
     public double distanceFrom(Coordinates other) {
@@ -73,8 +81,8 @@ public class Coordinates {
     }
 
     /**
-     * Calculates the angle between the coordinates represented by the two Coordinate objects.
-     * @param other The Coordinates of the other object.
+     * Calculates the angle between the coordinates represented by two Coordinate objects.
+     * @param other The other object.
      * @return The angle in radians from this object to the other object, as if this object is at the origin of a polar coordinate system.
      */
     public double angleFrom(Coordinates other) {
