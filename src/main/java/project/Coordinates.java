@@ -1,5 +1,6 @@
 package project;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
@@ -27,6 +28,7 @@ public class Coordinates {
      * @param arena The arena that the Coordinate is linked to.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
+     * @exception InvalidParameterException Either of the coordinates is outside the arena.
      */
     public Coordinates(Arena arena, int x, int y) { this.arena = arena; update(x, y); }
 
@@ -39,6 +41,12 @@ public class Coordinates {
     {
         throw new NotImplementedException("TODO");
     }
+
+    /**
+     * Accesses the Arena this object is linked to.
+     * @return The Arena this object is linked to.
+     */
+    public Arena getArena() { return arena; }
 
     /**
      * Accesses the x-coordinate.
@@ -56,8 +64,16 @@ public class Coordinates {
      * Updates both coordinates.
      * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
      * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
+     * @exception InvalidParameterException Either of the coordinates is outside the arena.
      */
     public void update(int x, int y) {
+        if (x < 0 || x >= UIController.ARENA_WIDTH)
+            throw new InvalidParameterException(
+                String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH));
+        if (y < 0 || y >= UIController.ARENA_HEIGHT)
+            throw new InvalidParameterException(
+                String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT));
+
         this.x = x;
         this.y = y;
     }
