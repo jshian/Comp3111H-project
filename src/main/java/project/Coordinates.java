@@ -63,18 +63,18 @@ public class Coordinates {
     }
 
     /**
-     * Determines whether two Coordinate objects represent the same coordinates.
+     * Determines whether two Coordinate objects represent the same Cartesian coordinates.
      * @param other The other object.
-     * @return Whether two Coordinate objects represent the same coordinates.
+     * @return Whether the two Coordinate objects represent the same Cartesian coordinates.
      */
     public boolean isAt(Coordinates other) {
-        return this.arena == other.arena && ((int) distanceFrom(other)) == 0;
+        return ((int) distanceFrom(other)) == 0;
     }
 
     /**
-     * Calculates the distance between the coordinates represented by two Coordinate objects.
+     * Calculates the distance between the Cartesian coordinates represented by two Coordinate objects.
      * @param other The other object.
-     * @return The distance between the coordinates represented by the two Coordinate objects.
+     * @return The distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public double distanceFrom(Coordinates other) {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
