@@ -29,7 +29,6 @@ public class Arena {
      * Finds the grid position corresponding to a specified pixel.
      * @param coordinates The coordinates of the pixel.
      * @return An int array that contains the x- and y- position of the grid at indices 0 and 1 respectively.
-     * @see Coordinates
      */
     private int[] getGrid(Coordinates coordinates) {
         return new int[] { coordinates.getX() / UIController.GRID_WIDTH, coordinates.getY() / UIController.GRID_HEIGHT };
@@ -52,7 +51,6 @@ public class Arena {
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
-     * @see Coordinates
      * @see TypeFilter
      */
     public LinkedList<Object> getObjectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
@@ -83,7 +81,6 @@ public class Arena {
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
-     * @see Coordinates
      * @see TypeFilter
      */
     public LinkedList<Object> getObjectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
@@ -130,7 +127,6 @@ public class Arena {
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
-     * @see Coordinates
      */
     public boolean canBuildTower(Coordinates coordinates)
     {
@@ -140,7 +136,6 @@ public class Arena {
     /**
      * Builds a Tower at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
-     * @see Coordinates
      */
     public void buildTower(Coordinates coordinates)
     {
@@ -159,7 +154,6 @@ public class Arena {
     /**
      * Creates a Projectile at a specified pixel.
      * @param coordinates The coordinates of the pixel.
-     * @see Coordinates
      */
     public void createProjectile(Coordinates coordinates)
     {
@@ -211,7 +205,6 @@ public class Arena {
         /**
          * Accesses the coordinates of the object.
          * @return The coordinates of the object.
-         * @see Coordinates
          */
         public Coordinates getCoordinates();
     }
