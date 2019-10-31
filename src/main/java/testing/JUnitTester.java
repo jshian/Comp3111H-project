@@ -25,7 +25,7 @@ public class JUnitTester extends ApplicationTest {
 		s = new Scene(root, 600, 480);
 		primaryStage.setScene(s);
 		primaryStage.show();
-		MyController appController = (MyController)loader.getController();
+		UIController appController = (UIController)loader.getController();
 		appController.createArena();   		
 	}
 
