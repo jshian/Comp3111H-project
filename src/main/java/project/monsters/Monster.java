@@ -37,6 +37,13 @@ public abstract class Monster implements Arena.MovesInArena {
     public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
 
     /**
+     * Set the health of the monster
+     * @param health The health of the monster
+     */
+    public void setHealth(int health){
+        this.health=health;
+    }
+    /**
      * Accesses the health of the monster.
      * @return The health of the monster.
      */
