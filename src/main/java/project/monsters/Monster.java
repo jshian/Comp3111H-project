@@ -43,6 +43,14 @@ public abstract class Monster implements Arena.MovesInArena {
     public int getHealth() { return health; }
 
     /**
+     * Set the speed of the monster
+     * @param speed The speed of the monster
+     */
+    public void setSpeed(double speed){
+        this.speed = speed;
+    }
+
+    /**
      * Accesses the speed of the monster.
      * @return The speed of the monster.
      */
