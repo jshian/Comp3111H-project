@@ -200,6 +200,17 @@ public class Arena {
     public LinkedList<Tower> getTowers() { return towers; }
 
     /**
+     * Accesses the monsters exist
+     * @return The monsters in Arena
+     */
+    public LinkedList<Monster> getMonsters() { return monsters;}
+
+    /**
+     * Accesses the projectile
+     * @return The projectiles in Arena
+     */
+    public LinkedList<Projectile> getProjectiles(){ return projectiles;}
+    /**
      * Interface for objects that exist inside an Arena.
      */
     public interface ExistsInArena {
