@@ -5,23 +5,39 @@ ID: #29 (DarkLight)
 Course Stream: Honors
 
 Members:
-* Task 1: *Name* (cshoae@connect.ust.hk)
-* Task 2: *Name* (jshian@connect.ust.hk) 
-* Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk) 
+ * Task 1: *Name* (cshoae@connect.ust.hk)
+ * Task 2: *Name* (jshian@connect.ust.hk) 
+ * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk) 
 
 ## Grading Process
+1. Start the database server.
+	1. ...
+1. Clone this repository to two different lab machines. They shall be referred to as *Machine A* and *Machine B* respectively.
+1. Do the following on Machine A:
+	1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
+		1. The arena is displayed as a square with side length 480px. (Game Physics Requirement)
+		1. The starting position on the arena is represented by the image *???*.
+		1. The end zone on the arena is represented by the image *???*. (Regular Task 1(i))
+	1. Left-click and hold on any of the buttons that end in `Tower`. Verify the following:
+		1. The attack power, building cost and shooting range is displayed. (Game Physics Requirement)
+	1. Continue to hold left-click and move the mouse pointer around the arena. Verify the following:
+		1. A sihouette is displayed. The sihouette is represented by an image according to the tower type:
+		 * Basic Tower - `/src/main/resources/basicTower.png`
+		 * Ice Tower - `/src/main/resources/iceTower.png`
+		 * Laser Tower - `/src/main/resources/LaserTower.png`
+		1. The sihouette is located within, but does not exceed, the grid in which the mouse pointer is located (referred to as *The Grid*). (Game Physics Requirement)
+		1. If *The Grid* is inside the starting position or end-zone, it glows red.
+		1. Otherwise, *The Grid* glows green.
+
 Demonstrate that the game physics fits the following requirements:
- * A tower can only be placed on one grid, not crossing the border. 
- * A monster is modeled as a point which should be roughly the center of its icon/grid. In other words, a monster has a size of 1px by 1px.
+ * A monster is modeled as a point which should be roughly the center of its icon/grid.
  * A monster is always moving from a grid to an adjacent grid either horizontally or vertically.
  * The game must not allow a player to build a tower if the player does not have enough resource to build it.
  * When a monster is killed it must be removed from the arena, a certain amount of resource will be given to the player.
  * Each grid can contain at most one tower. When it contains a tower, it cannot contain any monster.
  * No tower shall be able to move. 
  * All distance used in the game should be referred as Euclidean distance, in pixels (px). 
- * The width and height of the Arena is 480 px-by-480 px. 
  * All operations by the player must be done by mouse.
- * A tower must have at least the following information: attack power, building cost, shooting range. 
  * A tower cannot attack a monster that is outside its shooting range. When we judge a monster is inside a tower's shooting range, the following distance will be used: the Euclidean distance between the center of the grid of where the tower is built and the center of the monster.
  * The health point (HP) of a monster will be deducted by the attack power of the tower attacking it. When HP is less than or equal to zero a monster is killed. 
  * When there are multiple possible monster a tower can shoot (in range), it should always choose a monster that is nearest to up-left corner of the end-zone ((440, 0) in our demo).
@@ -30,6 +46,7 @@ Demonstrate that the game physics fits the following requirements:
  * After building a tower, all monsters on the map should have at least one valid path move toward the end-zone. Thus, the game must not allow a player to build a tower to trap a monster. 
  * Each grid can contain any number of monsters as long as it does not contain a tower.
  * The game is a time-based game. The button `Next Frame` would NOT be tested in grading. It will be served as a debug button for your own interest. There are two methods to start the game: by clicking `Simulate` or `Play`. In either mode monsters will be automatically generated and the monsters will move towards the end-zone, towers will automatically fire if any monsters are in its shooting distance. In `simulate` mode, player is only allowed to build tower before the simulate button is clicked. Once the button is clicked, the player will no be clicking any button until the game is over. In `play` mode, the player is allowed to build or to upgrade tower when the game is running.
+ 
  
 Demonstrate that the following tasks have been completed:
 1. Arena Building (15)
@@ -112,6 +129,9 @@ Demonstrate that the following extra tasks have been completed:
 1.  Adopt the following technologies into your project. 
 	1. Use Java Persistence API or Hibernate Framework to connect to a small database that stores your game data (attributes of Towers/Monsters); (2.5% Group)
 	1. Use Java spring framework that allows the game be played in different machines while a server records the top 10 highest scores; (2.5% Group)
+
+### Notes
+ * All file paths are relative to the root directory of the project.
 
 ## Credits
 Skeleton code created by: Dr. Kevin Wang (kevinw@cse.ust.hk)
