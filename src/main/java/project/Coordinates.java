@@ -3,7 +3,9 @@ package project;
 import java.security.InvalidParameterException;
 import java.util.*;
 
+import javafx.scene.shape.Line;
 import org.apache.commons.lang3.*;
+import sun.font.CoreMetrics;
 
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the arena. Also
@@ -103,5 +105,48 @@ public class Coordinates {
      */
     public double angleFrom(Coordinates other) {
         return Math.atan2(other.y - this.y, other.x - this.x);
+    }
+
+    /**
+     * Test whether the point in the line or not within a small error accepted
+     * The line may be expanded
+     * @param endPt The point in the end of the Line
+     * @param testPt The point to be tested
+     * @return Is the test point in the line or not
+     */
+    public boolean isInLine(Coordinates endPt, Coordinates testPt) {
+        double error = 0.02; //0.02 radians around 1 degree
+        return Math.abs(this.angleFrom(endPt)-this.angleFrom(testPt)) < error;
+    }
+
+    //dont know how to implement
+    public boolean isInArea(Coordinates endPt, Coordinates testPt) {
+        return false;
+    }
+
+    //problematic: the size of arena is unknown
+    public Coordinates findEdgePt(Coordinates dirPt){
+        for (int row = 0; row <= 440; ++row){
+            if(this.isInLine(dirPt,new Coordinates(this.arena,0,row)))
+                return new Coordinates(this.arena,0,row);
+            if(this.isInLine(dirPt,new Coordinates(this.arena,440,row)))
+                return new Coordinates(this.arena,440,row);
+        }
+        for (int col = 0; col <= 440; ++col){
+            if(this.isInLine(dirPt,new Coordinates(this.arena,col,0)))
+                return new Coordinates(this.arena,col,0);
+            if(this.isInLine(dirPt,new Coordinates(this.arena,col,440)))
+                return new Coordinates(this.arena,col,440);
+        }
+        return dirPt;//for ignoring warning
+
+    }
+
+    /**
+     * Draw a line from the laser tower to certain position.
+     * @param cor The coordinate of the target.
+     */
+    public void drawLine(Coordinates cor){
+        Line line = new Line(this.x,this.y,cor.x,cor.y);//ui part incomplete
     }
 }
