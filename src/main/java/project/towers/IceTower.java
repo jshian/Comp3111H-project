@@ -29,7 +29,7 @@ public class IceTower extends Tower{
         return false;
     }
 
-    public void slowDown(Monster monster){
+    public void reduceSpeed(Monster monster){
         monster.setSpeed(monster.getSpeed()-this.slowDown);
     }
 }
