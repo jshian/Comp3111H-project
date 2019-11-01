@@ -71,13 +71,20 @@ Members:
 	1. Left-click on a tower with upgrade cost lower than current *Resource Pool*. (Task 1(ii)(e)(b))
 		* The tower is upgraded, i.e. its stats are improved.
 		* The upgrade cost is deducted from the *Resource Pool*.
-		* The line `XXX is being upgraded`, where `XXX` is the name of the tower, is printed on the console.
+		* The line `<tower> is being upgraded`, where `<tower>` is the name of the tower, is printed on the console.
 	1. Build towers until current *Resource Pool* is lower than the upgrade cost of any one tower.
 	1. Left-click on a tower with upgrade cost greater than current *Resource Pool*.
 	1. Now left-click on the `upgrade` button. Verify the following: (Task 1(ii)(e)(b)(a))
 		* The tower remains unupgraded, and the *Resource Pool* remains unchanged.
-		* The line `not enough resource to upgrade XXX`, where `XXX` is the name of the tower, is printed on the console.
-		
+		* The line `not enough resource to upgrade <tower>`, where `<tower>` is the name of the tower, is printed on the console.
+	1. Click the `Play` button. Verify the following:
+		* Monsters begin to generate at the starting position.
+		* For every monster generated, the line `<type>:<HP> generated`, where `<type>` and `<HP>` is the type and HP of the monster respectively, is printed on the console. (Task 1(iii)(a))
+		* Whenever a tower attacks an enemy, the line `<tower_type>@(<tower_x>.<tower_y>) -> <monster_type>@(<monster_x>, <monster_y>)`, where `<_type>`, `<_x>` and `<_y>` represent the object's type, horizontal coordinate and vertical coordinate respectively, is printed on the console. (Task 1(iii)(b))
+		* The attack is represented in the graphical interface. (Task 1(iii)(b)(a))
+	1. Verify the behaviour of attempting to build a tower in an invalid grid for the following conditions:
+		* *The Grid* contains at least one monster.
+		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
 
 Demonstrate that the game physics fits the following requirements:
  * A monster is modeled as a point which should be roughly the center of its icon/grid.
