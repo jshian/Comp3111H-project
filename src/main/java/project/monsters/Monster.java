@@ -63,11 +63,7 @@ public abstract class Monster implements Arena.MovesInArena {
      */
     public double getSpeed() { return speed; }
 
-    /**
-     * Causes the Monster to take damage.
-     * @param amount The amount of damage to be taken.
-     */
-    public void takeDamage(int amount) { health -= amount; }
+
 
     /**
      * Determines whether the Monster has died.
