@@ -23,7 +23,6 @@ public class IceTower extends Tower{
     public boolean upgrade(int resource){
         if(resource >= 20){
             this.slowDown+=5;
-            this.attackPower+=5;
             return true;
         }
         return false;
