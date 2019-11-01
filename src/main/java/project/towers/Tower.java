@@ -1,8 +1,7 @@
 package project.towers;
 
 import org.apache.commons.lang3.NotImplementedException;
-import project.Arena;
-import project.Coordinates;
+import project.*;
 
 public abstract class Tower implements Arena.ExistsInArena {
     // Position
@@ -25,7 +24,7 @@ public abstract class Tower implements Arena.ExistsInArena {
 
 
     /**
-     * Upgrade the tower.
+     * Upgrade the tower for adding the power, slow duration, reload time etc
      * @param resource The resources needed for tower to upgrade.
      * @return True if upgrade is successful, otherwise false.
      */

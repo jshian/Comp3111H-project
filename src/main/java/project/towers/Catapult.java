@@ -12,11 +12,11 @@ public class Catapult extends Tower {
      */
     public Catapult(Arena arena){
         super(arena);
+        this.attackPower = 20;
+        this.buildingCost = 20;
+        this.shootingRange = 150;
         this.reload = 10;
         this.shootLimit = 50;
-        super.shootingRange = 150;
-        super.attackPower = 20;
-        super.buildingCost = 20;
     }
 
 

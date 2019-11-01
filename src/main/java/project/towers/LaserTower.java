@@ -12,8 +12,9 @@ public class LaserTower extends Tower{
      */
     public LaserTower(Arena arena){
         super(arena);
-        super.attackPower = 30;
-        super.buildingCost = 20;
+        this.attackPower = 30;
+        this.buildingCost = 20;
+        this.shootingRange = 65;
         this.consume = 2;
     }
 
@@ -44,7 +45,7 @@ public class LaserTower extends Tower{
     @Override
     public boolean upgrade(int resource){
         if(resource >= 10){
-            attackPower+=5;
+            this.attackPower+=5;
             return true;
         }
         return false;
