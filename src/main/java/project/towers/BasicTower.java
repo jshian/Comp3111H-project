@@ -18,7 +18,7 @@ public class BasicTower extends Tower {
     @Override
     public boolean upgrade(int resource){
         if(resource >= 10){
-            attackPower+=5;
+            this.attackPower+=5;
             return true;
         }
         return false;
