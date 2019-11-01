@@ -100,29 +100,6 @@ Demonstrate that the game physics fits the following requirements:
  
  
 Demonstrate that the following tasks have been completed:
-1. Arena Building (15)
-    1. Indicate the grid that a monster show up and the grid representing end-zone with png images. 
-    The image must shall be shown at the back when there is a monster on the grid. Create/choose your own image. (1)
-    1. Allow all types of towers to be built on all green grids using drag and drop gesture. (1)
-        1. When a tower is built, an image of the tower will be placed on the grid. Use the png files 
-        provided under `src\main\resources`. (1)
-        1. A fixed amount of resource (e.g. money, or you create your own set of resources.) is deducted 
-        and correctly display the remaining amount of resource on GUI screen after building
-        the tower. (1)
-        1. When the mouse pointer is moved over a built tower, all information related to the 
-        tower must be displayed on the graphic interface (`System.out.println` is not acceptable)) (1)
-            1. Furthermore, the pixels of the area that are inside the tower's range are shaded (you might use a circle UI). (1)
-                1. Furthermore, when the mouse is moved away from the tower, the shaded area will be restored (you are not allowed to dismiss the information/shaded pixel by clicking button, e.g. click a message box). (1)
-        1. When there is not enough resource to build a tower, the program should prompt a dialog box to warn the player (1)
-        1. When a tower is clicked, the player will be provided with two options: `destroy the tower` and `upgrade`. (1)
-            1. Furthermore, when `destroy the tower` is selected, the tower will be destroyed. (1)
-            1. Furthermore, when `upgrade` is selected, and in case there is enough resource (you can determine the resources needed) to upgrade, it will invoke the function that corresponding to 
-            upgrading the tower and a line `XXX tower is being upgraded` is printed on the console. (1)
-                1. Furthermore, in case there isn't enough resource to upgrade the tower, the upgrade will be aborted and a line `not enough resource to upgrade XXX tower` is printed on the console. (1)
-    1.  Logging the following information using `System.out.println`:
-        1. When a monster is generated. Log its type and HP in the format `<type>:<HP> generated` (1)
-        1. When a monster is attacked. Log the type and position tower attacks it and the position of the monster in the format `<tower_type>@(<x>.<y>) -> <monster_type>@(<x>, <y>)` (1)
-            1. Furthermore, represent the attack in the GUI so that the monster and the tower involved can be visually identified without reading the log. (1)
 1.  Towers (15)
     1.  All towers built in the arena will shoot a monster automatically which is inside its range (unless all towers are impossible to attack, e.g. out of range, in cool down etc). (1)      
     1.  Implement Basic Tower that has a shooting range [0,65] pixels. You can decide the attack power and other parameters of the tower. (1)
