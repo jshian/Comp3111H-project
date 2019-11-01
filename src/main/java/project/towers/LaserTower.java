@@ -1,8 +1,11 @@
 package project.towers;
 
 import project.*;
+import project.monsters.Monster;
 
-public class LaserTower extends BasicTower{
+import java.util.LinkedList;
+
+public class LaserTower extends Tower{
     // State
     private int consume;
 
@@ -12,39 +15,40 @@ public class LaserTower extends BasicTower{
      */
     public LaserTower(Arena arena){
         super(arena);
-        super.attackPower = 30;
-        super.buildingCost = 20;
+        this.attackPower = 30;
+        this.buildingCost = 20;
         this.consume = 2;
     }
 
-    /**
-     * Draw a line from the lazer tower to certain position.
-     * @param cor The coordinate of the target.
-     */
-    public void drawLine(Coordinates cor){
-
-    }
 
     /**
      * Lazer tower consume player's resource to attack monster.
-     * @param resource The resources that owned by player.
+     * @param player The player who build the tower.
      */
-    public void consumeResource(int resource){
-        resource-=consume;
+    public void consumeResource(Player player){
+        player.decreaseRecource(consume);
     }
 
-    /**
-     * Destroy the towers which the lazer has passed through.
-     * @param cor The coordinate of the target.
-     */
-    public void destroyTower(Coordinates cor){
+    @Override
+    public void attackMonster(Monster monster){
+        Coordinates mCor = monster.getCoordinates();
+        Coordinates tCor = getCoordinates();
+        Coordinates edgePt = tCor.findEdgePt(mCor);
+        tCor.drawLine(edgePt);
+        LinkedList<Monster> monsters = monster.getCoordinates().getArena().getMonsters();
+        for (Monster m:monsters) {
+            if(tCor.isInArea(mCor,m.getCoordinates())){
+                m.setHealth(monster.getHealth()-this.attackPower);
+            }
+        }
+
 
     }
 
     @Override
     public boolean upgrade(int resource){
         if(resource >= 10){
-            attackPower+=5;
+            this.attackPower+=5;
             return true;
         }
         return false;

@@ -6,12 +6,12 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.*;
-import project.towers.BasicTower;
+import project.towers.Tower;
 
 /**
  * The area where most of the action takes place in the game.
  * Monsters spawn at the starting position and try to reach the end-zone.
- * Towers can be built on the arena.
+ * towers can be built on the arena.
  */
 public class Arena {
 
@@ -21,7 +21,7 @@ public class Arena {
     private static final int END_ZONE_Y = 0;
 
     // Objects in the arena
-    private LinkedList<BasicTower> towers = new LinkedList<>();
+    private LinkedList<Tower> towers = new LinkedList<>();
     private LinkedList<Projectile> projectiles = new LinkedList<>();
     private LinkedList<Monster> monsters = new LinkedList<>();
 
@@ -58,7 +58,7 @@ public class Arena {
         LinkedList<Object> list = new LinkedList<>();
 
         if (filter.contains(TypeFilter.Tower)) {
-            for (BasicTower t : towers)
+            for (Tower t : towers)
                 if (coordinates.isAt(t.getCoordinates()))
                     list.add(t);
         }
@@ -88,7 +88,7 @@ public class Arena {
         LinkedList<Object> list = new LinkedList<>();
 
         if (filter.contains(TypeFilter.Tower)) {
-            for (BasicTower t : towers) {
+            for (Tower t : towers) {
                 Coordinates c = t.getCoordinates();
     
                 if (coordinates.isAt(c))
@@ -146,7 +146,7 @@ public class Arena {
      * Destroys the specified Tower.
      * @param tower The Tower to be destroyed.
      */
-    public void destroyTower(BasicTower tower)
+    public void destroyTower(Tower tower)
     {
         towers.remove(tower);
     }
@@ -193,6 +193,23 @@ public class Arena {
         throw new NotImplementedException("TODO");
     }
 
+    /**
+     * Accesses the towers exist
+     * @return The towers in Arena
+     */
+    public LinkedList<Tower> getTowers() { return towers; }
+
+    /**
+     * Accesses the monsters exist
+     * @return The monsters in Arena
+     */
+    public LinkedList<Monster> getMonsters() { return monsters;}
+
+    /**
+     * Accesses the projectile
+     * @return The projectiles in Arena
+     */
+    public LinkedList<Projectile> getProjectiles(){ return projectiles;}
     /**
      * Interface for objects that exist inside an Arena.
      */

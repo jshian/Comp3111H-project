@@ -1,28 +1,21 @@
 package project.towers;
 
 import org.apache.commons.lang3.NotImplementedException;
-
 import project.*;
+import project.monsters.Monster;
 
-public class BasicTower implements Arena.ExistsInArena {
+public abstract class Tower implements Arena.ExistsInArena {
     // Position
     private Coordinates coordinates;
 
     // States
     protected int attackPower, buildingCost, shootingRange;
 
-    protected BasicTower(){
-
-    }
-
     /**
-     * Constructor for BasicTower class.
+     * Constructor for Tower class.
      * @param arena The arena in which the basic tower exists.
      */
-    public BasicTower(Arena arena){
-        this.attackPower = 10;
-        this.buildingCost = 10;
-        this.shootingRange = 65;
+    public Tower(Arena arena){
         this.coordinates = new Coordinates(arena);
     }
 
@@ -30,19 +23,23 @@ public class BasicTower implements Arena.ExistsInArena {
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public Coordinates getCoordinates() { return coordinates; }
 
-    /**
-     * Upgrade the tower.
-     * @param resource The resources needed for tower to upgrade.
-     * @return ture if upgrade is successful, otherwise false.
-     */
-    public boolean upgrade(int resource){
-        if(resource >= 10){
-            attackPower+=5;
-            return true;
-        }
-        return false;
-    }
 
+    /**
+     * Upgrade the tower for adding the power, slow duration, reload time etc
+     * @param resource The resources needed for tower to upgrade.
+     * @return True if upgrade is successful, otherwise false.
+     */
+    public abstract boolean upgrade(int resource);
+
+    /**
+     * Decrease the health, speed etc of the attacked monster
+     * @param monster The monster closest to the destination was attacked
+     */
+    public abstract void attackMonster(Monster monster);
+    /**
+     * @param monster the coordinate of monster who to be shoot
+     * @return True if it is in the shooting range otherwise false
+     */
     public boolean canShoot(Coordinates monster){
         return coordinates.distanceFrom(monster) <= shootingRange * shootingRange;
     }
@@ -69,7 +66,5 @@ public class BasicTower implements Arena.ExistsInArena {
     public int getShootingRange() {
         return shootingRange;
     }
-
-
 
 }
