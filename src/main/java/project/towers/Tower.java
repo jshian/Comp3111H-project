@@ -33,7 +33,7 @@ public abstract class Tower implements Arena.ExistsInArena {
 
     /**
      * Decrease the health, speed etc of the attacked monster
-     * @param monster The monster was attacked
+     * @param monster The monster closest to the destination was attacked
      */
     public abstract void attackMonster(Monster monster);
     /**
