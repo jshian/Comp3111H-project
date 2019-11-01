@@ -194,6 +194,12 @@ public class Arena {
     }
 
     /**
+     * Accesses the towers exist
+     * @return The towers in Arena
+     */
+    public LinkedList<Tower> getTowers() { return towers; }
+
+    /**
      * Interface for objects that exist inside an Arena.
      */
     public interface ExistsInArena {
