@@ -10,9 +10,11 @@ Members:
  * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk) 
 
 ## Grading Process
+### Initialization
 1. Start the database server.
 	1. ...
 1. Clone this repository to two different lab machines. They shall be referred to as *Machine A* and *Machine B* respectively.
+### Grade Regular Task 1
 1. Do the following on Machine A:
 	1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
 		* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
@@ -21,22 +23,23 @@ Members:
 		* A resource count of *???* (referred to as *Resource Pool*) is displayed.
 	1. Left-click and hold on either the `Basic Tower`, `Ice Tower` or `Laser Tower` button.
 	1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
-		* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Task 1(ii)(a))
+		* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Regular Task 1(ii)(a))
 		 	* Basic Tower - `/src/main/resources/basicTower.png`
 		 	* Ice Tower - `/src/main/resources/iceTower.png`
 		 	* Laser Tower - `/src/main/resources/LaserTower.png`
 		* The *Tower Sihouette* is located within, but does not exceed, the grid in which the mouse pointer is located (referred to as *The Grid*). (Game Physics Requirement)
-		* If any one of the following is satisfied, *The Grid* glows red, indicating that the tower cannot be built there, i.e. *The Grid* is invalid. (Game Physics Requirement)
+		* If any one of the following is satisfied, *The Grid* glows red, indicating that the tower cannot be built there, i.e. *The Grid* is invalid. (Honors Task 1(i))
 			* *The Grid* is within the starting position.
 			* *The Grid* is within the end-zone.
 			* *The Grid* contains at least one tower.
+			* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
 			* The *Resource Pool* is lower than the tower's cost.
 			* *The Grid* contains at least one monster.
 			* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
 		* Otherwise, *The Grid* glows green, indicating that the tower can be built there, i.e. *The Grid* is valid.
 	1. Move the mouse pointer to a valid grid before releasing left-click. Verify the behaviour of attempting to build a tower in a valid grid, which are as follows:
-		* The tower is built, i.e. a solid, permament version of the *Tower Sihouette* exactly replaces the *Tower Sihouette*, and begins to exist on the arena. (Task 1(ii))
-		* The cost of the tower is deducted from the *Resource Pool*. (Task 1(ii)(b))
+		* The tower is built, i.e. a solid, permament version of the *Tower Sihouette* exactly replaces the *Tower Sihouette*, and begins to exist on the arena. (Regular Task 1(ii))
+		* The cost of the tower is deducted from the *Resource Pool*. (Regular Task 1(ii)(b))
 		* *Tower Placing Mode* is exited.
 	1. Enter *Tower Placing Mode* again, but move the mouse pointer over a tower. Verify that *The Grid* glows red.
 	1. Verify the behaviour of attempting to build a tower in an invalid grid for following conditions:
@@ -49,42 +52,51 @@ Members:
 	1. Enter *Tower Placing Mode* and move the mouse pointer outside the arena and release left-click. Verify that the resulting behavior is identical to that of attempting to place a tower in an invalid grid.
 	1. Enter *Tower Placing Mode* and right-click anywhere. Verify that the resulting behavior is identical to that of attempting to place a tower in an invalid grid.
 	1. Mouse over the tower previously built. Verify the following:
-		* The tower's *Tower Information* is displayed on the graphic interface. (Task 1(ii)(c))
-		* The pixels within the tower's range is shaded. (Task 1(ii)(c)(a))
-	1. Move the mouse pointer away from the above tower. Verify that the pixels within the tower's range are no longer shaded. (Task 1(ii)(c)(a)(a))
+		* The tower's *Tower Information* is displayed on the graphic interface. (Regular Task 1(ii)(c))
+		* The pixels within the tower's range is shaded. (Regular Task 1(ii)(c)(a))
+	1. Move the mouse pointer away from the above tower. Verify that the pixels within the tower's range are no longer shaded. (Regular Task 1(ii)(c)(a)(a))
 	1. Build a few more towers, but this time, try to enclose the starting area with the towers. Upon attempting to place the last tower that finishes the enclosure, verify the behaviour of attempting to build a tower in an invalid grid for the following condition:
 		* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
 	1. Build even more towers until the *Resource Pool* is lower than the cost of any one tower. Attempt to build a tower with cost greater than the current *Resource Pool*. Verify the behaviour of attempting to build a tower in an invalid grid for the following condition:
 		* The *Resource Pool* is lower than the tower's cost.
 	1. Also verify:
-		* A dialog box appears which prompts that there is insufficient resources to build the tower. (Task 1(ii)(d))
+		* A dialog box appears which prompts that there is insufficient resources to build the tower. (Regular Task 1(ii)(d))
 	1. Mouse over any one of the towers previously built, and then left-click on it. Verify the following:
-		* Two buttons `destroy the tower` and `upgrade` appear near the *Tower Information*. (Task 1(ii)(e))
+		* Two buttons `destroy the tower` and `upgrade` appear near the *Tower Information*. (Regular Task 1(ii)(e))
 	1. Right-click anywhere, including the buttons and on the tower itself. Verify the following:
 		* The *Tower Information* and two buttons disappear.
 	1. Exit the mouse pointer from the tower and left-click on it again.
 	1. Left-click on the `destroy the tower` button. Verify the following:
-		* The tower is destroyed, i.e. it disappears and no longer exists in the arena. (Task 1(ii)(e)(a))
+		* The tower is destroyed, i.e. it disappears and no longer exists in the arena. (Regular Task 1(ii)(e)(a))
 		* The *Tower Information* and two buttons disappear.
 		* A portion of the tower cost is refunded to the *Resource Pool*.
 	1. Destroy more towers until current *Resource Pool* is greater than the upgrade cost of any one tower.
-	1. Left-click on a tower with upgrade cost lower than current *Resource Pool*. (Task 1(ii)(e)(b))
+	1. Left-click on a tower with upgrade cost lower than current *Resource Pool*. (Regular Task 1(ii)(e)(b))
 		* The tower is upgraded, i.e. its stats are improved.
 		* The upgrade cost is deducted from the *Resource Pool*.
 		* The line `<tower> is being upgraded`, where `<tower>` is the name of the tower, is printed on the console.
 	1. Build towers until current *Resource Pool* is lower than the upgrade cost of any one tower.
 	1. Left-click on a tower with upgrade cost greater than current *Resource Pool*.
-	1. Now left-click on the `upgrade` button. Verify the following: (Task 1(ii)(e)(b)(a))
+	1. Now left-click on the `upgrade` button. Verify the following: (Regular Task 1(ii)(e)(b)(a))
 		* The tower remains unupgraded, and the *Resource Pool* remains unchanged.
 		* The line `not enough resource to upgrade <tower>`, where `<tower>` is the name of the tower, is printed on the console.
 	1. Click the `Play` button. Verify the following:
 		* Monsters begin to generate at the starting position.
-		* For every monster generated, the line `<type>:<HP> generated`, where `<type>` and `<HP>` is the type and HP of the monster respectively, is printed on the console. (Task 1(iii)(a))
-		* Whenever a tower attacks an enemy, the line `<tower_type>@(<tower_x>.<tower_y>) -> <monster_type>@(<monster_x>, <monster_y>)`, where `<_type>`, `<_x>` and `<_y>` represent the object's type, object center's horizontal coordinate and object center's vertical coordinate respectively, is printed on the console. (Task 1(iii)(b))
-		* The attack is represented in the graphical interface. (Task 1(iii)(b)(a))
-	1. Verify the behaviour of attempting to build a tower in an invalid grid for the following conditions:
+		* For every monster generated, the line `<type>:<HP> generated`, where `<type>` and `<HP>` is the type and HP of the monster respectively, is printed on the console. (Regular Task 1(iii)(a))
+		* Whenever a tower attacks an enemy, the line `<tower_type>@(<tower_x>.<tower_y>) -> <monster_type>@(<monster_x>, <monster_y>)`, where `<_type>`, `<_x>` and `<_y>` represent the object's type, object center's horizontal coordinate and object center's vertical coordinate respectively, is printed on the console. (Regular Task 1(iii)(b))
+		* The attack is represented in the graphical interface. (Regular Task 1(iii)(b)(a))
+	1. Verify the behaviour of attempting to build a tower in an invalid grid for the following conditions: (Honors Task 1(ii)(a))
+		* *The Grid* is within the starting position.
+		* *The Grid* is within the end-zone.
+		* *The Grid* contains at least one tower.
+		* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
 		* *The Grid* contains at least one monster.
 		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
+	1. Verify the behaviour of attempting to build a tower in a valid grid several times. (Honors Task 1(ii)(a))
+	1. Verify the behaviour of upgrading and destroying towers using the same procedures as above.
+	1. Force close the application, and then restart it.
+	1. Click the `Simulate` button.
+	1. Attempt to enter *Tower Placing Mode*, upgrade and destroy a tower separately. Verify that this does not work. (Honors Task 1(ii))
 
 Demonstrate that the game physics fits the following requirements:
  * A monster is always moving from a grid to an adjacent grid either horizontally or vertically.
