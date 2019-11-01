@@ -1,6 +1,7 @@
 package project.towers;
 
 import project.*;
+import project.monsters.Monster;
 
 public class Catapult extends Tower {
     // States
@@ -12,7 +13,7 @@ public class Catapult extends Tower {
      */
     public Catapult(Arena arena){
         super(arena);
-        this.attackPower = 20;
+        this.attackPower = 25;
         this.buildingCost = 20;
         this.shootingRange = 150;
         this.reload = 10;
@@ -29,9 +30,15 @@ public class Catapult extends Tower {
     }
 
     @Override
+    public void attackMonster(Monster monster){
+        if (canShoot(monster.getCoordinates())){
+
+        }
+    }
+
+    @Override
     public boolean upgrade(int resource){
         if(resource >= 20){
-            attackPower+=5;
             if(reload>0)reload-=1;
             return true;
         }

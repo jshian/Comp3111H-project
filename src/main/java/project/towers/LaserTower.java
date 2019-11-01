@@ -1,6 +1,9 @@
 package project.towers;
 
 import project.*;
+import project.monsters.Monster;
+
+import java.util.LinkedList;
 
 public class LaserTower extends Tower{
     // State
@@ -14,32 +17,34 @@ public class LaserTower extends Tower{
         super(arena);
         this.attackPower = 30;
         this.buildingCost = 20;
-        this.shootingRange = 65;
         this.consume = 2;
     }
 
-    /**
-     * Draw a line from the lazer tower to certain position.
-     * @param cor The coordinate of the target.
-     */
-    public void drawLine(Coordinates cor){
-
-    }
 
     /**
      * Lazer tower consume player's resource to attack monster.
-     * @param resource The resources that owned by player.
+     * @param player The player who build the tower.
      */
-    public void consumeResource(int resource){
-        resource-=consume;
+    public void consumeResource(Player player){
+        player.decreaseRecource(consume);
     }
 
-    /**
-     * Destroy the towers which the lazer has passed through.
-     * @param cor The coordinate of the target.
-     */
-    public void destroyTower(Coordinates cor){
+    @Override
+    public void attackMonster(Monster monster){
+        Coordinates mCor = monster.getCoordinates();
 
+        if(canShoot(mCor)){
+            Coordinates tCor = getCoordinates();
+            Coordinates edgePt = tCor.findEdgePt(mCor);
+            tCor.drawLine(edgePt);
+            LinkedList<Monster> monsters = monster.getCoordinates().getArena().getMonsters();
+            for (Monster m:monsters) {
+                if(tCor.isInArea(mCor,m.getCoordinates())){
+                    m.setHealth(monster.getHealth()-this.attackPower);
+                }
+            }
+
+        }
     }
 
     @Override
