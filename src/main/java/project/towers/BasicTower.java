@@ -1,6 +1,7 @@
 package project.towers;
 
 import project.*;
+import project.monsters.Monster;
 
 public class BasicTower extends Tower {
 
@@ -13,6 +14,11 @@ public class BasicTower extends Tower {
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;
+    }
+
+    @Override
+    public void attackMonster(Monster monster){
+        monster.setHealth(monster.getHealth()-this.attackPower);
     }
 
     @Override

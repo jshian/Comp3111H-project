@@ -29,7 +29,9 @@ public class IceTower extends Tower{
         return false;
     }
 
-    public void reduceSpeed(Monster monster){
+    @Override
+    public void attackMonster(Monster monster){
         monster.setSpeed(monster.getSpeed()-this.slowDown);
+        monster.setHealth(monster.getHealth()-this.attackPower);
     }
 }
