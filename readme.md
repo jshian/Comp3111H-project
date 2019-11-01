@@ -6,7 +6,7 @@ Course Stream: Honors
 
 Members:
  * Task 1: *Name* (cshoae@connect.ust.hk)
- * Task 2: *Name* (jshian@connect.ust.hk) 
+ * Task 2: SHI Jianhua (jshian@connect.ust.hk)
  * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk) 
 
 ## Grading Process
