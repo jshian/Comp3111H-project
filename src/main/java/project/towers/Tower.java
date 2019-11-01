@@ -2,6 +2,7 @@ package project.towers;
 
 import org.apache.commons.lang3.NotImplementedException;
 import project.*;
+import project.monsters.Monster;
 
 public abstract class Tower implements Arena.ExistsInArena {
     // Position
@@ -30,6 +31,11 @@ public abstract class Tower implements Arena.ExistsInArena {
      */
     public abstract boolean upgrade(int resource);
 
+    /**
+     * Decrease the health, speed etc of the attacked monster
+     * @param monster The monster was attacked
+     */
+    public abstract void attackMonster(Monster monster);
     /**
      * @param monster the coordinate of monster who to be shoot
      * @return True if it is in the shooting range otherwise false
