@@ -80,18 +80,16 @@ Members:
 	1. Click the `Play` button. Verify the following:
 		* Monsters begin to generate at the starting position.
 		* For every monster generated, the line `<type>:<HP> generated`, where `<type>` and `<HP>` is the type and HP of the monster respectively, is printed on the console. (Task 1(iii)(a))
-		* Whenever a tower attacks an enemy, the line `<tower_type>@(<tower_x>.<tower_y>) -> <monster_type>@(<monster_x>, <monster_y>)`, where `<_type>`, `<_x>` and `<_y>` represent the object's type, horizontal coordinate and vertical coordinate respectively, is printed on the console. (Task 1(iii)(b))
+		* Whenever a tower attacks an enemy, the line `<tower_type>@(<tower_x>.<tower_y>) -> <monster_type>@(<monster_x>, <monster_y>)`, where `<_type>`, `<_x>` and `<_y>` represent the object's type, object center's horizontal coordinate and object center's vertical coordinate respectively, is printed on the console. (Task 1(iii)(b))
 		* The attack is represented in the graphical interface. (Task 1(iii)(b)(a))
 	1. Verify the behaviour of attempting to build a tower in an invalid grid for the following conditions:
 		* *The Grid* contains at least one monster.
 		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
 
 Demonstrate that the game physics fits the following requirements:
- * A monster is modeled as a point which should be roughly the center of its icon/grid.
  * A monster is always moving from a grid to an adjacent grid either horizontally or vertically.
  * When a monster is killed it must be removed from the arena, a certain amount of resource will be given to the player.
  * All distance used in the game should be referred as Euclidean distance, in pixels (px). 
- * All operations by the player must be done by mouse.
  * A tower cannot attack a monster that is outside its shooting range. When we judge a monster is inside a tower's shooting range, the following distance will be used: the Euclidean distance between the center of the grid of where the tower is built and the center of the monster.
  * The health point (HP) of a monster will be deducted by the attack power of the tower attacking it. When HP is less than or equal to zero a monster is killed. 
  * When there are multiple possible monster a tower can shoot (in range), it should always choose a monster that is nearest to up-left corner of the end-zone ((440, 0) in our demo).
