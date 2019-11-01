@@ -32,19 +32,17 @@ public class LaserTower extends Tower{
     @Override
     public void attackMonster(Monster monster){
         Coordinates mCor = monster.getCoordinates();
-
-        if(canShoot(mCor)){
-            Coordinates tCor = getCoordinates();
-            Coordinates edgePt = tCor.findEdgePt(mCor);
-            tCor.drawLine(edgePt);
-            LinkedList<Monster> monsters = monster.getCoordinates().getArena().getMonsters();
-            for (Monster m:monsters) {
-                if(tCor.isInArea(mCor,m.getCoordinates())){
-                    m.setHealth(monster.getHealth()-this.attackPower);
-                }
+        Coordinates tCor = getCoordinates();
+        Coordinates edgePt = tCor.findEdgePt(mCor);
+        tCor.drawLine(edgePt);
+        LinkedList<Monster> monsters = monster.getCoordinates().getArena().getMonsters();
+        for (Monster m:monsters) {
+            if(tCor.isInArea(mCor,m.getCoordinates())){
+                m.setHealth(monster.getHealth()-this.attackPower);
             }
-
         }
+
+
     }
 
     @Override
