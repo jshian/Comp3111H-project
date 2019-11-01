@@ -2,7 +2,7 @@ package project.towers;
 
 import project.*;
 
-public class IceTower extends BasicTower{
+public class IceTower extends Tower{
     // State
     private int slowDown;
 

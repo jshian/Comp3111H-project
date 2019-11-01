@@ -2,7 +2,7 @@ package project.towers;
 
 import project.*;
 
-public class LaserTower extends BasicTower{
+public class LaserTower extends Tower{
     // State
     private int consume;
 

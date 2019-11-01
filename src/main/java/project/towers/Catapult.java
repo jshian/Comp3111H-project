@@ -2,7 +2,7 @@ package project.towers;
 
 import project.*;
 
-public class Catapult extends BasicTower {
+public class Catapult extends Tower {
     // States
     private int reload,shootLimit;
 
