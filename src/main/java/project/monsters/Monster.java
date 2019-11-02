@@ -46,10 +46,26 @@ public abstract class Monster implements Arena.MovesInArena {
     public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
 
     /**
+     * Sets the health of the monster.
+     * @param health The health of the monster.
+     */
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    /**
      * Accesses the health of the monster.
      * @return The health of the monster.
      */
     public double getHealth() { return health; }
+
+    /**
+     * Set the speed of the monster
+     * @param speed The speed of the monster
+     */
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 
     /**
      * Accesses the speed of the monster.
@@ -57,11 +73,6 @@ public abstract class Monster implements Arena.MovesInArena {
      */
     public double getSpeed() { return speed; }
 
-    /**
-     * Causes the Monster to take damage.
-     * @param amount The amount of damage to be taken.
-     */
-    public void takeDamage(double amount) { health -= amount; }
 
     /**
      * Determines whether the Monster has died.
