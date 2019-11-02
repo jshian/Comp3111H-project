@@ -16,8 +16,8 @@ Members:
 1. Do the following on Machine A:
 	1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
 		1. The arena is displayed as a square with side length 480px. (Game Physics Requirement)
-		1. The starting position on the arena is represented by the image *???*.
-		1. The end zone on the arena is represented by the image *???*. (Regular Task 1(i))
+		1. The starting position on the arena is represented by the image `/src/main/resources/show-up.png`.
+		1. The end zone on the arena is represented by the image `/src/main/resources/end-zone.png`. (Regular Task 1(i))
 	1. Left-click and hold on any of the buttons that end in `Tower`. Verify the following:
 		1. The attack power, building cost and shooting range is displayed. (Game Physics Requirement)
 	1. Continue to hold left-click and move the mouse pointer around the arena. Verify the following:
