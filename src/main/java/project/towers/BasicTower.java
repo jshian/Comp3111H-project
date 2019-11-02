@@ -19,7 +19,7 @@ public class BasicTower extends Tower {
     @Override
     public void attackMonster(Monster monster){
         if(canShoot(monster.getCoordinates()))
-            monster.setHealth(monster.getHealth()-this.attackPower);
+            monster.setHealth((int)(monster.getHealth()-this.attackPower));
     }
 
     @Override

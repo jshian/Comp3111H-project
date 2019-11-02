@@ -32,7 +32,7 @@ public class IceTower extends Tower{
     public void attackMonster(Monster monster){
         if(canShoot(monster.getCoordinates())){
             monster.setSpeed(monster.getSpeed()-this.slowDown);
-            monster.setHealth(monster.getHealth()-this.attackPower);
+            monster.setHealth((int)(monster.getHealth()-this.attackPower));
         }
     }
 }

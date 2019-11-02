@@ -38,7 +38,7 @@ public class LaserTower extends Tower{
         LinkedList<Monster> monsters = monster.getCoordinates().getArena().getMonsters();
         for (Monster m:monsters) {
             if(tCor.isInArea(mCor,m.getCoordinates())){
-                m.setHealth(monster.getHealth()-this.attackPower);
+                m.setHealth((int)(monster.getHealth()-this.attackPower));
             }
         }
 
