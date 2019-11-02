@@ -44,7 +44,7 @@ public class BasicTower implements Arena.ExistsInArena {
     }
 
     public boolean canShoot(Coordinates monster){
-        return coordinates.distanceFrom(monster) <= shootingRange * shootingRange;
+        return coordinates.diagonalDistanceFrom(monster) <= shootingRange * shootingRange;
     }
 
     /**

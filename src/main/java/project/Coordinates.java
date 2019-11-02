@@ -5,6 +5,8 @@ import java.util.*;
 
 import org.apache.commons.lang3.*;
 
+import project.Arena.TypeFilter;
+
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the arena. Also
  * stores a link to the arena itself.
@@ -39,7 +41,12 @@ public class Coordinates {
      */
     public LinkedList<Object> findObjectsOccupying(Coordinates coordinates)
     {
-        throw new NotImplementedException("TODO");
+        LinkedList<Object> result = new LinkedList<>();
+
+        result.addAll(arena.objectsAtPixel(this, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
+        result.addAll(arena.objectsInGrid(this, EnumSet.of(TypeFilter.Tower)));
+        
+        return result;
     }
 
     /**
@@ -64,14 +71,14 @@ public class Coordinates {
      * Updates both coordinates.
      * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
      * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
-     * @exception InvalidParameterException Either of the coordinates is outside the arena.
+     * @exception IllegalArgumentException Either of the coordinates is outside the arena.
      */
     public void update(int x, int y) {
         if (x < 0 || x >= UIController.ARENA_WIDTH)
-            throw new InvalidParameterException(
+            throw new IllegalArgumentException(
                 String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH));
         if (y < 0 || y >= UIController.ARENA_HEIGHT)
-            throw new InvalidParameterException(
+            throw new IllegalArgumentException(
                 String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT));
 
         this.x = x;
@@ -84,15 +91,24 @@ public class Coordinates {
      * @return Whether the two Coordinate objects represent the same Cartesian coordinates.
      */
     public boolean isAt(Coordinates other) {
-        return ((int) distanceFrom(other)) == 0;
+        return ((int) diagonalDistanceFrom(other)) == 0;
     }
 
     /**
-     * Calculates the distance between the Cartesian coordinates represented by two Coordinate objects.
+     * Calculates the taxicab distance between the Cartesian coordinates represented by two Coordinate objects.
      * @param other The other object.
-     * @return The distance between the Cartesian coordinates represented by the two Coordinate objects.
+     * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
-    public double distanceFrom(Coordinates other) {
+    public int taxicabDistanceFrom(Coordinates other) {
+        return this.x - other.x + this.y - other.y;
+    }
+
+    /**
+     * Calculates the diagonal distance between the Cartesian coordinates represented by two Coordinate objects.
+     * @param other The other object.
+     * @return The diagonal distance between the Cartesian coordinates represented by the two Coordinate objects.
+     */
+    public double diagonalDistanceFrom(Coordinates other) {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
     }
 

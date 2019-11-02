@@ -35,7 +35,7 @@ public abstract class Projectile implements Arena.MovesInArena {
     public Coordinates getCoordinates() { return coordinates; }
     public void MoveOneFrame() {
         Coordinates other = target.getCoordinates();
-        double distance = coordinates.distanceFrom(other);
+        double distance = coordinates.diagonalDistanceFrom(other);
 
         if (distance <= speed)
             coordinates.update(other.getX(), other.getY());

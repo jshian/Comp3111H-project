@@ -25,13 +25,20 @@ public class Arena {
     private LinkedList<Projectile> projectiles = new LinkedList<>();
     private LinkedList<Monster> monsters = new LinkedList<>();
 
+    // Monster-related properties
+    private int framesUntilSpawn = 0;
+    private double difficulty = 0;
+
     /**
      * Finds the grid position corresponding to a specified pixel.
      * @param coordinates The coordinates of the pixel.
      * @return An int array that contains the x- and y- position of the grid at indices 0 and 1 respectively.
      */
     private int[] getGrid(Coordinates coordinates) {
-        return new int[] { coordinates.getX() / UIController.GRID_WIDTH, coordinates.getY() / UIController.GRID_HEIGHT };
+        int[] result = new int[2];
+        result[0] = coordinates.getX() / UIController.GRID_WIDTH;
+        result[1] = coordinates.getY() / UIController.GRID_HEIGHT;
+        return result;
     }
 
     /**
@@ -53,7 +60,7 @@ public class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<Object> getObjectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
+    public LinkedList<Object> objectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
@@ -83,7 +90,7 @@ public class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<Object> getObjectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
+    public LinkedList<Object> objectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
@@ -124,13 +131,71 @@ public class Arena {
     }
 
     /**
+     * Finds the center of the grid where a specified pixel is located.
+     * @param coordinates The coordinates of the pixel.
+     * @return Coordinates representing the center of the grid.
+     */
+    public Coordinates getGridCenter(Coordinates coordinates)
+    {
+        int[] gridPosition = getGrid(coordinates);
+
+        return new Coordinates(coordinates.getArena(),
+            (int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
+            (int) ((gridPosition[1] + 0.5) * UIController.GRID_HEIGHT));
+    }
+
+    /**
+     * Finds the grids within a taxicab distance of one from the grid where a specified pixel is located.
+     * @param coordinates The coordinates of the pixel.
+     * @return A linked list containing the coordinates of each taxicab neighbour.
+     */
+    public LinkedList<Coordinates> taxicabNeighbours(Coordinates coordinates)
+    {
+        LinkedList<Coordinates> result = new LinkedList<>();
+
+        int[] gridPosition = getGrid(coordinates);
+        int gridX = gridPosition[0];
+        int gridY = gridPosition[1];
+
+        // Left neighbour
+        if (gridX > 0)
+            result.add(new Coordinates(this,
+                getGridCenter(coordinates).getX() - UIController.GRID_WIDTH,
+                getGridCenter(coordinates).getY()
+            ));
+        
+        // Right neighbour
+        if (gridX < UIController.MAX_H_NUM_GRID - 1)
+            result.add(new Coordinates(this,
+                getGridCenter(coordinates).getX() + UIController.GRID_WIDTH,
+                getGridCenter(coordinates).getY()
+            ));
+        
+        // Top neighbour
+        if (gridY > 0)
+            result.add(new Coordinates(this,
+                getGridCenter(coordinates).getX(),
+                getGridCenter(coordinates).getY() - UIController.GRID_HEIGHT
+            ));
+
+        // Bottom neighbour
+        if (gridY < UIController.MAX_V_NUM_GRID - 1)
+            result.add(new Coordinates(this,
+                getGridCenter(coordinates).getX(),
+                getGridCenter(coordinates).getY() + UIController.GRID_HEIGHT
+            ));
+
+        return result;
+    }
+
+    /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
     public boolean canBuildTower(Coordinates coordinates)
     {
-        return getObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
+        return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
     /**

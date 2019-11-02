@@ -6,9 +6,9 @@ import project.*;
  * Penguin has the ability to regenerate.
  */
 public class Penguin extends Monster {
-    public Penguin(Arena arena, double difficulty) {
-        super(arena, difficulty);
-        this.health =  7.5 * difficulty;
+    public Penguin(Arena arena, double difficulty, Coordinates destination) {
+        super(arena, difficulty, destination);
+        this.health = 7.5 * difficulty;
         this.speed = 0.75 + 0.0075 * difficulty;
     }
 
