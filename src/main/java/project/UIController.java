@@ -160,31 +160,33 @@ public class UIController {
             	});
             	
             	target.setOnDragDropped(e -> {
-            		// ui part
-            		Image img = null;
-            		Object source = e.getGestureSource();
-            		if (source.equals(labelBasicTower))
-            			img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-            		else if (source.equals(labelIceTower))
-            			img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-            		else if (source.equals(labelCatapult))
-            			img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-            		else if (source.equals(labelLaserTower))
-            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-            		
-                    if (img != null) {
-                    	ImageView iv = new ImageView(img);
-                        iv.setX(x);
-                        iv.setY(y);
-                        paneArena.getChildren().add(iv);
-                        e.setDropCompleted(true);
-                    }
-                    e.consume();
-                    
-                    // back-end part
-                    // TODO: arena.buildTower(coordinates);
-                    // arena.buildTower(c);
-                    
+            		if (arena.canBuildTower(c)) {
+	            		// ui part
+	            		Image img = null;
+	            		Object source = e.getGestureSource();
+	            		if (source.equals(labelBasicTower))
+	            			img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            		else if (source.equals(labelIceTower))
+	            			img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            		else if (source.equals(labelCatapult))
+	            			img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            		else if (source.equals(labelLaserTower))
+	            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            		
+	                    if (img != null) {
+	                    	ImageView iv = new ImageView(img);
+	                        iv.setX(x);
+	                        iv.setY(y);
+	                        paneArena.getChildren().add(iv);
+	                        e.setDropCompleted(true);
+	                    }
+	                    e.consume();
+	                    
+	                    // back-end part
+	                    // TODO: arena.buildTower(coordinates);
+	                    // arena.buildTower(c);
+	                    
+            		}
             	});
             }
     	}
