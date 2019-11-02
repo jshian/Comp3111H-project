@@ -84,8 +84,9 @@ public class Arena {
     }
 
     /**
-     * Finds all objects that are within range of a specified pixel.
+     * Finds all objects that are within a specified range of a specified pixel.
      * @param coordinates The coordinates of the pixel.
+     * @param range The maximum distance from this pixel for the object to be within range.
      * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
