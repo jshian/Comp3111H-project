@@ -84,6 +84,36 @@ public class Arena {
     }
 
     /**
+     * Finds all objects that are within range of a specified pixel.
+     * @param coordinates The coordinates of the pixel.
+     * @param filter Only the types that are specified will be included in the result.
+     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @see TypeFilter
+     */
+    public LinkedList<Object> objectsInRange(Coordinates coordinates, double range, EnumSet<TypeFilter> filter)
+    {
+        LinkedList<Object> list = new LinkedList<>();
+
+        if (filter.contains(TypeFilter.Tower)) {
+            for (Tower t : towers)
+                if (coordinates.diagonalDistanceFrom(t.getCoordinates()) <= range)
+                    list.add(t);
+        }
+        
+        if (filter.contains(TypeFilter.Projectile))
+            for (Projectile p : projectiles)
+                if (coordinates.diagonalDistanceFrom(p.getCoordinates()) <= range)
+                    list.add(p);
+
+        if (filter.contains(TypeFilter.Monster))
+            for (Monster m : monsters)
+                if (coordinates.diagonalDistanceFrom(m.getCoordinates()) <= range)
+                    list.add(m);
+
+        return list;
+    }
+
+    /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
@@ -147,7 +177,7 @@ public class Arena {
     /**
      * Finds the grids within a taxicab distance of one from the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
-     * @return A linked list containing the coordinates of each taxicab neighbour.
+     * @return A linked list containing a reference to the coordinates of each taxicab neighbour.
      */
     public LinkedList<Coordinates> taxicabNeighbours(Coordinates coordinates)
     {
