@@ -4,7 +4,6 @@ import java.security.InvalidParameterException;
 import java.util.*;
 
 import javafx.scene.shape.Line;
-import org.apache.commons.lang3.*;
 import sun.font.CoreMetrics;
 
 import project.Arena.TypeFilter;
@@ -142,17 +141,17 @@ public class Coordinates {
 
     //problematic: the size of arena is unknown
     public Coordinates findEdgePt(Coordinates dirPt){
-        for (int row = 0; row <= 440; ++row){
+        for (int row = 0; row <= UIController.ARENA_WIDTH; ++row){
             if(this.isInLine(dirPt,new Coordinates(this.arena,0,row)))
                 return new Coordinates(this.arena,0,row);
-            if(this.isInLine(dirPt,new Coordinates(this.arena,440,row)))
-                return new Coordinates(this.arena,440,row);
+            if(this.isInLine(dirPt,new Coordinates(this.arena,UIController.ARENA_WIDTH,row)))
+                return new Coordinates(this.arena,UIController.ARENA_WIDTH,row);
         }
-        for (int col = 0; col <= 440; ++col){
+        for (int col = 0; col <= UIController.ARENA_HEIGHT; ++col){
             if(this.isInLine(dirPt,new Coordinates(this.arena,col,0)))
                 return new Coordinates(this.arena,col,0);
-            if(this.isInLine(dirPt,new Coordinates(this.arena,col,440)))
-                return new Coordinates(this.arena,col,440);
+            if(this.isInLine(dirPt,new Coordinates(this.arena,col,UIController.ARENA_HEIGHT)))
+                return new Coordinates(this.arena,col,UIController.ARENA_HEIGHT);
         }
         return dirPt;//for ignoring warning
 
