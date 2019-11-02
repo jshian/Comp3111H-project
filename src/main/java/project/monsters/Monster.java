@@ -27,8 +27,8 @@ public abstract class Monster implements Arena.MovesInArena {
     protected double speed;
 
     // Pathfinding
-    protected LinkedList<Coordinates> futurePath;
     protected Coordinates destination;
+    protected LinkedList<Coordinates> futurePath;
 
     /**
      * Constructor for the Monster class.
@@ -102,6 +102,7 @@ public abstract class Monster implements Arena.MovesInArena {
         while (!gridCenters.isEmpty()) {
             CoordinatesCostPair currentPair = gridCenters.poll();
 
+            // Check if reached destination
             if (currentPair.coordinates.isAt(this.destination)) {
                 this.futurePath = new LinkedList<>();
                 while (!previousGridFrom.isEmpty()) {
