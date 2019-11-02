@@ -12,22 +12,23 @@ import org.apache.commons.lang3.*;
  */
 public abstract class Monster implements Arena.MovesInArena {
     // Position
-    private Coordinates coordinates;
+    protected Coordinates coordinates;
 
     // Stats
-    private static int maxHealth;
-    private int health;
-    private static double maxSpeed;
-    private double speed;
+    protected double maxHealth;
+    protected double health;
+    protected double maxSpeed;
+    protected double speed;
 
     // Pathfinding
-    private LinkedList<Coordinates> futurePath = new LinkedList<>();
+    protected LinkedList<Coordinates> futurePath = new LinkedList<>();
 
     /**
      * Constructor for the Monster class.
      * @param arena The arena in which the Monster exists.
+     * @param difficulty The difficulty of the Monster.
      */
-    public Monster(Arena arena) {
+    public Monster(Arena arena, double difficulty) {
         this.coordinates = new Coordinates(arena);
     }
     
@@ -40,7 +41,7 @@ public abstract class Monster implements Arena.MovesInArena {
      * Accesses the health of the monster.
      * @return The health of the monster.
      */
-    public int getHealth() { return health; }
+    public double getHealth() { return health; }
 
     /**
      * Accesses the speed of the monster.
@@ -52,7 +53,7 @@ public abstract class Monster implements Arena.MovesInArena {
      * Causes the Monster to take damage.
      * @param amount The amount of damage to be taken.
      */
-    public void takeDamage(int amount) { health -= amount; }
+    public void takeDamage(double amount) { health -= amount; }
 
     /**
      * Determines whether the Monster has died.

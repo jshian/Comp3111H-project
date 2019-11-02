@@ -1,17 +1,16 @@
 package testing;
 
-import project.*;
-import project.monsters.*;
-import project.towers.*;
-
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import org.testfx.framework.junit.*;
 
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.stage.*;
-import javafx.fxml.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import project.UIController;
 
 public class JUnitTester extends ApplicationTest {
 
