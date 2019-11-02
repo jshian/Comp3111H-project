@@ -64,11 +64,10 @@ public class Arena {
     {
         LinkedList<Object> list = new LinkedList<>();
 
-        if (filter.contains(TypeFilter.Tower)) {
+        if (filter.contains(TypeFilter.Tower))
             for (Tower t : towers)
                 if (coordinates.isAt(t.getCoordinates()))
                     list.add(t);
-        }
         
         if (filter.contains(TypeFilter.Projectile))
             for (Projectile p : projectiles)
@@ -95,11 +94,10 @@ public class Arena {
     {
         LinkedList<Object> list = new LinkedList<>();
 
-        if (filter.contains(TypeFilter.Tower)) {
+        if (filter.contains(TypeFilter.Tower))
             for (Tower t : towers)
                 if (coordinates.diagonalDistanceFrom(t.getCoordinates()) <= range)
                     list.add(t);
-        }
         
         if (filter.contains(TypeFilter.Projectile))
             for (Projectile p : projectiles)
