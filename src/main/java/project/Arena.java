@@ -235,11 +235,22 @@ public class Arena {
     }
 
     /**
-     * Spawns a Monster at the starting position of the arena.
+     * Spawns a wave of Monsters at the starting position of the arena.
      */
-    public void spawnMonster()
+    public void spawnWave()
     {
-        throw new NotImplementedException("TODO");
+        int spawnCount = (int) (1 + difficulty * 0.2 + 2 * Math.random());
+        for (int i = 0; i < spawnCount; i++) {
+            double randomNumber = Math.random();
+            if (randomNumber < 1/3)
+                monsters.add(new Fox(this, difficulty, new Coordinates(this, END_ZONE_X, END_ZONE_Y)));
+            else if (randomNumber < 2/3)
+                monsters.add(new Penguin(this, difficulty, new Coordinates(this, END_ZONE_X, END_ZONE_Y)));
+            else
+                monsters.add(new Unicorn(this, difficulty, new Coordinates(this, END_ZONE_X, END_ZONE_Y)));
+        }
+
+        difficulty += 1;    // Modified by settings later
     }
 
     /**
