@@ -32,11 +32,11 @@ public abstract class Monster implements Arena.MovesInArena {
 
     /**
      * Constructor for the Monster class.
-     * @param arena The arena in which the Monster exists.
-     * @param difficulty The difficulty of the Monster.
+     * @param difficulty The difficulty of the monster.
+     * @param destination The destination pixel of the monster. It will try to move there. This should not be <code>null</code>.
      */
-    public Monster(Arena arena, double difficulty, Coordinates destination) {
-        this.coordinates = new Coordinates(arena);
+    public Monster(double difficulty, Coordinates destination) {
+        this.coordinates = new Coordinates();
         this.destination = destination;
     }
     
@@ -60,8 +60,8 @@ public abstract class Monster implements Arena.MovesInArena {
     public double getHealth() { return health; }
 
     /**
-     * Set the speed of the monster
-     * @param speed The speed of the monster
+     * Sets the speed of the monster.
+     * @param speed The speed of the monster.
      */
     public void setSpeed(double speed) {
         this.speed = speed;
@@ -75,13 +75,13 @@ public abstract class Monster implements Arena.MovesInArena {
 
 
     /**
-     * Determines whether the Monster has died.
-     * @return Whether the Monster has died.
+     * Determines whether the monster has died.
+     * @return Whether the monster has died.
      */
     public boolean hasDied() { return health <= 0; }
 
     /**
-     * Recalculates the future path of the Monster using A* search.
+     * Recalculates the future path of the monster using A* search.
      */
     public void recalculateFuturePath() {
         class CoordinatesCostPair implements Comparable<CoordinatesCostPair> {
@@ -123,13 +123,12 @@ public abstract class Monster implements Arena.MovesInArena {
                 return;
             }
 
-            // Add viable neighbours.
-            Arena arena = this.coordinates.getArena();
+            // Add viable neighbours:
             // Monsters cannot move diagonally.
-            LinkedList<Coordinates> neighbours = arena.taxicabNeighbours(this.coordinates);
+            LinkedList<Coordinates> neighbours = Arena.taxicabNeighbours(this.coordinates);
             for (Coordinates nextCoordinates : neighbours) {
                 // Grid cannot contain a tower
-                if (arena.objectsInGrid(nextCoordinates, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
+                if (Arena.objectsInGrid(nextCoordinates, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
                     double nextCost = Double.POSITIVE_INFINITY;
                     for (CoordinatesCostPair pair : gridCenters)
                         if (pair.coordinates.isAt(nextCoordinates))

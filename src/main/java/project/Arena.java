@@ -1,40 +1,101 @@
 package project;
 
 import project.monsters.*;
+import project.towers.*;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.*;
-import project.towers.Tower;
 
 /**
  * The area where most of the action takes place in the game.
  * Monsters spawn at the starting position and try to reach the end-zone.
- * towers can be built on the arena.
+ * Towers reside on the arena and fire Projectiles at Monsters in range.
+ * @see Monster
+ * @see Tower
+ * @see Projectile
  */
-public class Arena {
+public final class Arena {
 
+    /**
+     * x-coordinate of the starting position.
+     * @see Coordinates
+     */
     private static final int STARTING_POSITION_X = 0;
+
+    /**
+     * y-coordinate of the starting position.
+     * @see Coordinates
+     */
     private static final int STARTING_POSITION_Y = 0;
+
+    /**
+     * x-coordinate of the end zone.
+     * @see Coordinates
+     */
     private static final int END_ZONE_X = 440;
+
+    /**
+     * y-coordinate of the end zone.
+     * @see Coordinates
+     */
     private static final int END_ZONE_Y = 0;
 
-    // Objects in the arena
-    private LinkedList<Tower> towers = new LinkedList<>();
-    private LinkedList<Projectile> projectiles = new LinkedList<>();
-    private LinkedList<Monster> monsters = new LinkedList<>();
+    /**
+     * The number of frames between each wave of Monsters.
+     * @see #spawnWave()
+     */
+    private static final int WAVE_INTERVAL = 300;
 
-    // Monster-related properties
-    private int framesUntilSpawn = 0;
-    private double difficulty = 0;
+    /**
+     * Describes the state of the Arena during a frame.
+     */
+    private class ArenaState {
+        /**
+         * Contains a reference to each Tower on the Arena.
+         * @see Tower
+         */
+        private LinkedList<Tower> towers = new LinkedList<>();
+
+        /**
+         * Contains a reference to each Projectile on the Arena.
+         * @see Projectile
+         */
+        private LinkedList<Projectile> projectiles = new LinkedList<>();
+
+        /**
+         * Contains a reference to each Monster on the Arena.
+         * @see Monster
+         */
+        private LinkedList<Monster> monsters = new LinkedList<>();
+
+        /**
+         * The current difficulty of the Arena.
+         */
+        private double difficulty;
+    }
+
+    /**
+     * The ArenaState of the previous frame. Only used for saving the game.
+     */
+    private static ArenaState shadowState;
+
+    /**
+     * The ArenaState of the current frame.
+     */
+    private static ArenaState currentState;
+
+    /**
+     * The default constructor of the Arena class.
+     */
+    private Arena() {}
 
     /**
      * Finds the grid position corresponding to a specified pixel.
-     * @param coordinates The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
      * @return An int array that contains the x- and y- position of the grid at indices 0 and 1 respectively.
      */
-    private int[] getGrid(Coordinates coordinates) {
+    private static int[] getGrid(Coordinates coordinates) {
         int[] result = new int[2];
         result[0] = coordinates.getX() / UIController.GRID_WIDTH;
         result[1] = coordinates.getY() / UIController.GRID_HEIGHT;
@@ -42,40 +103,36 @@ public class Arena {
     }
 
     /**
-     * The default constructor of the Arena class.
-     */
-    public Arena() {
-
-    }
-
-    /**
      * An enum for filtering objects in the Arena according to type.
+     * @see Tower
+     * @see Projectile
+     * @see Monster
      */
-    public enum TypeFilter { Tower, Projectile, Monster }
+    public static enum TypeFilter { Tower, Projectile, Monster }
 
     /**
      * Finds all objects that are located at a specified pixel.
-     * @param coordinates The coordinates of the pixel.
-     * @param filter Only the types that are specified will be included in the result.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param filter Only the types that are specified will be included in the result. Do not pass <code>null</code>.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<Object> objectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
+    public static LinkedList<Object> objectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
         if (filter.contains(TypeFilter.Tower))
-            for (Tower t : towers)
+            for (Tower t : currentState.towers)
                 if (coordinates.isAt(t.getCoordinates()))
                     list.add(t);
         
         if (filter.contains(TypeFilter.Projectile))
-            for (Projectile p : projectiles)
+            for (Projectile p : currentState.projectiles)
                 if (coordinates.isAt(p.getCoordinates()))
                     list.add(p);
 
         if (filter.contains(TypeFilter.Monster))
-            for (Monster m : monsters)
+            for (Monster m : currentState.monsters)
                 if (coordinates.isAt(m.getCoordinates()))
                     list.add(m);
 
@@ -84,28 +141,28 @@ public class Arena {
 
     /**
      * Finds all objects that are within a specified range of a specified pixel.
-     * @param coordinates The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
      * @param range The maximum distance from this pixel for the object to be within range.
-     * @param filter Only the types that are specified will be included in the result.
+     * @param filter Only the types that are specified will be included in the result. Do not pass <code>null</code>.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<Object> objectsInRange(Coordinates coordinates, double range, EnumSet<TypeFilter> filter)
+    public static LinkedList<Object> objectsInRange(Coordinates coordinates, double range, EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
         if (filter.contains(TypeFilter.Tower))
-            for (Tower t : towers)
+            for (Tower t : currentState.towers)
                 if (coordinates.diagonalDistanceFrom(t.getCoordinates()) <= range)
                     list.add(t);
         
         if (filter.contains(TypeFilter.Projectile))
-            for (Projectile p : projectiles)
+            for (Projectile p : currentState.projectiles)
                 if (coordinates.diagonalDistanceFrom(p.getCoordinates()) <= range)
                     list.add(p);
 
         if (filter.contains(TypeFilter.Monster))
-            for (Monster m : monsters)
+            for (Monster m : currentState.monsters)
                 if (coordinates.diagonalDistanceFrom(m.getCoordinates()) <= range)
                     list.add(m);
 
@@ -114,17 +171,17 @@ public class Arena {
 
     /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
-     * @param filter Only the types that are specified will be included in the result.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param filter Only the types that are specified will be included in the result. Do not pass <code>null</code>.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<Object> objectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
+    public static LinkedList<Object> objectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
         if (filter.contains(TypeFilter.Tower)) {
-            for (Tower t : towers) {
+            for (Tower t : currentState.towers) {
                 Coordinates c = t.getCoordinates();
     
                 if (coordinates.isAt(c))
@@ -147,12 +204,12 @@ public class Arena {
         }
         
         if (filter.contains(TypeFilter.Projectile))
-            for (Projectile p : projectiles)
+            for (Projectile p : currentState.projectiles)
                 if (coordinates.isAt(p.getCoordinates()))
                     list.add(p);
 
         if (filter.contains(TypeFilter.Monster))
-            for (Monster m : monsters)
+            for (Monster m : currentState.monsters)
                 if (coordinates.isAt(m.getCoordinates()))
                     list.add(m);
 
@@ -161,24 +218,23 @@ public class Arena {
 
     /**
      * Finds the center of the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
      * @return Coordinates representing the center of the grid.
      */
-    public Coordinates getGridCenter(Coordinates coordinates)
+    public static Coordinates getGridCenter(Coordinates coordinates)
     {
         int[] gridPosition = getGrid(coordinates);
 
-        return new Coordinates(coordinates.getArena(),
-            (int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
+        return new Coordinates((int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
             (int) ((gridPosition[1] + 0.5) * UIController.GRID_HEIGHT));
     }
 
     /**
      * Finds the grids within a taxicab distance of one from the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
      * @return A linked list containing a reference to the coordinates of each taxicab neighbour.
      */
-    public LinkedList<Coordinates> taxicabNeighbours(Coordinates coordinates)
+    public static LinkedList<Coordinates> taxicabNeighbours(Coordinates coordinates)
     {
         LinkedList<Coordinates> result = new LinkedList<>();
 
@@ -188,28 +244,28 @@ public class Arena {
 
         // Left neighbour
         if (gridX > 0)
-            result.add(new Coordinates(this,
+            result.add(new Coordinates(
                 getGridCenter(coordinates).getX() - UIController.GRID_WIDTH,
                 getGridCenter(coordinates).getY()
             ));
         
         // Right neighbour
         if (gridX < UIController.MAX_H_NUM_GRID - 1)
-            result.add(new Coordinates(this,
+            result.add(new Coordinates(
                 getGridCenter(coordinates).getX() + UIController.GRID_WIDTH,
                 getGridCenter(coordinates).getY()
             ));
         
         // Top neighbour
         if (gridY > 0)
-            result.add(new Coordinates(this,
+            result.add(new Coordinates(
                 getGridCenter(coordinates).getX(),
                 getGridCenter(coordinates).getY() - UIController.GRID_HEIGHT
             ));
 
         // Bottom neighbour
         if (gridY < UIController.MAX_V_NUM_GRID - 1)
-            result.add(new Coordinates(this,
+            result.add(new Coordinates(
                 getGridCenter(coordinates).getX(),
                 getGridCenter(coordinates).getY() + UIController.GRID_HEIGHT
             ));
@@ -219,19 +275,19 @@ public class Arena {
 
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
-    public boolean canBuildTower(Coordinates coordinates)
+    public static boolean canBuildTower(Coordinates coordinates)
     {
         return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
     /**
      * Builds a Tower at the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
      */
-    public void buildTower(Coordinates coordinates)
+    public static void buildTower(Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
@@ -240,16 +296,16 @@ public class Arena {
      * Destroys the specified Tower.
      * @param tower The Tower to be destroyed.
      */
-    public void destroyTower(Tower tower)
+    public static void destroyTower(Tower tower)
     {
-        towers.remove(tower);
+        currentState.towers.remove(tower);
     }
 
     /**
      * Creates a Projectile at a specified pixel.
-     * @param coordinates The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
      */
-    public void createProjectile(Coordinates coordinates)
+    public static void createProjectile(Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
@@ -258,67 +314,71 @@ public class Arena {
      * Removes the specified Projectile from the arena.
      * @param projectile The Projectile to be removed.
      */
-    public void removeProjectile(Projectile projectile)
+    public static void removeProjectile(Projectile projectile)
     {
-        projectiles.remove(projectile);
+        currentState.projectiles.remove(projectile);
     }
 
     /**
      * Spawns a wave of Monsters at the starting position of the arena.
      */
-    public void spawnWave()
+    public static void spawnWave()
     {
-        int spawnCount = (int) (1 + difficulty * 0.2 + 2 * Math.random());
+        int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
             if (randomNumber < 1/3)
-                monsters.add(new Fox(this, difficulty, new Coordinates(this, END_ZONE_X, END_ZONE_Y)));
+                currentState.monsters.add(new Fox(currentState.difficulty, new Coordinates(END_ZONE_X, END_ZONE_Y)));
             else if (randomNumber < 2/3)
-                monsters.add(new Penguin(this, difficulty, new Coordinates(this, END_ZONE_X, END_ZONE_Y)));
+                currentState.monsters.add(new Penguin(currentState.difficulty, new Coordinates(END_ZONE_X, END_ZONE_Y)));
             else
-                monsters.add(new Unicorn(this, difficulty, new Coordinates(this, END_ZONE_X, END_ZONE_Y)));
+                currentState.monsters.add(new Unicorn(currentState.difficulty, new Coordinates(END_ZONE_X, END_ZONE_Y)));
         }
 
-        difficulty += 1;    // Modified by settings later
+        currentState.difficulty += 1;    // Modified by settings later
     }
 
     /**
      * Removes the specified Monster from the arena.
      * @param monster The Monster to be removed.
      */
-    public void removeMonster(Monster monster)
+    public static void removeMonster(Monster monster)
     {
-        monsters.remove(monster);
+        currentState.monsters.remove(monster);
     }
 
     /**
      * Updates the arena by one frame.
      */
-    public void nextFrame() {
+    public static void nextFrame() {
+        shadowState = currentState;
+
+        // Now update currentState
         throw new NotImplementedException("TODO");
     }
 
     /**
-     * Accesses the towers exist
-     * @return The towers in Arena
+     * Finds all Towers that are in the arena.
+     * @return A READONLY linked list containing a reference to each Tower in the Arena.
      */
-    public LinkedList<Tower> getTowers() { return towers; }
+    public static LinkedList<Tower> getTowers() { return (LinkedList<Tower>) Collections.unmodifiableList(currentState.towers); }
 
     /**
-     * Accesses the monsters exist
-     * @return The monsters in Arena
+     * Finds all Monsters that are in the arena.
+     * @return A READONLY linked list containing a reference to each Monster in the Arena.
      */
-    public LinkedList<Monster> getMonsters() { return monsters;}
+    public static LinkedList<Monster> getMonsters() { return (LinkedList<Monster>) Collections.unmodifiableList(currentState.monsters); }
 
     /**
-     * Accesses the projectile
-     * @return The projectiles in Arena
+     * Finds all Projectile that are in the arena.
+     * @return A READONLY linked list containing a reference to each Projectile in the Arena.
      */
-    public LinkedList<Projectile> getProjectiles(){ return projectiles;}
+    public static LinkedList<Projectile> getProjectiles() { return (LinkedList<Projectile>) Collections.unmodifiableList(currentState.projectiles); }
+
     /**
-     * Interface for objects that exist inside an Arena.
+     * Interface for objects that exist inside the arena.
      */
-    public interface ExistsInArena {
+    public static interface ExistsInArena {
         /**
          * Updates the corresponding UI object.
          */
@@ -332,9 +392,9 @@ public class Arena {
     }
     
     /**
-     * Interface for objects that can move inside an Arena.
+     * Interface for objects that can move inside the Arena.
      */
-    public interface MovesInArena extends ExistsInArena {
+    public static interface MovesInArena extends ExistsInArena {
         /**
          * Moves the object by one frame.
          */

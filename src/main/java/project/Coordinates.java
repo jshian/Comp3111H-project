@@ -4,36 +4,31 @@ import java.security.InvalidParameterException;
 import java.util.*;
 
 import javafx.scene.shape.Line;
-import sun.font.CoreMetrics;
 
 import project.Arena.TypeFilter;
 
 /**
- * Custom class to store 2D Cartesian coordinates of objects in the arena. Also
- * stores a link to the arena itself.
+ * Custom class to store 2D Cartesian coordinates of objects in the arena.
+ * Also stores a link to the arena itself.
  * @see Arena
  */
 public class Coordinates {
 
-    private Arena arena;
-    
     private int x = 0;
     private int y = 0;
 
     /**
-     * Constructor for the Coordinate class. Both coordinates default to 0.
-     * @param arena The arena that the Coordinate is linked to.
+     * Default onstructor for the Coordinate class. Both coordinates default to 0.
      */
-    public Coordinates(Arena arena) { this.arena = arena; }
+    public Coordinates() {}
 
     /**
      * Parametized constructor for the Coordinate class.
-     * @param arena The arena that the Coordinate is linked to.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
      * @exception InvalidParameterException Either of the coordinates is outside the arena.
      */
-    public Coordinates(Arena arena, int x, int y) { this.arena = arena; update(x, y); }
+    public Coordinates(int x, int y) { update(x, y); }
 
     /**
      * Finds all objects that occupy the specified coordinate in the arena.
@@ -44,17 +39,11 @@ public class Coordinates {
     {
         LinkedList<Object> result = new LinkedList<>();
 
-        result.addAll(arena.objectsAtPixel(this, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
-        result.addAll(arena.objectsInGrid(this, EnumSet.of(TypeFilter.Tower)));
+        result.addAll(Arena.objectsAtPixel(this, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
+        result.addAll(Arena.objectsInGrid(this, EnumSet.of(TypeFilter.Tower)));
         
         return result;
     }
-
-    /**
-     * Accesses the Arena this object is linked to.
-     * @return The Arena this object is linked to.
-     */
-    public Arena getArena() { return arena; }
 
     /**
      * Accesses the x-coordinate.
@@ -142,16 +131,16 @@ public class Coordinates {
     //problematic: the size of arena is unknown
     public Coordinates findEdgePt(Coordinates dirPt){
         for (int row = 0; row <= UIController.ARENA_WIDTH; ++row){
-            if(this.isInLine(dirPt,new Coordinates(this.arena,0,row)))
-                return new Coordinates(this.arena,0,row);
-            if(this.isInLine(dirPt,new Coordinates(this.arena,UIController.ARENA_WIDTH,row)))
-                return new Coordinates(this.arena,UIController.ARENA_WIDTH,row);
+            if(this.isInLine(dirPt,new Coordinates(0,row)))
+                return new Coordinates(0,row);
+            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_WIDTH,row)))
+                return new Coordinates(UIController.ARENA_WIDTH,row);
         }
         for (int col = 0; col <= UIController.ARENA_HEIGHT; ++col){
-            if(this.isInLine(dirPt,new Coordinates(this.arena,col,0)))
-                return new Coordinates(this.arena,col,0);
-            if(this.isInLine(dirPt,new Coordinates(this.arena,col,UIController.ARENA_HEIGHT)))
-                return new Coordinates(this.arena,col,UIController.ARENA_HEIGHT);
+            if(this.isInLine(dirPt,new Coordinates(col,0)))
+                return new Coordinates(col,0);
+            if(this.isInLine(dirPt,new Coordinates(col,UIController.ARENA_HEIGHT)))
+                return new Coordinates(col,UIController.ARENA_HEIGHT);
         }
         return dirPt;//for ignoring warning
 
