@@ -25,7 +25,7 @@ public class LaserTower extends Tower{
      * @param player The player who build the tower.
      */
     public void consumeResource(Player player){
-        player.decreaseRecource(consume);
+        player.spendResources(consume);
     }
 
     @Override
