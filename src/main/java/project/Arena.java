@@ -63,7 +63,7 @@ public final class Arena {
     /**
      * Describes the state of the Arena during a frame.
      */
-    private class ArenaState {
+    private static class ArenaState {
         /**
          * Contains a reference to each Tower on the Arena.
          * @see Tower
@@ -101,12 +101,12 @@ public final class Arena {
     /**
      * The ArenaState of the current frame.
      */
-    private static ArenaState currentState;
+    private static ArenaState currentState = new ArenaState();
 
     /**
      * The default constructor of the Arena class.
      */
-    private Arena() {}
+    public Arena() {}
 
     /**
      * Finds the grid position corresponding to a specified pixel.
@@ -127,6 +127,19 @@ public final class Arena {
      * @see Monster
      */
     public static enum TypeFilter { Tower, Projectile, Monster }
+
+    /**
+     * Finds the center of the grid where a specified pixel is located.
+     * @param coordinates The coordinates of the pixel.
+     * @return Coordinates representing the center of the grid.
+     */
+    public static Coordinates getGridCenter(@NonNull Coordinates coordinates)
+    {
+        int[] gridPosition = getGrid(coordinates);
+
+        return new Coordinates((int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
+            (int) ((gridPosition[1] + 0.5) * UIController.GRID_HEIGHT));
+    }
 
     /**
      * Finds all objects that are located at a specified pixel.
@@ -235,19 +248,6 @@ public final class Arena {
     }
 
     /**
-     * Finds the center of the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
-     * @return Coordinates representing the center of the grid.
-     */
-    public static Coordinates getGridCenter(@NonNull Coordinates coordinates)
-    {
-        int[] gridPosition = getGrid(coordinates);
-
-        return new Coordinates((int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
-            (int) ((gridPosition[1] + 0.5) * UIController.GRID_HEIGHT));
-    }
-
-    /**
      * Finds the grids within a taxicab distance of one from the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @return A linked list containing a reference to the coordinates of the center of each taxicab neighbour.
@@ -292,6 +292,21 @@ public final class Arena {
     }
 
     /**
+     * Finds all objects that occupy the specified coordinate in the arena.
+     * @param coordinates The specified coordinates.
+     * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
+     */
+    public LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
+    {
+        LinkedList<Object> result = new LinkedList<>();
+
+        result.addAll(objectsAtPixel(coordinates, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
+        result.addAll(objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
+        
+        return result;
+    }
+
+    /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
@@ -304,10 +319,23 @@ public final class Arena {
     /**
      * Builds a Tower at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
+     * @param iv ImageView of the tower
+     * @param type specify the class of tower.
      */
-    public static void buildTower(@NonNull Coordinates coordinates)
+    public static Tower buildTower(@NonNull Coordinates coordinates, ImageView iv, String type)
     {
-        throw new NotImplementedException("TODO");
+        System.out.println("ok");
+        Tower t = null;
+        switch(type) {
+            case "basic": t = new BasicTower(coordinates, iv); break;
+            case "ice": t = new IceTower(coordinates, iv); break;
+            case "catapult": t = new Catapult(coordinates, iv); break;
+            case "laser": t = new LaserTower(coordinates, iv); break;
+        }
+
+        currentState.towers.add(t);
+
+        return t;
     }
 
     /**

@@ -2,10 +2,7 @@ package project.monsters;
 
 import project.*;
 
-import java.util.EnumSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -79,6 +76,12 @@ public abstract class Monster implements Arena.MovesInArena {
      */
     @Transient
     protected LinkedList<Coordinates> futurePath;
+
+    /**
+     * A linked list of references to each status effect that is active against the monster.
+     */
+    @ElementCollection
+    protected List<StatusEffect> statusEffects;
 
     /**
      * Constructor for the Monster class.

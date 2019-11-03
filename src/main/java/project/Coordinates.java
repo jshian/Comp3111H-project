@@ -37,21 +37,6 @@ public class Coordinates implements Serializable {
     public Coordinates(int x, int y) { update(x, y); }
 
     /**
-     * Finds all objects that occupy the specified coordinate in the arena.
-     * @param coordinates The specified coordinates, which should not be <code>null</code>.
-     * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
-     */
-    public LinkedList<Object> findObjectsOccupying(Coordinates coordinates)
-    {
-        LinkedList<Object> result = new LinkedList<>();
-
-        result.addAll(Arena.objectsAtPixel(this, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
-        result.addAll(Arena.objectsInGrid(this, EnumSet.of(TypeFilter.Tower)));
-        
-        return result;
-    }
-
-    /**
      * Accesses the x-coordinate.
      * @return The horizontal coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
@@ -72,10 +57,10 @@ public class Coordinates implements Serializable {
     public void update(int x, int y) {
         if (x < 0 || x >= UIController.ARENA_WIDTH)
             throw new IllegalArgumentException(
-                String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH));
+                String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH - 1));
         if (y < 0 || y >= UIController.ARENA_HEIGHT)
             throw new IllegalArgumentException(
-                String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT));
+                String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT - 1));
 
         this.x = x;
         this.y = y;

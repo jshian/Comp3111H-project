@@ -1,5 +1,6 @@
 package project.towers;
 
+import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
@@ -19,6 +20,12 @@ public class LaserTower extends Tower{
         this.consume = 2;
     }
 
+    public LaserTower(Coordinates coordinates, ImageView imageView) {
+        super(coordinates, imageView);
+        this.attackPower = 30;
+        this.buildingCost = 20;
+        this.consume = 2;
+    }
 
     /**
      * Laser tower consume player's resource to attack monster.

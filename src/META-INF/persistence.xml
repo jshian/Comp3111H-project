@@ -1,0 +1,5 @@
+<persistence>
+    <persistence-unit name="GameSaveManagement" transaction-type="RESOURCE_LOCAL">
+        <description>This unit manages the save files of the tower defense game.</description>
+    </persistence-unit>
+</persistence>

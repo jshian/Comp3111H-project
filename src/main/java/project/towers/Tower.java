@@ -26,6 +26,11 @@ public abstract class Tower implements ExistsInArena {
         this.coordinates = coordinate;
     }
 
+    public Tower(Coordinates coordinates, ImageView imageView) {
+        this.coordinates = coordinates;
+        this.imageView = imageView;
+    }
+
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
     public Coordinates getCoordinates() { return coordinates; }
