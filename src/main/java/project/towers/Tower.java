@@ -1,10 +1,17 @@
 package project.towers;
 
+import project.Arena.ExistsInArena;
+
 import org.apache.commons.lang3.NotImplementedException;
+
+import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
-public abstract class Tower implements Arena.ExistsInArena {
+public abstract class Tower implements ExistsInArena {
+    // UI
+    private ImageView imageView;
+    
     // Position
     private Coordinates coordinates;
 
@@ -20,8 +27,9 @@ public abstract class Tower implements Arena.ExistsInArena {
     }
 
     // Inferface implementation
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public ImageView getImageView() { return imageView; }
     public Coordinates getCoordinates() { return coordinates; }
+    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
 
 
     /**
