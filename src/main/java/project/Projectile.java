@@ -4,11 +4,16 @@ import project.monsters.*;
 
 import org.apache.commons.lang3.*;
 
+import javafx.scene.image.ImageView;
+
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 public abstract class Projectile implements Arena.MovesInArena {
+    // UI
+    private ImageView imageView;
+    
     // Position
     private Coordinates coordinates;
 
@@ -31,8 +36,9 @@ public abstract class Projectile implements Arena.MovesInArena {
     }
 
     // Inferface implementation
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public ImageView getImageView() { return imageView; }
     public Coordinates getCoordinates() { return coordinates; }
+    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void MoveOneFrame() {
         Coordinates other = target.getCoordinates();
         double distance = coordinates.diagonalDistanceFrom(other);

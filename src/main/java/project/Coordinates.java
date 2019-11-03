@@ -1,13 +1,14 @@
 package project;
 
+import project.Arena.ExistsInArena;
+import project.Arena.TypeFilter;
+
 import java.security.InvalidParameterException;
 import java.util.*;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.shape.Line;
-import project.Arena.ExistsInArena;
-import project.Arena.TypeFilter;
 
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the arena.

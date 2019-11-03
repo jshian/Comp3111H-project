@@ -8,6 +8,8 @@ import java.util.*;
 import org.apache.commons.lang3.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.ImageView;
+
 /**
  * The area where most of the action takes place in the game.
  * Monsters spawn at the starting position and try to reach the end-zone.
@@ -397,15 +399,21 @@ public final class Arena {
      */
     public static interface ExistsInArena {
         /**
-         * Updates the corresponding UI object.
+         * Access the ImageView associated with object.
+         * @return The ImageView associated with object.
          */
-        public void refreshDisplay();
+        public ImageView getImageView();
     
         /**
          * Accesses the coordinates of the object.
          * @return The coordinates of the object.
          */
         public Coordinates getCoordinates();
+        
+        /**
+         * Updates the corresponding UI object.
+         */
+        public void refreshDisplay();
     }
     
     /**
