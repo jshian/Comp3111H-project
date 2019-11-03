@@ -1,13 +1,13 @@
-# COMP3111 Project - Tower Defense 
+# COMP3111 Project - Tower Defense
 ## Team Information
 ID: #29 (DarkLight)
- 
+
 Course Stream: Honors
 
 Members:
- * Task 1: *Name* (cshoae@connect.ust.hk)
+ * Task 1: Ho, Chung Shun (cshoae@connect.ust.hk)
  * Task 2: SHI Jianhua (jshian@connect.ust.hk)
- * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk) 
+ * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk)
 
 ## Grading Process
 ### Initialization
@@ -101,16 +101,16 @@ Members:
 Demonstrate that the game physics fits the following requirements:
  * A monster is always moving from a grid to an adjacent grid either horizontally or vertically.
  * When a monster is killed it must be removed from the arena, a certain amount of resource will be given to the player.
- * All distance used in the game should be referred as Euclidean distance, in pixels (px). 
+ * All distance used in the game should be referred as Euclidean distance, in pixels (px).
  * A tower cannot attack a monster that is outside its shooting range. When we judge a monster is inside a tower's shooting range, the following distance will be used: the Euclidean distance between the center of the grid of where the tower is built and the center of the monster.
- * The health point (HP) of a monster will be deducted by the attack power of the tower attacking it. When HP is less than or equal to zero a monster is killed. 
+ * The health point (HP) of a monster will be deducted by the attack power of the tower attacking it. When HP is less than or equal to zero a monster is killed.
  * When there are multiple possible monster a tower can shoot (in range), it should always choose a monster that is nearest to up-left corner of the end-zone ((440, 0) in our demo).
  * It is allowed that multiple towers shoot at a monster at the same time even through only one tower is needed to kill it. This is likely to happen.
- * A monster will never move toward a grid with a tower. If a monster is already on its way to a new grid and a part of the monster body is already insider the grid, no tower will be allowed to be built on this new grid. 
+ * A monster will never move toward a grid with a tower. If a monster is already on its way to a new grid and a part of the monster body is already insider the grid, no tower will be allowed to be built on this new grid.
  * Each grid can contain any number of monsters as long as it does not contain a tower.
  * The game is a time-based game. The button `Next Frame` would NOT be tested in grading. It will be served as a debug button for your own interest. There are two methods to start the game: by clicking `Simulate` or `Play`. In either mode monsters will be automatically generated and the monsters will move towards the end-zone, towers will automatically fire if any monsters are in its shooting distance. In `simulate` mode, player is only allowed to build tower before the simulate button is clicked. Once the button is clicked, the player will no be clicking any button until the game is over. In `play` mode, the player is allowed to build or to upgrade tower when the game is running.
- 
- 
+
+
 Demonstrate that the following tasks have been completed:
 1.  Towers (15)
     1.  All towers built in the arena will shoot a monster automatically which is inside its range (unless all towers are impossible to attack, e.g. out of range, in cool down etc). (1)      
@@ -152,21 +152,21 @@ Demonstrate that the following extra tasks have been completed:
         1. Furthermore, implement the button `Play` according to the game physics. (2)
 1.  Tower
     1. Catapult attacks algorithm. Instead of throwing a stone to a particular monster, the Catapult will throw a stone
-    to a coordinate such that 
+    to a coordinate such that
         1. among all monsters falls into the attack range plus 25px (the stone radius), the one monster which
     is nearest to the end-zone will be attacked; and (1)
         1. the stone should thrown to the coordinate that hits most monsters; (2)
-        1. Rule for tie-breaking: If there are two monsters that are both considered nearest 
+        1. Rule for tie-breaking: If there are two monsters that are both considered nearest
         to the end-zone, the stone will be thrown towards the one that hits more monsters. If the same number of monsters
         are hit by the stone, choose any monster you wish. (1)
             1. Create a test case in JUnit to show your algorithm. (1)
         1. *Note: a stone can be thrown to a grid that contains a tower if it make sense. The tower will not be destroy because of that.*
 1.  Monster
     1. All monster are able to walk towards the end-zone with a shortest path (choose any path if there are two shortest paths). (1)
-        1. Furthermore, Fox is a very wise monster that will not simply walk a shortest path. Fox will try to 
+        1. Furthermore, Fox is a very wise monster that will not simply walk a shortest path. Fox will try to
         follow a path that receives a minimum number of attacks from towers by assuming that there is no other monster in Arena. (2)
 	1. Create a test case in JUnit to show your algorithm. (1)
-1.  Adopt the following technologies into your project. 
+1.  Adopt the following technologies into your project.
 	1. Use Java Persistence API or Hibernate Framework to connect to a small database that stores your game data (attributes of Towers/Monsters); (2.5% Group)
 	1. Use Java spring framework that allows the game be played in different machines while a server records the top 10 highest scores; (2.5% Group)
 

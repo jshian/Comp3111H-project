@@ -2,15 +2,23 @@ package project;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.event.*;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import project.towers.Tower;
 
 public class UIController {
     @FXML
@@ -44,7 +52,9 @@ public class UIController {
     static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
     static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
-    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena
+
+    private Arena arena = new Arena();
+    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
     private int x = -1, y = 0; //where is my monster
     /**
      * A dummy function to show how button click works
@@ -74,7 +84,15 @@ public class UIController {
         for (int i = 0; i < MAX_V_NUM_GRID; i++)
             for (int j = 0; j < MAX_H_NUM_GRID; j++) {
                 Label newLabel = new Label();
-                if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
+                if (j == MAX_H_NUM_GRID - 1 && i == 0) {
+                    Image image1 = new Image("/end-zone.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                    BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+                    newLabel.setBackground(new Background(backgroundImage1));
+                } else if (j == 0 && i == 0) {
+                	Image image1 = new Image("/show-up.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                    BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+                    newLabel.setBackground(new Background(backgroundImage1));
+                } else if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
                     newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
                 else
                     newLabel.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -89,7 +107,7 @@ public class UIController {
                 paneArena.getChildren().addAll(newLabel);
             }
 
-        setDragAndDrop();
+        setDragLabel();
     }
 
     @FXML
@@ -103,93 +121,113 @@ public class UIController {
             return;
         grids[y++][x].setText("");
         grids[y][x].setText("M");
+
+        // System.out.println(arena.canBuildTower(new Coordinates()));
     }
 
-    /**
-     * A function that demo how drag and drop works
-     */
-    private void setDragAndDrop() {
-        Label target = grids[3][3];
-        target.setText("Drop\nHere");
-        Label source1 = labelBasicTower;
-        Label source2 = labelIceTower;
-        source1.setOnDragDetected(new DragEventHandler(source1));
-        source2.setOnDragDetected(new DragEventHandler(source2));
+    private void setDragLabel() {
+    	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
+    	for (Label l : labels) {
+    		l.setOnDragDetected(e -> {
+    	        Dragboard db = l.startDragAndDrop(TransferMode.ANY);
 
-        target.setOnDragDropped(new DragDroppedEventHandler());
+    	        ClipboardContent content = new ClipboardContent();
+    	        content.putString(l.getText());
+    	        db.setContent(content);
 
-        //well, you can also write anonymous class or even lambda
-        //Anonymous class
-        target.setOnDragOver(new EventHandler <DragEvent>() {
-            public void handle(DragEvent event) {
-                /* data is dragged over the target */
-                System.out.println("onDragOver");
+    	        e.consume();
+    	    });
+    	}
 
-                /* accept it only if it is  not dragged from the same node
-                 * and if it has a string data */
-                if (event.getGestureSource() != target &&
-                        event.getDragboard().hasString()) {
-                    /* allow for both copying and moving, whatever user chooses */
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
+    	for (int i = 0; i < MAX_V_NUM_GRID; i++) {
+            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+            	Label target = grids[i][j];
 
-                event.consume();
+            	int x = j * GRID_WIDTH;
+            	int y = i * GRID_HEIGHT;
+            	Coordinates c = new Coordinates(x, y);
+
+                target.setOnDragOver(e -> {
+                    e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    e.consume();
+                });
+
+            	target.setOnDragEntered(e -> { // grids[y][x]
+            		//if (arena.canBuildTower(c)) {
+            			target.setStyle("-fx-border-color: blue;");
+            		//}
+            		e.consume();
+            	});
+
+            	target.setOnDragExited(e -> {
+            		target.setStyle("-fx-border-color: black;");
+            		e.consume();
+            	});
+
+            	target.setOnDragDropped(e -> {
+            	    System.out.println("drop");
+            	    if (arena.canBuildTower(c)) {
+	            		Image img = null;
+	            		String type = null;
+	            		Object source = e.getGestureSource();
+	            		if (source.equals(labelBasicTower)) {
+	            			img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            			type = "basic";
+	            		} else if (source.equals(labelIceTower)) {
+	            			img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            			type = "ice";
+	            		} else if (source.equals(labelCatapult)) {
+	            			img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            			type = "catapult";
+	            		} else if (source.equals(labelLaserTower)) {
+	            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            			type = "laser";
+	            		}
+
+	                    if (img != null) {
+	                    	ImageView iv = new ImageView(img);
+	                        iv.setX(x);
+	                        iv.setY(y);
+                            Tower t = arena.buildTower(c, iv, type);
+                            setTowerEvent(t);
+
+	                        paneArena.getChildren().add(iv);
+	                        e.setDropCompleted(true);
+
+	                    }
+	                    e.consume();
+
+            		}
+            	});
             }
+    	}
+
+    }
+
+    private void setTowerEvent(Tower t) {
+        ImageView iv = t.getImageView();
+        final Circle c = new Circle();
+    	// on hover
+        iv.setOnMouseEntered(e -> {
+            // TODO: display tower information
+
+
+            // show shooting range
+            Coordinates center = arena.getGridCenter(t.getCoordinates());
+
+            c.setCenterX(center.getX());
+            c.setCenterY(center.getY());
+            c.setRadius(t.getShootingRange());
+            c.setFill(Color.rgb(0,101,255,0.4));
+            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), c); // add it before the ImageView
         });
 
-        target.setOnDragEntered(new EventHandler <DragEvent>() {
-            public void handle(DragEvent event) {
-                /* the drag-and-drop gesture entered the target */
-                System.out.println("onDragEntered");
-                /* show to the user that it is an actual gesture target */
-                if (event.getGestureSource() != target &&
-                        event.getDragboard().hasString()) {
-                    target.setStyle("-fx-border-color: blue;");
-                }
+    	// exit
+    	// TODO: remove info & shooting range
+        iv.setOnMouseExited(e -> {
+            paneArena.getChildren().remove(c);
+        });
 
-                event.consume();
-            }
-        });
-        //lambda
-        target.setOnDragExited((event) -> {
-                /* mouse moved away, remove the graphical cues */
-                target.setStyle("-fx-border-color: black;");
-                System.out.println("Exit");
-                event.consume();
-        });
     }
 }
 
-class DragEventHandler implements EventHandler<MouseEvent> {
-    private Label source;
-    public DragEventHandler(Label e) {
-        source = e;
-    }
-    @Override
-    public void handle (MouseEvent event) {
-        Dragboard db = source.startDragAndDrop(TransferMode.ANY);
-
-        ClipboardContent content = new ClipboardContent();
-        content.putString(source.getText());
-        db.setContent(content);
-
-        event.consume();
-    }
-}
-
-class DragDroppedEventHandler implements EventHandler<DragEvent> {
-    @Override
-    public void handle(DragEvent event) {
-        System.out.println("xx");
-        Dragboard db = event.getDragboard();
-        boolean success = false;
-        System.out.println(db.getString());
-        if (db.hasString()) {
-            ((Label)event.getGestureTarget()).setText(db.getString());
-            success = true;
-        }
-        event.setDropCompleted(success);
-        event.consume();
-
-    }
-}

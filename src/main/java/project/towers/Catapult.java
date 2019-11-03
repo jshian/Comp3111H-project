@@ -1,5 +1,6 @@
 package project.towers;
 
+import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
@@ -12,6 +13,15 @@ public class Catapult extends Tower {
      */
     public Catapult(){
         super();
+        this.attackPower = 25;
+        this.buildingCost = 20;
+        this.shootingRange = 150;
+        this.reload = 10;
+        this.shootLimit = 50;
+    }
+
+    public Catapult(Coordinates coordinates, ImageView imageView) {
+        super(coordinates, imageView);
         this.attackPower = 25;
         this.buildingCost = 20;
         this.shootingRange = 150;
