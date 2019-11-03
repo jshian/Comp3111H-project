@@ -72,7 +72,7 @@ public class Coordinates implements Serializable {
      * @return Whether the object in the arena is at the Cartesian coordinates represented by this Coordinate object.
      */
     public boolean isAt(@NonNull ExistsInArena other) {
-        return isAt(other.getCoordinates());
+        return isAt(new Coordinates(other.getX(), other.getY()));
     }
 
     /**
@@ -90,7 +90,7 @@ public class Coordinates implements Serializable {
      * @return The the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
     public int taxicabDistanceFrom(@NonNull ExistsInArena other) {
-        return taxicabDistanceFrom(other.getCoordinates());
+        return taxicabDistanceFrom(new Coordinates(other.getX(), other.getY()));
     }
 
 
@@ -109,7 +109,7 @@ public class Coordinates implements Serializable {
      * @return The the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
     public int diagonalDistanceFrom(@NonNull ExistsInArena other) {
-        return taxicabDistanceFrom(other.getCoordinates());
+        return taxicabDistanceFrom(new Coordinates(other.getX(), other.getY()));
     }
 
     /**
@@ -127,7 +127,7 @@ public class Coordinates implements Serializable {
      * @return The angle in radians from this object to the object in the arena, as if this object is at the origin of a polar coordinate system.
      */
     public double angleFrom(@NonNull ExistsInArena other) {
-        return angleFrom(other.getCoordinates());
+        return angleFrom(new Coordinates(other.getX(), other.getY()));
     }
 
     /**
@@ -146,20 +146,31 @@ public class Coordinates implements Serializable {
     private static final double DEFAULT_ERROR_LINE = 0.02;
 
     /**
+     * Test whether an object in the arena is within a certain error of a line defined by this point and another object in the arena, extending towards infinity.
+     * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
+     * @param endObj The other object in the arena that represents the line, which should not be at the same coordinates as this object.
+     * @param testObj The object in the arena to be tested.
+     * @return Whether the test object is within the specified error of the line.
+     */
+    public boolean isInLine(@NonNull ExistsInArena endObj, @NonNull ExistsInArena testObj) {
+        return isInLine(new Coordinates(endObj.getX(), endObj.getY()), new Coordinates(testObj.getX(), testObj.getY()), DEFAULT_ERROR_LINE);
+    }
+
+    /**
      * Test whether an object in the arena is within a certain error of a line defined by this point and another point, extending towards infinity.
      * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
-     * @param endPt The other point of the line, whic should not be at the same coordinates as this object.
-     * @param testPt The object in the arena to be tested.
+     * @param endPt The other point of the line, which should not be at the same coordinates as this object.
+     * @param testObj The object in the arena to be tested.
      * @return Whether the test object is within the specified error of the line.
      */
     public boolean isInLine(@NonNull Coordinates endPt, @NonNull ExistsInArena testObj) {
-        return isInLine(endPt, testObj.getCoordinates(), DEFAULT_ERROR_LINE);
+        return isInLine(endPt, new Coordinates(testObj.getX(), testObj.getY()), DEFAULT_ERROR_LINE);
     }
 
     /**
      * Test whether a point is within a certain error of a line defined by this point and another point, extending towards infinity.
      * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
-     * @param endPt The other point of the line, whic should not be at the same coordinates as this object.
+     * @param endPt The other point of the line, which should not be at the same coordinates as this object.
      * @param testPt The point to be tested.
      * @return Whether the test point is within the specified error of the line.
      */
@@ -183,11 +194,20 @@ public class Coordinates implements Serializable {
     }
 
     //dont know how to implement
+    public boolean isInArea(@NonNull ExistsInArena endObj, @NonNull ExistsInArena testObj) {
+        return isInArea(new Coordinates(endObj.getX(), endObj.getY()), new Coordinates(testObj.getX(), testObj.getY()));
+    }
+    public boolean isInArea(@NonNull Coordinates endPt, @NonNull ExistsInArena testObj) {
+        return isInArea(endPt, new Coordinates(testObj.getX(), testObj.getY()));
+    }
     public boolean isInArea(@NonNull Coordinates endPt, @NonNull Coordinates testPt) {
         return false;
     }
 
     //problematic: the size of arena is unknown
+    public Coordinates findEdgePt(@NonNull ExistsInArena dirObj) {
+        return findEdgePt(new Coordinates(dirObj.getX(), dirObj.getY()));
+    }
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
         for (int row = 0; row <= UIController.ARENA_WIDTH; ++row){
             if(this.isInLine(dirPt,new Coordinates(0,row)))
@@ -203,6 +223,14 @@ public class Coordinates implements Serializable {
         }
         return dirPt;//for ignoring warning
 
+    }
+
+    /**
+     * Draw a line from the laser tower to certain position.
+     * @param cor The target.
+     */
+    public void drawLine(@NonNull ExistsInArena obj){
+        drawLine(new Coordinates(obj.getX(),obj.getY()));
     }
 
     /**
