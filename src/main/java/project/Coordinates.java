@@ -82,7 +82,7 @@ public class Coordinates {
      * @param other The object in the arena.
      * @return Whether the object in the arena is at the Cartesian coordinates represented by this Coordinate object.
      */
-    public boolean isAt(Arena.@NonNull ExistsInArena other) {
+    public boolean isAt(@NonNull ExistsInArena other) {
         return isAt(other.getCoordinates());
     }
 
@@ -100,7 +100,7 @@ public class Coordinates {
      * @param other The object in the arena.
      * @return The the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
-    public int taxicabDistanceFrom(Arena.@NonNull ExistsInArena other) {
+    public int taxicabDistanceFrom(@NonNull ExistsInArena other) {
         return taxicabDistanceFrom(other.getCoordinates());
     }
 
@@ -119,7 +119,7 @@ public class Coordinates {
      * @param other The object in the arena.
      * @return The the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
-    public int diagonalDistanceFrom(Arena.@NonNull ExistsInArena other) {
+    public int diagonalDistanceFrom(@NonNull ExistsInArena other) {
         return taxicabDistanceFrom(other.getCoordinates());
     }
 
@@ -137,7 +137,7 @@ public class Coordinates {
      * @param other The object in the arena.
      * @return The angle in radians from this object to the object in the arena, as if this object is at the origin of a polar coordinate system.
      */
-    public double angleFrom(Arena.@NonNull ExistsInArena other) {
+    public double angleFrom(@NonNull ExistsInArena other) {
         return angleFrom(other.getCoordinates());
     }
 
