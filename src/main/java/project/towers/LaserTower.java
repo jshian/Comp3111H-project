@@ -10,11 +10,10 @@ public class LaserTower extends Tower{
     private int consume;
 
     /**
-     * Constructor for LaserTower class.
-     * @param arena The arena in which the lazer tower exists.
+     * Default constructor for LaserTower class.
      */
-    public LaserTower(Arena arena){
-        super(arena);
+    public LaserTower(){
+        super();
         this.attackPower = 30;
         this.buildingCost = 20;
         this.consume = 2;
@@ -22,11 +21,11 @@ public class LaserTower extends Tower{
 
 
     /**
-     * Lazer tower consume player's resource to attack monster.
+     * Laser tower consume player's resource to attack monster.
      * @param player The player who build the tower.
      */
     public void consumeResource(Player player){
-        player.decreaseRecource(consume);
+        player.spendResources(consume);
     }
 
     @Override
@@ -35,10 +34,10 @@ public class LaserTower extends Tower{
         Coordinates tCor = getCoordinates();
         Coordinates edgePt = tCor.findEdgePt(mCor);
         tCor.drawLine(edgePt);
-        LinkedList<Monster> monsters = monster.getCoordinates().getArena().getMonsters();
+        LinkedList<Monster> monsters = Arena.getMonsters();
         for (Monster m:monsters) {
             if(tCor.isInArea(mCor,m.getCoordinates())){
-                m.setHealth(monster.getHealth()-this.attackPower);
+                m.setHealth((int)(monster.getHealth()-this.attackPower));
             }
         }
 

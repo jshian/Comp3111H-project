@@ -8,11 +8,10 @@ public class IceTower extends Tower{
     private double slowDown;
 
     /**
-     * Constructor for IceTower class.
-     * @param arena The arena in which the ice tower exists.
+     * Default constructor for IceTower class.
      */
-    public IceTower(Arena arena){
-        super(arena);
+    public IceTower(){
+        super();
         this.attackPower = 5;
         this.buildingCost = 15;
         this.shootingRange = 50;
@@ -32,7 +31,7 @@ public class IceTower extends Tower{
     public void attackMonster(Monster monster){
         if(canShoot(monster.getCoordinates())){
             monster.setSpeed(monster.getSpeed()-this.slowDown);
-            monster.setHealth(monster.getHealth()-this.attackPower);
+            monster.setHealth((int)(monster.getHealth()-this.attackPower));
         }
     }
 }

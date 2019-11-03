@@ -17,8 +17,8 @@ public class Player {
         this.resource = resource;
     }
 
-    public void decreaseRecource(int decrement) {
-        resource = Math.max(0,  resource - decrement);
+    public void spendResources(int amount) {
+        resource = Math.max(0,  resource - amount);
     }
 
 }
