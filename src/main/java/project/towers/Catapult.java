@@ -8,11 +8,10 @@ public class Catapult extends Tower {
     private int reload,shootLimit;
 
     /**
-     * Constructor for Catapult class.
-     * @param arena The arena in which the catapult exists.
+     * Default constructor for Catapult class.
      */
-    public Catapult(Arena arena){
-        super(arena);
+    public Catapult(){
+        super();
         this.attackPower = 25;
         this.buildingCost = 20;
         this.shootingRange = 150;

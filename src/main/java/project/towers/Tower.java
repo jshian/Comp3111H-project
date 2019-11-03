@@ -12,11 +12,10 @@ public abstract class Tower implements Arena.ExistsInArena {
     protected int attackPower, buildingCost, shootingRange;
 
     /**
-     * Constructor for Tower class.
-     * @param arena The arena in which the basic tower exists.
+     * Default constructor for Tower class.
      */
-    public Tower(Arena arena){
-        this.coordinates = new Coordinates(arena);
+    public Tower() {
+        this.coordinates = new Coordinates();
     }
 
     // Inferface implementation
@@ -41,7 +40,7 @@ public abstract class Tower implements Arena.ExistsInArena {
      * @return True if it is in the shooting range otherwise false
      */
     public boolean canShoot(Coordinates monster){
-        return coordinates.distanceFrom(monster) <= shootingRange * shootingRange;
+        return coordinates.diagonalDistanceFrom(monster) <= shootingRange * shootingRange;
     }
 
     /**
