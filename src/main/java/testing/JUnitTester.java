@@ -1,18 +1,18 @@
 package testing;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.testfx.framework.junit.*;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import project.UIController;
 
 public class JUnitTester extends ApplicationTest {
+	@Rule
+	public final ExpectedException expectedException = ExpectedException.none();
 
 	private Scene s;
 	
@@ -26,19 +26,5 @@ public class JUnitTester extends ApplicationTest {
 		primaryStage.show();
 		UIController appController = (UIController)loader.getController();
 		appController.createArena();   		
-	}
-
-	
-	@Test
-	public void testNextFrameButton() {
-		clickOn("#buttonNextFrame");
-		AnchorPane b = (AnchorPane)s.lookup("#paneArena");
-		for (javafx.scene.Node i : b.getChildren()) {
-			if (i.getClass().getName().equals("javafx.scene.control.Label")) {
-				Label h = (Label)i;
-				if (h.getLayoutX() == 0 && h.getLayoutY() == 0)
-					Assert.assertEquals(h.getText(), "M");
-			}
-		}
 	}
 } 
