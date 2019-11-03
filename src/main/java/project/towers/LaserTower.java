@@ -10,7 +10,7 @@ public class LaserTower extends Tower{
     private int consume;
 
     /**
-     * Default constructor for LaserTower class.
+     * Constructor for LaserTower class.
      */
     public LaserTower(Coordinates coordinate){
         super(coordinate);
@@ -34,11 +34,17 @@ public class LaserTower extends Tower{
         Coordinates tCor = getCoordinates();
         Coordinates edgePt = tCor.findEdgePt(mCor);
         tCor.drawLine(edgePt);
+        int tX = tCor.getX();
+        int tY = tCor.getY();
+        int mX = mCor.getX();
+        int mY = mCor.getY();
+
         LinkedList<Monster> monsters = Arena.getMonsters();
         for (Monster m:monsters) {
-            if(tCor.isInArea(mCor,m.getCoordinates())){
-                m.setHealth((int)(monster.getHealth()-this.attackPower));
-            }
+            for (int x = tX, y = tY; x> mX && y> mY; x+=(mX - tX)*0.01,y+=(mY - tY)*0.01)
+                if ((new Coordinates(x,y)).isInCircle(m.getCoordinates(),3))
+                    m.setHealth((int)(monster.getHealth()-this.attackPower));
+
         }
 
 
