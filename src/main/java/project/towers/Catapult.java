@@ -40,7 +40,7 @@ public class Catapult extends Tower {
 
     @Override
     public void attackMonster(Monster monster){
-        if (canShoot(monster.getCoordinates())){
+        if (canShoot(monster)){
 
         }
     }

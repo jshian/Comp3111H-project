@@ -64,14 +64,13 @@ public abstract class Projectile implements Arena.MovesInArena {
     public Coordinates getCoordinates() { return coordinates; }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void MoveOneFrame() {
-        Coordinates other = target.getCoordinates();
-        double distance = coordinates.diagonalDistanceFrom(other);
+        double distance = coordinates.diagonalDistanceFrom(target);
 
         if (distance <= speed)
-            coordinates.update(other.getX(), other.getY());
+            coordinates.update(target.getX(), target.getY());
         else {
-            int newX = coordinates.getX() + (int) (speed * Math.cos(coordinates.angleFrom(other)));
-            int newY = coordinates.getY() + (int) (speed * Math.sin(coordinates.angleFrom(other)));
+            int newX = coordinates.getX() + (int) (speed * Math.cos(coordinates.angleFrom(target)));
+            int newY = coordinates.getY() + (int) (speed * Math.sin(coordinates.angleFrom(target)));
             coordinates.update(newX, newY);
         }
     }
@@ -80,5 +79,5 @@ public abstract class Projectile implements Arena.MovesInArena {
      * Determines whether the projectile has reached its target.
      * @return Whether the projectile has reached its target.
      */
-    public boolean hasReachedTarget() { return coordinates.isAt(target.getCoordinates()); }
+    public boolean hasReachedTarget() { return coordinates.isAt(target); }
 }

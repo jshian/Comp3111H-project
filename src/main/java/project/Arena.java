@@ -78,6 +78,8 @@ public final class Arena {
 
         /**
          * Contains a reference to each Monster on the Arena.
+         * In addition, the monsters are sorted according to how close they are from reaching the end zone.
+         * The first element is closest to the end zone while the last element is furthest.
          * @see Monster
          */
         private LinkedList<Monster> monsters = new LinkedList<>();
@@ -213,7 +215,7 @@ public final class Arena {
 
         if (filter.contains(TypeFilter.Tower)) {
             for (Tower t : currentState.towers) {
-                Coordinates c = t.getCoordinates();
+                Coordinates c = new Coordinates(t.getX(), t.getY());
     
                 if (coordinates.isAt(c))
                     list.add(t);
@@ -401,6 +403,7 @@ public final class Arena {
 
         // Now update currentState
         throw new NotImplementedException("TODO");
+        // currentState.monsters.sort(null);
         // currentState.currentFrame++;
     }
 
@@ -412,7 +415,7 @@ public final class Arena {
 
     /**
      * Finds all Monsters that are in the arena.
-     * @return A READONLY linked list containing a reference to each Monster in the Arena.
+     * @return A READONLY linked list containing a reference to each Monster in the Arena. The first element is closest to the end zone while the last element is furthest.
      */
     public static LinkedList<Monster> getMonsters() { return (LinkedList<Monster>) Collections.unmodifiableList(currentState.monsters); }
 
@@ -433,15 +436,31 @@ public final class Arena {
         public ImageView getImageView();
     
         /**
-         * Accesses the coordinates of the object.
-         * @return The coordinates of the object.
+         * Accesses the x-coordinate of the object.
+         * @return The x-coordinate of the object.
+         * @see Coordinates
          */
-        public Coordinates getCoordinates();
+        public int getX();
+
+        /**
+         * Accesses the y-coordinate of the object.
+         * @return The y-coordinate of the object.
+         * @see Coordinates
+         */
+        public int getY();
 
         /**
          * Updates the corresponding UI object.
          */
         public void refreshDisplay();
+
+        /**
+         * Updates the coordinates of the object.
+         * @param x The new x-coordinate.
+         * @param y The new y-coordinate.
+         * @see Coordinates
+         */
+        public void setLocation(int x, int y);
     }
     
     /**

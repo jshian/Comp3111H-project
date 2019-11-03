@@ -1,6 +1,7 @@
 package project.monsters;
 
 import project.*;
+import project.Arena.MovesInArena;
 
 import java.util.*;
 
@@ -19,7 +20,7 @@ import javafx.scene.image.ImageView;
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Monster implements Arena.MovesInArena {
+public abstract class Monster implements MovesInArena, Comparable<Monster> {
     /**
      * ID for storage using Java Persistence API
      */
@@ -96,9 +97,12 @@ public abstract class Monster implements Arena.MovesInArena {
     
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
-    public Coordinates getCoordinates() { return coordinates; }
+    public int getX() { return coordinates.getX(); }
+    public int getY() { return coordinates.getY(); }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
     public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
+    public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
      * Sets the health of the monster.
@@ -133,6 +137,16 @@ public abstract class Monster implements Arena.MovesInArena {
      * @return Whether the monster has died.
      */
     public boolean hasDied() { return health <= 0; }
+
+    /**
+     * Finds the number of pixels the monster has to travel to reach its destination.
+     * @return The number of pixels the monster has to travel to reach its destination.
+     */
+    public int distanceToDestination() {
+        if (futurePath == null) return 0;
+
+        return futurePath.size();
+    }
 
     /**
      * Recalculates the future path of the monster using A* search.

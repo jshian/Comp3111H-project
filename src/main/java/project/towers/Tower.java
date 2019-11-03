@@ -10,10 +10,10 @@ import project.monsters.Monster;
 
 public abstract class Tower implements ExistsInArena {
     // UI
-    private ImageView imageView;
+    protected ImageView imageView;
     
     // Position
-    private Coordinates coordinates;
+    protected Coordinates coordinates;
 
     // States
     protected int attackPower, buildingCost, shootingRange;
@@ -32,9 +32,10 @@ public abstract class Tower implements ExistsInArena {
 
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
-    public Coordinates getCoordinates() { return coordinates; }
+    public int getX() { return coordinates.getX(); }
+    public int getY() { return coordinates.getY(); }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
-
+    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
 
     /**
      * Upgrade the tower for adding the power, slow duration, reload time etc
@@ -48,11 +49,12 @@ public abstract class Tower implements ExistsInArena {
      * @param monster The monster closest to the destination was attacked
      */
     public abstract void attackMonster(Monster monster);
+
     /**
-     * @param monster the coordinate of monster who to be shoot
+     * @param monster the monster who to be shoot
      * @return True if it is in the shooting range otherwise false
      */
-    public boolean canShoot(Coordinates monster){
+    public boolean canShoot(Monster monster){
         return coordinates.diagonalDistanceFrom(monster) <= shootingRange * shootingRange;
     }
 
