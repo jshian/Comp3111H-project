@@ -6,7 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import project.UIController;
+
+import project.*;
 
 public class JUnitTester extends ApplicationTest {
 	@Rule
