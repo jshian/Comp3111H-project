@@ -1,5 +1,3 @@
-package testing;
-
 import java.security.InvalidParameterException;
 
 import org.junit.*;

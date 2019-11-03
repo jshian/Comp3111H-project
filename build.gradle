@@ -64,9 +64,12 @@ dependencies {
     // https://mvnrepository.com/artifact/javax.validation/validation-api/2.0.1.Final
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
-
     // VSCode only
     // compileClasspath fileTree('C:/Program Files/Java/jre1.8.0_231/lib/ext')
+}
+
+test {
+    useJUnit()
 }
 
 jacocoTestReport {
