@@ -9,14 +9,14 @@ public abstract class Tower implements Arena.ExistsInArena {
     private Coordinates coordinates;
 
     // States
-    protected int attackPower, buildingCost, shootingRange;
+    protected int attackPower, buildingCost, shootingRange, x,y;
 
     /**
      * Constructor for Tower class.
      * @param arena The arena in which the basic tower exists.
      */
     public Tower(Arena arena){
-        this.coordinates = new Coordinates(arena);
+        this.coordinates = new Coordinates(arena,x,y);
     }
 
     // Inferface implementation
