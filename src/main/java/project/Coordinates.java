@@ -78,6 +78,15 @@ public class Coordinates {
     }
 
     /**
+     * Determines whether an object in the arena is at the Cartesian coordinates represented by this Coordinate object.
+     * @param other The object in the arena.
+     * @return Whether the object in the arena is at the Cartesian coordinates represented by this Coordinate object.
+     */
+    public boolean isAt(Arena.@NonNull ExistsInArena other) {
+        return isAt(other.getCoordinates());
+    }
+
+    /**
      * Determines whether two Coordinate objects represent the same Cartesian coordinates.
      * @param other The other object.
      * @return Whether the two Coordinate objects represent the same Cartesian coordinates.
@@ -87,12 +96,31 @@ public class Coordinates {
     }
 
     /**
+     * Calculates the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     * @param other The object in the arena.
+     * @return The the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     */
+    public int taxicabDistanceFrom(Arena.@NonNull ExistsInArena other) {
+        return taxicabDistanceFrom(other.getCoordinates());
+    }
+
+
+    /**
      * Calculates the taxicab distance between the Cartesian coordinates represented by two Coordinate objects.
      * @param other The other object.
      * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public int taxicabDistanceFrom(@NonNull Coordinates other) {
         return this.x - other.x + this.y - other.y;
+    }
+
+    /**
+     * Calculates the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     * @param other The object in the arena.
+     * @return The the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     */
+    public int diagonalDistanceFrom(Arena.@NonNull ExistsInArena other) {
+        return taxicabDistanceFrom(other.getCoordinates());
     }
 
     /**

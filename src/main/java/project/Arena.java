@@ -129,17 +129,17 @@ public final class Arena {
 
         if (filter.contains(TypeFilter.Tower))
             for (Tower t : currentState.towers)
-                if (coordinates.isAt(t.getCoordinates()))
+                if (coordinates.isAt(t))
                     list.add(t);
         
         if (filter.contains(TypeFilter.Projectile))
             for (Projectile p : currentState.projectiles)
-                if (coordinates.isAt(p.getCoordinates()))
+                if (coordinates.isAt(p))
                     list.add(p);
 
         if (filter.contains(TypeFilter.Monster))
             for (Monster m : currentState.monsters)
-                if (coordinates.isAt(m.getCoordinates()))
+                if (coordinates.isAt(m))
                     list.add(m);
 
         return list;
@@ -159,17 +159,17 @@ public final class Arena {
 
         if (filter.contains(TypeFilter.Tower))
             for (Tower t : currentState.towers)
-                if (coordinates.diagonalDistanceFrom(t.getCoordinates()) <= range)
+                if (coordinates.diagonalDistanceFrom(t) <= range)
                     list.add(t);
         
         if (filter.contains(TypeFilter.Projectile))
             for (Projectile p : currentState.projectiles)
-                if (coordinates.diagonalDistanceFrom(p.getCoordinates()) <= range)
+                if (coordinates.diagonalDistanceFrom(p) <= range)
                     list.add(p);
 
         if (filter.contains(TypeFilter.Monster))
             for (Monster m : currentState.monsters)
-                if (coordinates.diagonalDistanceFrom(m.getCoordinates()) <= range)
+                if (coordinates.diagonalDistanceFrom(m) <= range)
                     list.add(m);
 
         return list;
@@ -211,12 +211,12 @@ public final class Arena {
         
         if (filter.contains(TypeFilter.Projectile))
             for (Projectile p : currentState.projectiles)
-                if (coordinates.isAt(p.getCoordinates()))
+                if (coordinates.isAt(p))
                     list.add(p);
 
         if (filter.contains(TypeFilter.Monster))
             for (Monster m : currentState.monsters)
-                if (coordinates.isAt(m.getCoordinates()))
+                if (coordinates.isAt(m))
                     list.add(m);
 
         return list;
@@ -238,7 +238,7 @@ public final class Arena {
     /**
      * Finds the grids within a taxicab distance of one from the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
-     * @return A linked list containing a reference to the coordinates of each taxicab neighbour.
+     * @return A linked list containing a reference to the coordinates of the center of each taxicab neighbour.
      */
     public static LinkedList<Coordinates> taxicabNeighbours(@NonNull Coordinates coordinates)
     {
