@@ -1,5 +1,7 @@
 package project.monsters;
 
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.*;
@@ -7,6 +9,7 @@ import project.*;
 /**
  * Unicorn is the Monster with the most health.
  */
+@Entity
 public class Unicorn extends Monster {
     /**
      * @see Monster#Monster()

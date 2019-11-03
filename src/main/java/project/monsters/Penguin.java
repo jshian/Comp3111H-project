@@ -1,5 +1,7 @@
 package project.monsters;
 
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.*;
@@ -7,6 +9,7 @@ import project.*;
 /**
  * Penguin has the ability to regenerate.
  */
+@Entity
 public class Penguin extends Monster {
     /**
      * @see Monster#Monster()

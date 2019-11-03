@@ -57,6 +57,16 @@ dependencies {
     // testFX - https://github.com/TestFX/TestFX
     testCompile group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
     compile group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
+
+    // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api/2.2
+    compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+
+    // https://mvnrepository.com/artifact/javax.validation/validation-api/2.0.1.Final
+    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+
+    // VSCode only
+    // compileClasspath fileTree('C:/Program Files/Java/jre1.8.0_231/lib/ext')
 }
 
 jacocoTestReport {
