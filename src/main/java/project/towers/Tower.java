@@ -43,7 +43,7 @@ public abstract class Tower implements ExistsInArena {
      * Decrease the health, speed etc of the attacked monster
      * @param monster The monster closest to the destination was attacked
      */
-    public abstract void attackMonster(Monster monster);
+    protected abstract void attackMonster(Monster monster);
     /**
      * @param monster the coordinate of monster who to be shoot
      * @return True if it is in the shooting range otherwise false
