@@ -38,7 +38,7 @@ public class IceTower extends Tower{
 
     @Override
     public void attackMonster(Monster monster){
-        if(canShoot(monster.getCoordinates())){
+        if(canShoot(monster)){
             monster.setSpeed(monster.getSpeed()-this.slowDown);
             monster.setHealth((int)(monster.getHealth()-this.attackPower));
         }

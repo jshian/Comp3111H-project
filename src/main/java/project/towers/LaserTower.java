@@ -11,10 +11,10 @@ public class LaserTower extends Tower{
     private int consume;
 
     /**
-     * Constructor for LaserTower class.
+     * Default constructor for LaserTower class.
      */
-    public LaserTower(Coordinates coordinate){
-        super(coordinate);
+    public LaserTower(){
+        super();
         this.attackPower = 30;
         this.buildingCost = 20;
         this.consume = 2;
@@ -37,21 +37,13 @@ public class LaserTower extends Tower{
 
     @Override
     public void attackMonster(Monster monster){
-        Coordinates mCor = monster.getCoordinates();
-        Coordinates tCor = getCoordinates();
-        Coordinates edgePt = tCor.findEdgePt(mCor);
-        tCor.drawLine(edgePt);
-        int tX = tCor.getX();
-        int tY = tCor.getY();
-        int mX = mCor.getX();
-        int mY = mCor.getY();
-
+        Coordinates edgePt = this.coordinates.findEdgePt(monster);
+        edgePt.drawLine(this);
         LinkedList<Monster> monsters = Arena.getMonsters();
         for (Monster m:monsters) {
-            for (int x = tX, y = tY; x> mX && y> mY; x+=(mX - tX)*0.01,y+=(mY - tY)*0.01)
-                if ((new Coordinates(x,y)).isInCircle(m.getCoordinates(),3))
-                    m.setHealth((int)(m.getHealth()-this.attackPower));
-
+            if(this.coordinates.isInArea(monster,m)){
+                m.setHealth((int)(monster.getHealth()-this.attackPower));
+            }
         }
 
 
