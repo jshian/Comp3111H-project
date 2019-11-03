@@ -3,6 +3,7 @@ package project;
 import project.Arena.ExistsInArena;
 import project.Arena.TypeFilter;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -15,7 +16,9 @@ import javafx.scene.shape.Line;
  * Also stores a link to the arena itself.
  * @see Arena
  */
-public class Coordinates {
+public class Coordinates implements Serializable {
+    // Implement Serializable
+    private static final long serialVersionUID = -1061709817920817709L;
 
     private int x = 0;
     private int y = 0;
