@@ -52,6 +52,13 @@ public class Catapult extends Tower {
         for (Monster m:monsters) {
             m.setHealth((int)(m.getHealth()-this.attackPower));
         }
+        new Thread(){
+            public void run(){
+                try {
+                    Thread.sleep(reload*1000);
+                } catch (InterruptedException e) { }
+            }
+        }.start();
     }
 
     @Override
@@ -66,7 +73,7 @@ public class Catapult extends Tower {
     //Algorithm for selecting monster
     public LinkedList<Monster> selectMonster(LinkedList<Monster> monsters){
         LinkedList<Monster> attackedMon = new LinkedList<>();
-
+        int count=0;
         for (Monster m:monsters) {
             if(canShoot(m.getCoordinates())){
 
