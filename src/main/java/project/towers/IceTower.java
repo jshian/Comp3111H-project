@@ -10,8 +10,8 @@ public class IceTower extends Tower{
     /**
      * Default constructor for IceTower class.
      */
-    public IceTower(){
-        super();
+    public IceTower(Coordinates coordinate){
+        super(coordinate);
         this.attackPower = 5;
         this.buildingCost = 15;
         this.shootingRange = 50;

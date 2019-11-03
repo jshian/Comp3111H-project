@@ -373,7 +373,7 @@ public final class Arena {
 
         // Now update currentState
         throw new NotImplementedException("TODO");
-        currentState.currentFrame++;
+        //currentState.currentFrame++;
     }
 
     /**

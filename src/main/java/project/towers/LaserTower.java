@@ -12,8 +12,8 @@ public class LaserTower extends Tower{
     /**
      * Default constructor for LaserTower class.
      */
-    public LaserTower(){
-        super();
+    public LaserTower(Coordinates coordinate){
+        super(coordinate);
         this.attackPower = 30;
         this.buildingCost = 20;
         this.consume = 2;

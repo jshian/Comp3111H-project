@@ -8,8 +8,8 @@ public class BasicTower extends Tower {
     /**
      * Default constructor for BasicTower class.
      */
-    public BasicTower(){
-        super();
+    public BasicTower(Coordinates coordinate){
+        super(coordinate);
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;

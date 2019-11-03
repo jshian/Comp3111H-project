@@ -13,7 +13,7 @@ public abstract class Tower implements ExistsInArena {
     private ImageView imageView;
     
     // Position
-    private Coordinates coordinates;
+    protected Coordinates coordinates;
 
     // States
     protected int attackPower, buildingCost, shootingRange;

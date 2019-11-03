@@ -10,8 +10,8 @@ public class Catapult extends Tower {
     /**
      * Default constructor for Catapult class.
      */
-    public Catapult(){
-        super();
+    public Catapult(Coordinates coordinate){
+        super(coordinate);
         this.attackPower = 25;
         this.buildingCost = 20;
         this.shootingRange = 150;
