@@ -164,7 +164,7 @@ public class UIController {
 
             	target.setOnDragDropped(e -> {
             	    System.out.println("drop");
-            	    //if (arena.canBuildTower(c)) {
+            	    if (arena.canBuildTower(c)) {
 	            		Image img = null;
 	            		String type = null;
 	            		Object source = e.getGestureSource();
@@ -187,6 +187,7 @@ public class UIController {
 	                        iv.setX(x);
 	                        iv.setY(y);
                             setTowerEvent(iv);
+
                             arena.buildTower(c, iv, type);
 	                        paneArena.getChildren().add(iv);
 	                        e.setDropCompleted(true);
@@ -194,7 +195,7 @@ public class UIController {
 	                    }
 	                    e.consume();
 
-            		//}
+            		}
             	});
             }
     	}
