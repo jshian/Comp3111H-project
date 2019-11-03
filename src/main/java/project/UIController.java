@@ -124,7 +124,15 @@ public class UIController {
     private void setDragTwoer() {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
-    		l.setOnDragDetected(new DragEventHandler(l));
+    		l.setOnDragDetected(e -> {
+    	        Dragboard db = l.startDragAndDrop(TransferMode.ANY);
+
+    	        ClipboardContent content = new ClipboardContent();
+    	        content.putString(l.getText());
+    	        db.setContent(content);
+
+    	        e.consume();
+    	    });
     	}
     	
     	for (int i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -163,28 +171,35 @@ public class UIController {
             		if (arena.canBuildTower(c)) {
 	            		// ui part
 	            		Image img = null;
+	            		String type = null;
 	            		Object source = e.getGestureSource();
-	            		if (source.equals(labelBasicTower))
+	            		if (source.equals(labelBasicTower)) {
 	            			img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            		else if (source.equals(labelIceTower))
+	            			type = "basic";
+	            		} else if (source.equals(labelIceTower)) {
 	            			img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            		else if (source.equals(labelCatapult))
+	            			type = "ice";
+	            		} else if (source.equals(labelCatapult)) {
 	            			img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            		else if (source.equals(labelLaserTower))
+	            			type = "catapult";
+	            		} else if (source.equals(labelLaserTower)) {
 	            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+	            			type = "laser";
+	            		}
 	            		
 	                    if (img != null) {
 	                    	ImageView iv = new ImageView(img);
 	                        iv.setX(x);
 	                        iv.setY(y);
 	                        paneArena.getChildren().add(iv);
+	                        setTowerEvent();
 	                        e.setDropCompleted(true);
 	                    }
 	                    e.consume();
 	                    
 	                    // back-end part
 	                    // TODO: arena.buildTower(coordinates);
-	                    // arena.buildTower(c);
+	                    // arena.buildTower(c, type);
 	                    
             		}
             	});
@@ -192,21 +207,15 @@ public class UIController {
     	}
     	
     }
-}
-
-class DragEventHandler implements EventHandler<MouseEvent> {
-    private Label source;
-    public DragEventHandler(Label e) {
-        source = e;
-    }
-    @Override
-    public void handle (MouseEvent event) {
-        Dragboard db = source.startDragAndDrop(TransferMode.ANY);
-
-        ClipboardContent content = new ClipboardContent();
-        content.putString(source.getText());
-        db.setContent(content);
-
-        event.consume();
+    
+    private void setTowerEvent() {
+    	// on hover
+    	// TODO: display tower information
+    	
+    	// TODO: show shooting range
+    	
+    	
+    	// exit
+    	// TODO: remove info & shooting range
     }
 }
