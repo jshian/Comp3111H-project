@@ -10,7 +10,7 @@ import project.monsters.Monster;
 
 public abstract class Tower implements ExistsInArena {
     // UI
-    protected ImageView imageView;
+    private ImageView imageView;
     
     // Position
     protected Coordinates coordinates;
@@ -19,10 +19,11 @@ public abstract class Tower implements ExistsInArena {
     protected int attackPower, buildingCost, shootingRange;
 
     /**
-     * Default constructor for Tower class.
+     * Constructor for Tower class.
+     * @param coordinate The coordinate of tower.
      */
-    public Tower() {
-        this.coordinates = new Coordinates();
+    public Tower(Coordinates coordinate){
+        this.coordinates = coordinate;
     }
 
     public Tower(Coordinates coordinates, ImageView imageView) {
@@ -32,10 +33,9 @@ public abstract class Tower implements ExistsInArena {
 
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
-    public int getX() { return coordinates.getX(); }
-    public int getY() { return coordinates.getY(); }
+    public Coordinates getCoordinates() { return coordinates; }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
-    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
+
 
     /**
      * Upgrade the tower for adding the power, slow duration, reload time etc
@@ -48,14 +48,13 @@ public abstract class Tower implements ExistsInArena {
      * Decrease the health, speed etc of the attacked monster
      * @param monster The monster closest to the destination was attacked
      */
-    public abstract void attackMonster(Monster monster);
-
+    protected abstract void attackMonster(Monster monster);
     /**
-     * @param monster the monster who to be shoot
+     * @param monster the coordinate of monster who to be shoot
      * @return True if it is in the shooting range otherwise false
      */
-    public boolean canShoot(Monster monster){
-        return coordinates.diagonalDistanceFrom(monster) <= shootingRange * shootingRange;
+    public boolean canShoot(Coordinates monster){
+        return coordinates.diagonalDistanceFrom(monster) <= shootingRange ;
     }
 
     /**
