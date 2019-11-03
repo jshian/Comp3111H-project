@@ -129,6 +129,19 @@ public final class Arena {
     public static enum TypeFilter { Tower, Projectile, Monster }
 
     /**
+     * Finds the center of the grid where a specified pixel is located.
+     * @param coordinates The coordinates of the pixel.
+     * @return Coordinates representing the center of the grid.
+     */
+    public static Coordinates getGridCenter(@NonNull Coordinates coordinates)
+    {
+        int[] gridPosition = getGrid(coordinates);
+
+        return new Coordinates((int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
+            (int) ((gridPosition[1] + 0.5) * UIController.GRID_HEIGHT));
+    }
+
+    /**
      * Finds all objects that are located at a specified pixel.
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
@@ -235,19 +248,6 @@ public final class Arena {
     }
 
     /**
-     * Finds the center of the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
-     * @return Coordinates representing the center of the grid.
-     */
-    public static Coordinates getGridCenter(@NonNull Coordinates coordinates)
-    {
-        int[] gridPosition = getGrid(coordinates);
-
-        return new Coordinates((int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
-            (int) ((gridPosition[1] + 0.5) * UIController.GRID_HEIGHT));
-    }
-
-    /**
      * Finds the grids within a taxicab distance of one from the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @return A linked list containing a reference to the coordinates of the center of each taxicab neighbour.
@@ -288,6 +288,21 @@ public final class Arena {
                 getGridCenter(coordinates).getY() + UIController.GRID_HEIGHT
             ));
 
+        return result;
+    }
+
+    /**
+     * Finds all objects that occupy the specified coordinate in the arena.
+     * @param coordinates The specified coordinates.
+     * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
+     */
+    public LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
+    {
+        LinkedList<Object> result = new LinkedList<>();
+
+        result.addAll(objectsAtPixel(coordinates, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
+        result.addAll(objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
+        
         return result;
     }
 
