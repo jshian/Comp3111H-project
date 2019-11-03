@@ -43,7 +43,7 @@ public class LaserTower extends Tower{
         for (Monster m:monsters) {
             for (int x = tX, y = tY; x> mX && y> mY; x+=(mX - tX)*0.01,y+=(mY - tY)*0.01)
                 if ((new Coordinates(x,y)).isInCircle(m.getCoordinates(),3))
-                    m.setHealth((int)(monster.getHealth()-this.attackPower));
+                    m.setHealth((int)(m.getHealth()-this.attackPower));
 
         }
 
