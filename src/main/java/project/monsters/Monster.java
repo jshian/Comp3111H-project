@@ -34,10 +34,11 @@ public abstract class Monster implements Arena.MovesInArena {
     /**
      * Constructor for the Monster class.
      * @param difficulty The difficulty of the monster.
-     * @param destination The destination pixel of the monster. It will try to move there.
+     * @param start The starting location of the monster.
+     * @param destination The destination of the monster. It will try to move there.
      */
-    public Monster(double difficulty, @NonNull Coordinates destination) {
-        this.coordinates = new Coordinates();
+    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
+        this.coordinates = start;
         this.destination = destination;
     }
     

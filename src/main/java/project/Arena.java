@@ -31,6 +31,11 @@ public final class Arena {
     private static final int STARTING_POSITION_Y = 0;
 
     /**
+     * Coordinates of the starting position.
+     */
+    private static final Coordinates STARTING_COORDINATES = new Coordinates(STARTING_POSITION_X, STARTING_POSITION_Y);
+
+    /**
      * x-coordinate of the end zone.
      * @see Coordinates
      */
@@ -41,6 +46,11 @@ public final class Arena {
      * @see Coordinates
      */
     private static final int END_ZONE_Y = 0;
+
+    /**
+     * Coordinates of the end zone.
+     */
+    private static final Coordinates END_COORDINATES = new Coordinates(END_ZONE_X, END_ZONE_Y);
 
     /**
      * The number of frames between each wave of Monsters.
@@ -334,11 +344,11 @@ public final class Arena {
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
             if (randomNumber < 1/3)
-                currentState.monsters.add(new Fox(currentState.difficulty, new Coordinates(END_ZONE_X, END_ZONE_Y)));
+                currentState.monsters.add(new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
             else if (randomNumber < 2/3)
-                currentState.monsters.add(new Penguin(currentState.difficulty, new Coordinates(END_ZONE_X, END_ZONE_Y)));
+                currentState.monsters.add(new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
             else
-                currentState.monsters.add(new Unicorn(currentState.difficulty, new Coordinates(END_ZONE_X, END_ZONE_Y)));
+                currentState.monsters.add(new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
         }
 
         currentState.difficulty += 1;    // Modified by settings later
