@@ -307,7 +307,7 @@ public final class Arena {
      * @param iv ImageView of the tower
      * @param type specify the class of tower.
      */
-    public static void buildTower(@NonNull Coordinates coordinates, ImageView iv, String type)
+    public static Tower buildTower(@NonNull Coordinates coordinates, ImageView iv, String type)
     {
         System.out.println("ok");
         Tower t = null;
@@ -320,6 +320,7 @@ public final class Arena {
 
         currentState.towers.add(t);
 
+        return t;
     }
 
     /**

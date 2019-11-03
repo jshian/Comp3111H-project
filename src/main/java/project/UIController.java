@@ -17,6 +17,8 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import project.towers.Tower;
 
 public class UIController {
     @FXML
@@ -186,9 +188,9 @@ public class UIController {
 	                    	ImageView iv = new ImageView(img);
 	                        iv.setX(x);
 	                        iv.setY(y);
-                            setTowerEvent(iv);
+                            Tower t = arena.buildTower(c, iv, type);
+                            setTowerEvent(t);
 
-                            arena.buildTower(c, iv, type);
 	                        paneArena.getChildren().add(iv);
 	                        e.setDropCompleted(true);
 
@@ -202,15 +204,30 @@ public class UIController {
 
     }
 
-    private void setTowerEvent(ImageView iv) {
+    private void setTowerEvent(Tower t) {
+        ImageView iv = t.getImageView();
+        final Circle c = new Circle();
     	// on hover
-    	// TODO: display tower information
+        iv.setOnMouseEntered(e -> {
+            // TODO: display tower information
 
-    	// TODO: show shooting range
 
+            // show shooting range
+            Coordinates center = arena.getGridCenter(t.getCoordinates());
+
+            c.setCenterX(center.getX());
+            c.setCenterY(center.getY());
+            c.setRadius(t.getShootingRange());
+            c.setFill(Color.rgb(0,101,255,0.4));
+            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), c); // add it before the ImageView
+        });
 
     	// exit
     	// TODO: remove info & shooting range
+        iv.setOnMouseExited(e -> {
+            paneArena.getChildren().remove(c);
+        });
+
     }
 }
 
