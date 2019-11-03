@@ -79,6 +79,7 @@ public final class Arena {
         /**
          * Contains a reference to each Monster on the Arena.
          * In addition, the monsters are sorted according to how close they are from reaching the end zone.
+         * The first element is closest to the end zone while the last element is furthest.
          * @see Monster
          */
         private LinkedList<Monster> monsters = new LinkedList<>();
@@ -401,7 +402,7 @@ public final class Arena {
 
     /**
      * Finds all Monsters that are in the arena.
-     * @return A READONLY linked list containing a reference to each Monster in the Arena. In addition, the monsters are sorted according to how close they are from reaching the end zone.
+     * @return A READONLY linked list containing a reference to each Monster in the Arena. The first element is closest to the end zone while the last element is furthest.
      */
     public static LinkedList<Monster> getMonsters() { return (LinkedList<Monster>) Collections.unmodifiableList(currentState.monsters); }
 
