@@ -4,6 +4,8 @@ import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
+import java.util.LinkedList;
+
 public class Catapult extends Tower {
     // States
     private int reload,shootLimit;
@@ -40,8 +42,10 @@ public class Catapult extends Tower {
 
     @Override
     public void attackMonster(Monster monster){
-        if (canShoot(monster.getCoordinates())){
-
+        LinkedList<Monster> monsters = selectMonster(Arena.getMonsters());
+        throwStone(monsters.getFirst().getCoordinates());
+        for (Monster m:monsters) {
+            m.setHealth((int)(m.getHealth()-this.attackPower));
         }
     }
 
@@ -55,5 +59,13 @@ public class Catapult extends Tower {
     }
 
     //Algorithm for selecting monster
-    public void selectMonster(Arena arena){}
+    public LinkedList<Monster> selectMonster(LinkedList<Monster> monsters){
+        LinkedList<Monster> attackedMon = new LinkedList<>();
+
+        for (Monster m:monsters) {
+            double dis = m.getCoordinates().diagonalDistanceFrom(new Coordinates(440,0));
+
+        }
+        return attackedMon;
+    }
 }
