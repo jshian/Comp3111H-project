@@ -70,6 +70,11 @@ public final class Arena {
         private LinkedList<Monster> monsters = new LinkedList<>();
 
         /**
+         * The current frame number of the Arena since the game began.
+         */
+        private int currentFrame;
+
+        /**
          * The current difficulty of the Arena.
          */
         private double difficulty;
@@ -355,6 +360,7 @@ public final class Arena {
 
         // Now update currentState
         throw new NotImplementedException("TODO");
+        currentState.currentFrame++;
     }
 
     /**
