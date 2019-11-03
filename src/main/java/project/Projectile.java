@@ -2,6 +2,9 @@ package project;
 
 import project.monsters.*;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
 import org.apache.commons.lang3.*;
 
 import javafx.scene.image.ImageView;
@@ -10,17 +13,38 @@ import javafx.scene.image.ImageView;
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
+@Entity
 public abstract class Projectile implements Arena.MovesInArena {
-    // UI
+    /**
+     * ID for storage using Java Persistence API
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+
+    /**
+     * The ImageView that displays the projectile.
+     */
+    @Transient
     private ImageView imageView;
     
-    // Position
+    /**
+     * Represents the position of the projectile.
+     */
+    @NotNull
     private Coordinates coordinates;
 
-    // Target to pursue
+    /**
+     * The Monster that the projectile is travelling towards.
+     */
+    @NotNull
     private Monster target;
 
-    // Stats
+    /**
+     * The maximum number of pixels the projectile can travel per frame.
+     * Projectiles can travel diagonally.
+     */
+    @NotNull
     private double speed;
 
     /**

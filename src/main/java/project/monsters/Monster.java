@@ -7,6 +7,9 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
 import org.apache.commons.lang3.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -18,21 +21,63 @@ import javafx.scene.image.ImageView;
  * If they succeed, the game is lost.
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
+@Entity
 public abstract class Monster implements Arena.MovesInArena {
-    // UI
+    /**
+     * ID for storage using Java Persistence API
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+
+    /**
+     * The ImageView that displays the monster.
+     */
+    @Transient
     private ImageView imageView;
 
-    // Position
+    /**
+     * Represents the position of the monster.
+     */
+    @NotNull
     protected Coordinates coordinates;
 
-    // Stats
+    /**
+     * The maximum health of the monster.
+     */
+    @NotNull
     protected double maxHealth;
+
+    /**
+     * The current health of the monster. It cannot go beyond {@link #maxHealth}.
+     * When this is not greater than zero, the monster is considered dead.
+     * @see #hasDied()
+     */
+    @NotNull
     protected double health;
+
+    /**
+     * The maximum number of pixels the monster can travel per frame.
+     */
+    @NotNull
     protected double maxSpeed;
+
+    /**
+     * The current speed of the monster. It cannot go beyond {@link #maxSpeed}.
+     */
+    @NotNull
     protected double speed;
 
-    // Pathfinding
+    /**
+     * The location which the monster tries to reach.
+     */
+    @NotNull
     protected Coordinates destination;
+
+    /**
+     * A linked list of references to the coordinates of the center of each grid which the monster will travel through in order to reach its {@link #destination}.
+     */
+    @Transient
     protected LinkedList<Coordinates> futurePath;
 
     /**
@@ -79,7 +124,6 @@ public abstract class Monster implements Arena.MovesInArena {
      * @return The speed of the monster.
      */
     public double getSpeed() { return speed; }
-
 
     /**
      * Determines whether the monster has died.
