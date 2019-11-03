@@ -18,7 +18,7 @@ public class Coordinates {
     private int y = 0;
 
     /**
-     * Default onstructor for the Coordinate class. Both coordinates default to 0.
+     * Default constructor for the Coordinate class. Both coordinates default to 0.
      */
     public Coordinates() {}
 
