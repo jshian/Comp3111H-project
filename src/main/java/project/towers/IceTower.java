@@ -1,5 +1,6 @@
 package project.towers;
 
+import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
@@ -12,6 +13,14 @@ public class IceTower extends Tower{
      */
     public IceTower(){
         super();
+        this.attackPower = 5;
+        this.buildingCost = 15;
+        this.shootingRange = 50;
+        this.slowDown = 10;
+    }
+
+    public IceTower(Coordinates coordinates, ImageView imageView) {
+        super(coordinates, imageView);
         this.attackPower = 5;
         this.buildingCost = 15;
         this.shootingRange = 50;

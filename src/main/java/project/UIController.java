@@ -50,7 +50,7 @@ public class UIController {
     static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
     static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
-    
+
     private Arena arena = new Arena();
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
     private int x = -1, y = 0; //where is my monster
@@ -105,7 +105,7 @@ public class UIController {
                 paneArena.getChildren().addAll(newLabel);
             }
 
-        setDragTwoer();
+        setDragLabel();
     }
 
     @FXML
@@ -119,9 +119,11 @@ public class UIController {
             return;
         grids[y++][x].setText("");
         grids[y][x].setText("M");
+
+        // System.out.println(arena.canBuildTower(new Coordinates()));
     }
-    
-    private void setDragTwoer() {
+
+    private void setDragLabel() {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
     		l.setOnDragDetected(e -> {
@@ -134,42 +136,35 @@ public class UIController {
     	        e.consume();
     	    });
     	}
-    	
+
     	for (int i = 0; i < MAX_V_NUM_GRID; i++) {
             for (int j = 0; j < MAX_H_NUM_GRID; j++) {
             	Label target = grids[i][j];
-            	
-            	int x = (int)((j)*GRID_WIDTH);
-            	int y = (int)((i)*GRID_HEIGHT);
-            	Coordinates c = new Coordinates(arena, x, y);
-            	
-                target.setOnDragOver(e -> {
-                    /* accept it only if it is  not dragged from the same node
-                     * and if it has a string data */
-                    if (e.getGestureSource() != target &&
-                            e.getDragboard().hasString()) {
-                        /* allow for both copying and moving, whatever user chooses */
-                        e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                    }
 
+            	int x = j * GRID_WIDTH;
+            	int y = i * GRID_HEIGHT;
+            	Coordinates c = new Coordinates(x, y);
+
+                target.setOnDragOver(e -> {
+                    e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                     e.consume();
                 });
-                
+
             	target.setOnDragEntered(e -> { // grids[y][x]
-            		if (arena.canBuildTower(c)) {
+            		//if (arena.canBuildTower(c)) {
             			target.setStyle("-fx-border-color: blue;");
-            		}
+            		//}
             		e.consume();
             	});
-            	
+
             	target.setOnDragExited(e -> {
             		target.setStyle("-fx-border-color: black;");
             		e.consume();
             	});
-            	
+
             	target.setOnDragDropped(e -> {
-            		if (arena.canBuildTower(c)) {
-	            		// ui part
+            	    System.out.println("drop");
+            	    //if (arena.canBuildTower(c)) {
 	            		Image img = null;
 	            		String type = null;
 	            		Object source = e.getGestureSource();
@@ -186,36 +181,35 @@ public class UIController {
 	            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
 	            			type = "laser";
 	            		}
-	            		
+
 	                    if (img != null) {
 	                    	ImageView iv = new ImageView(img);
 	                        iv.setX(x);
 	                        iv.setY(y);
+                            setTowerEvent(iv);
+                            arena.buildTower(c, iv, type);
 	                        paneArena.getChildren().add(iv);
-	                        setTowerEvent();
 	                        e.setDropCompleted(true);
+
 	                    }
 	                    e.consume();
-	                    
-	                    // back-end part
-	                    // TODO: arena.buildTower(coordinates);
-	                    // arena.buildTower(c, type);
-	                    
-            		}
+
+            		//}
             	});
             }
     	}
-    	
+
     }
-    
-    private void setTowerEvent() {
+
+    private void setTowerEvent(ImageView iv) {
     	// on hover
     	// TODO: display tower information
-    	
+
     	// TODO: show shooting range
-    	
-    	
+
+
     	// exit
     	// TODO: remove info & shooting range
     }
 }
+
