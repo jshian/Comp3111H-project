@@ -2,12 +2,15 @@ package project.monsters;
 
 import project.*;
 
+import javax.persistence.Entity;
+
 import org.apache.commons.lang3.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Fox is the fastest Monster. It also tries to follow the path where it receives the minimum number of attacks from Towers.
  */
+@Entity
 public class Fox extends Monster {
     /**
      * @see Monster#Monster()
