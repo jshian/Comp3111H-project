@@ -6,6 +6,7 @@ import project.towers.*;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * The area where most of the action takes place in the game.
@@ -97,10 +98,10 @@ public final class Arena {
 
     /**
      * Finds the grid position corresponding to a specified pixel.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
      * @return An int array that contains the x- and y- position of the grid at indices 0 and 1 respectively.
      */
-    private static int[] getGrid(Coordinates coordinates) {
+    private static int[] getGrid(@NonNull Coordinates coordinates) {
         int[] result = new int[2];
         result[0] = coordinates.getX() / UIController.GRID_WIDTH;
         result[1] = coordinates.getY() / UIController.GRID_HEIGHT;
@@ -117,12 +118,12 @@ public final class Arena {
 
     /**
      * Finds all objects that are located at a specified pixel.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
-     * @param filter Only the types that are specified will be included in the result. Do not pass <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
+     * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<Object> objectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
+    public static LinkedList<Object> objectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
@@ -146,13 +147,13 @@ public final class Arena {
 
     /**
      * Finds all objects that are within a specified range of a specified pixel.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
      * @param range The maximum distance from this pixel for the object to be within range.
-     * @param filter Only the types that are specified will be included in the result. Do not pass <code>null</code>.
+     * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<Object> objectsInRange(Coordinates coordinates, double range, EnumSet<TypeFilter> filter)
+    public static LinkedList<Object> objectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
@@ -176,12 +177,12 @@ public final class Arena {
 
     /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
-     * @param filter Only the types that are specified will be included in the result. Do not pass <code>null</code>.
+     * @param coordinates The coordinates of the pixel
+     * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<Object> objectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
+    public static LinkedList<Object> objectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<Object> list = new LinkedList<>();
 
@@ -223,10 +224,10 @@ public final class Arena {
 
     /**
      * Finds the center of the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
      * @return Coordinates representing the center of the grid.
      */
-    public static Coordinates getGridCenter(Coordinates coordinates)
+    public static Coordinates getGridCenter(@NonNull Coordinates coordinates)
     {
         int[] gridPosition = getGrid(coordinates);
 
@@ -236,10 +237,10 @@ public final class Arena {
 
     /**
      * Finds the grids within a taxicab distance of one from the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
      * @return A linked list containing a reference to the coordinates of each taxicab neighbour.
      */
-    public static LinkedList<Coordinates> taxicabNeighbours(Coordinates coordinates)
+    public static LinkedList<Coordinates> taxicabNeighbours(@NonNull Coordinates coordinates)
     {
         LinkedList<Coordinates> result = new LinkedList<>();
 
@@ -280,19 +281,19 @@ public final class Arena {
 
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
-    public static boolean canBuildTower(Coordinates coordinates)
+    public static boolean canBuildTower(@NonNull Coordinates coordinates)
     {
         return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
     /**
      * Builds a Tower at the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
      */
-    public static void buildTower(Coordinates coordinates)
+    public static void buildTower(@NonNull Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }
@@ -308,9 +309,9 @@ public final class Arena {
 
     /**
      * Creates a Projectile at a specified pixel.
-     * @param coordinates The coordinates of the pixel, which should not be <code>null</code>.
+     * @param coordinates The coordinates of the pixel.
      */
-    public static void createProjectile(Coordinates coordinates)
+    public static void createProjectile(@NonNull Coordinates coordinates)
     {
         throw new NotImplementedException("TODO");
     }

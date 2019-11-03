@@ -1,5 +1,7 @@
 package project.monsters;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import project.*;
 
 /**
@@ -9,7 +11,7 @@ public class Penguin extends Monster {
     /**
      * @see Monster#Monster()
      */
-    public Penguin(double difficulty, Coordinates destination) {
+    public Penguin(double difficulty, @NonNull Coordinates destination) {
         super(difficulty, destination);
         this.health = 7.5 * difficulty;
         this.speed = 0.75 + 0.0075 * difficulty;

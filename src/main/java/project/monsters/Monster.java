@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.*;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
@@ -33,9 +34,9 @@ public abstract class Monster implements Arena.MovesInArena {
     /**
      * Constructor for the Monster class.
      * @param difficulty The difficulty of the monster.
-     * @param destination The destination pixel of the monster. It will try to move there. This should not be <code>null</code>.
+     * @param destination The destination pixel of the monster. It will try to move there.
      */
-    public Monster(double difficulty, Coordinates destination) {
+    public Monster(double difficulty, @NonNull Coordinates destination) {
         this.coordinates = new Coordinates();
         this.destination = destination;
     }
