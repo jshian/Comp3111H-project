@@ -399,8 +399,8 @@ public final class Arena {
      */
     public static interface ExistsInArena {
         /**
-         * Access the ImageView associated with object.
-         * @return The ImageView associated with object.
+         * Access the ImageView associated with the object.
+         * @return The ImageView associated with the object.
          */
         public ImageView getImageView();
     
@@ -409,7 +409,7 @@ public final class Arena {
          * @return The coordinates of the object.
          */
         public Coordinates getCoordinates();
-        
+
         /**
          * Updates the corresponding UI object.
          */
