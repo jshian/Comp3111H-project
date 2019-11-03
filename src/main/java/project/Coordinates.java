@@ -164,7 +164,7 @@ public class Coordinates implements Serializable {
      * Test whether an object in the arena is within a certain error of a line defined by this point and another point, extending towards infinity.
      * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
      * @param endPt The other point of the line, whic should not be at the same coordinates as this object.
-     * @param testPt The object in the arena to be tested.
+     * @param testObj The object in the arena to be tested.
      * @return Whether the test object is within the specified error of the line.
      */
     public boolean isInLine(@NonNull Coordinates endPt, @NonNull ExistsInArena testObj) {
@@ -184,7 +184,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Test whether a point is within a certain error of a line defined by this point and another point, extending towards infinity.
-     * @param endPt The other point of the line, whic should not be at the same coordinates as this object.
+     * @param endPt The other point of the line, which should not be at the same coordinates as this object.
      * @param testPt The point to be tested.
      * @param error Allowable error in terms of radians.
      * @return Whether the test point is within the specified error of the line.
@@ -197,24 +197,35 @@ public class Coordinates implements Serializable {
         return Math.abs(this.angleFrom(endPt)-this.angleFrom(testPt)) < error;
     }
 
-    //dont know how to implement
-    public boolean isInArea(@NonNull Coordinates endPt, @NonNull Coordinates testPt) {
-        return false;
+
+    /**
+     * Test whether a point is within a circle of current point as the center
+     * @param coordinate The coordinate which to be tested
+     * @param radius the radius of the circle with current point as the center
+     * @return True if the tested coordinate is in the circle, otherwise false
+     */
+    public boolean isInCircle(@NonNull Coordinates coordinate, int radius) {
+        return this.diagonalDistanceFrom(coordinate) < radius;
     }
 
-    //problematic: the size of arena is unknown
+
+    /**
+     * Find the point in the edge which is in the line of the current point and given point
+     * @param dirPt The point will form a extended line with the current point
+     * @return  The point in the edge of the extended line
+     */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
-        for (int row = 0; row <= UIController.ARENA_WIDTH; ++row){
-            if(this.isInLine(dirPt,new Coordinates(0,row)))
-                return new Coordinates(0,row);
-            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_WIDTH,row)))
-                return new Coordinates(UIController.ARENA_WIDTH,row);
+        for (int y = 0; y <= UIController.ARENA_WIDTH; ++y){
+            if(this.isInLine(dirPt,new Coordinates(0,y)))
+                return new Coordinates(0,y);
+            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_WIDTH,y)))
+                return new Coordinates(UIController.ARENA_WIDTH,y);
         }
-        for (int col = 0; col <= UIController.ARENA_HEIGHT; ++col){
-            if(this.isInLine(dirPt,new Coordinates(col,0)))
-                return new Coordinates(col,0);
-            if(this.isInLine(dirPt,new Coordinates(col,UIController.ARENA_HEIGHT)))
-                return new Coordinates(col,UIController.ARENA_HEIGHT);
+        for (int x = 0; x <= UIController.ARENA_HEIGHT; ++x){
+            if(this.isInLine(dirPt,new Coordinates(x,0)))
+                return new Coordinates(x,0);
+            if(this.isInLine(dirPt,new Coordinates(x,UIController.ARENA_HEIGHT)))
+                return new Coordinates(x,UIController.ARENA_HEIGHT);
         }
         return dirPt;//for ignoring warning
 
