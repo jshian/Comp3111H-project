@@ -3,13 +3,14 @@ package project.monsters;
 import project.*;
 
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javafx.scene.image.ImageView;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
@@ -18,6 +19,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 public abstract class Monster implements Arena.MovesInArena {
+    // UI
+    private ImageView imageView;
+
     // Position
     protected Coordinates coordinates;
 
@@ -34,16 +38,18 @@ public abstract class Monster implements Arena.MovesInArena {
     /**
      * Constructor for the Monster class.
      * @param difficulty The difficulty of the monster.
-     * @param destination The destination pixel of the monster. It will try to move there.
+     * @param start The starting location of the monster.
+     * @param destination The destination of the monster. It will try to move there.
      */
-    public Monster(double difficulty, @NonNull Coordinates destination) {
-        this.coordinates = new Coordinates();
+    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
+        this.coordinates = start;
         this.destination = destination;
     }
     
     // Inferface implementation
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public ImageView getImageView() { return imageView; }
     public Coordinates getCoordinates() { return coordinates; }
+    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
 
     /**
@@ -101,7 +107,7 @@ public abstract class Monster implements Arena.MovesInArena {
                 return Double.compare(this.cost + this.heruistic, other.cost + other.heruistic);
             }
         }
-
+        
         // Coordinates/Cost pair representing the center of each grid that has been searched
         PriorityQueue<CoordinatesCostPair> gridCenters = new PriorityQueue<>(
             (int) (Math.pow(2, (int) (Math.log(this.coordinates.taxicabDistanceFrom(this.destination)) / Math.log(2)) + 1))

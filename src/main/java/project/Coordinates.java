@@ -1,13 +1,14 @@
 package project;
 
+import project.Arena.ExistsInArena;
+import project.Arena.TypeFilter;
+
 import java.security.InvalidParameterException;
 import java.util.*;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.shape.Line;
-
-import project.Arena.TypeFilter;
 
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the arena.
@@ -82,7 +83,7 @@ public class Coordinates {
      * @param other The object in the arena.
      * @return Whether the object in the arena is at the Cartesian coordinates represented by this Coordinate object.
      */
-    public boolean isAt(Arena.@NonNull ExistsInArena other) {
+    public boolean isAt(@NonNull ExistsInArena other) {
         return isAt(other.getCoordinates());
     }
 
@@ -100,7 +101,7 @@ public class Coordinates {
      * @param other The object in the arena.
      * @return The the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
-    public int taxicabDistanceFrom(Arena.@NonNull ExistsInArena other) {
+    public int taxicabDistanceFrom(@NonNull ExistsInArena other) {
         return taxicabDistanceFrom(other.getCoordinates());
     }
 
@@ -119,7 +120,7 @@ public class Coordinates {
      * @param other The object in the arena.
      * @return The the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
-    public int diagonalDistanceFrom(Arena.@NonNull ExistsInArena other) {
+    public int diagonalDistanceFrom(@NonNull ExistsInArena other) {
         return taxicabDistanceFrom(other.getCoordinates());
     }
 
@@ -133,6 +134,15 @@ public class Coordinates {
     }
 
     /**
+     * Calculates the angle between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     * @param other The object in the arena.
+     * @return The angle in radians from this object to the object in the arena, as if this object is at the origin of a polar coordinate system.
+     */
+    public double angleFrom(@NonNull ExistsInArena other) {
+        return angleFrom(other.getCoordinates());
+    }
+
+    /**
      * Calculates the angle between the coordinates represented by two Coordinate objects.
      * @param other The other object.
      * @return The angle in radians from this object to the other object, as if this object is at the origin of a polar coordinate system.
@@ -142,14 +152,31 @@ public class Coordinates {
     }
 
     /**
+     * The default allowable error when determining whether a test point is within a line.
+     * Measured in radians.
+     */
+    private static final double DEFAULT_ERROR_LINE = 0.02;
+
+    /**
+     * Test whether an object in the arena is within a certain error of a line defined by this point and another point, extending towards infinity.
+     * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
+     * @param endPt The other point of the line, whic should not be at the same coordinates as this object.
+     * @param testPt The object in the arena to be tested.
+     * @return Whether the test object is within the specified error of the line.
+     */
+    public boolean isInLine(@NonNull Coordinates endPt, @NonNull ExistsInArena testObj) {
+        return isInLine(endPt, testObj.getCoordinates(), DEFAULT_ERROR_LINE);
+    }
+
+    /**
      * Test whether a point is within a certain error of a line defined by this point and another point, extending towards infinity.
-     * The default allowable error is 0.02 radians.
+     * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
      * @param endPt The other point of the line, whic should not be at the same coordinates as this object.
      * @param testPt The point to be tested.
      * @return Whether the test point is within the specified error of the line.
      */
     public boolean isInLine(@NonNull Coordinates endPt, @NonNull Coordinates testPt) {
-        return isInLine(endPt, testPt, 0.02);
+        return isInLine(endPt, testPt, DEFAULT_ERROR_LINE);
     }
 
     /**
@@ -160,7 +187,7 @@ public class Coordinates {
      * @return Whether the test point is within the specified error of the line.
      */
     public boolean isInLine(@NonNull Coordinates endPt, @NonNull Coordinates testPt, double error) {
-        if (endPt.isAt(this)) throw new InvalidParameterException("Parameter endPt cannot be at the same coordinate as this object");
+        if (endPt.isAt(this)) throw new InvalidParameterException("Parameter endPt cannot be at the same coordinates as this object");
 
         if (testPt.isAt(this) || testPt.isAt(endPt)) return true;
 
