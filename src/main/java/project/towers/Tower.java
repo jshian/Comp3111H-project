@@ -1,10 +1,17 @@
 package project.towers;
 
+import project.Arena.ExistsInArena;
+
 import org.apache.commons.lang3.NotImplementedException;
+
+import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
-public abstract class Tower implements Arena.ExistsInArena {
+public abstract class Tower implements ExistsInArena {
+    // UI
+    private ImageView imageView;
+    
     // Position
     private Coordinates coordinates;
 
@@ -12,16 +19,16 @@ public abstract class Tower implements Arena.ExistsInArena {
     protected int attackPower, buildingCost, shootingRange;
 
     /**
-     * Constructor for Tower class.
-     * @param arena The arena in which the basic tower exists.
+     * Default constructor for Tower class.
      */
-    public Tower(Arena arena){
-        this.coordinates = new Coordinates(arena);
+    public Tower() {
+        this.coordinates = new Coordinates();
     }
 
     // Inferface implementation
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public ImageView getImageView() { return imageView; }
     public Coordinates getCoordinates() { return coordinates; }
+    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
 
 
     /**
@@ -41,7 +48,7 @@ public abstract class Tower implements Arena.ExistsInArena {
      * @return True if it is in the shooting range otherwise false
      */
     public boolean canShoot(Coordinates monster){
-        return coordinates.distanceFrom(monster) <= shootingRange * shootingRange;
+        return coordinates.diagonalDistanceFrom(monster) <= shootingRange * shootingRange;
     }
 
     /**

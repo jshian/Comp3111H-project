@@ -4,11 +4,16 @@ import project.monsters.*;
 
 import org.apache.commons.lang3.*;
 
+import javafx.scene.image.ImageView;
+
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 public abstract class Projectile implements Arena.MovesInArena {
+    // UI
+    private ImageView imageView;
+    
     // Position
     private Coordinates coordinates;
 
@@ -20,9 +25,9 @@ public abstract class Projectile implements Arena.MovesInArena {
 
     /**
      * Constructor for the Projectile class.
-     * @param coordinates The coordinates of the pixel where the Projectile is initially located.
-     * @param target The Monster that the Projectile will pursue.
-     * @see Coordinates
+     * @param coordinates The coordinates of the pixel where the projectile is initially located.
+     * @param target The Monster that the projectile will pursue, which should not be <code>null</code>.
+     * @param speed The speed of the projectile.
      */
     public Projectile(Coordinates coordinates, Monster target, double speed) {
         this.coordinates = coordinates;
@@ -31,11 +36,12 @@ public abstract class Projectile implements Arena.MovesInArena {
     }
 
     // Inferface implementation
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public ImageView getImageView() { return imageView; }
     public Coordinates getCoordinates() { return coordinates; }
+    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void MoveOneFrame() {
         Coordinates other = target.getCoordinates();
-        double distance = coordinates.distanceFrom(other);
+        double distance = coordinates.diagonalDistanceFrom(other);
 
         if (distance <= speed)
             coordinates.update(other.getX(), other.getY());
@@ -47,8 +53,8 @@ public abstract class Projectile implements Arena.MovesInArena {
     }
 
     /**
-     * Determines whether the Projectile has reached its target.
-     * @return Whether the Projectile has reached its target.
+     * Determines whether the projectile has reached its target.
+     * @return Whether the projectile has reached its target.
      */
     public boolean hasReachedTarget() { return coordinates.isAt(target.getCoordinates()); }
 }

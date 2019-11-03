@@ -1,77 +1,117 @@
-# COMP3111 Project - Tower Defense 
+# COMP3111 Project - Tower Defense
 ## Team Information
 ID: #29 (DarkLight)
- 
+
 Course Stream: Honors
 
 Members:
  * Task 1: Ho, Chung Shun (cshoae@connect.ust.hk)
  * Task 2: SHI Jianhua (jshian@connect.ust.hk)
- * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk) 
+ * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk)
 
 ## Grading Process
+### Initialization
 1. Start the database server.
 	1. ...
 1. Clone this repository to two different lab machines. They shall be referred to as *Machine A* and *Machine B* respectively.
+### Grade Regular Task 1
 1. Do the following on Machine A:
 	1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
-		1. The arena is displayed as a square with side length 480px. (Game Physics Requirement)
-		1. The starting position on the arena is represented by the image `/src/main/resources/show-up.png`.
-		1. The end zone on the arena is represented by the image `/src/main/resources/end-zone.png`. (Regular Task 1(i))
-	1. Left-click and hold on any of the buttons that end in `Tower`. Verify the following:
-		1. The attack power, building cost and shooting range is displayed. (Game Physics Requirement)
-	1. Continue to hold left-click and move the mouse pointer around the arena. Verify the following:
-		1. A sihouette is displayed. The sihouette is represented by an image according to the tower type:
-		 * Basic Tower - `/src/main/resources/basicTower.png`
-		 * Ice Tower - `/src/main/resources/iceTower.png`
-		 * Laser Tower - `/src/main/resources/LaserTower.png`
-		1. The sihouette is located within, but does not exceed, the grid in which the mouse pointer is located (referred to as *The Grid*). (Game Physics Requirement)
-		1. If *The Grid* is inside the starting position or end-zone, it glows red.
-		1. Otherwise, *The Grid* glows green.
+		* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
+		* The starting position on the arena is represented by the image `XXX.png`. (Regular Task 1(i))
+		* The end zone on the arena is represented by the image `YYY.png`. (Regular Task 1(i))
+		* A resource count of *???* (referred to as *Resource Pool*) is displayed.
+	1. Left-click and hold on either the `Basic Tower`, `Ice Tower` or `Laser Tower` button.
+	1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
+		* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Regular Task 1(ii)(a))
+		 	* Basic Tower - `/src/main/resources/basicTower.png`
+		 	* Ice Tower - `/src/main/resources/iceTower.png`
+		 	* Laser Tower - `/src/main/resources/LaserTower.png`
+		* The *Tower Sihouette* is located within, but does not exceed, the grid in which the mouse pointer is located (referred to as *The Grid*). (Game Physics Requirement)
+		* If any one of the following is satisfied, *The Grid* glows red, indicating that the tower cannot be built there, i.e. *The Grid* is invalid. (Honors Task 1(i))
+			* *The Grid* is within the starting position.
+			* *The Grid* is within the end-zone.
+			* *The Grid* contains at least one tower.
+			* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
+			* The *Resource Pool* is lower than the tower's cost.
+			* *The Grid* contains at least one monster.
+			* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
+		* Otherwise, *The Grid* glows green, indicating that the tower can be built there, i.e. *The Grid* is valid.
+	1. Move the mouse pointer to a valid grid before releasing left-click. Verify the behaviour of attempting to build a tower in a valid grid, which are as follows:
+		* The tower is built, i.e. a solid, permament version of the *Tower Sihouette* exactly replaces the *Tower Sihouette*, and begins to exist on the arena. (Regular Task 1(ii))
+		* The cost of the tower is deducted from the *Resource Pool*. (Regular Task 1(ii)(b))
+		* *Tower Placing Mode* is exited.
+	1. Enter *Tower Placing Mode* again, but move the mouse pointer over a tower. Verify that *The Grid* glows red.
+	1. Verify the behaviour of attempting to build a tower in an invalid grid for following conditions:
+		* *The Grid* is within the starting position.
+		* *The Grid* is within the end-zone.
+		* *The Grid* contains at least one tower.
+	1. The behaviour should be as follows:
+		* The tower is not built.
+		* *Tower Placing Mode* is exited.
+	1. Enter *Tower Placing Mode* and move the mouse pointer outside the arena and release left-click. Verify that the resulting behavior is identical to that of attempting to place a tower in an invalid grid.
+	1. Enter *Tower Placing Mode* and right-click anywhere. Verify that the resulting behavior is identical to that of attempting to place a tower in an invalid grid.
+	1. Mouse over the tower previously built. Verify the following:
+		* The tower's *Tower Information* is displayed on the graphic interface. (Regular Task 1(ii)(c))
+		* The pixels within the tower's range is shaded. (Regular Task 1(ii)(c)(a))
+	1. Move the mouse pointer away from the above tower. Verify that the pixels within the tower's range are no longer shaded. (Regular Task 1(ii)(c)(a)(a))
+	1. Build a few more towers, but this time, try to enclose the starting area with the towers. Upon attempting to place the last tower that finishes the enclosure, verify the behaviour of attempting to build a tower in an invalid grid for the following condition:
+		* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
+	1. Build even more towers until the *Resource Pool* is lower than the cost of any one tower. Attempt to build a tower with cost greater than the current *Resource Pool*. Verify the behaviour of attempting to build a tower in an invalid grid for the following condition:
+		* The *Resource Pool* is lower than the tower's cost.
+	1. Also verify:
+		* A dialog box appears which prompts that there is insufficient resources to build the tower. (Regular Task 1(ii)(d))
+	1. Mouse over any one of the towers previously built, and then left-click on it. Verify the following:
+		* Two buttons `destroy the tower` and `upgrade` appear near the *Tower Information*. (Regular Task 1(ii)(e))
+	1. Right-click anywhere, including the buttons and on the tower itself. Verify the following:
+		* The *Tower Information* and two buttons disappear.
+	1. Exit the mouse pointer from the tower and left-click on it again.
+	1. Left-click on the `destroy the tower` button. Verify the following:
+		* The tower is destroyed, i.e. it disappears and no longer exists in the arena. (Regular Task 1(ii)(e)(a))
+		* The *Tower Information* and two buttons disappear.
+		* A portion of the tower cost is refunded to the *Resource Pool*.
+	1. Destroy more towers until current *Resource Pool* is greater than the upgrade cost of any one tower.
+	1. Left-click on a tower with upgrade cost lower than current *Resource Pool*. (Regular Task 1(ii)(e)(b))
+		* The tower is upgraded, i.e. its stats are improved.
+		* The upgrade cost is deducted from the *Resource Pool*.
+		* The line `<tower> is being upgraded`, where `<tower>` is the name of the tower, is printed on the console.
+	1. Build towers until current *Resource Pool* is lower than the upgrade cost of any one tower.
+	1. Left-click on a tower with upgrade cost greater than current *Resource Pool*.
+	1. Now left-click on the `upgrade` button. Verify the following: (Regular Task 1(ii)(e)(b)(a))
+		* The tower remains unupgraded, and the *Resource Pool* remains unchanged.
+		* The line `not enough resource to upgrade <tower>`, where `<tower>` is the name of the tower, is printed on the console.
+	1. Click the `Play` button. Verify the following:
+		* Monsters begin to generate at the starting position.
+		* For every monster generated, the line `<type>:<HP> generated`, where `<type>` and `<HP>` is the type and HP of the monster respectively, is printed on the console. (Regular Task 1(iii)(a))
+		* Whenever a tower attacks an enemy, the line `<tower_type>@(<tower_x>.<tower_y>) -> <monster_type>@(<monster_x>, <monster_y>)`, where `<_type>`, `<_x>` and `<_y>` represent the object's type, object center's horizontal coordinate and object center's vertical coordinate respectively, is printed on the console. (Regular Task 1(iii)(b))
+		* The attack is represented in the graphical interface. (Regular Task 1(iii)(b)(a))
+	1. Verify the behaviour of attempting to build a tower in an invalid grid for the following conditions: (Honors Task 1(ii)(a))
+		* *The Grid* is within the starting position.
+		* *The Grid* is within the end-zone.
+		* *The Grid* contains at least one tower.
+		* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
+		* *The Grid* contains at least one monster.
+		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
+	1. Verify the behaviour of attempting to build a tower in a valid grid several times. (Honors Task 1(ii)(a))
+	1. Verify the behaviour of upgrading and destroying towers using the same procedures as above.
+	1. Force close the application, and then restart it.
+	1. Click the `Simulate` button.
+	1. Attempt to enter *Tower Placing Mode*, upgrade and destroy a tower separately. Verify that this does not work. (Honors Task 1(ii))
 
 Demonstrate that the game physics fits the following requirements:
- * A monster is modeled as a point which should be roughly the center of its icon/grid.
  * A monster is always moving from a grid to an adjacent grid either horizontally or vertically.
- * The game must not allow a player to build a tower if the player does not have enough resource to build it.
  * When a monster is killed it must be removed from the arena, a certain amount of resource will be given to the player.
- * Each grid can contain at most one tower. When it contains a tower, it cannot contain any monster.
- * No tower shall be able to move. 
- * All distance used in the game should be referred as Euclidean distance, in pixels (px). 
- * All operations by the player must be done by mouse.
+ * All distance used in the game should be referred as Euclidean distance, in pixels (px).
  * A tower cannot attack a monster that is outside its shooting range. When we judge a monster is inside a tower's shooting range, the following distance will be used: the Euclidean distance between the center of the grid of where the tower is built and the center of the monster.
- * The health point (HP) of a monster will be deducted by the attack power of the tower attacking it. When HP is less than or equal to zero a monster is killed. 
+ * The health point (HP) of a monster will be deducted by the attack power of the tower attacking it. When HP is less than or equal to zero a monster is killed.
  * When there are multiple possible monster a tower can shoot (in range), it should always choose a monster that is nearest to up-left corner of the end-zone ((440, 0) in our demo).
  * It is allowed that multiple towers shoot at a monster at the same time even through only one tower is needed to kill it. This is likely to happen.
- * A monster will never move toward a grid with a tower. If a monster is already on its way to a new grid and a part of the monster body is already insider the grid, no tower will be allowed to be built on this new grid. 
- * After building a tower, all monsters on the map should have at least one valid path move toward the end-zone. Thus, the game must not allow a player to build a tower to trap a monster. 
+ * A monster will never move toward a grid with a tower. If a monster is already on its way to a new grid and a part of the monster body is already insider the grid, no tower will be allowed to be built on this new grid.
  * Each grid can contain any number of monsters as long as it does not contain a tower.
  * The game is a time-based game. The button `Next Frame` would NOT be tested in grading. It will be served as a debug button for your own interest. There are two methods to start the game: by clicking `Simulate` or `Play`. In either mode monsters will be automatically generated and the monsters will move towards the end-zone, towers will automatically fire if any monsters are in its shooting distance. In `simulate` mode, player is only allowed to build tower before the simulate button is clicked. Once the button is clicked, the player will no be clicking any button until the game is over. In `play` mode, the player is allowed to build or to upgrade tower when the game is running.
- 
- 
+
+
 Demonstrate that the following tasks have been completed:
-1. Arena Building (15)
-    1. Indicate the grid that a monster show up and the grid representing end-zone with png images. 
-    The image must shall be shown at the back when there is a monster on the grid. Create/choose your own image. (1)
-    1. Allow all types of towers to be built on all green grids using drag and drop gesture. (1)
-        1. When a tower is built, an image of the tower will be placed on the grid. Use the png files 
-        provided under `src\main\resources`. (1)
-        1. A fixed amount of resource (e.g. money, or you create your own set of resources.) is deducted 
-        and correctly display the remaining amount of resource on GUI screen after building
-        the tower. (1)
-        1. When the mouse pointer is moved over a built tower, all information related to the 
-        tower must be displayed on the graphic interface (`System.out.println` is not acceptable)) (1)
-            1. Furthermore, the pixels of the area that are inside the tower's range are shaded (you might use a circle UI). (1)
-                1. Furthermore, when the mouse is moved away from the tower, the shaded area will be restored (you are not allowed to dismiss the information/shaded pixel by clicking button, e.g. click a message box). (1)
-        1. When there is not enough resource to build a tower, the program should prompt a dialog box to warn the player (1)
-        1. When a tower is clicked, the player will be provided with two options: `destroy the tower` and `upgrade`. (1)
-            1. Furthermore, when `destroy the tower` is selected, the tower will be destroyed. (1)
-            1. Furthermore, when `upgrade` is selected, and in case there is enough resource (you can determine the resources needed) to upgrade, it will invoke the function that corresponding to 
-            upgrading the tower and a line `XXX tower is being upgraded` is printed on the console. (1)
-                1. Furthermore, in case there isn't enough resource to upgrade the tower, the upgrade will be aborted and a line `not enough resource to upgrade XXX tower` is printed on the console. (1)
-    1.  Logging the following information using `System.out.println`:
-        1. When a monster is generated. Log its type and HP in the format `<type>:<HP> generated` (1)
-        1. When a monster is attacked. Log the type and position tower attacks it and the position of the monster in the format `<tower_type>@(<x>.<y>) -> <monster_type>@(<x>, <y>)` (1)
-            1. Furthermore, represent the attack in the GUI so that the monster and the tower involved can be visually identified without reading the log. (1)
 1.  Towers (15)
     1.  All towers built in the arena will shoot a monster automatically which is inside its range (unless all towers are impossible to attack, e.g. out of range, in cool down etc). (1)      
     1.  Implement Basic Tower that has a shooting range [0,65] pixels. You can decide the attack power and other parameters of the tower. (1)
@@ -112,21 +152,21 @@ Demonstrate that the following extra tasks have been completed:
         1. Furthermore, implement the button `Play` according to the game physics. (2)
 1.  Tower
     1. Catapult attacks algorithm. Instead of throwing a stone to a particular monster, the Catapult will throw a stone
-    to a coordinate such that 
+    to a coordinate such that
         1. among all monsters falls into the attack range plus 25px (the stone radius), the one monster which
     is nearest to the end-zone will be attacked; and (1)
         1. the stone should thrown to the coordinate that hits most monsters; (2)
-        1. Rule for tie-breaking: If there are two monsters that are both considered nearest 
+        1. Rule for tie-breaking: If there are two monsters that are both considered nearest
         to the end-zone, the stone will be thrown towards the one that hits more monsters. If the same number of monsters
         are hit by the stone, choose any monster you wish. (1)
             1. Create a test case in JUnit to show your algorithm. (1)
         1. *Note: a stone can be thrown to a grid that contains a tower if it make sense. The tower will not be destroy because of that.*
 1.  Monster
     1. All monster are able to walk towards the end-zone with a shortest path (choose any path if there are two shortest paths). (1)
-        1. Furthermore, Fox is a very wise monster that will not simply walk a shortest path. Fox will try to 
+        1. Furthermore, Fox is a very wise monster that will not simply walk a shortest path. Fox will try to
         follow a path that receives a minimum number of attacks from towers by assuming that there is no other monster in Arena. (2)
 	1. Create a test case in JUnit to show your algorithm. (1)
-1.  Adopt the following technologies into your project. 
+1.  Adopt the following technologies into your project.
 	1. Use Java Persistence API or Hibernate Framework to connect to a small database that stores your game data (attributes of Towers/Monsters); (2.5% Group)
 	1. Use Java spring framework that allows the game be played in different machines while a server records the top 10 highest scores; (2.5% Group)
 

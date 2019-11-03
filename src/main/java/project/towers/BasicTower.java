@@ -6,11 +6,10 @@ import project.monsters.Monster;
 public class BasicTower extends Tower {
 
     /**
-     * Constructor for BasicTower class.
-     * @param arena The arena in which the basic tower exists.
+     * Default constructor for BasicTower class.
      */
-    public BasicTower(Arena arena){
-        super(arena);
+    public BasicTower(){
+        super();
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;
@@ -19,7 +18,7 @@ public class BasicTower extends Tower {
     @Override
     public void attackMonster(Monster monster){
         if(canShoot(monster.getCoordinates()))
-            monster.setHealth(monster.getHealth()-this.attackPower);
+            monster.setHealth((int)(monster.getHealth()-this.attackPower));
     }
 
     @Override
