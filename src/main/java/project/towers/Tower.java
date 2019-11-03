@@ -54,7 +54,7 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false
      */
     public boolean canShoot(Coordinates monster){
-        return coordinates.diagonalDistanceFrom(monster) <= shootingRange * shootingRange;
+        return coordinates.diagonalDistanceFrom(monster) <= shootingRange ;
     }
 
     /**
