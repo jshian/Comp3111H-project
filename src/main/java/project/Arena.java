@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
 import project.towers.*;
@@ -358,9 +359,11 @@ public final class Arena {
     /**
      * Destroys the specified Tower.
      * @param tower The Tower to be destroyed.
+     * @param paneArena the pane where graphic of Tower needed to be removed.
      */
-    public static void destroyTower(Tower tower)
+    public static void destroyTower(Tower tower, AnchorPane paneArena)
     {
+        paneArena.getChildren().remove(tower.getImageView());
         currentState.towers.remove(tower);
     }
 
@@ -376,9 +379,11 @@ public final class Arena {
     /**
      * Removes the specified Projectile from the arena.
      * @param projectile The Projectile to be removed.
+     * @param paneArena the pane where graphic of projectile needed to be removed.
      */
-    public static void removeProjectile(Projectile projectile)
+    public static void removeProjectile(Projectile projectile, AnchorPane paneArena)
     {
+        paneArena.getChildren().remove(projectile.getImageView());
         currentState.projectiles.remove(projectile);
     }
 
@@ -404,9 +409,11 @@ public final class Arena {
     /**
      * Removes the specified Monster from the arena.
      * @param monster The Monster to be removed.
+     * @param paneArena the pane where graphic of monster needed to be removed.
      */
-    public static void removeMonster(Monster monster)
+    public static void removeMonster(Monster monster, AnchorPane paneArena)
     {
+        paneArena.getChildren().remove(monster.getImageView());
         currentState.monsters.remove(monster);
     }
 
