@@ -14,7 +14,7 @@ import javafx.scene.image.ImageView;
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Projectile implements Arena.MovesInArena {
+public class Projectile implements Arena.MovesInArena {
     /**
      * ID for storage using Java Persistence API
      */
@@ -51,7 +51,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      * The current attack power of the projectile.
      */
     @NotNull
-    protected int attackPower;
+    private int attackPower;
 
     /**
      * Constructor for the Projectile class.
@@ -69,8 +69,10 @@ public abstract class Projectile implements Arena.MovesInArena {
 
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
-    public Coordinates getCoordinates() { return coordinates; }
+    public int getX() { return coordinates.getX(); }
+    public int getY() { return coordinates.getY(); }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
     public void MoveOneFrame() {
         double distance = coordinates.diagonalDistanceFrom(target);
 
