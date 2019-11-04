@@ -69,6 +69,8 @@ public class Catapult extends Tower {
         return false;
     }
 
+
+
     //Algorithm for selecting monster
     public Coordinates selectMonster(LinkedList<Monster> monsters,LinkedList<Monster> attackedMon){
         LinkedList<Monster> nearestMon=new LinkedList<>();
@@ -84,7 +86,24 @@ public class Catapult extends Tower {
             if(m.distanceToDestination()==nearest && canShoot(m))
                 nearestMon.add(m);
         }
-
-        return new Coordinates();
+        //find the target coordinate to attack
+        int radius = 25;
+        Coordinates target = null;
+        for (Monster m :nearestMon) {
+            int count=0;
+            for (int i = m.getX()-radius; i < m.getX()+radius; i++) {
+                for (int j = m.getY()-radius; j < m.getY()+radius; j++) {
+                    Coordinates c = new Coordinates(i,j);
+                    if (canShoot(c)){
+                        LinkedList monInCircle = c.monsterInCircle(radius);
+                        if(count < monInCircle.size()){
+                            count=monInCircle.size();
+                            target = c;
+                        }
+                    }
+                }
+            }
+        }
+        return target;
     }
 }
