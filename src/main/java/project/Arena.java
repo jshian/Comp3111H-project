@@ -311,6 +311,20 @@ public final class Arena {
         return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
+    /**
+     * Deduct resources from arena if the player has enough resources to perform the action.
+     * @param cost cost of an action.
+     * @return true if the player has enough resources or false otherwise.
+     */
+    public static boolean useResources(int cost)
+    {
+        if (cost > resources.get()) {
+            return false;
+        } else {
+            resources.setValue(resources.get() - cost);
+            return true;
+        }
+    }
 
     /**
      * Builds a Tower at the grid where a specified pixel is located.
@@ -332,8 +346,7 @@ public final class Arena {
         }
         cost = t.getBuildingCost();
 
-        if (resources.get() >= cost) {
-            resources.set( resources.get() - cost);
+        if (useResources(cost)) {
             currentState.towers.add(t);
             return t;
         } else {

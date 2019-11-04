@@ -117,6 +117,9 @@ public class UIController {
         setDragLabel();
     }
 
+    /**
+     * A function that shows next Frame of the game.
+     */
     @FXML
     private void nextFrame() {
         if (x == -1) {
@@ -132,6 +135,9 @@ public class UIController {
 
     }
 
+    /**
+     * Initialise the tower labels for drag and drop use.
+     */
     private void setDragLabel() {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
