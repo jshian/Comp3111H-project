@@ -13,15 +13,22 @@ import javafx.scene.shape.Line;
 import project.monsters.Monster;
 
 /**
- * Custom class to store 2D Cartesian coordinates of objects in the arena.
- * Also stores a link to the arena itself.
+ * Custom class to store 2D Cartesian coordinates of objects in the Arena
+ * Coordinates are in terms of pixels.
  * @see Arena
  */
 public class Coordinates implements Serializable {
     // Implement Serializable
     private static final long serialVersionUID = -1061709817920817709L;
 
+    /**
+     * The horizontal coordinate, increasing towards the right.
+     */
     private int x = 0;
+
+    /**
+     * The vertical coordinate, increasing towards the bottom.
+     */
     private int y = 0;
 
     /**

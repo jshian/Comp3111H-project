@@ -111,37 +111,12 @@ public final class Arena {
     public Arena() {}
 
     /**
-     * Finds the grid position corresponding to a specified pixel.
-     * @param coordinates The coordinates of the pixel.
-     * @return An int array that contains the x- and y- position of the grid at indices 0 and 1 respectively.
-     */
-    private static int[] getGrid(@NonNull Coordinates coordinates) {
-        int[] result = new int[2];
-        result[0] = coordinates.getX() / UIController.GRID_WIDTH;
-        result[1] = coordinates.getY() / UIController.GRID_HEIGHT;
-        return result;
-    }
-
-    /**
      * An enum for filtering objects in the Arena according to type.
      * @see Tower
      * @see Projectile
      * @see Monster
      */
     public static enum TypeFilter { Tower, Projectile, Monster }
-
-    /**
-     * Finds the center of the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
-     * @return Coordinates representing the center of the grid.
-     */
-    public static Coordinates getGridCenter(@NonNull Coordinates coordinates)
-    {
-        int[] gridPosition = getGrid(coordinates);
-
-        return new Coordinates((int) ((gridPosition[0] + 0.5) * UIController.GRID_WIDTH),
-            (int) ((gridPosition[1] + 0.5) * UIController.GRID_HEIGHT));
-    }
 
     /**
      * Finds all objects that are located at a specified pixel.
@@ -220,11 +195,11 @@ public final class Arena {
                 if (coordinates.isAt(c))
                     list.add(t);
                 else {
-                    int[] gridPosition = getGrid(c);
+                    Grid grid = Grid.findGrid(c);
     
-                    int xMin = gridPosition[0] * UIController.GRID_WIDTH;
+                    int xMin = grid.getXPos() * UIController.GRID_WIDTH;
                     int xMax = xMin + UIController.GRID_WIDTH;
-                    int yMin = gridPosition[1] * UIController.GRID_HEIGHT;
+                    int yMin = grid.getYPos() * UIController.GRID_HEIGHT;
                     int yMax = yMin + UIController.GRID_HEIGHT;
                     
                     int x = coordinates.getX();
@@ -258,36 +233,37 @@ public final class Arena {
     {
         LinkedList<Coordinates> result = new LinkedList<>();
 
-        int[] gridPosition = getGrid(coordinates);
-        int gridX = gridPosition[0];
-        int gridY = gridPosition[1];
+        Grid grid = Grid.findGrid(coordinates);
+        int gridX = grid.getXPos();
+        int gridY = grid.getYPos();
+        Coordinates gridC = grid.getCenterCoordinates();
 
         // Left neighbour
         if (gridX > 0)
             result.add(new Coordinates(
-                getGridCenter(coordinates).getX() - UIController.GRID_WIDTH,
-                getGridCenter(coordinates).getY()
+                gridC.getX() - UIController.GRID_WIDTH,
+                gridC.getY()
             ));
         
         // Right neighbour
         if (gridX < UIController.MAX_H_NUM_GRID - 1)
             result.add(new Coordinates(
-                getGridCenter(coordinates).getX() + UIController.GRID_WIDTH,
-                getGridCenter(coordinates).getY()
+                gridC.getX() + UIController.GRID_WIDTH,
+                gridC.getY()
             ));
         
         // Top neighbour
         if (gridY > 0)
             result.add(new Coordinates(
-                getGridCenter(coordinates).getX(),
-                getGridCenter(coordinates).getY() - UIController.GRID_HEIGHT
+                gridC.getX(),
+                gridC.getY() - UIController.GRID_HEIGHT
             ));
 
         // Bottom neighbour
         if (gridY < UIController.MAX_V_NUM_GRID - 1)
             result.add(new Coordinates(
-                getGridCenter(coordinates).getX(),
-                getGridCenter(coordinates).getY() + UIController.GRID_HEIGHT
+                gridC.getX(),
+                gridC.getY() + UIController.GRID_HEIGHT
             ));
 
         return result;
