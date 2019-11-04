@@ -1,5 +1,7 @@
-package project;
+package project.projectiles;
 
+import project.Arena;
+import project.Coordinates;
 import project.monsters.*;
 
 import javax.persistence.*;
@@ -35,10 +37,10 @@ public class Projectile implements Arena.MovesInArena {
     private Coordinates coordinates;
 
     /**
-     * The Monster that the projectile is travelling towards.
+     * The coordinate of Monster that the projectile is travelling towards.
      */
     @NotNull
-    private Monster target;
+    private Coordinates target;
 
     /**
      * The maximum number of pixels the projectile can travel per frame.
@@ -60,7 +62,7 @@ public class Projectile implements Arena.MovesInArena {
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public Projectile(Coordinates coordinates, Monster target, double speed, int attackPower) {
+    public Projectile(Coordinates coordinates, Coordinates target, double speed, int attackPower) {
         this.coordinates = coordinates;
         this.target = target;
         this.speed = speed;

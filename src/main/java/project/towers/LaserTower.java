@@ -3,6 +3,8 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.Projectile;
+
 import java.util.LinkedList;
 
 
@@ -63,9 +65,13 @@ public class LaserTower extends Tower{
         return false;
     }
 
+    /**
+     * Attack the nearest monster and the monster in the line.
+     * @return null always since it is immediate attack
+     */
     @Override
-    public void attackMonster(Monster monster){
-
+    public Projectile attackMonster(){
+        Monster monster = Arena.getMonsters().get(0);
         Coordinates currentPt = new Coordinates(getX(), getY());
         Coordinates edgePt = currentPt.findEdgePt(monster);
         currentPt.drawLine(edgePt);
@@ -80,6 +86,7 @@ public class LaserTower extends Tower{
                 if ((new Coordinates(x,y)).isInCircle(m,3))
                     m.setHealth((int)(m.getHealth()-this.attackPower));
         }
+        return null;
     }
 
 }

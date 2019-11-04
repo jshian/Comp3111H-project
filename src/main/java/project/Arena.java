@@ -1,6 +1,7 @@
 package project;
 
 import project.monsters.*;
+import project.projectiles.Projectile;
 import project.towers.*;
 
 import java.util.*;
