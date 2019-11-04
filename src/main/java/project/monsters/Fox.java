@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @Entity
 public class Fox extends Monster {
     /**
-     * @see Monster#Monster()
+     * @see Monster#Monster
      */
     public Fox(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
         super(difficulty, start, destination);
