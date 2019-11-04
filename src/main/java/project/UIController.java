@@ -122,7 +122,7 @@ public class UIController {
         grids[y++][x].setText("");
         grids[y][x].setText("M");
 
-        // System.out.println(arena.canBuildTower(new Coordinates()));
+
     }
 
     private void setDragLabel() {
@@ -153,9 +153,9 @@ public class UIController {
                 });
 
             	target.setOnDragEntered(e -> { // grids[y][x]
-            		//if (arena.canBuildTower(c)) {
+            		if (arena.canBuildTower(c)) {
             			target.setStyle("-fx-border-color: blue;");
-            		//}
+            		}
             		e.consume();
             	});
 
@@ -165,7 +165,6 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    System.out.println("drop");
             	    if (arena.canBuildTower(c)) {
 	            		Image img = null;
 	            		String type = null;
@@ -189,10 +188,14 @@ public class UIController {
 	                        iv.setX(x);
 	                        iv.setY(y);
                             Tower t = arena.buildTower(c, iv, type);
-                            setTowerEvent(t);
 
-	                        paneArena.getChildren().add(iv);
-	                        e.setDropCompleted(true);
+                            if (t != null) { // enough resources
+                                setTowerEvent(t);
+                                paneArena.getChildren().add(iv);
+                                e.setDropCompleted(true);
+                            } else {
+
+                            }
 
 	                    }
 	                    e.consume();
@@ -213,7 +216,9 @@ public class UIController {
 
 
             // show shooting range
-            Coordinates center = arena.getGridCenter(t.getCoordinates());
+            Coordinates coor = new Coordinates(t.getX(), t.getY());
+            Grid grid = Grid.findGrid(coor);
+            Coordinates center = grid.getCenterCoordinates();
 
             c.setCenterX(center.getX());
             c.setCenterY(center.getY());
