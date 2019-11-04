@@ -1,5 +1,6 @@
 package project;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
@@ -67,7 +68,7 @@ public final class Arena {
     /**
      * The resources the player have to build/upgrade towers.
      */
-    private static int resources = 100;
+    private static IntegerProperty resources = new SimpleIntegerProperty(200);
 
     /**
      * Describes the state of the Arena during a frame.
@@ -123,8 +124,7 @@ public final class Arena {
      * constructor of the Arena class. Bind the label to resources.
      */
     public Arena(Label resourceLabel) {
-        IntegerProperty property = new SimpleIntegerProperty(resources);
-        resourceLabel.textProperty().bind(property.asString());
+        resourceLabel.textProperty().bind(Bindings.format("Money: %d", resources));
     }
 
     /**
@@ -332,8 +332,8 @@ public final class Arena {
         }
         cost = t.getBuildingCost();
 
-        if (resources >= cost) {
-            resources -= cost;
+        if (resources.get() >= cost) {
+            resources.set( resources.get() - cost);
             currentState.towers.add(t);
             return t;
         } else {

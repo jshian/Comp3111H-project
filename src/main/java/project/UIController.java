@@ -221,6 +221,10 @@ public class UIController {
 
     }
 
+    /**
+     * add event listener to display the tower information when hover
+     * @param t the tower in the arena
+     */
     private void setTowerEvent(Tower t) {
         ImageView iv = t.getImageView();
         final Circle c = new Circle();
