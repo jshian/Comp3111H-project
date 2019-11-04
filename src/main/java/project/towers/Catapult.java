@@ -50,9 +50,9 @@ public class Catapult extends Tower {
         monster.setHealth((int)(monster.getHealth()-this.attackPower));
     }
 
-    public void attackMonsters(LinkedList<Monster> allMonster){
+    public void attackMonsters(){
         LinkedList<Monster> monsters = new LinkedList<>();
-        Coordinates coordinate= selectMonster(allMonster,monsters);
+        Coordinates coordinate= selectMonster(Arena.getMonsters(),monsters);
         throwStone(coordinate);
         for (Monster m:monsters) {
             attackMonster(m);
