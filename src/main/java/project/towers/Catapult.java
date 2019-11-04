@@ -146,4 +146,11 @@ public class Catapult extends Tower {
      */
     public void throwStone(Coordinates cor){
     }
+
+    @Override
+    public String getInformation() {
+        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"
+                + "reload time: %s\nshoot limit: %s", this.attackPower,
+                this.buildingCost, this.shootingRange, this.reload, this.shootLimit);
+    }
 }

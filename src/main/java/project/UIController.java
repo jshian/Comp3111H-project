@@ -1,5 +1,8 @@
 package project;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -45,6 +48,9 @@ public class UIController {
     @FXML
     private Label labelLaserTower;
 
+    @FXML
+    private Label remainingResources;
+
     static final int ARENA_WIDTH = 480;
     static final int ARENA_HEIGHT = 480;
     static final int GRID_WIDTH = 40;
@@ -52,8 +58,10 @@ public class UIController {
     static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
     static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
+    static enum modes {normal, simulate, play};
+    static modes mode = modes.normal;
 
-    private Arena arena = new Arena();
+    private Arena arena;
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
     private int x = -1, y = 0; //where is my monster
     /**
@@ -61,17 +69,17 @@ public class UIController {
      */
     @FXML
     private void play() {
-   	 Label newLabel = new Label();
-   	 newLabel.setLayoutX(GRID_WIDTH * 3 / 4);
-   	 newLabel.setLayoutY(GRID_WIDTH * 3 / 4);
-   	 newLabel.setMinWidth(GRID_WIDTH / 5);
-   	 newLabel.setMaxWidth(GRID_WIDTH / 5);
-   	 newLabel.setMinHeight(GRID_WIDTH / 3);
-   	 newLabel.setMaxHeight(GRID_WIDTH / 3);
-   	 newLabel.setStyle("-fx-border-color: black;");
-   	 newLabel.setText("*");
-   	 newLabel.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-   	 paneArena.getChildren().addAll(newLabel);
+        Label newLabel = new Label();
+        newLabel.setLayoutX(GRID_WIDTH * 3 / 4);
+        newLabel.setLayoutY(GRID_WIDTH * 3 / 4);
+        newLabel.setMinWidth(GRID_WIDTH / 5);
+        newLabel.setMaxWidth(GRID_WIDTH / 5);
+        newLabel.setMinHeight(GRID_WIDTH / 3);
+        newLabel.setMaxHeight(GRID_WIDTH / 3);
+        newLabel.setStyle("-fx-border-color: black;");
+        newLabel.setText("*");
+        newLabel.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+        paneArena.getChildren().addAll(newLabel);
     }
 
     /**
@@ -107,9 +115,13 @@ public class UIController {
                 paneArena.getChildren().addAll(newLabel);
             }
 
+        arena = new Arena(remainingResources);
         setDragLabel();
     }
 
+    /**
+     * A function that shows next Frame of the game.
+     */
     @FXML
     private void nextFrame() {
         if (x == -1) {
@@ -125,6 +137,9 @@ public class UIController {
 
     }
 
+    /**
+     * Initialise the tower labels for drag and drop use.
+     */
     private void setDragLabel() {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
@@ -148,7 +163,9 @@ public class UIController {
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
-                    e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    if(mode != modes.simulate) {
+                        e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    }
                     e.consume();
                 });
 
@@ -171,16 +188,16 @@ public class UIController {
 	            		Object source = e.getGestureSource();
 	            		if (source.equals(labelBasicTower)) {
 	            			img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "basic";
+	            			type = "Basic Tower";
 	            		} else if (source.equals(labelIceTower)) {
 	            			img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "ice";
+	            			type = "Ice Tower";
 	            		} else if (source.equals(labelCatapult)) {
 	            			img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "catapult";
+	            			type = "Catapult";
 	            		} else if (source.equals(labelLaserTower)) {
 	            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "laser";
+	            			type = "Laser Tower";
 	            		}
 
 	                    if (img != null) {
@@ -189,12 +206,19 @@ public class UIController {
 	                        iv.setY(y);
                             Tower t = arena.buildTower(c, iv, type);
 
-                            if (t != null) { // enough resources
+                            if (t != null) {
+                                // enough resources
                                 setTowerEvent(t);
                                 paneArena.getChildren().add(iv);
                                 e.setDropCompleted(true);
                             } else {
+                                // not enough resources
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Not enough resources");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Do not have enough resources to build " + type + "!");
 
+                                alert.showAndWait();
                             }
 
 	                    }
@@ -207,30 +231,43 @@ public class UIController {
 
     }
 
+    /**
+     * add event listener to display the tower information when hover
+     * @param t the tower in the arena
+     */
     private void setTowerEvent(Tower t) {
+        Coordinates coor = new Coordinates(t.getX(), t.getY());
+        Grid grid = Grid.findGrid(coor);
+        Coordinates center = grid.getCenterCoordinates();
+
         ImageView iv = t.getImageView();
-        final Circle c = new Circle();
-    	// on hover
+        Circle circle = new Circle();
+        Label label = new Label();
+
         iv.setOnMouseEntered(e -> {
-            // TODO: display tower information
+            // display shooting range
+            circle.setCenterX(center.getX());
+            circle.setCenterY(center.getY());
+            circle.setRadius(t.getShootingRange());
+            circle.setFill(Color.rgb(0,101,255,0.4));
+            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), circle);
 
-
-            // show shooting range
-            Coordinates coor = new Coordinates(t.getX(), t.getY());
-            Grid grid = Grid.findGrid(coor);
-            Coordinates center = grid.getCenterCoordinates();
-
-            c.setCenterX(center.getX());
-            c.setCenterY(center.getY());
-            c.setRadius(t.getShootingRange());
-            c.setFill(Color.rgb(0,101,255,0.4));
-            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), c); // add it before the ImageView
+            // display tower information
+            label.setText(t.getInformation());
+            label.setAlignment(Pos.CENTER);
+            label.setMinWidth(GRID_WIDTH * 3);
+            label.setMinHeight(GRID_HEIGHT * 2);
+            double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
+            double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
+            label.setLayoutX(positionX);
+            label.setLayoutY(positionY);
+            label.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
+            label.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+            paneArena.getChildren().add(label);
         });
-
-    	// exit
-    	// TODO: remove info & shooting range
         iv.setOnMouseExited(e -> {
-            paneArena.getChildren().remove(c);
+            // remove info & shooting range
+            paneArena.getChildren().removeAll(circle, label);
         });
 
     }

@@ -61,4 +61,11 @@ public class IceTower extends Tower{
             monster.setHealth((int)(monster.getHealth()-this.attackPower));
         }
     }
+
+    @Override
+    public String getInformation() {
+        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"
+                + "slow down: %s", this.attackPower, this.buildingCost, this.shootingRange,
+                this.slowDown);
+    }
 }
