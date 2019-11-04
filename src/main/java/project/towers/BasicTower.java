@@ -4,6 +4,9 @@ import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
+/**
+ * Basic tower has no any special ability.
+ */
 public class BasicTower extends Tower {
 
     /**

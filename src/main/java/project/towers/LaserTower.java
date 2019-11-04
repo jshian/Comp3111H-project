@@ -3,9 +3,12 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
-
 import java.util.LinkedList;
 
+
+/**
+ * LaserTower consume resources to attack monster.
+ */
 public class LaserTower extends Tower{
 
     /**

@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Catapult can attack many monsters at the same time and has high shooting range.
+ */
 public class Catapult extends Tower {
 
     /**

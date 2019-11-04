@@ -8,10 +8,23 @@ import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Towers is added by player to stop monster moving to the end zone.
+ */
 public abstract class Tower implements ExistsInArena {
+    /**
+     * ID for storage using Java Persistence API
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+
     /**
      * The ImageView that displays the monster.
      */

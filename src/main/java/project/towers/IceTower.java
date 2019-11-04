@@ -4,6 +4,9 @@ import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
+/**
+ * IceTower slow down the speed of monster without damage.
+ */
 public class IceTower extends Tower{
 
     /**
