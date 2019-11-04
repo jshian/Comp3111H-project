@@ -8,11 +8,20 @@ import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 public abstract class Tower implements ExistsInArena {
-    // UI
+    /**
+     * The ImageView that displays the monster.
+     */
+    @Transient
     protected ImageView imageView;
-    
-    // Position
+
+    /**
+     * Represents the position of the monster.
+     */
+    @NotNull
     protected Coordinates coordinates;
 
     // States
@@ -56,6 +65,14 @@ public abstract class Tower implements ExistsInArena {
      */
     public boolean canShoot(Monster monster){
         return coordinates.diagonalDistanceFrom(monster) <= shootingRange ;
+    }
+
+    /**
+     * @param coordinate the coordinate that to be shoot
+     * @return True if it is in the shooting range otherwise false
+     */
+    public boolean canShoot(Coordinates coordinate){
+        return coordinates.diagonalDistanceFrom(coordinate) <= shootingRange ;
     }
 
     /**

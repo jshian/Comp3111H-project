@@ -213,13 +213,19 @@ public class Coordinates implements Serializable {
         return this.diagonalDistanceFrom(coordinate) < radius;
     }
 
-    public LinkedList<Monster> monsterInCircle(@NonNull Coordinates coordinate, int radius){
+    /**
+     * Find out the monsters within a circle with current coordinate as center
+     * @param radius The radius of the circle
+     * @return The monsters within the circle
+     */
+    public LinkedList<Monster> monsterInCircle(int radius){
         LinkedList<Monster> monsters = new LinkedList<>();
         for (Monster m :Arena.getMonsters()) {
             if (isInCircle(m,radius))monsters.add(m);
         }
         return monsters;
     }
+
 
     public Coordinates findEdgePt(@NonNull ExistsInArena dirObj) {
         return findEdgePt(new Coordinates(dirObj.getX(), dirObj.getY()));
@@ -260,6 +266,6 @@ public class Coordinates implements Serializable {
      * @param cor The coordinates of the target.
      */
     public void drawLine(@NonNull Coordinates cor){
-        Line line = new Line(this.x,this.y,cor.x,cor.y);//ui part incomplete
+        Line line = new Line(this.x,this.y,cor.x,cor.y);
     }
 }
