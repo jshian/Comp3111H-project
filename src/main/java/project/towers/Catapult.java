@@ -40,7 +40,7 @@ public class Catapult extends Tower {
 
     }
     @Override
-    public boolean canShoot(Coordinates monster){
+    public boolean canShoot(Monster monster){
         double dis = coordinates.diagonalDistanceFrom(monster);
         return dis <= shootingRange && dis >= shootLimit;
     }
@@ -48,7 +48,6 @@ public class Catapult extends Tower {
     @Override
     public void attackMonster(Monster monster){
         LinkedList<Monster> monsters = selectMonster(Arena.getMonsters());
-        throwStone(monsters.getFirst().getCoordinates());
         for (Monster m:monsters) {
             m.setHealth((int)(m.getHealth()-this.attackPower));
         }
@@ -75,7 +74,7 @@ public class Catapult extends Tower {
         LinkedList<Monster> attackedMon = new LinkedList<>();
         int count=0;
         for (Monster m:monsters) {
-            if(canShoot(m.getCoordinates())){
+            if(canShoot(m)){
                 
             }
         }
