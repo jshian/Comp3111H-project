@@ -353,6 +353,7 @@ public final class Arena {
      */
     public static Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull String type)
     {
+        coordinates.bindByImage(iv);
         Tower t = null;
         int cost = 0;
         switch(type) {

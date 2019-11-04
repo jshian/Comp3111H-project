@@ -202,8 +202,6 @@ public class UIController {
 
 	                    if (img != null) {
 	                    	ImageView iv = new ImageView(img);
-	                        iv.setX(x);
-	                        iv.setY(y);
                             Tower t = arena.buildTower(c, iv, type);
 
                             if (t != null) {
