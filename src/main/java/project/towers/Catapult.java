@@ -10,7 +10,7 @@ import java.util.TimerTask;
 
 public class Catapult extends Tower {
     // States
-    private int reload,shootLimit;
+    private int reload,shootLimit,counter;
 
     /**
      * Default constructor for Catapult class.
@@ -22,6 +22,7 @@ public class Catapult extends Tower {
         this.shootingRange = 150;
         this.reload = 10;
         this.shootLimit = 50;
+        this.counter = reload;
     }
 
     public Catapult(Coordinates coordinates, ImageView imageView) {
@@ -56,19 +57,15 @@ public class Catapult extends Tower {
      * Attack the monsters selected by seleteMonster function and with a reload second delay
      */
     public void attackMonsters(){
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                LinkedList<Monster> monsters = new LinkedList<>();
-                Coordinates coordinate= selectMonster(Arena.getMonsters(),monsters);
-                throwStone(coordinate);
-                for (Monster m:monsters) {
-                    attackMonster(m);
-                }
+        if(counter==0) {
+            LinkedList<Monster> monsters = new LinkedList<>();
+            Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
+            throwStone(coordinate);
+            for (Monster m : monsters) {
+                attackMonster(m);
             }
-        },0,reload*1000);
-
-
+            counter = 10;
+        }else counter--;
     }
 
     @Override
@@ -88,7 +85,6 @@ public class Catapult extends Tower {
      * @param attackedMon The monsters will be attacked
      * @return The coordinate that will be attacked by Catapult
      */
-    //Algorithm for selecting monster
     public Coordinates selectMonster(LinkedList<Monster> monsters,LinkedList<Monster> attackedMon){
         LinkedList<Monster> nearestMon=new LinkedList<>();
         double nearest=0;
