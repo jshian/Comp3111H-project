@@ -1,31 +1,96 @@
 package project.towers;
 
 import project.Arena.ExistsInArena;
-
 import org.apache.commons.lang3.NotImplementedException;
-
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
+/**
+ * Towers is added by player to stop monster moving to the end zone.
+ */
 public abstract class Tower implements ExistsInArena {
-    // UI
+    /**
+     * ID for storage using Java Persistence API
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
+
+    /**
+     * The ImageView that displays the monster.
+     */
+    @Transient
     protected ImageView imageView;
-    
-    // Position
+
+    /**
+     * Represents the position of the tower.
+     */
+    @NotNull
     protected Coordinates coordinates;
 
-    // States
-    protected int attackPower, buildingCost, shootingRange;
+    /**
+     * The maximum attack power of the tower.
+     */
+    @NotNull
+    protected int maxAttackPower;
+
+    /**
+     * The current attack power of the tower. It cannot go beyond {@link #maxAttackPower}.
+     */
+    @NotNull
+    protected int attackPower;
+
+    /**
+     * The maximum building cost of the tower.
+     */
+    @NotNull
+    protected  int maxBuildingCost;
+
+    /**
+     * The current building cost of the tower. It cannot go beyond {@link #maxBuildingCost}.
+     */
+    @NotNull
+    protected  int buildingCost;
+
+    /**
+     * The maximum shooting range of the tower.
+     */
+    @NotNull
+    protected  int maxShootingRange;
+
+    /**
+     * The current shooting range of the tower. It cannot go beyond {@link #maxShootingRange}.
+     */
+    @NotNull
+    protected int shootingRange;
+
+    /**
+     * The current shooting limit of the tower. It cannot go beyond {@link #maxShootingRange}.
+     */
+    @NotNull
+    protected int shootLimit;
+
+    protected Projectile projectile;
 
     /**
      * Constructor for Tower class.
-     * @param coordinate The coordinate of tower.
+     * @param coordinates The coordinate of tower.
      */
-    public Tower(Coordinates coordinate){
-        this.coordinates = coordinate;
+    public Tower(Coordinates coordinates){
+        this.coordinates = coordinates;
     }
 
+    /**
+     * Constructor for Tower class.
+     * @param coordinates The coordinate of tower.
+     * @param imageView The image view of the tower.
+     */
     public Tower(Coordinates coordinates, ImageView imageView) {
         this.coordinates = coordinates;
         this.imageView = imageView;
@@ -39,7 +104,7 @@ public abstract class Tower implements ExistsInArena {
     public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
 
     /**
-     * Upgrade the tower for adding the power, slow duration, reload time etc
+     * Upgrade the tower by adding the power, slow duration, reload time etc.
      * @param resource The resources needed for tower to upgrade.
      * @return True if upgrade is successful, otherwise false.
      */
@@ -50,12 +115,23 @@ public abstract class Tower implements ExistsInArena {
      * @param monster The monster closest to the destination was attacked
      */
     protected abstract void attackMonster(Monster monster);
+
     /**
-     * @param monster the monster who to be shoot
-     * @return True if it is in the shooting range otherwise false
+     * To determine whether the monster is in shooting range or not.
+     * @param monster the monster who to be shoot.
+     * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Monster monster){
         return coordinates.diagonalDistanceFrom(monster) <= shootingRange ;
+    }
+
+    /**
+     * To determine whether the coordinate is in the shooting range or not.
+     * @param coordinate the coordinate that to be shoot.
+     * @return True if it is in the shooting range otherwise false.
+     */
+    public boolean canShoot(Coordinates coordinate){
+        return this.coordinates.diagonalDistanceFrom(coordinate) <= shootingRange ;
     }
 
     /**
