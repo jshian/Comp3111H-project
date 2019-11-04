@@ -88,9 +88,7 @@ public class Coordinates implements Serializable {
      * @param other The other object.
      * @return Whether the two Coordinate objects represent the same Cartesian coordinates.
      */
-    public boolean isAt(@NonNull Coordinates other) {
-        return (taxicabDistanceFrom(other)) == 0;
-    }
+    public boolean isAt(@NonNull Coordinates other) { return (taxicabDistanceFrom(other)) == 0; }
 
     /**
      * Calculates the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
@@ -108,7 +106,7 @@ public class Coordinates implements Serializable {
      * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public int taxicabDistanceFrom(@NonNull Coordinates other) {
-        return this.x - other.x + this.y - other.y;
+        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
     }
 
     /**
