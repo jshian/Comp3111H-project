@@ -1,5 +1,6 @@
 package project;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,6 +47,9 @@ public class UIController {
     @FXML
     private Label labelLaserTower;
 
+    @FXML
+    private Label remainingResources;
+
     static final int ARENA_WIDTH = 480;
     static final int ARENA_HEIGHT = 480;
     static final int GRID_WIDTH = 40;
@@ -54,7 +58,7 @@ public class UIController {
     static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
 
-    private Arena arena = new Arena();
+    private Arena arena;
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
     private int x = -1, y = 0; //where is my monster
     /**
@@ -107,7 +111,9 @@ public class UIController {
                 grids[i][j] = newLabel;
                 paneArena.getChildren().addAll(newLabel);
             }
-
+        System.out.println(remainingResources.textProperty());
+        arena = new Arena(remainingResources);
+        System.out.println(remainingResources.textProperty());
         setDragLabel();
     }
 

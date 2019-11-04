@@ -1,5 +1,9 @@
 package project;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.control.Label;
+import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
 import project.towers.*;
 
@@ -103,7 +107,7 @@ public final class Arena {
     /**
      * The ArenaState of the previous frame. Only used for saving the game.
      */
-    private static ArenaState shadowState;
+    private static ArenaState shadowState = null;
 
     /**
      * The ArenaState of the current frame.
@@ -114,6 +118,14 @@ public final class Arena {
      * The default constructor of the Arena class.
      */
     public Arena() {}
+
+    /**
+     * constructor of the Arena class. Bind the label to resources.
+     */
+    public Arena(Label resourceLabel) {
+        IntegerProperty property = new SimpleIntegerProperty(resources);
+        resourceLabel.textProperty().bind(property.asString());
+    }
 
     /**
      * An enum for filtering objects in the Arena according to type.
