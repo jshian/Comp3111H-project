@@ -58,6 +58,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      * @param coordinates The coordinates of the pixel where the projectile is initially located.
      * @param target The Monster that the projectile will pursue, which should not be <code>null</code>.
      * @param speed The speed of the projectile.
+     * @param attackPower The attack power of the projectile.
      */
     public Projectile(Coordinates coordinates, Monster target, double speed, int attackPower) {
         this.coordinates = coordinates;
