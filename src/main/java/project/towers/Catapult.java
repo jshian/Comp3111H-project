@@ -8,15 +8,28 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Catapult can attack many monsters at the same time and has high shooting range.
+ */
 public class Catapult extends Tower {
-    // States
-    private int reload,shootLimit,counter;
 
     /**
-     * Default constructor for Catapult class.
+     * The reload time for catapult after it attack monsters.
      */
-    public Catapult(Coordinates coordinate){
-        super(coordinate);
+    private int reload;
+
+    /**
+     * The counter used to count the reload time.
+     */
+    private int counter;
+
+
+    /**
+     * Constructor of catapult.
+     * @param coordinates The coordinate of catapult.
+     */
+    public Catapult(Coordinates coordinates){
+        super(coordinates);
         this.attackPower = 25;
         this.buildingCost = 20;
         this.shootingRange = 150;
@@ -25,6 +38,11 @@ public class Catapult extends Tower {
         this.counter = reload;
     }
 
+    /**
+     * Constructor of catapult.
+     * @param coordinates The coordinate of catapult.
+     * @param imageView The image view of catapult.
+     */
     public Catapult(Coordinates coordinates, ImageView imageView) {
         super(coordinates, imageView);
         this.attackPower = 25;
@@ -34,14 +52,25 @@ public class Catapult extends Tower {
         this.shootLimit = 50;
     }
 
+    /**
+     * Catapult decreases its reload time when it upgraded.
+     * @param resource The resources needed for tower to upgrade.
+     * @return True if upgrade is successful, otherwise false.
+     */
+    @Override
+    public boolean upgrade(int resource){
+        if(resource >= 20){
+            if(reload>0)reload-=1;
+            return true;
+        }
+        return false;
+    }
 
     /**
-     * Throw stone to certain position.
-     * @param cor The coordinate of the target.
+     * The shooting range of catapult is smaller than shooting range but higher than shooting limit.
+     * @param monster the monster who to be shoot.
+     * @return True if it is in the shooting range otherwise false.
      */
-    public void throwStone(Coordinates cor){
-
-    }
     @Override
     public boolean canShoot(Monster monster){
         double dis = coordinates.diagonalDistanceFrom(monster);
@@ -67,16 +96,6 @@ public class Catapult extends Tower {
             counter = 10;
         }else counter--;
     }
-
-    @Override
-    public boolean upgrade(int resource){
-        if(resource >= 20){
-            if(reload>0)reload-=1;
-            return true;
-        }
-        return false;
-    }
-
 
     /**
      * Find a coordinate as the center of a circle with radius 25px that contains most monster
@@ -118,5 +137,13 @@ public class Catapult extends Tower {
             }
         }
         return target;
+    }
+
+
+    /**
+     * Throw stone to certain position.
+     * @param cor The coordinate of the target.
+     */
+    public void throwStone(Coordinates cor){
     }
 }

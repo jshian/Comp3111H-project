@@ -3,23 +3,36 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
-
 import java.util.LinkedList;
 
+
+/**
+ * LaserTower consume resources to attack monster.
+ */
 public class LaserTower extends Tower{
-    // State
+
+    /**
+     * The consumption of resources by laser tower each time.
+     */
     private int consume;
 
-
-    public LaserTower(Coordinates coordinate){
-        super(coordinate);
+    /**
+     * Constructor of laser tower.
+     * @param coordinates The coordinates of laser tower.
+     */
+    public LaserTower(Coordinates coordinates){
+        super(coordinates);
         this.attackPower = 30;
         this.buildingCost = 20;
         this.shootingRange = 50;
         this.consume = 2;
     }
 
-
+    /**
+     * Constructor of laser tower.
+     * @param coordinates The coordinates of laser tower.
+     * @param imageView The image view of laser tower.
+     */
     public LaserTower(Coordinates coordinates, ImageView imageView) {
         super(coordinates, imageView);
         this.attackPower = 30;
@@ -35,6 +48,20 @@ public class LaserTower extends Tower{
         player.spendResources(consume);
     }
 
+
+    /**
+     * Laser tower increases its attack power when it upgraded.
+     * @param resource The resources needed for tower to upgrade.
+     * @return True if upgrade is successful, otherwise false.
+     */
+    @Override
+    public boolean upgrade(int resource){
+        if(resource >= 10){
+            this.attackPower+=5;
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void attackMonster(Monster monster){
@@ -55,12 +82,4 @@ public class LaserTower extends Tower{
         }
     }
 
-    @Override
-    public boolean upgrade(int resource){
-        if(resource >= 10){
-            this.attackPower+=5;
-            return true;
-        }
-        return false;
-    }
 }

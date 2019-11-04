@@ -199,24 +199,30 @@ public class Coordinates implements Serializable {
         return Math.abs(this.angleFrom(endPt)-this.angleFrom(testPt)) < error;
     }
 
+    /**
+     * Test whether a point is within a circle of current object as the center.
+     * @param obj The object which to be tested.
+     * @param radius the radius of the circle with current point as the center.
+     * @return True if the tested coordinate is in the circle, otherwise false.
+     */
     public boolean isInCircle(@NonNull ExistsInArena obj, int radius) {
         return isInCircle(new Coordinates(obj.getX(), obj.getY()),radius);
     }
 
     /**
-     * Test whether a point is within a circle of current point as the center
-     * @param coordinate The coordinate which to be tested
-     * @param radius the radius of the circle with current point as the center
-     * @return True if the tested coordinate is in the circle, otherwise false
+     * Test whether a point is within a circle of current point as the center.
+     * @param coordinate The coordinate which to be tested.
+     * @param radius the radius of the circle with current point as the center.
+     * @return True if the tested coordinate is in the circle, otherwise false.
      */
     public boolean isInCircle(@NonNull Coordinates coordinate, int radius) {
         return this.diagonalDistanceFrom(coordinate) < radius;
     }
 
     /**
-     * Find out the monsters within a circle with current coordinate as center
-     * @param radius The radius of the circle
-     * @return The monsters within the circle
+     * Find out the monsters within a circle with current coordinate as center.
+     * @param radius The radius of the circle.
+     * @return The monsters within the circle.
      */
     public LinkedList<Monster> monsterInCircle(int radius){
         LinkedList<Monster> monsters = new LinkedList<>();
@@ -226,15 +232,19 @@ public class Coordinates implements Serializable {
         return monsters;
     }
 
-
+    /**
+     * Find the point in the edge which is in the line of the current point and given object.
+     * @param dirObj The object will form a extended line with the current point.
+     * @return The point in the edge of the extended line
+     */
     public Coordinates findEdgePt(@NonNull ExistsInArena dirObj) {
         return findEdgePt(new Coordinates(dirObj.getX(), dirObj.getY()));
     }
 
     /**
-     * Find the point in the edge which is in the line of the current point and given point
-     * @param dirPt The point will form a extended line with the current point
-     * @return  The point in the edge of the extended line
+     * Find the point in the edge which is in the line of the current point and given point.
+     * @param dirPt The point will form a extended line with the current point.
+     * @return  The point in the edge of the extended line.
      */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
         for (int y = 0; y <= UIController.ARENA_HEIGHT; ++y){
