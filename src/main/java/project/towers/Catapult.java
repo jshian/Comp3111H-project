@@ -52,6 +52,9 @@ public class Catapult extends Tower {
         monster.setHealth((int)(monster.getHealth()-this.attackPower));
     }
 
+    /**
+     * Attack the monsters selected by seleteMonster function and with a reload second delay
+     */
     public void attackMonsters(){
         new Timer().schedule(new TimerTask() {
             @Override
@@ -78,7 +81,13 @@ public class Catapult extends Tower {
     }
 
 
-
+    /**
+     * Find a coordinate as the center of a circle with radius 25px that contains most monster
+     * The monster nearest to the end zone and in Catapult's shooting range will be include in the circle
+     * @param monsters The monsters exist in Arena
+     * @param attackedMon The monsters will be attacked
+     * @return The coordinate that will be attacked by Catapult
+     */
     //Algorithm for selecting monster
     public Coordinates selectMonster(LinkedList<Monster> monsters,LinkedList<Monster> attackedMon){
         LinkedList<Monster> nearestMon=new LinkedList<>();
@@ -98,7 +107,7 @@ public class Catapult extends Tower {
         int radius = 25;
         Coordinates target = null;
         for (Monster m :nearestMon) {
-            int count=0;
+            int count=0;//count number of monster in the circle
             for (int i = m.getX()-radius; i < m.getX()+radius; i++) {
                 for (int j = m.getY()-radius; j < m.getY()+radius; j++) {
                     Coordinates c = new Coordinates(i,j);

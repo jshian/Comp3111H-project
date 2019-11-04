@@ -10,9 +10,7 @@ public class LaserTower extends Tower{
     // State
     private int consume;
 
-    /**
-     * Constructor for LaserTower class.
-     */
+
     public LaserTower(Coordinates coordinate){
         super(coordinate);
         this.attackPower = 30;
@@ -20,6 +18,7 @@ public class LaserTower extends Tower{
         this.shootingRange = 50;
         this.consume = 2;
     }
+
 
     public LaserTower(Coordinates coordinates, ImageView imageView) {
         super(coordinates, imageView);
@@ -35,6 +34,7 @@ public class LaserTower extends Tower{
     public void consumeResource(Player player){
         player.spendResources(consume);
     }
+
 
     @Override
     public void attackMonster(Monster monster){

@@ -8,11 +8,20 @@ import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
 
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 public abstract class Tower implements ExistsInArena {
-    // UI
+    /**
+     * The ImageView that displays the monster.
+     */
+    @Transient
     protected ImageView imageView;
-    
-    // Position
+
+    /**
+     * Represents the position of the monster.
+     */
+    @NotNull
     protected Coordinates coordinates;
 
     // States
