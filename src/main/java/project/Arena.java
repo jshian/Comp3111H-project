@@ -61,9 +61,14 @@ public final class Arena {
     private static final int WAVE_INTERVAL = 300;
 
     /**
+     * The resources the player have to build/upgrade towers.
+     */
+    private static int resources = 100;
+
+    /**
      * Describes the state of the Arena during a frame.
      */
-    private class ArenaState {
+    private static class ArenaState {
         /**
          * Contains a reference to each Tower on the Arena.
          * @see Tower
@@ -103,12 +108,12 @@ public final class Arena {
     /**
      * The ArenaState of the current frame.
      */
-    private static ArenaState currentState;
+    private static ArenaState currentState = new ArenaState();
 
     /**
      * The default constructor of the Arena class.
      */
-    private Arena() {}
+    public Arena() {}
 
     /**
      * An enum for filtering objects in the Arena according to type.
@@ -205,7 +210,7 @@ public final class Arena {
                     int x = coordinates.getX();
                     int y = coordinates.getY();
 
-                    if (xMin <= x && x <= xMax && yMin <= y && y <= yMax)
+                    if (xMin <= x && x < xMax && yMin <= y && y < yMax)
                         list.add(t);
                 }
             }
@@ -294,13 +299,35 @@ public final class Arena {
         return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
+
     /**
      * Builds a Tower at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
+     * @param iv ImageView of the tower
+     * @param type specify the class of tower.
+     * @return the tower being built, or null if not enough resources
      */
-    public static void buildTower(@NonNull Coordinates coordinates)
+    public static Tower buildTower(@NonNull Coordinates coordinates, ImageView iv, String type)
     {
-        throw new NotImplementedException("TODO");
+        Tower t = null;
+        int cost = 0;
+        switch(type) {
+            case "basic": t = new BasicTower(coordinates, iv); break;
+            case "ice": t = new IceTower(coordinates, iv); break;
+            case "catapult": t = new Catapult(coordinates, iv); break;
+            case "laser": t = new LaserTower(coordinates, iv); break;
+            default: return null;
+        }
+        cost = t.getBuildingCost();
+
+        if (resources >= cost) {
+            resources -= cost;
+            currentState.towers.add(t);
+            return t;
+        } else {
+            return null;
+        }
+
     }
 
     /**

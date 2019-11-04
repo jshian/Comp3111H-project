@@ -1,13 +1,13 @@
-# COMP3111 Project - Tower Defense 
+# COMP3111 Project - Tower Defense
 ## Team Information
 ID: #29 (DarkLight)
- 
+
 Course Stream: Honors
 
 Members:
- * Task 1: *Name* (cshoae@connect.ust.hk)
+ * Task 1: Ho, Chung Shun (cshoae@connect.ust.hk)
  * Task 2: SHI Jianhua (jshian@connect.ust.hk)
- * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk) 
+ * Task 3: LEUNG, Tin Long (tlleungac@connect.ust.hk)
 
 ## Grading Process
 ### Initialization

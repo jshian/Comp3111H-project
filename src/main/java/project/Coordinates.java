@@ -10,6 +10,7 @@ import java.util.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.shape.Line;
+import project.monsters.Monster;
 
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the Arena
@@ -87,9 +88,7 @@ public class Coordinates implements Serializable {
      * @param other The other object.
      * @return Whether the two Coordinate objects represent the same Cartesian coordinates.
      */
-    public boolean isAt(@NonNull Coordinates other) {
-        return (taxicabDistanceFrom(other)) == 0;
-    }
+    public boolean isAt(@NonNull Coordinates other) { return (taxicabDistanceFrom(other)) == 0; }
 
     /**
      * Calculates the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
@@ -107,7 +106,7 @@ public class Coordinates implements Serializable {
      * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public int taxicabDistanceFrom(@NonNull Coordinates other) {
-        return this.x - other.x + this.y - other.y;
+        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
     }
 
     /**
@@ -115,8 +114,8 @@ public class Coordinates implements Serializable {
      * @param other The object in the arena.
      * @return The the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
-    public int diagonalDistanceFrom(@NonNull ExistsInArena other) {
-        return taxicabDistanceFrom(new Coordinates(other.getX(), other.getY()));
+    public double diagonalDistanceFrom(@NonNull ExistsInArena other) {
+        return diagonalDistanceFrom(new Coordinates(other.getX(), other.getY()));
     }
 
     /**
@@ -187,7 +186,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Test whether a point is within a certain error of a line defined by this point and another point, extending towards infinity.
-     * @param endPt The other point of the line, whic should not be at the same coordinates as this object.
+     * @param endPt The other point of the line, which should not be at the same coordinates as this object.
      * @param testPt The point to be tested.
      * @param error Allowable error in terms of radians.
      * @return Whether the test point is within the specified error of the line.
@@ -200,33 +199,49 @@ public class Coordinates implements Serializable {
         return Math.abs(this.angleFrom(endPt)-this.angleFrom(testPt)) < error;
     }
 
-    //dont know how to implement
-    public boolean isInArea(@NonNull ExistsInArena endObj, @NonNull ExistsInArena testObj) {
-        return isInArea(new Coordinates(endObj.getX(), endObj.getY()), new Coordinates(testObj.getX(), testObj.getY()));
-    }
-    public boolean isInArea(@NonNull Coordinates endPt, @NonNull ExistsInArena testObj) {
-        return isInArea(endPt, new Coordinates(testObj.getX(), testObj.getY()));
-    }
-    public boolean isInArea(@NonNull Coordinates endPt, @NonNull Coordinates testPt) {
-        return false;
+    public boolean isInCircle(@NonNull ExistsInArena obj, int radius) {
+        return isInCircle(new Coordinates(obj.getX(), obj.getY()),radius);
     }
 
-    //problematic: the size of arena is unknown
+    /**
+     * Test whether a point is within a circle of current point as the center
+     * @param coordinate The coordinate which to be tested
+     * @param radius the radius of the circle with current point as the center
+     * @return True if the tested coordinate is in the circle, otherwise false
+     */
+    public boolean isInCircle(@NonNull Coordinates coordinate, int radius) {
+        return this.diagonalDistanceFrom(coordinate) < radius;
+    }
+
+    public LinkedList<Monster> monsterInCircle(@NonNull Coordinates coordinate, int radius){
+        LinkedList<Monster> monsters = new LinkedList<>();
+        for (Monster m :Arena.getMonsters()) {
+            if (isInCircle(m,radius))monsters.add(m);
+        }
+        return monsters;
+    }
+
     public Coordinates findEdgePt(@NonNull ExistsInArena dirObj) {
         return findEdgePt(new Coordinates(dirObj.getX(), dirObj.getY()));
     }
+
+    /**
+     * Find the point in the edge which is in the line of the current point and given point
+     * @param dirPt The point will form a extended line with the current point
+     * @return  The point in the edge of the extended line
+     */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
-        for (int row = 0; row <= UIController.ARENA_WIDTH; ++row){
-            if(this.isInLine(dirPt,new Coordinates(0,row)))
-                return new Coordinates(0,row);
-            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_WIDTH,row)))
-                return new Coordinates(UIController.ARENA_WIDTH,row);
+        for (int y = 0; y <= UIController.ARENA_HEIGHT; ++y){
+            if(this.isInLine(dirPt,new Coordinates(0,y)))
+                return new Coordinates(0,y);
+            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_HEIGHT,y)))
+                return new Coordinates(UIController.ARENA_HEIGHT,y);
         }
-        for (int col = 0; col <= UIController.ARENA_HEIGHT; ++col){
-            if(this.isInLine(dirPt,new Coordinates(col,0)))
-                return new Coordinates(col,0);
-            if(this.isInLine(dirPt,new Coordinates(col,UIController.ARENA_HEIGHT)))
-                return new Coordinates(col,UIController.ARENA_HEIGHT);
+        for (int x = 0; x <= UIController.ARENA_WIDTH; ++x){
+            if(this.isInLine(dirPt,new Coordinates(x,0)))
+                return new Coordinates(x,0);
+            if(this.isInLine(dirPt,new Coordinates(x,UIController.ARENA_WIDTH)))
+                return new Coordinates(x,UIController.ARENA_WIDTH);
         }
         return dirPt;//for ignoring warning
 
@@ -234,7 +249,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Draw a line from the laser tower to certain position.
-     * @param cor The target.
+     * @param obj The target.
      */
     public void drawLine(@NonNull ExistsInArena obj){
         drawLine(new Coordinates(obj.getX(),obj.getY()));

@@ -19,10 +19,16 @@ public abstract class Tower implements ExistsInArena {
     protected int attackPower, buildingCost, shootingRange;
 
     /**
-     * Default constructor for Tower class.
+     * Constructor for Tower class.
+     * @param coordinate The coordinate of tower.
      */
-    public Tower() {
-        this.coordinates = new Coordinates();
+    public Tower(Coordinates coordinate){
+        this.coordinates = coordinate;
+    }
+
+    public Tower(Coordinates coordinates, ImageView imageView) {
+        this.coordinates = coordinates;
+        this.imageView = imageView;
     }
 
     // Inferface implementation
@@ -43,14 +49,13 @@ public abstract class Tower implements ExistsInArena {
      * Decrease the health, speed etc of the attacked monster
      * @param monster The monster closest to the destination was attacked
      */
-    public abstract void attackMonster(Monster monster);
-
+    protected abstract void attackMonster(Monster monster);
     /**
      * @param monster the monster who to be shoot
      * @return True if it is in the shooting range otherwise false
      */
     public boolean canShoot(Monster monster){
-        return coordinates.diagonalDistanceFrom(monster) <= shootingRange * shootingRange;
+        return coordinates.diagonalDistanceFrom(monster) <= shootingRange ;
     }
 
     /**
