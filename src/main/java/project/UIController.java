@@ -239,38 +239,35 @@ public class UIController {
         Coordinates coor = new Coordinates(t.getX(), t.getY());
         Grid grid = Grid.findGrid(coor);
         Coordinates center = grid.getCenterCoordinates();
+
         ImageView iv = t.getImageView();
+        Circle circle = new Circle();
+        Label label = new Label();
 
-        Circle c = new Circle();
-        c.setCenterX(center.getX());
-        c.setCenterY(center.getY());
-        c.setRadius(t.getShootingRange());
-        c.setFill(Color.rgb(0,101,255,0.4));
-
-        Label newLabel = new Label(t.getInformation());
-        newLabel.setAlignment(Pos.CENTER);
-        newLabel.setMinWidth(GRID_WIDTH * 3);
-        newLabel.setMinHeight(GRID_HEIGHT * 2);
-        double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
-        double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
-        newLabel.setLayoutX(positionX);
-        newLabel.setLayoutY(positionY);
-        newLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
-        newLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
-
-        // on hover
         iv.setOnMouseEntered(e -> {
-            // show shooting range
-            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), c); // add it before the ImageView
+            // display shooting range
+            circle.setCenterX(center.getX());
+            circle.setCenterY(center.getY());
+            circle.setRadius(t.getShootingRange());
+            circle.setFill(Color.rgb(0,101,255,0.4));
+            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), circle);
 
             // display tower information
-            paneArena.getChildren().add(newLabel);
+            label.setText(t.getInformation());
+            label.setAlignment(Pos.CENTER);
+            label.setMinWidth(GRID_WIDTH * 3);
+            label.setMinHeight(GRID_HEIGHT * 2);
+            double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
+            double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
+            label.setLayoutX(positionX);
+            label.setLayoutY(positionY);
+            label.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
+            label.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+            paneArena.getChildren().add(label);
         });
-
-    	// exit
         iv.setOnMouseExited(e -> {
             // remove info & shooting range
-            paneArena.getChildren().removeAll(c, newLabel);
+            paneArena.getChildren().removeAll(circle, label);
         });
 
     }
