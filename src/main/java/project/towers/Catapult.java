@@ -46,10 +46,16 @@ public class Catapult extends Tower {
     }
 
     @Override
-    public void attackMonster(Monster monster){
-        LinkedList<Monster> monsters = selectMonster(Arena.getMonsters());
+    protected void attackMonster(Monster monster){
+        monster.setHealth((int)(monster.getHealth()-this.attackPower));
+    }
+
+    public void attackMonsters(LinkedList<Monster> allMonster){
+        LinkedList<Monster> monsters = new LinkedList<>();
+        Coordinates coordinate= selectMonster(allMonster,monsters);
+        throwStone(coordinate);
         for (Monster m:monsters) {
-            m.setHealth((int)(m.getHealth()-this.attackPower));
+            attackMonster(m);
         }
         new Thread(){
             public void run(){
@@ -70,14 +76,13 @@ public class Catapult extends Tower {
     }
 
     //Algorithm for selecting monster
-    public LinkedList<Monster> selectMonster(LinkedList<Monster> monsters){
-        LinkedList<Monster> attackedMon = new LinkedList<>();
+    public Coordinates selectMonster(LinkedList<Monster> monsters,LinkedList<Monster> attackedMon){
         int count=0;
         for (Monster m:monsters) {
             if(canShoot(m)){
                 
             }
         }
-        return attackedMon;
+        return new Coordinates();
     }
 }
