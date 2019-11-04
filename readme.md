@@ -14,18 +14,19 @@ Members:
 1. Start the database server.
 	1. ...
 1. Clone this repository to two different lab machines. They shall be referred to as *Machine A* and *Machine B* respectively.
-### Grade Regular Task 1
+### Grade Task 1
 1. Do the following on Machine A:
 	1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
 		* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
-		* The starting position on the arena is represented by the image `XXX.png`. (Regular Task 1(i))
-		* The end zone on the arena is represented by the image `YYY.png`. (Regular Task 1(i))
+		* The starting position on the arena is represented by the image `show-up.png`. (Regular Task 1(i))
+		* The end zone on the arena is represented by the image `end-zone.png`. (Regular Task 1(i))
 		* A resource count of *???* (referred to as *Resource Pool*) is displayed.
-	1. Left-click and hold on either the `Basic Tower`, `Ice Tower` or `Laser Tower` button.
+	1. Left-click and hold on either the `Basic Tower`, `Ice Tower`, `Catapult` or `Laser Tower` button.
 	1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
 		* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Regular Task 1(ii)(a))
 		 	* Basic Tower - `/src/main/resources/basicTower.png`
 		 	* Ice Tower - `/src/main/resources/iceTower.png`
+			* Catapult - `/src/main/resources/catapult.png`
 		 	* Laser Tower - `/src/main/resources/LaserTower.png`
 		* The *Tower Sihouette* is located within, but does not exceed, the grid in which the mouse pointer is located (referred to as *The Grid*). (Game Physics Requirement)
 		* If any one of the following is satisfied, *The Grid* glows red, indicating that the tower cannot be built there, i.e. *The Grid* is invalid. (Honors Task 1(i))
@@ -80,9 +81,9 @@ Members:
 	1. Now left-click on the `upgrade` button. Verify the following: (Regular Task 1(ii)(e)(b)(a))
 		* The tower remains unupgraded, and the *Resource Pool* remains unchanged.
 		* The line `not enough resource to upgrade <tower>`, where `<tower>` is the name of the tower, is printed on the console.
-	1. Click the `Play` button. Verify the following:
-		* Monsters begin to generate at the starting position.
-		* For every monster generated, the line `<type>:<HP> generated`, where `<type>` and `<HP>` is the type and HP of the monster respectively, is printed on the console. (Regular Task 1(iii)(a))
+	1. Click the `Play` button to start the game in `play` mode. Verify the following:
+		* The game is run in real-time. (Game Physics Requirement)
+		* Monsters begin to generate at the starting position. For every monster generated, the line `<type>:<HP> generated`, where `<type>` and `<HP>` is the type and HP of the monster respectively, is printed on the console. (Regular Task 1(iii)(a))
 		* Whenever a tower attacks an enemy, the line `<tower_type>@(<tower_x>.<tower_y>) -> <monster_type>@(<monster_x>, <monster_y>)`, where `<_type>`, `<_x>` and `<_y>` represent the object's type, object center's horizontal coordinate and object center's vertical coordinate respectively, is printed on the console. (Regular Task 1(iii)(b))
 		* The attack is represented in the graphical interface. (Regular Task 1(iii)(b)(a))
 	1. Verify the behaviour of attempting to build a tower in an invalid grid for the following conditions: (Honors Task 1(ii)(a))
@@ -94,41 +95,43 @@ Members:
 		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
 	1. Verify the behaviour of attempting to build a tower in a valid grid several times. (Honors Task 1(ii)(a))
 	1. Verify the behaviour of upgrading and destroying towers using the same procedures as above.
-	1. Force close the application, and then restart it.
-	1. Click the `Simulate` button.
-	1. Attempt to enter *Tower Placing Mode*, upgrade and destroy a tower separately. Verify that this does not work. (Honors Task 1(ii))
+	1. Close the application, and then restart it using the same `.jar` file.
+	1. Click the `Simulate` button to start the game in `simulate` mode.
+	1. Separately, attempt to enter *Tower Placing Mode*, upgrade and destroy a tower. Verify that none of these work. (Honors Task 1(ii))
+	1. Close the application.
+### Grade Task 2
+1. Do the following on Machine A:
+	1. Start the application using the same `.jar` file as Task 1.
+	1. Start the game in `play` mode.
+	1. Build one of each tower, namely Basic Tower, Ice Tower, Catapult and Laser Tower. Verify the following:
+		* Each tower shoots at monsters automatically while the Euclidean distance between the center of the grid of where the tower is built and the center of the monster is within the interval defined by the tower's minimum and maximum range. (Regular Task 2(i))
+		* Each tower hits the monster that is closest to top-left corner of the end-zone. (Game Physics Requirement)
+		* Monsters that are hit take damage equal to the attack power of the tower. You can view a monster's health points by mousing over it. (Game Physics Requirement)
+	1. Verify that the Basic Tower has a minimum range of `0` pixels and a maximum range of `65` pixels. (Regular Task 2(ii))
+	1. Upgrade the Basic Tower. Verify that its attack power has been increased. (Regular Task 2(ii)(a))
+	1. Verify that the Ice Tower causes any monster it hits to become noticeably slower. (Regular Task 2(iii))
+	1. Upgrade the Ice Tower. Verify that the duration of the slow effect has been extended. (Regular Task 2(iii)(a))
+	1. Verify the following about the Catapult:
+		* It has a minimum range of `50` pixels and a maximum range of `150` pixels. (Regular Task 2(iv)(a))
+		* Any monster within `25` pixels of the location where the stone lands is hit. (Regular Task 2(iv)(b))
+		* After the stone is thrown, the Catapult takes some time to reload. During that time, it cannot fire at any monsters. (Regular Task 2(iv)(c))
+	1. Upgrade the Catapult. Verify that the time required to reload it has been reduced. (Regular Task 2(iv)(c)(a))
+	1. Verify the following about the Laser Tower:
+		* Every time it fires, the *Resource Pool* is reduced. (Task 2(v)(a))
+		* When it fires, a line is drawn from the center of the tower to the monster. The line extends to the edge of the arena. (Task 2(v)(b))
+		* Any monster within `3` pixels of the line is hit. (Task 2(v)(b)(a))
+	1. Upgrade the Laser Tower. Verify that its attack power has been increased. (Regular Task 2(v)(c))
+	1. Close the application.
+	1. Open the project using Eclipse IDE and run the Gradle task `XXX` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
+	
 
-Demonstrate that the game physics fits the following requirements:
+Demonstrate that the game fits the following requirements:
  * A monster is always moving from a grid to an adjacent grid either horizontally or vertically.
  * When a monster is killed it must be removed from the arena, a certain amount of resource will be given to the player.
- * All distance used in the game should be referred as Euclidean distance, in pixels (px). 
- * A tower cannot attack a monster that is outside its shooting range. When we judge a monster is inside a tower's shooting range, the following distance will be used: the Euclidean distance between the center of the grid of where the tower is built and the center of the monster.
- * The health point (HP) of a monster will be deducted by the attack power of the tower attacking it. When HP is less than or equal to zero a monster is killed. 
- * When there are multiple possible monster a tower can shoot (in range), it should always choose a monster that is nearest to up-left corner of the end-zone ((440, 0) in our demo).
- * It is allowed that multiple towers shoot at a monster at the same time even through only one tower is needed to kill it. This is likely to happen.
  * A monster will never move toward a grid with a tower. If a monster is already on its way to a new grid and a part of the monster body is already insider the grid, no tower will be allowed to be built on this new grid. 
- * Each grid can contain any number of monsters as long as it does not contain a tower.
- * The game is a time-based game. The button `Next Frame` would NOT be tested in grading. It will be served as a debug button for your own interest. There are two methods to start the game: by clicking `Simulate` or `Play`. In either mode monsters will be automatically generated and the monsters will move towards the end-zone, towers will automatically fire if any monsters are in its shooting distance. In `simulate` mode, player is only allowed to build tower before the simulate button is clicked. Once the button is clicked, the player will no be clicking any button until the game is over. In `play` mode, the player is allowed to build or to upgrade tower when the game is running.
  
  
 Demonstrate that the following tasks have been completed:
-1.  Towers (15)
-    1.  All towers built in the arena will shoot a monster automatically which is inside its range (unless all towers are impossible to attack, e.g. out of range, in cool down etc). (1)      
-    1.  Implement Basic Tower that has a shooting range [0,65] pixels. You can decide the attack power and other parameters of the tower. (1)
-        1. Implement the upgrade function of Basic Tower that increase the attack power of the basic Tower. (1)
-    1.  Implement Ice Tower that will make monster move slower for a period of time (Take a human noticeable longer time to move without making other monster move slower). You can determine other attributes of Ice Tower. (1)
-        1. Implement the upgrade function of Ice Tower that increase the duration of the monster being slowed. (1)
-    1.  Implement Catapult that:
-        1. it throws a stone (attacks) to a coordinate less than 150 px but more than 50 px away from the center of the Catapult. (1)
-        1. All monsters placed at the radius of 25px of where the stone drop receive damage. (2)
-        1. After a stone is thrown, the Catapult take some times to reload the stone (cold down). During that period of time the Catapult will not be able to throw a stone again. (1)
-            1. Furthermore, implement the upgrade function of Catapult that the reload time/cold down time is shorten. (1)
-    1.  Implement Laser Tower that:
-        1. it consumes some resources to attack a monster. (1)
-        1. draw a line from the center to the tower to the monster and extend beyond until it reach the edge of the Arena. (2)
-            1. Furthermore, all monsters on the line or within 3px away from the line will receive damage. (1)
-        1. Implement the upgrade function of Laser Tower that increase attack power of the tower. (1)   
-    1. *noted: you are allowed to determine the parameters and cost of your towers when it is not specified. For instance, we did not say if an Ice tower will give damage or not and you can decide that.*
 1. Monsters (15)
     1.  In every fixed period of time, one or more monsters will be generated in the arena from a fixed grid that the monster shows up. (2)
         1. Furthermore, along the time elapsed the *stronger* the monster will be generated so that the difficulty of the game increase. *Stronger* may refer to more HP, moving faster, or any factors that make the game difficult to play. You can make your own definition of *stronger*. (1)
@@ -146,21 +149,6 @@ Demonstrate that the following tasks have been completed:
         1. Penguin has can replenish some HP (but not more than its initial value) each time it moves. (2)
 
 Demonstrate that the following extra tasks have been completed:
-1.  Arena
-    1. Allow player to build towers in all grids unless it violates the rules stipulated in the Game Physics - Rules for H task. (1)
-    1. Implement the button `Simulate` according to the game physics. (2)
-        1. Furthermore, implement the button `Play` according to the game physics. (2)
-1.  Tower
-    1. Catapult attacks algorithm. Instead of throwing a stone to a particular monster, the Catapult will throw a stone
-    to a coordinate such that 
-        1. among all monsters falls into the attack range plus 25px (the stone radius), the one monster which
-    is nearest to the end-zone will be attacked; and (1)
-        1. the stone should thrown to the coordinate that hits most monsters; (2)
-        1. Rule for tie-breaking: If there are two monsters that are both considered nearest 
-        to the end-zone, the stone will be thrown towards the one that hits more monsters. If the same number of monsters
-        are hit by the stone, choose any monster you wish. (1)
-            1. Create a test case in JUnit to show your algorithm. (1)
-        1. *Note: a stone can be thrown to a grid that contains a tower if it make sense. The tower will not be destroy because of that.*
 1.  Monster
     1. All monster are able to walk towards the end-zone with a shortest path (choose any path if there are two shortest paths). (1)
         1. Furthermore, Fox is a very wise monster that will not simply walk a shortest path. Fox will try to 
