@@ -1,13 +1,10 @@
 package project.towers;
 
 import project.Arena.ExistsInArena;
-
 import org.apache.commons.lang3.NotImplementedException;
-
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;

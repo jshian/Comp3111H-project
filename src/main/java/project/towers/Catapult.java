@@ -83,6 +83,21 @@ public class Catapult extends Tower {
     }
 
     /**
+     * Attack the monsters selected by seleteMonster function and with a reload second delay
+     */
+    public void attackMonsters(){
+        if(counter==0) {
+            LinkedList<Monster> monsters = new LinkedList<>();
+            Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
+            throwStone(coordinate);
+            for (Monster m : monsters) {
+                attackMonster(m);
+            }
+            counter = 10;
+        }else counter--;
+    }
+
+    /**
      * Find a coordinate as the center of a circle with radius 25px that contains most monster
      * The monster nearest to the end zone and in Catapult's shooting range will be include in the circle
      * @param monsters The monsters exist in Arena
@@ -126,25 +141,9 @@ public class Catapult extends Tower {
 
 
     /**
-     * Attack the monsters selected by seleteMonster() function and with a reload second delay
-     */
-    public void attackMonsters(){
-        if(counter==0) {
-            LinkedList<Monster> monsters = new LinkedList<>();
-            Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
-            throwStone(coordinate);
-            for (Monster m : monsters) {
-                attackMonster(m);
-            }
-            counter = 10;
-        }else counter--;
-    }
-
-    /**
      * Throw stone to certain position.
      * @param cor The coordinate of the target.
      */
     public void throwStone(Coordinates cor){
-
     }
 }
