@@ -318,7 +318,7 @@ public final class Arena {
      * @param cost cost of an action.
      * @return true if the player has enough resources or false otherwise.
      */
-    public static boolean useResources(int cost)
+    public static boolean useResources(@NonNull int cost)
     {
         if (cost > resources.get()) {
             return false;
