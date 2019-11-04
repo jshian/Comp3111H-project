@@ -28,7 +28,6 @@ public class LaserTower extends Tower{
         this.consume = 2;
     }
 
-
     /**
      * Constructor of laser tower.
      * @param coordinates The coordinates of laser tower.
@@ -48,6 +47,7 @@ public class LaserTower extends Tower{
     public void consumeResource(Player player){
         player.spendResources(consume);
     }
+
 
     /**
      * Laser tower increases its attack power when it upgraded.

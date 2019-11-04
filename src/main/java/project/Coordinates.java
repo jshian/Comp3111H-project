@@ -232,7 +232,6 @@ public class Coordinates implements Serializable {
         return monsters;
     }
 
-
     /**
      * Find the point in the edge which is in the line of the current point and given object.
      * @param dirObj The object will form a extended line with the current point.
