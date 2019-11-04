@@ -226,17 +226,17 @@ public class Coordinates implements Serializable {
      * @return  The point in the edge of the extended line
      */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
-        for (int y = 0; y <= UIController.ARENA_WIDTH; ++y){
+        for (int y = 0; y <= UIController.ARENA_HEIGHT; ++y){
             if(this.isInLine(dirPt,new Coordinates(0,y)))
                 return new Coordinates(0,y);
-            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_WIDTH,y)))
-                return new Coordinates(UIController.ARENA_WIDTH,y);
+            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_HEIGHT,y)))
+                return new Coordinates(UIController.ARENA_HEIGHT,y);
         }
-        for (int x = 0; x <= UIController.ARENA_HEIGHT; ++x){
+        for (int x = 0; x <= UIController.ARENA_WIDTH; ++x){
             if(this.isInLine(dirPt,new Coordinates(x,0)))
                 return new Coordinates(x,0);
-            if(this.isInLine(dirPt,new Coordinates(x,UIController.ARENA_HEIGHT)))
-                return new Coordinates(x,UIController.ARENA_HEIGHT);
+            if(this.isInLine(dirPt,new Coordinates(x,UIController.ARENA_WIDTH)))
+                return new Coordinates(x,UIController.ARENA_WIDTH);
         }
         return dirPt;//for ignoring warning
 
