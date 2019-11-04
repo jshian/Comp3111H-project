@@ -69,6 +69,22 @@ public final class Arena {
      * Describes the state of the Arena during a frame.
      */
     private static class ArenaState {
+    	/**
+    	 * Stores the cost for a monster in each pixel to reach the end-zone due to movement. Indices correspond to the x- and y- coordinates.
+    	 * The cost is in terms of per unit speed of the monster.
+    	 * @see Monster
+    	 * @see Coordinates
+    	 */
+    	private double[][] movementCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+    	
+    	/**
+    	 * Stores the cost for a monster in each pixel o reach the end-zone due to being attacked. Indices correspond to the x- and y- coordinates.
+    	 * The cost is in terms of per unit speed of the monster.
+    	 * @see Monster
+    	 * @see Coordinates
+    	 */
+    	private double[][] attackCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+    	
         /**
          * Contains a reference to each Tower on the Arena.
          * @see Tower
@@ -383,6 +399,53 @@ public final class Arena {
     public static void removeMonster(Monster monster)
     {
         currentState.monsters.remove(monster);
+    }
+    
+    /**
+     * Updates the costs to reach the end-zone from each pixel for the current ArenaState.
+     * @see ArenaState#MovementCostToEnd
+     * @see ArenaState#attackCostToEnd
+     */
+    private static void updateCosts() {
+    	class IntTuple {
+    		private int x;
+    		private int y;
+    		
+    		IntTuple(int x, int y) {
+    			this.x = x;
+    			this.y = y;
+    		}
+    	}
+    	
+    	PriorityQueue<IntTuple> openSet = new PriorityQueue<>(UIController.ARENA_WIDTH * UIController.ARENA_HEIGHT - currentState.towers.size());
+    	openSet.add(new IntTuple(END_ZONE_X, END_ZONE_Y));
+    	
+    	// Reset values
+    	for (int i = 0; i < END_ZONE_X; i++) {
+    		for (int j = 0; j < END_ZONE_Y; j++) {
+    			currentState.movementCostToEnd[i][j] = Double.POSITIVE_INFINITY;
+    	    	currentState.attackCostToEnd[i][j] = 0; // Placeholder. Should count number of Towers that cover this pixel.
+    		}
+    	}
+    	
+    	currentState.movementCostToEnd[END_ZONE_X][END_ZONE_Y] = 0;
+    	
+    	while (!openSet.isEmpty()) {
+    		IntTuple current = openSet.poll();
+    		
+    		// Monsters can only travel horizontally or vertically
+    		LinkedList<Coordinates> neighbours = taxicabNeighbours(new Coordinates(current.x, current.y));
+    		for (Coordinates c : neighbours) {
+    			// Monsters can only go to grids that do not contain a Tower
+    			if (objectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
+        			double newCost = currentState.movementCostToEnd[current.x][current.y] + 1;
+        			if (currentState.movementCostToEnd[c.getX()][c.getY()] > newCost ) {
+        				currentState.movementCostToEnd[c.getX()][c.getY()] = newCost;
+        				openSet.add(new IntTuple(c.getX(), c.getY()));
+        			}
+    			}
+    		}
+    	}
     }
 
     /**
