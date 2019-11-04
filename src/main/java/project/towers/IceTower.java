@@ -5,20 +5,30 @@ import project.*;
 import project.monsters.Monster;
 
 public class IceTower extends Tower{
-    // State
-    private double slowDown;
 
     /**
-     * Default constructor for IceTower class.
+     * The slow down duration of ice tower.
      */
-    public IceTower(Coordinates coordinate){
-        super(coordinate);
+    private double slowDown;
+
+
+    /**
+     * Constructor of ice tower.
+     * @param coordinates The coordinates of ice tower.
+     */
+    public IceTower(Coordinates coordinates){
+        super(coordinates);
         this.attackPower = 5;
         this.buildingCost = 15;
         this.shootingRange = 50;
         this.slowDown = 10;
     }
 
+    /**
+     * Constructor of ice tower.
+     * @param coordinates The coordinates of ice tower.
+     * @param imageView The image view of ice tower.
+     */
     public IceTower(Coordinates coordinates, ImageView imageView) {
         super(coordinates, imageView);
         this.attackPower = 5;
@@ -27,6 +37,11 @@ public class IceTower extends Tower{
         this.slowDown = 10;
     }
 
+    /**
+     * Ice tower increases its slow down duration when it upgraded.
+     * @param resource The resources needed for tower to upgrade.
+     * @return True if upgrade is successful, otherwise false.
+     */
     @Override
     public boolean upgrade(int resource){
         if(resource >= 20){
