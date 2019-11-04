@@ -57,13 +57,7 @@ public class Catapult extends Tower {
         for (Monster m:monsters) {
             attackMonster(m);
         }
-        new Thread(){
-            public void run(){
-                try {
-                    Thread.sleep(reload*1000);
-                } catch (InterruptedException e) { }
-            }
-        }.start();
+
     }
 
     @Override
@@ -77,12 +71,20 @@ public class Catapult extends Tower {
 
     //Algorithm for selecting monster
     public Coordinates selectMonster(LinkedList<Monster> monsters,LinkedList<Monster> attackedMon){
-        int count=0;
+        LinkedList<Monster> nearestMon=new LinkedList<>();
+        double nearest=0;
+        //find nearest distance
         for (Monster m:monsters) {
             if(canShoot(m)){
-                
+                nearest=m.distanceToDestination();
             }
         }
+        //find all monster have the nearest distance and can be shoot
+        for (Monster m :monsters) {
+            if(m.distanceToDestination()==nearest && canShoot(m))
+                nearestMon.add(m);
+        }
+
         return new Coordinates();
     }
 }
