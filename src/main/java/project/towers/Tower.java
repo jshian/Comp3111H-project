@@ -59,6 +59,14 @@ public abstract class Tower implements ExistsInArena {
     }
 
     /**
+     * @param coordinate the coordinate that to be shoot
+     * @return True if it is in the shooting range otherwise false
+     */
+    public boolean canShoot(Coordinates coordinate){
+        return coordinates.diagonalDistanceFrom(coordinate) <= shootingRange ;
+    }
+
+    /**
      * Accesses the attack power of tower.
      * @return The attack power of tower.
      */
