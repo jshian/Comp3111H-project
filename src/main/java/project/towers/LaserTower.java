@@ -17,6 +17,7 @@ public class LaserTower extends Tower{
         super(coordinate);
         this.attackPower = 30;
         this.buildingCost = 20;
+        this.shootingRange = 50;
         this.consume = 2;
     }
 
