@@ -5,6 +5,8 @@ import project.*;
 import project.monsters.Monster;
 
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Catapult extends Tower {
     // States
@@ -51,12 +53,18 @@ public class Catapult extends Tower {
     }
 
     public void attackMonsters(){
-        LinkedList<Monster> monsters = new LinkedList<>();
-        Coordinates coordinate= selectMonster(Arena.getMonsters(),monsters);
-        throwStone(coordinate);
-        for (Monster m:monsters) {
-            attackMonster(m);
-        }
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                LinkedList<Monster> monsters = new LinkedList<>();
+                Coordinates coordinate= selectMonster(Arena.getMonsters(),monsters);
+                throwStone(coordinate);
+                for (Monster m:monsters) {
+                    attackMonster(m);
+                }
+            }
+        },0,reload*1000);
+
 
     }
 
