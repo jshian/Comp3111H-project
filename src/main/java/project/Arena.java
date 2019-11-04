@@ -205,7 +205,7 @@ public final class Arena {
                     int x = coordinates.getX();
                     int y = coordinates.getY();
 
-                    if (xMin <= x && x <= xMax && yMin <= y && y <= yMax)
+                    if (xMin <= x && x < xMax && yMin <= y && y < yMax)
                         list.add(t);
                 }
             }

@@ -56,7 +56,7 @@ class Grid {
      * @return The coordinates of the center of the grid.
      */
     Coordinates getCenterCoordinates() {
-        return new Coordinates((int) (xPos + 0.5) * UIController.GRID_WIDTH, (int) (yPos + 0.5) * UIController.GRID_HEIGHT);
+        return new Coordinates((int) ((xPos + 0.5) * UIController.GRID_WIDTH), (int) ((yPos + 0.5) * UIController.GRID_HEIGHT));
     }
 
     /**

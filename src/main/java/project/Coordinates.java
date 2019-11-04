@@ -89,7 +89,8 @@ public class Coordinates implements Serializable {
      * @return Whether the two Coordinate objects represent the same Cartesian coordinates.
      */
     public boolean isAt(@NonNull Coordinates other) {
-        return (taxicabDistanceFrom(other)) == 0;
+        return this.x==other.x && this.y==other.y;
+        // return (taxicabDistanceFrom(other)) == 0;
     }
 
     /**
