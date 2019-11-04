@@ -208,7 +208,7 @@ public class Coordinates implements Serializable {
         return this.diagonalDistanceFrom(coordinate) < radius;
     }
 
-    public LinkedList<Monster> monsterInCircle(@NonNull Coordinates coordinate, int radius){
+    public LinkedList<Monster> monsterInCircle(int radius){
         LinkedList<Monster> monsters = new LinkedList<>();
         for (Monster m :Arena.getMonsters()) {
             if (isInCircle(m,radius))monsters.add(m);
