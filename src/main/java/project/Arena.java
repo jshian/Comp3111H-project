@@ -123,8 +123,9 @@ public final class Arena {
 
     /**
      * constructor of the Arena class. Bind the label to resources.
+     * @param resourceLabel the label to show remaining resources of player.
      */
-    public Arena(Label resourceLabel) {
+    public Arena(@NonNull Label resourceLabel) {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", resources));
     }
 
@@ -334,7 +335,7 @@ public final class Arena {
      * @param type specify the class of tower.
      * @return the tower being built, or null if not enough resources
      */
-    public static Tower buildTower(@NonNull Coordinates coordinates, ImageView iv, String type)
+    public static Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull String type)
     {
         Tower t = null;
         int cost = 0;
@@ -361,7 +362,7 @@ public final class Arena {
      * @param tower The Tower to be destroyed.
      * @param paneArena the pane where graphic of Tower needed to be removed.
      */
-    public static void destroyTower(Tower tower, AnchorPane paneArena)
+    public static void destroyTower(@NonNull Tower tower, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(tower.getImageView());
         currentState.towers.remove(tower);
@@ -381,7 +382,7 @@ public final class Arena {
      * @param projectile The Projectile to be removed.
      * @param paneArena the pane where graphic of projectile needed to be removed.
      */
-    public static void removeProjectile(Projectile projectile, AnchorPane paneArena)
+    public static void removeProjectile(@NonNull Projectile projectile, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(projectile.getImageView());
         currentState.projectiles.remove(projectile);
@@ -411,7 +412,7 @@ public final class Arena {
      * @param monster The Monster to be removed.
      * @param paneArena the pane where graphic of monster needed to be removed.
      */
-    public static void removeMonster(Monster monster, AnchorPane paneArena)
+    public static void removeMonster(@NonNull Monster monster, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(monster.getImageView());
         currentState.monsters.remove(monster);
