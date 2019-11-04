@@ -1,6 +1,7 @@
 package project;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -57,6 +58,8 @@ public class UIController {
     static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
     static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
+    static enum modes {normal, simulate, play};
+    static modes mode = modes.normal;
 
     private Arena arena;
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
@@ -66,17 +69,17 @@ public class UIController {
      */
     @FXML
     private void play() {
-   	 Label newLabel = new Label();
-   	 newLabel.setLayoutX(GRID_WIDTH * 3 / 4);
-   	 newLabel.setLayoutY(GRID_WIDTH * 3 / 4);
-   	 newLabel.setMinWidth(GRID_WIDTH / 5);
-   	 newLabel.setMaxWidth(GRID_WIDTH / 5);
-   	 newLabel.setMinHeight(GRID_WIDTH / 3);
-   	 newLabel.setMaxHeight(GRID_WIDTH / 3);
-   	 newLabel.setStyle("-fx-border-color: black;");
-   	 newLabel.setText("*");
-   	 newLabel.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-   	 paneArena.getChildren().addAll(newLabel);
+        Label newLabel = new Label();
+        newLabel.setLayoutX(GRID_WIDTH * 3 / 4);
+        newLabel.setLayoutY(GRID_WIDTH * 3 / 4);
+        newLabel.setMinWidth(GRID_WIDTH / 5);
+        newLabel.setMaxWidth(GRID_WIDTH / 5);
+        newLabel.setMinHeight(GRID_WIDTH / 3);
+        newLabel.setMaxHeight(GRID_WIDTH / 3);
+        newLabel.setStyle("-fx-border-color: black;");
+        newLabel.setText("*");
+        newLabel.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+        paneArena.getChildren().addAll(newLabel);
     }
 
     /**
@@ -111,9 +114,8 @@ public class UIController {
                 grids[i][j] = newLabel;
                 paneArena.getChildren().addAll(newLabel);
             }
-        System.out.println(remainingResources.textProperty());
+
         arena = new Arena(remainingResources);
-        System.out.println(remainingResources.textProperty());
         setDragLabel();
     }
 
@@ -161,7 +163,9 @@ public class UIController {
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
-                    e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    if(mode != modes.simulate) {
+                        e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    }
                     e.consume();
                 });
 
@@ -232,29 +236,41 @@ public class UIController {
      * @param t the tower in the arena
      */
     private void setTowerEvent(Tower t) {
+        Coordinates coor = new Coordinates(t.getX(), t.getY());
+        Grid grid = Grid.findGrid(coor);
+        Coordinates center = grid.getCenterCoordinates();
         ImageView iv = t.getImageView();
-        final Circle c = new Circle();
-    	// on hover
+
+        Circle c = new Circle();
+        c.setCenterX(center.getX());
+        c.setCenterY(center.getY());
+        c.setRadius(t.getShootingRange());
+        c.setFill(Color.rgb(0,101,255,0.4));
+
+        Label newLabel = new Label(t.getInformation());
+        newLabel.setAlignment(Pos.CENTER);
+        newLabel.setMinWidth(GRID_WIDTH * 3);
+        newLabel.setMinHeight(GRID_HEIGHT * 2);
+        double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
+        double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
+        newLabel.setLayoutX(positionX);
+        newLabel.setLayoutY(positionY);
+        newLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
+        newLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+
+        // on hover
         iv.setOnMouseEntered(e -> {
-            // TODO: display tower information
-
-
             // show shooting range
-            Coordinates coor = new Coordinates(t.getX(), t.getY());
-            Grid grid = Grid.findGrid(coor);
-            Coordinates center = grid.getCenterCoordinates();
-
-            c.setCenterX(center.getX());
-            c.setCenterY(center.getY());
-            c.setRadius(t.getShootingRange());
-            c.setFill(Color.rgb(0,101,255,0.4));
             paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), c); // add it before the ImageView
+
+            // display tower information
+            paneArena.getChildren().add(newLabel);
         });
 
     	// exit
-    	// TODO: remove info & shooting range
         iv.setOnMouseExited(e -> {
-            paneArena.getChildren().remove(c);
+            // remove info & shooting range
+            paneArena.getChildren().removeAll(c, newLabel);
         });
 
     }

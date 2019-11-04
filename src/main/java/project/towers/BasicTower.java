@@ -37,4 +37,10 @@ public class BasicTower extends Tower {
         }
         return false;
     }
+
+    @Override
+    public String getInformation() {
+        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s", this.attackPower,
+                this.buildingCost, this.shootingRange);
+    }
 }

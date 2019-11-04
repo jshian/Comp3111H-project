@@ -81,4 +81,9 @@ public abstract class Tower implements ExistsInArena {
         return shootingRange;
     }
 
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
+    public abstract String getInformation();
+
 }
