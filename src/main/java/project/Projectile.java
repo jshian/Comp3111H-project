@@ -48,15 +48,23 @@ public abstract class Projectile implements Arena.MovesInArena {
     private double speed;
 
     /**
+     * The current attack power of the projectile.
+     */
+    @NotNull
+    protected int attackPower;
+
+    /**
      * Constructor for the Projectile class.
      * @param coordinates The coordinates of the pixel where the projectile is initially located.
      * @param target The Monster that the projectile will pursue, which should not be <code>null</code>.
      * @param speed The speed of the projectile.
+     * @param attackPower The attack power of the projectile.
      */
-    public Projectile(Coordinates coordinates, Monster target, double speed) {
+    public Projectile(Coordinates coordinates, Monster target, double speed, int attackPower) {
         this.coordinates = coordinates;
         this.target = target;
         this.speed = speed;
+        this.attackPower = attackPower;
     }
 
     // Inferface implementation
