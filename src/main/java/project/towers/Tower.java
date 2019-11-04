@@ -25,7 +25,7 @@ public abstract class Tower implements ExistsInArena {
     protected Coordinates coordinates;
 
     // States
-    protected int attackPower, buildingCost, shootingRange;
+    protected int attackPower, buildingCost, shootingRange,shootLimit;
 
     /**
      * Constructor for Tower class.

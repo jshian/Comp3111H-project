@@ -10,7 +10,7 @@ import java.util.TimerTask;
 
 public class Catapult extends Tower {
     // States
-    private int reload,shootLimit,counter;
+    private int reload,counter;
 
     /**
      * Default constructor for Catapult class.

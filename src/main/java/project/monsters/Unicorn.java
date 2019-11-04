@@ -12,7 +12,7 @@ import project.*;
 @Entity
 public class Unicorn extends Monster {
     /**
-     * @see Monster#Monster()
+     * @see Monster#Monster
      */
     public Unicorn(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
         super(difficulty, start, destination);

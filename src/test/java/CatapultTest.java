@@ -1,10 +1,9 @@
-package project.towers;
-
 import org.junit.Assert;
 import org.junit.Test;
 import project.Coordinates;
 import project.monsters.Monster;
 import project.monsters.Unicorn;
+import project.towers.Catapult;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -26,7 +25,7 @@ public class CatapultTest {
         Monster m2 = new Unicorn(1,new Coordinates(101,101),destination);testList.add(m2);
         Monster m3 = new Unicorn(1,new Coordinates(400,10),destination);testList.add(m3);
         target=catapult.selectMonster(testList,selectList);
-        answerList.add(m3)
+        answerList.add(m3);
         Assert.assertEquals(selectList,answerList);
 
         //test shoot most monster with nearest
