@@ -47,14 +47,14 @@ public class BasicTower extends Tower {
     }
 
     @Override
-    public String getInformation() {
-        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s", this.attackPower,
-                this.buildingCost, this.shootingRange);
-    }
-
-    @Override
     public void attackMonster(Monster monster){
         if(canShoot(monster))
             monster.setHealth((int)(monster.getHealth()-this.attackPower));
+    }
+
+    @Override
+    public String getInformation() {
+        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s", this.attackPower,
+                this.buildingCost, this.shootingRange);
     }
 }
