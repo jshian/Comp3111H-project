@@ -312,10 +312,10 @@ public final class Arena {
         Tower t = null;
         int cost = 0;
         switch(type) {
-            case "basic": t = new BasicTower(coordinates, iv); break;
-            case "ice": t = new IceTower(coordinates, iv); break;
-            case "catapult": t = new Catapult(coordinates, iv); break;
-            case "laser": t = new LaserTower(coordinates, iv); break;
+            case "Basic Tower": t = new BasicTower(coordinates, iv); break;
+            case "Ice Tower": t = new IceTower(coordinates, iv); break;
+            case "Catapult": t = new Catapult(coordinates, iv); break;
+            case "Laser Tower": t = new LaserTower(coordinates, iv); break;
             default: return null;
         }
         cost = t.getBuildingCost();

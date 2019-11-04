@@ -1,5 +1,6 @@
 package project;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -171,16 +172,16 @@ public class UIController {
 	            		Object source = e.getGestureSource();
 	            		if (source.equals(labelBasicTower)) {
 	            			img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "basic";
+	            			type = "Basic Tower";
 	            		} else if (source.equals(labelIceTower)) {
 	            			img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "ice";
+	            			type = "Ice Tower";
 	            		} else if (source.equals(labelCatapult)) {
 	            			img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "catapult";
+	            			type = "Catapult";
 	            		} else if (source.equals(labelLaserTower)) {
 	            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "laser";
+	            			type = "Laser Tower";
 	            		}
 
 	                    if (img != null) {
@@ -189,12 +190,19 @@ public class UIController {
 	                        iv.setY(y);
                             Tower t = arena.buildTower(c, iv, type);
 
-                            if (t != null) { // enough resources
+                            if (t != null) {
+                                // enough resources
                                 setTowerEvent(t);
                                 paneArena.getChildren().add(iv);
                                 e.setDropCompleted(true);
                             } else {
+                                // not enough resources
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Not enough resources");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Do not have enough resources to build " + type + "!");
 
+                                alert.showAndWait();
                             }
 
 	                    }
