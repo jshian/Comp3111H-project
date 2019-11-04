@@ -165,7 +165,6 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    System.out.println("drop" + arena.canBuildTower(c));
             	    if (arena.canBuildTower(c)) {
 	            		Image img = null;
 	            		String type = null;
@@ -189,10 +188,14 @@ public class UIController {
 	                        iv.setX(x);
 	                        iv.setY(y);
                             Tower t = arena.buildTower(c, iv, type);
-                            setTowerEvent(t);
 
-	                        paneArena.getChildren().add(iv);
-	                        e.setDropCompleted(true);
+                            if (t != null) { // enough resources
+                                setTowerEvent(t);
+                                paneArena.getChildren().add(iv);
+                                e.setDropCompleted(true);
+                            } else {
+
+                            }
 
 	                    }
 	                    e.consume();
