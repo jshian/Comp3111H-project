@@ -101,11 +101,12 @@ Members:
 1. Close the application.
 ### Grade Task 2
 1. Start the application using the same `.jar` file as Task 1.
+1. Build one of each tower, namely Basic Tower, Ice Tower, Catapult and Laser Tower.
 1. Start the game in `play` mode.
-1. Build one of each tower, namely Basic Tower, Ice Tower, Catapult and Laser Tower. Verify the following:
+1. Verify the following:
 	* Each tower shoots at monsters automatically while the Euclidean distance between the center of the grid of where the tower is built and the center of the monster is within the interval defined by the tower's minimum and maximum range. (Regular Task 2(i))
 	* Each tower hits the monster that is closest to top-left corner of the end-zone. (Game Physics Requirement)
-	* Monsters that are hit take damage equal to the attack power of the tower. You can view a monster's health points by mousing over it. (Game Physics Requirement)
+	* Monsters that are hit take damage equal to the attack power of the tower. (Game Physics Requirement)
 1. Verify that the Basic Tower has a minimum range of `0` pixels and a maximum range of `65` pixels. (Regular Task 2(ii))
 1. Upgrade the Basic Tower. Verify that its attack power has been increased. (Regular Task 2(ii)(a))
 1. Verify that the Ice Tower causes any monster it hits to become noticeably slower. (Regular Task 2(iii))
@@ -121,38 +122,35 @@ Members:
 	* Any monster within `3` pixels of the line is hit. (Task 2(v)(b)(a))
 1. Upgrade the Laser Tower. Verify that its attack power has been increased. (Regular Task 2(v)(c))
 1. Close the application.
-1. Open the project using Eclipse IDE and run the Gradle task `XXX` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
-### Gradle Task 3
-
-Demonstrate that the game fits the following requirements:
- * A monster is always moving from a grid to an adjacent grid either horizontally or vertically.
- * When a monster is killed it must be removed from the arena, a certain amount of resource will be given to the player.
- * A monster will never move toward a grid with a tower. If a monster is already on its way to a new grid and a part of the monster body is already insider the grid, no tower will be allowed to be built on this new grid. 
- 
- 
-Demonstrate that the following tasks have been completed:
-1. Monsters (15)
-    1.  In every fixed period of time, one or more monsters will be generated in the arena from a fixed grid that the monster shows up. (2)
-        1. Furthermore, along the time elapsed the *stronger* the monster will be generated so that the difficulty of the game increase. *Stronger* may refer to more HP, moving faster, or any factors that make the game difficult to play. You can make your own definition of *stronger*. (1)
-    1.  Monsters on the arena will move towards the end-zone automatically. (1)
-        1. Furthermore, if no tower is built, the monster will be successfully reach the end-zone and cause the game over (player lose). A single line `Gameover` will be printed to console. (1)
-            1. Furthermore, if the game is over, both monster generation and tower shooting should stop and a dialog box will pop up to notify the game is over (1)
-    1.  Represent a monster with png images (`fox.png`, `unicorn.png`, `penguin.png`) provided under `src\main\resources`. (1)
-        1. Furthermore, when a monster is killed (HP reach 0), its image will be replaced by `collision.png`. (1)
-            1. Furthermore, the dead monster will be removed from the arena automatically. (1)
-    1.  When a mouse pointer moves over a monster, the HP of the monster will be shown on the graphical interface. (1)
-        1. Furthermore, when the mouse pointer moves away from the monster, the HP information will be dismissed. (1)
-    1.  Implements three types of monsters: Fox, Unicorn, Penguin such that:
-        1. Fox move fastest. (1)
-        1. Unicorn has more HP than other monsters. (1)
-        1. Penguin has can replenish some HP (but not more than its initial value) each time it moves. (2)
+1. Open the project using Eclipse IDE and run the Gradle task `PPP` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
+1. Close the project.
+### Grade Task 3
+1. Start the application using the same `.jar` file as Task 1.
+1. Start the game in `play` mode.
+1. Verify the following:
+	* Monsters are generated every fixed period of time at the starting position. (Task 3(i))
+	* The generated monsters move towards the end-zone either horizontally or vertically per frame. (Task 3(ii))
+	* When any monster reaches the end-zone, the game is over and the line `Gameover` is printed on the console. (Task 3(ii)(a))
+	* When the above happens, everything on the arena is frozen and a dialog box informing that the game is over. (Task 3(ii)(a)(a))
+1. Save your score. Record down the value of this score.
+1. This time, build some towers to defend yourself before starting the game in `play` mode.
+1. Verify the following:
+	* Monsters never move into a grid containing a tower. (Game Physics Requirement)
+	* Each monster is represented by an image: (Task 3(iii))
+		* Fox - `/src/main/resources/fox.png`
+		* Unicorn - `/src/main/resources/unicorn.png`
+		* Penguin -  `/src/main/resources/penguin.png`
+	* Whenever you hover over a monster, its health points is temporarily shown on the graphical interface. (Task 3(iv)) The display is dismissed when the mouse pointer exits the monster. (Task 3(iv)(a))
+	* Whenever a monster's health points reaches `0`, its image is replaced by `/src/main/resources/collision.png`. (Task 3(iii)(a)) After a short moment, it is removed from the arena. (Task 3(iii)(a)(a)) When this happens, the *Resource Pool* is increased. (Game Physics Requirement)
+	* The Fox monster has higher speed than both Unicorn and Penguin. (Task 3(iii)(v)(a))
+	* The Unicorn monster has higher maximum health than both fox and Penguin. (Task 3(iii)(v)(b))
+	* The Penguin monster can regenerate health points each time it moves, up to its maximum value. (Task 3(iii)(v)(c))
+	* Each generation of monsters become stronger (relative to the same monster type) as time goes by. (Task 3(i)(a))
+1. Close the application.	
+1. Open the project using Eclipse IDE and run the Gradle task `QQQ` which uses JUnit to test the Fox pathfinding algorithm. (Whole of Honors Task 3)
+1. Close the project.
 
 Demonstrate that the following extra tasks have been completed:
-1.  Monster
-    1. All monster are able to walk towards the end-zone with a shortest path (choose any path if there are two shortest paths). (1)
-        1. Furthermore, Fox is a very wise monster that will not simply walk a shortest path. Fox will try to 
-        follow a path that receives a minimum number of attacks from towers by assuming that there is no other monster in Arena. (2)
-	1. Create a test case in JUnit to show your algorithm. (1)
 1.  Adopt the following technologies into your project. 
 	1. Use Java Persistence API or Hibernate Framework to connect to a small database that stores your game data (attributes of Towers/Monsters); (2.5% Group)
 	1. Use Java spring framework that allows the game be played in different machines while a server records the top 10 highest scores; (2.5% Group)
