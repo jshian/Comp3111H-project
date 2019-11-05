@@ -2,10 +2,12 @@ package project.towers;
 
 import javafx.scene.image.ImageView;
 import project.*;
+import project.Arena.ExistsInArena;
 import project.monsters.Monster;
 import project.projectiles.CatapultProjectile;
 import project.projectiles.Projectile;
 
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -119,7 +121,7 @@ public class Catapult extends Tower {
                 for (int j = m.getY()-radius; j < m.getY()+radius; j++) {
                     Coordinates c = new Coordinates(i,j);
                     if (canShoot(c)){
-                        LinkedList<Monster> monInCircle = c.monsterInCircle(radius);
+                        LinkedList<ExistsInArena> monInCircle = Arena.objectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
                         if(count < monInCircle.size()){
                             count=monInCircle.size();
                             target = c;

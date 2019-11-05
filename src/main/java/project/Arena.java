@@ -213,12 +213,7 @@ public final class Arena {
     }
 
     /**
-     * The default constructor of the Arena class.
-     */
-    public Arena() {}
-
-    /**
-     * constructor of the Arena class. Bind the label to resources.
+     * Constructor of the Arena class. Bind the label to resources.
      * @param resourceLabel the label to show remaining resources of player.
      */
     public Arena(@NonNull Label resourceLabel) {

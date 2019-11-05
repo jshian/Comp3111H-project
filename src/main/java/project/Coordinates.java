@@ -2,9 +2,11 @@ package project;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import project.Arena.ExistsInArena;
 
+import java.io.Console;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -59,7 +61,8 @@ public class Coordinates implements Serializable {
     public int getY() { return y.get(); }
 
     /**
-     * bind x,y to the ImageView so that updating x,y will show in the UI.
+     * Binds the coordinates to an ImageView so that updating the coordinates will automatically update the UI as well.
+     * @param iv The ImageView to bind.
      */
     public void bindByImage(@NonNull ImageView iv)
     {
@@ -86,9 +89,8 @@ public class Coordinates implements Serializable {
     }
 
     /**
-     * Updates both coordinates.
+     * Updates both coordinates to match that of another Coordinates object.
      * @param other The other object.
-     * @exception IllegalArgumentException Either of x,y in the coordinates is outside the arena.
      */
     public void update(Coordinates other) {
         update(other.getX(), other.getY());
@@ -126,7 +128,7 @@ public class Coordinates implements Serializable {
      * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public int taxicabDistanceFrom(@NonNull Coordinates other) {
-        return Math.abs(this.x.get() - other.x.get()) + Math.abs(this.y.get() - other.y.get());
+        return Geometry.taxicabDistance(getX(), getY(), other.getX(), other.getY());
     }
 
     /**
@@ -144,7 +146,7 @@ public class Coordinates implements Serializable {
      * @return The diagonal distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public double diagonalDistanceFrom(@NonNull Coordinates other) {
-        return Math.sqrt(Math.pow(this.x.get() - other.x.get(), 2) + Math.pow(this.y.get() - other.y.get(), 2));
+        return Geometry.diagonalDistance(getX(), getY(), other.getX(), other.getY());
     }
 
     /**
@@ -162,96 +164,51 @@ public class Coordinates implements Serializable {
      * @return The angle in radians from this object to the other object, as if this object is at the origin of a polar coordinate system.
      */
     public double angleFrom(@NonNull Coordinates other) {
-        return Math.atan2(other.y.get() - this.y.get(), other.x.get() - this.x.get());
+        return Geometry.angleFrom(getX(), getY(), other.getX(), other.getY());
     }
 
     /**
-     * The default allowable error when determining whether a test point is within a line.
-     * Measured in radians.
-     */
-    private static final double DEFAULT_ERROR_LINE = 0.02;
-
-    /**
-     * Test whether an object in the arena is within a certain error of a line defined by this point and another object in the arena, extending towards infinity.
-     * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
+     * Test whether an object in the arena is within a certain distance of a line defined by this point and another object in the arena, extending towards infinity.
      * @param endObj The other object in the arena that represents the line, which should not be at the same coordinates as this object.
      * @param testObj The object in the arena to be tested.
-     * @return Whether the test object is within the specified error of the line.
+     * @param error Allowable distance in terms of pixels.
+     * @return Whether the test object is within the specified distance of the line.
      */
-    public boolean isInLine(@NonNull ExistsInArena endObj, @NonNull ExistsInArena testObj) {
-        return isInLine(new Coordinates(endObj.getX(), endObj.getY()), new Coordinates(testObj.getX(), testObj.getY()), DEFAULT_ERROR_LINE);
+    public boolean isInLine(@NonNull ExistsInArena endObj, @NonNull ExistsInArena testObj, double error) {
+        return isInLine(new Coordinates(endObj.getX(), endObj.getY()), new Coordinates(testObj.getX(), testObj.getY()), error);
     }
 
     /**
-     * Test whether an object in the arena is within a certain error of a line defined by this point and another point, extending towards infinity.
-     * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
-     * @param endPt The other point of the line, which should not be at the same coordinates as this object.
-     * @param testObj The object in the arena to be tested.
-     * @return Whether the test object is within the specified error of the line.
-     */
-    public boolean isInLine(@NonNull Coordinates endPt, @NonNull ExistsInArena testObj) {
-        return isInLine(endPt, new Coordinates(testObj.getX(), testObj.getY()), DEFAULT_ERROR_LINE);
-    }
-
-    /**
-     * Test whether a point is within a certain error of a line defined by this point and another point, extending towards infinity.
-     * The default allowable error is {@value #DEFAULT_ERROR_LINE} radians.
+     * Test whether a point is within a certain distance of a line defined by this point and another point, extending towards infinity.
      * @param endPt The other point of the line, which should not be at the same coordinates as this object.
      * @param testPt The point to be tested.
-     * @return Whether the test point is within the specified error of the line.
-     */
-    public boolean isInLine(@NonNull Coordinates endPt, @NonNull Coordinates testPt) {
-        return isInLine(endPt, testPt, DEFAULT_ERROR_LINE);
-    }
-
-    /**
-     * Test whether a point is within a certain error of a line defined by this point and another point, extending towards infinity.
-     * @param endPt The other point of the line, which should not be at the same coordinates as this object.
-     * @param testPt The point to be tested.
-     * @param error Allowable error in terms of radians.
+     * @param error Allowable distance in terms of pixels.
      * @return Whether the test point is within the specified error of the line.
      */
     public boolean isInLine(@NonNull Coordinates endPt, @NonNull Coordinates testPt, double error) {
-        if (endPt.isAt(this)) throw new InvalidParameterException("Parameter endPt cannot be at the same coordinates as this object");
-
-        if (testPt.isAt(this) || testPt.isAt(endPt)) return true;
-
-        return Math.abs(this.angleFrom(endPt)-this.angleFrom(testPt)) < error;
+        return Geometry.isInLine(testPt.getX(), testPt.getY(), getX(), getY(), endPt.getX(), endPt.getY(), error);
     }
 
     /**
-     * Test whether a point is within a circle of current object as the center.
+     * Test whether an object is within a circle with current point as the center.
      * @param obj The object which to be tested.
-     * @param radius the radius of the circle with current point as the center.
-     * @return True if the tested coordinate is in the circle, otherwise false.
+     * @param radius The radius of the circle.
+     * @return Whether the tested coordinate is in the circle.
      */
     public boolean isInCircle(@NonNull ExistsInArena obj, int radius) {
-        return isInCircle(new Coordinates(obj.getX(), obj.getY()),radius);
+        return isInCircle(new Coordinates(obj.getX(), obj.getY()), radius);
     }
 
     /**
-     * Test whether a point is within a circle of current point as the center.
-     * @param coordinate The coordinate which to be tested.
-     * @param radius the radius of the circle with current point as the center.
-     * @return True if the tested coordinate is in the circle, otherwise false.
+     * Test whether a point is within a circle with current point as the center.
+     * @param coordinates The coordinates which to be tested.
+     * @param radius Whether the tested coordinate is in the circle.
+     * @return Whether the tested coordinate is in the circle.
      */
-    public boolean isInCircle(@NonNull Coordinates coordinate, int radius) {
-        return this.diagonalDistanceFrom(coordinate) < radius;
+    public boolean isInCircle(@NonNull Coordinates coordinates, int radius) {
+        return Geometry.isInCircle(coordinates.getX(), coordinates.getY(), getX(), getY(), radius);
     }
-
-    /**
-     * Find out the monsters within a circle with current coordinate as center.
-     * @param radius The radius of the circle.
-     * @return The monsters within the circle.
-     */
-    public LinkedList<Monster> monsterInCircle(int radius){
-        LinkedList<Monster> monsters = new LinkedList<>();
-        for (Monster m :Arena.getMonsters()) {
-            if (isInCircle(m,radius))monsters.add(m);
-        }
-        return monsters;
-    }
-
+    
     /**
      * Find the point in the edge which is in the line of the current point and given object.
      * @param dirObj The object will form a extended line with the current point.
@@ -267,20 +224,8 @@ public class Coordinates implements Serializable {
      * @return  The point in the edge of the extended line.
      */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
-        for (int y = 0; y <= UIController.ARENA_HEIGHT; ++y){
-            if(this.isInLine(dirPt,new Coordinates(0,y)))
-                return new Coordinates(0,y);
-            if(this.isInLine(dirPt,new Coordinates(UIController.ARENA_HEIGHT,y)))
-                return new Coordinates(UIController.ARENA_HEIGHT,y);
-        }
-        for (int x = 0; x <= UIController.ARENA_WIDTH; ++x){
-            if(this.isInLine(dirPt,new Coordinates(x,0)))
-                return new Coordinates(x,0);
-            if(this.isInLine(dirPt,new Coordinates(x,UIController.ARENA_WIDTH)))
-                return new Coordinates(x,UIController.ARENA_WIDTH);
-        }
-        return dirPt;//for ignoring warning
-
+        Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
+        return new Coordinates((int) point.getX(), (int) point.getY());
     }
 
     /**
