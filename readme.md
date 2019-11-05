@@ -168,9 +168,9 @@ Members:
 1. On *Machine B*, do the following: (Honors Extra Task 2)
 	1. Set up your towers however you like.
 	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.
-	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard and note it down as *Score B*. Verify that the leaderboard is in descending order from top to bottom.
+	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard is in descending order from top to bottom.
 	1. Playthrough 8 more games in `play` mode but without building any towers, and submit each score to the leaderboard. Verify that the leaderboard is still in descending order from top to bottom.
-	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard and note it down as *Score B*. Verify that the leaderboard is in descending order from top to bottom, and that only 10 scores are being displayed.
+	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard is still in descending order from top to bottom, and that only 10 scores are being displayed.
 	
 
 ### Notes
