@@ -16,6 +16,9 @@ import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import project.towers.BasicTower;
+import project.towers.Catapult;
+import project.towers.IceTower;
 import project.towers.Tower;
 
 public class UIController {
@@ -307,11 +310,20 @@ public class UIController {
                 vb.getChildren().addAll(upgradeBtn, destroyBtn);
 
                 upgradeBtn.setOnAction(e2 -> {
-                    if(arena.upgradeTower(t)) {
-                        // TODO: a line 'XXX tower is being upgraded' is printed on the console.
-
+                    String type;
+                    if (t instanceof BasicTower) {
+                        type = "Basic Tower";
+                    } else if (t instanceof IceTower) {
+                        type = "Ice Tower";
+                    } else if(t instanceof Catapult) {
+                        type = "Catapult";
                     } else {
-                        // TODO: a line 'not enough resource to upgrade XXX tower' is printed on the console
+                        type = "Laser Tower";
+                    }
+                    if(arena.upgradeTower(t)) {
+                        System.out.println(String.format("%s is being upgraded.", type));
+                    } else {
+                        System.out.println(String.format("not enough resource to upgrade %s.", type));
                     }
                     paneArena.getChildren().remove(vb);
                 });
