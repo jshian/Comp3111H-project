@@ -39,6 +39,7 @@ public class LaserTower extends Tower{
         super(coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;
+        this.shootingRange = 50;
         this.consume = 2;
     }
 
@@ -72,7 +73,14 @@ public class LaserTower extends Tower{
     @Override
     public Projectile attackMonster(){
         if(!isReload()) {
-            Monster monster = Arena.getMonsters().get(0);
+            Monster monster = null;
+            for (Monster m :  Arena.getMonsters()) {
+                if (canShoot(m))
+                    return new Projectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
+            }
+            if (monster == null) {
+                return null;
+            }
             Coordinates currentPt = new Coordinates(getX(), getY());
             Coordinates edgePt = currentPt.findEdgePt(monster);
             currentPt.drawLine(edgePt);
