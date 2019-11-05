@@ -94,6 +94,11 @@ public abstract class Tower implements ExistsInArena {
     protected int counter;
 
     /**
+     * The resources needed to upgrade the tower
+     */
+    protected int upgradeCost;
+
+    /**
      * Constructor for Tower class.
      * @param coordinates The coordinate of tower.
      */
@@ -114,10 +119,11 @@ public abstract class Tower implements ExistsInArena {
         this.reload=2;
     }
 
-    // Inferface implementation
+    // Interface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
+    public int getUpgradeCost() { return upgradeCost; }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
 

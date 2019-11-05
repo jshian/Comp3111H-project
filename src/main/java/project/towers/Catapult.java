@@ -28,6 +28,7 @@ public class Catapult extends Tower {
         this.shootLimit = 50;
         this.counter = reload;
         this.attackSpeed = 50;
+        this.upgradeCost = 20;
     }
 
     /**
@@ -43,6 +44,7 @@ public class Catapult extends Tower {
         this.reload = 10;
         this.shootLimit = 50;
         this.attackSpeed = 50;
+        this.upgradeCost = 20;
     }
 
     /**
@@ -52,7 +54,7 @@ public class Catapult extends Tower {
      */
     @Override
     public boolean upgrade(int resource){
-        if(resource >= 20){
+        if(resource >= this.upgradeCost){
             if(reload>0)reload-=1;
             return true;
         }
@@ -138,6 +140,9 @@ public class Catapult extends Tower {
     public void throwStone(Coordinates cor){
     }
 
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
         return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"
