@@ -5,6 +5,8 @@ import org.apache.commons.lang3.NotImplementedException;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.Projectile;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,7 +78,10 @@ public abstract class Tower implements ExistsInArena {
     @NotNull
     protected int shootLimit;
 
-    protected Projectile projectile;
+    /**
+     * The attack speed of tower for how many px per frame
+     */
+    protected int attackSpeed;
 
     /**
      * Constructor for Tower class.
@@ -111,10 +116,10 @@ public abstract class Tower implements ExistsInArena {
     public abstract boolean upgrade(int resource);
 
     /**
-     * Decrease the health, speed etc of the attacked monster
-     * @param monster The monster closest to the destination was attacked
+     * Attack the monster closest to destination and in shooting range.
+     * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
-    protected abstract void attackMonster(Monster monster);
+    protected abstract Projectile attackMonster();
 
     /**
      * To determine whether the monster is in shooting range or not.

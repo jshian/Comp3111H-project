@@ -3,6 +3,9 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.Projectile;
+
+import java.util.LinkedList;
 
 /**
  * Basic tower has no any special ability.
@@ -18,6 +21,7 @@ public class BasicTower extends Tower {
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;
+        this.attackSpeed = 5;
     }
 
     /**
@@ -30,6 +34,7 @@ public class BasicTower extends Tower {
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;
+        this.attackSpeed = 5;
     }
 
     /**
@@ -46,10 +51,18 @@ public class BasicTower extends Tower {
         return false;
     }
 
+    /**
+     * Attack the monster closest to destination and in shooting range.
+     * @return The projectile of tower attack, return null if cannot shoot any monster.
+     */
     @Override
-    public void attackMonster(Monster monster){
-        if(canShoot(monster))
-            monster.setHealth((int)(monster.getHealth()-this.attackPower));
+    public Projectile attackMonster(){
+        LinkedList<Monster> monsters = Arena.getMonsters();
+        for (Monster m : monsters) {
+            if(canShoot(m))
+                return new Projectile(coordinates,new Coordinates(m.getX(),m.getY()),attackSpeed,attackPower);
+        }
+        return null;
     }
 
     @Override
