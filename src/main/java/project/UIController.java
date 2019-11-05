@@ -253,7 +253,7 @@ public class UIController {
      */
     private void setTowerEvent(Tower t) {
         Coordinates coor = new Coordinates(t.getX(), t.getY());
-        Coordinates center = Grid.findGridCenter(t.getX(), t.getY());
+        Coordinates center = Grid.findGridCenter(coor);
 
         ImageView iv = t.getImageView();
 

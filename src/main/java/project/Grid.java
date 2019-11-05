@@ -66,9 +66,9 @@ class Grid {
     
     /**
      * Accesses all objects contained within the grid.
-     * @return A READONLY linked list containing a reference to each object in the grid.
+     * @return A linked list containing a reference to each object in the grid.
      */
-    LinkedList<ExistsInArena> getAllObjects() { return (LinkedList<ExistsInArena>) Collections.unmodifiableList(objects); }
+    LinkedList<ExistsInArena> getAllObjects() { return objects; }
 
     /**
      * Adds an object to the grid.
