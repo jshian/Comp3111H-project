@@ -40,10 +40,13 @@ public final class Geometry {
      * @param y1 The y-coordinate of the first point.
      * @param x2 The x-coordinate of the second point.
      * @param y2 The y-coordinate of the second point.
-     * @return The angle in radians from the first point to the second point, as if the first point is at the origin of a polar coordinate system.
+     * @return The angle in radians from the first point to the second point, as if the first point is at the origin of a polar coordinate system. The range of the angle is from 0 to 2 times PI inclusive.
+     * @throws UnsupportedOperationException If the two points are the same.
      */
-    public static double angleFrom(int x1, int y1, int x2, int y2) {
-        return Math.atan2(y2 - y1, x2 - x1);
+    public static double angleFrom(int x1, int y1, int x2, int y2) throws UnsupportedOperationException {
+        if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined angle because the two points are the same.");
+        double angle = Math.atan2(y2 - y1, x2 - x1);
+        return angle < 0 ? angle + 2 * Math.PI : angle;
     }
 
     /**
