@@ -57,10 +57,12 @@ public class BasicTower extends Tower {
      */
     @Override
     public Projectile attackMonster(){
-        LinkedList<Monster> monsters = Arena.getMonsters();
-        for (Monster m : monsters) {
-            if(canShoot(m))
-                return new Projectile(coordinates,new Coordinates(m.getX(),m.getY()),attackSpeed,attackPower);
+        if(!isReload()) {
+            LinkedList<Monster> monsters = Arena.getMonsters();
+            for (Monster m : monsters) {
+                if (canShoot(m))
+                    return new Projectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
+            }
         }
         return null;
     }

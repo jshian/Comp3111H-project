@@ -16,17 +16,6 @@ import java.util.TimerTask;
 public class Catapult extends Tower {
 
     /**
-     * The reload time for catapult after it attack monsters.
-     */
-    private int reload;
-
-    /**
-     * The counter used to count the reload time.
-     */
-    private int counter;
-
-
-    /**
      * Constructor of catapult.
      * @param coordinates The coordinate of catapult.
      */
@@ -89,13 +78,13 @@ public class Catapult extends Tower {
      */
     @Override
     protected Projectile attackMonster(){
-        if(counter==0) {
+        if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
             Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
             throwStone(coordinate);
             counter = 10;
             return new CatapultProjectile(this.coordinates,coordinate,attackSpeed,attackPower);
-        }else counter--;
+        }
         return null;
     }
 
