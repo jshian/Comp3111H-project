@@ -76,7 +76,7 @@ public class LaserTower extends Tower{
             Monster monster = null;
             for (Monster m :  Arena.getMonsters()) {
                 if (canShoot(m))
-                    return new Projectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
+                    monster = m;
             }
             if (monster == null) {
                 return null;
