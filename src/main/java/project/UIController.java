@@ -242,8 +242,7 @@ public class UIController {
      */
     private void setTowerEvent(Tower t) {
         Coordinates coor = new Coordinates(t.getX(), t.getY());
-        Grid grid = Grid.findGrid(coor);
-        Coordinates center = grid.getCenterCoordinates();
+        Coordinates center = Grid.findGridCenter(t.getX(), t.getY());
 
         ImageView iv = t.getImageView();
 
@@ -289,7 +288,7 @@ public class UIController {
                 vb.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
                 vb.setAlignment(Pos.CENTER);
                 Button upgradeBtn = new Button("upgrade");
-                Button destroyBtn = new Button("destory");
+                Button destroyBtn = new Button("destroy");
                 vb.getChildren().addAll(upgradeBtn, destroyBtn);
 
                 upgradeBtn.setOnAction(e2 -> {

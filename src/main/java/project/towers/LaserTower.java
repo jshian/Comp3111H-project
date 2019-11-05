@@ -5,7 +5,7 @@ import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
 
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 
 /**
@@ -53,7 +53,6 @@ public class LaserTower extends Tower{
         player.spendResources(consume);
     }
 
-
     /**
      * Laser tower increases its attack power when it upgraded.
      * @param resource The resources needed for tower to upgrade.
@@ -76,7 +75,7 @@ public class LaserTower extends Tower{
     public Projectile attackMonster(){
         if(!isReload()) {
             Monster monster = null;
-            for (Monster m :  Arena.getMonsters()) {
+            for (Monster m : Arena.getMonsters()) {
                 if (canShoot(m))
                     monster = m;
             }
@@ -86,16 +85,11 @@ public class LaserTower extends Tower{
             Coordinates currentPt = new Coordinates(getX(), getY());
             Coordinates edgePt = currentPt.findEdgePt(monster);
             currentPt.drawLine(edgePt);
-            int tX = getX();
-            int tY = getY();
-            int mX = monster.getX();
-            int mY = monster.getY();
 
-            LinkedList<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
-                for (int x = tX, y = tY; x > mX && y > mY; x += (mX - tX) * 0.01, y += (mY - tY) * 0.01)
-                    if ((new Coordinates(x, y)).isInCircle(m, 3))
-                        m.setHealth((int) (m.getHealth() - this.attackPower));
+                if (coordinates.isInLine(monster, m, 3))
+                    m.setHealth(m.getHealth() - this.attackPower);
             }
         }
         return null;
