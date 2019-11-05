@@ -11,6 +11,11 @@ public final class Geometry {
     private Geometry() {}
 
     /**
+     * The maximum allowed difference when determining the equality of two values.
+     */
+    public static double EQUALITY_THRESHOLD = 0.001;
+
+    /**
      * Calculates the taxicab distance between two points.
      * @param x1 The x-coordinate of the first point.
      * @param y1 The y-coordinate of the first point.
@@ -146,7 +151,7 @@ public final class Geometry {
         double distance = Math.abs((y2 - y1) * testX + (x1 - x2) * testY + (x2 * y1 - x1 * y2))
                             / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x1 - x2, 2));
 
-        return distance <= error;
+        return distance < error || distance - error < EQUALITY_THRESHOLD;
     }
 
     /**
@@ -162,6 +167,8 @@ public final class Geometry {
     public static boolean isInCircle(int xTest, int yTest, int x, int y, int r) throws UnsupportedOperationException {
         if (r < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
         
-        return diagonalDistance(xTest, yTest, x, y) <= r;
+        double distance = diagonalDistance(xTest, yTest, x, y);
+
+        return distance < r || distance - r < EQUALITY_THRESHOLD;
     }
 }

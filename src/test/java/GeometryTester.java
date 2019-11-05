@@ -1,5 +1,4 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -41,66 +40,62 @@ public class GeometryTester {
     
     @Test
     public void testDiagonalDistance() {
-        final double ALLOWABLE_ERROR = 0.001;
-
         // Same point
-        assertEquals(Geometry.diagonalDistance(0, 0, 0, 0), 0, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(5, 0, 5, 0), 0, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, -10, 0, -10), 0, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(32, -456, 32, -456), 0, ALLOWABLE_ERROR);
+        assertEquals(Geometry.diagonalDistance(0, 0, 0, 0), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(5, 0, 5, 0), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, -10, 0, -10), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(32, -456, 32, -456), 0, Geometry.EQUALITY_THRESHOLD);
 
         // One equal coordinate
-        assertEquals(Geometry.diagonalDistance(-1, 0, 0, 0), 1, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, -2, 0, 0), 2, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, 0, -3, 0), 3, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, 0, 0, -4), 4, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(6, 0, 0, 0), 6, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, 7, 0, 0), 7, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, 0, 8, 0), 8, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, 0, 0, 9), 9, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(-1, 0, 1, 0), 2, ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(0, 2, 0, -2), 4, ALLOWABLE_ERROR);
+        assertEquals(Geometry.diagonalDistance(-1, 0, 0, 0), 1, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, -2, 0, 0), 2, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, 0, -3, 0), 3, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, 0, 0, -4), 4, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(6, 0, 0, 0), 6, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, 7, 0, 0), 7, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, 0, 8, 0), 8, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, 0, 0, 9), 9, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(-1, 0, 1, 0), 2, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(0, 2, 0, -2), 4, Geometry.EQUALITY_THRESHOLD);
 
         // Distinct x- and y- coordinates
-        assertEquals(Geometry.diagonalDistance(-5, 7, -3, 6), Math.sqrt(5), ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(490, 234, 436, -50), Math.sqrt(83572), ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(56, 14, 43, 2), Math.sqrt(313), ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(30, -19, 329, 10), Math.sqrt(90242), ALLOWABLE_ERROR);
-        assertEquals(Geometry.diagonalDistance(130, -50, -40, -20), Math.sqrt(29800), ALLOWABLE_ERROR);
+        assertEquals(Geometry.diagonalDistance(-5, 7, -3, 6), Math.sqrt(5), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(490, 234, 436, -50), Math.sqrt(83572), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(56, 14, 43, 2), Math.sqrt(313), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(30, -19, 329, 10), Math.sqrt(90242), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.diagonalDistance(130, -50, -40, -20), Math.sqrt(29800), Geometry.EQUALITY_THRESHOLD);
     }
 
     @Test
     public void testAngleFrom() {
-        final double ALLOWABLE_ERROR = 0.001;
-
         // Same point
         expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.angleFrom(0, 0, 0, 0), 0, ALLOWABLE_ERROR);
+        assertEquals(Geometry.angleFrom(0, 0, 0, 0), 0, Geometry.EQUALITY_THRESHOLD);
         expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.angleFrom(5, 0, 5, 0), 0, ALLOWABLE_ERROR);
+        assertEquals(Geometry.angleFrom(5, 0, 5, 0), 0, Geometry.EQUALITY_THRESHOLD);
         expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.angleFrom(0, -10, 0, -10), 0, ALLOWABLE_ERROR);
+        assertEquals(Geometry.angleFrom(0, -10, 0, -10), 0, Geometry.EQUALITY_THRESHOLD);
         expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.angleFrom(32, -456, 32, -456), 0, ALLOWABLE_ERROR);
+        assertEquals(Geometry.angleFrom(32, -456, 32, -456), 0, Geometry.EQUALITY_THRESHOLD);
 
         // One equal coordinate
-        assertEquals(Geometry.angleFrom(-1, 0, 0, 0), 0, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(0, -2, 0, 0), Math.PI / 2, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(0, 0, -3, 0), Math.PI, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(0, 0, 0, -4), 3 * Math.PI / 2, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(6, 0, 0, 0), Math.PI, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(0, 7, 0, 0), 3 * Math.PI / 2, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(0, 0, 8, 0), 0, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(0, 0, 0, 9), Math.PI / 2, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(-1, 0, 1, 0), 0, ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(0, 2, 0, -2), 3 * Math.PI / 2, ALLOWABLE_ERROR);
+        assertEquals(Geometry.angleFrom(-1, 0, 0, 0), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(0, -2, 0, 0), Math.PI / 2, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(0, 0, -3, 0), Math.PI, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(0, 0, 0, -4), 3 * Math.PI / 2, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(6, 0, 0, 0), Math.PI, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(0, 7, 0, 0), 3 * Math.PI / 2, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(0, 0, 8, 0), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(0, 0, 0, 9), Math.PI / 2, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(-1, 0, 1, 0), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(0, 2, 0, -2), 3 * Math.PI / 2, Geometry.EQUALITY_THRESHOLD);
 
         // Distinct x- and y- coordinates
-        assertEquals(Geometry.angleFrom(-5, 7, -3, 6), Math.toRadians(301.60750), ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(490, 234, 436, -50), Math.toRadians(259.23424), ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(56, 14, 43, 2), Math.toRadians(222.70938), ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(30, -19, 329, 10), Math.toRadians(5.5397881), ALLOWABLE_ERROR);
-        assertEquals(Geometry.angleFrom(130, -50, -40, -20), Math.toRadians(169.99202), ALLOWABLE_ERROR);
+        assertEquals(Geometry.angleFrom(-5, 7, -3, 6), Math.toRadians(301.60750), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(490, 234, 436, -50), Math.toRadians(259.23424), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(56, 14, 43, 2), Math.toRadians(222.70938), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(30, -19, 329, 10), Math.toRadians(5.5397881), Geometry.EQUALITY_THRESHOLD);
+        assertEquals(Geometry.angleFrom(130, -50, -40, -20), Math.toRadians(169.99202), Geometry.EQUALITY_THRESHOLD);
     }
 
     @Test
@@ -135,26 +130,32 @@ public class GeometryTester {
         Point2D p11 = Geometry.intersectBox(0, 0, 0, 56, 4, 42);
 
         // Boundary of box
-        Point2D p12 = Geometry.intersectBox(30, 0, 10, 0, 30, 67);
+        Point2D p12 = Geometry.intersectBox(30, 0, 0, 0, 30, 67);
         assertTrue(p12.getX() == 0 && p12.getY() == 0);
+        Point2D p13 = Geometry.intersectBox(0, 0, 30, 0, 30, 67);
+        assertTrue(p13.getX() == 30 && p13.getY() == 0);
+        Point2D p14 = Geometry.intersectBox(0, 67, 0, 0, 30, 67);
+        assertTrue(p14.getX() == 0 && p14.getY() == 0);
+        Point2D p15 = Geometry.intersectBox(0, 0, 0, 67, 30, 67);
+        assertTrue(p15.getX() == 0 && p15.getY() == 67);
 
         // One equal coordinate
-        // Point2D p8 = Geometry.intersectBox(-1, 0, 0, 0, 5, 10);
-        // Point2D p9 = Geometry.intersectBox(0, -2, 0, 0, 59, 30);
-        // Point2D p4 = Geometry.intersectBox(0, 0, -3, 0, 18, 49);
-        // Point2D p4 = Geometry.intersectBox(0, 0, 0, -4, 231, 54);
-        // Point2D p4 = Geometry.intersectBox(6, 0, 0, 0, 50, 50);
-        // Point2D p4 = Geometry.intersectBox(0, 7, 0, 0, 1, 1);
-        // Point2D p4 = Geometry.intersectBox(0, 0, 8, 0), 0, ALLOWABLE_ERROR);
-        // Point2D p4 = Geometry.intersectBox(0, 0, 0, 9), Math.PI / 2, ALLOWABLE_ERROR);
-        // Point2D p4 = Geometry.intersectBox(-1, 0, 1, 0), 0, ALLOWABLE_ERROR);
-        // Point2D p4 = Geometry.intersectBox(0, 2, 0, -2), 3 * Math.PI / 2, ALLOWABLE_ERROR);
+        // Point2D p16 = Geometry.intersectBox(-1, 0, 0, 0, 5, 10);
+        // Point2D p17 = Geometry.intersectBox(0, -2, 0, 0, 59, 30);
+        // Point2D p18 = Geometry.intersectBox(0, 0, -3, 0, 18, 49);
+        // Point2D p19 = Geometry.intersectBox(0, 0, 0, -4, 231, 54);
+        // Point2D p20 = Geometry.intersectBox(6, 0, 0, 0, 50, 50);
+        // Point2D p21 = Geometry.intersectBox(0, 7, 0, 0, 1, 1);
+        // Point2D p22 = Geometry.intersectBox(0, 0, 8, 0), 0, ALLOWABLE_ERROR);
+        // Point2D p23 = Geometry.intersectBox(0, 0, 0, 9), Math.PI / 2, ALLOWABLE_ERROR);
+        // Point2D p24 = Geometry.intersectBox(-1, 0, 1, 0), 0, ALLOWABLE_ERROR);
+        // Point2D p25 = Geometry.intersectBox(0, 2, 0, -2), 3 * Math.PI / 2, ALLOWABLE_ERROR);
 
         // Distinct x- and y- coordinates
-        // Point2D p4 = Geometry.intersectBox(-5, 7, -3, 6), Math.toRadians(301.60750), ALLOWABLE_ERROR);
-        // Point2D p4 = Geometry.intersectBox(490, 234, 436, -50), Math.toRadians(259.23424), ALLOWABLE_ERROR);
-        // Point2D p4 = Geometry.intersectBox(56, 14, 43, 2), Math.toRadians(222.70938), ALLOWABLE_ERROR);
-        // Point2D p4 = Geometry.intersectBox(30, -19, 329, 10), Math.toRadians(5.5397881), ALLOWABLE_ERROR);
-        // Point2D p4 = Geometry.intersectBox(130, -50, -40, -20), Math.toRadians(169.99202), ALLOWABLE_ERROR);
+        // Point2D p26 = Geometry.intersectBox(-5, 7, -3, 6), Math.toRadians(301.60750), ALLOWABLE_ERROR);
+        // Point2D p27 = Geometry.intersectBox(490, 234, 436, -50), Math.toRadians(259.23424), ALLOWABLE_ERROR);
+        // Point2D p28 = Geometry.intersectBox(56, 14, 43, 2), Math.toRadians(222.70938), ALLOWABLE_ERROR);
+        // Point2D p29 = Geometry.intersectBox(30, -19, 329, 10), Math.toRadians(5.5397881), ALLOWABLE_ERROR);
+        // Point2D p30 = Geometry.intersectBox(130, -50, -40, -20), Math.toRadians(169.99202), ALLOWABLE_ERROR);
     }
 } 
