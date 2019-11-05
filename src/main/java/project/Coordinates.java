@@ -1,7 +1,9 @@
 package project;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.image.ImageView;
 import project.Arena.ExistsInArena;
-import project.Arena.TypeFilter;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
@@ -24,12 +26,12 @@ public class Coordinates implements Serializable {
     /**
      * The horizontal coordinate, increasing towards the right.
      */
-    private int x = 0;
+    private IntegerProperty x = new SimpleIntegerProperty(0);
 
     /**
      * The vertical coordinate, increasing towards the bottom.
      */
-    private int y = 0;
+    private IntegerProperty y = new SimpleIntegerProperty(0);
 
     /**
      * Default constructor for the Coordinate class. Both coordinates default to 0.
@@ -48,13 +50,22 @@ public class Coordinates implements Serializable {
      * Accesses the x-coordinate.
      * @return The horizontal coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
-    public int getX() { return x; }
+    public int getX() { return x.get(); }
 
     /**
      * Accesses the y-coordinate.
      * @return The vertical coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
-    public int getY() { return y; }
+    public int getY() { return y.get(); }
+
+    /**
+     * bind x,y to the ImageView so that updating x,y will show in the UI.
+     */
+    public void bindByImage(@NonNull ImageView iv)
+    {
+        iv.xProperty().bind(this.x);
+        iv.yProperty().bind(this.y);
+    }
 
     /**
      * Updates both coordinates.
@@ -70,8 +81,17 @@ public class Coordinates implements Serializable {
             throw new IllegalArgumentException(
                 String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT - 1));
 
-        this.x = x;
-        this.y = y;
+        this.x.set(x);
+        this.y.set(y);
+    }
+
+    /**
+     * Updates both coordinates.
+     * @param other The other object.
+     * @exception IllegalArgumentException Either of x,y in the coordinates is outside the arena.
+     */
+    public void update(Coordinates other) {
+        update(other.getX(), other.getY());
     }
 
     /**
@@ -106,7 +126,7 @@ public class Coordinates implements Serializable {
      * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public int taxicabDistanceFrom(@NonNull Coordinates other) {
-        return Math.abs(this.x - other.x) + Math.abs(this.y - other.y);
+        return Math.abs(this.x.get() - other.x.get()) + Math.abs(this.y.get() - other.y.get());
     }
 
     /**
@@ -124,7 +144,7 @@ public class Coordinates implements Serializable {
      * @return The diagonal distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public double diagonalDistanceFrom(@NonNull Coordinates other) {
-        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+        return Math.sqrt(Math.pow(this.x.get() - other.x.get(), 2) + Math.pow(this.y.get() - other.y.get(), 2));
     }
 
     /**
@@ -142,7 +162,7 @@ public class Coordinates implements Serializable {
      * @return The angle in radians from this object to the other object, as if this object is at the origin of a polar coordinate system.
      */
     public double angleFrom(@NonNull Coordinates other) {
-        return Math.atan2(other.y - this.y, other.x - this.x);
+        return Math.atan2(other.y.get() - this.y.get(), other.x.get() - this.x.get());
     }
 
     /**
@@ -199,21 +219,32 @@ public class Coordinates implements Serializable {
         return Math.abs(this.angleFrom(endPt)-this.angleFrom(testPt)) < error;
     }
 
+    /**
+     * Test whether a point is within a circle of current object as the center.
+     * @param obj The object which to be tested.
+     * @param radius the radius of the circle with current point as the center.
+     * @return True if the tested coordinate is in the circle, otherwise false.
+     */
     public boolean isInCircle(@NonNull ExistsInArena obj, int radius) {
         return isInCircle(new Coordinates(obj.getX(), obj.getY()),radius);
     }
 
     /**
-     * Test whether a point is within a circle of current point as the center
-     * @param coordinate The coordinate which to be tested
-     * @param radius the radius of the circle with current point as the center
-     * @return True if the tested coordinate is in the circle, otherwise false
+     * Test whether a point is within a circle of current point as the center.
+     * @param coordinate The coordinate which to be tested.
+     * @param radius the radius of the circle with current point as the center.
+     * @return True if the tested coordinate is in the circle, otherwise false.
      */
     public boolean isInCircle(@NonNull Coordinates coordinate, int radius) {
         return this.diagonalDistanceFrom(coordinate) < radius;
     }
 
-    public LinkedList<Monster> monsterInCircle(@NonNull Coordinates coordinate, int radius){
+    /**
+     * Find out the monsters within a circle with current coordinate as center.
+     * @param radius The radius of the circle.
+     * @return The monsters within the circle.
+     */
+    public LinkedList<Monster> monsterInCircle(int radius){
         LinkedList<Monster> monsters = new LinkedList<>();
         for (Monster m :Arena.getMonsters()) {
             if (isInCircle(m,radius))monsters.add(m);
@@ -221,14 +252,19 @@ public class Coordinates implements Serializable {
         return monsters;
     }
 
+    /**
+     * Find the point in the edge which is in the line of the current point and given object.
+     * @param dirObj The object will form a extended line with the current point.
+     * @return The point in the edge of the extended line
+     */
     public Coordinates findEdgePt(@NonNull ExistsInArena dirObj) {
         return findEdgePt(new Coordinates(dirObj.getX(), dirObj.getY()));
     }
 
     /**
-     * Find the point in the edge which is in the line of the current point and given point
-     * @param dirPt The point will form a extended line with the current point
-     * @return  The point in the edge of the extended line
+     * Find the point in the edge which is in the line of the current point and given point.
+     * @param dirPt The point will form a extended line with the current point.
+     * @return  The point in the edge of the extended line.
      */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
         for (int y = 0; y <= UIController.ARENA_HEIGHT; ++y){
@@ -260,6 +296,6 @@ public class Coordinates implements Serializable {
      * @param cor The coordinates of the target.
      */
     public void drawLine(@NonNull Coordinates cor){
-        Line line = new Line(this.x,this.y,cor.x,cor.y);//ui part incomplete
+        Line line = new Line(this.x.get(),this.y.get(),cor.x.get(),cor.y.get());
     }
 }

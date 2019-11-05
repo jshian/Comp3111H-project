@@ -2,7 +2,6 @@ package project;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

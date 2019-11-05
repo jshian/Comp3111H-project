@@ -1,5 +1,3 @@
-import java.security.InvalidParameterException;
-
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
