@@ -170,7 +170,18 @@ public class UIController {
                 });
 
             	target.setOnDragEntered(e -> { // grids[y][x]
-            		if (arena.canBuildTower(c)) {
+                    Object source = e.getGestureSource();
+            	    String type = null;
+                    if (source.equals(labelBasicTower)) {
+                        type = "Basic Tower";
+                    } else if (source.equals(labelIceTower)) {
+                        type = "Ice Tower";
+                    } else if (source.equals(labelCatapult)) {
+                        type = "Catapult";
+                    } else if (source.equals(labelLaserTower)) {
+                        type = "Laser Tower";
+                    }
+            		if (arena.canBuildTower(c, type)) {
             			target.setStyle("-fx-border-color: blue;");
             		} else {
             		    target.setStyle("-fx-border-color: red;");
