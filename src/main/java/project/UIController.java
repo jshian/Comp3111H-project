@@ -113,6 +113,14 @@ public class UIController {
                 newLabel.setStyle("-fx-border-color: black;");
                 grids[i][j] = newLabel;
                 paneArena.getChildren().addAll(newLabel);
+
+                newLabel.setOnMouseClicked(e -> {
+                    if (e.getButton() == MouseButton.SECONDARY) {
+                        if(paneArena.getChildren().contains(vb)) {
+                            paneArena.getChildren().remove(vb);
+                        }
+                    }
+                });
             }
 
         arena = new Arena(remainingResources);
@@ -283,11 +291,17 @@ public class UIController {
                 paneArena.getChildren().remove(vb);
             }
 
-            MouseButton button = e.getButton();
-            if (button == MouseButton.PRIMARY) {
+            if (e.getButton() == MouseButton.PRIMARY) {
                 vb = new VBox(15);
+                vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
                 vb.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
                 vb.setAlignment(Pos.CENTER);
+                vb.setMinWidth(GRID_WIDTH * 2);
+                vb.setMinHeight(GRID_HEIGHT * 2);
+                double positionX = (coor.getX() > paneArena.getWidth()/2) ? towerLabel.getLayoutX()-GRID_WIDTH*2 : towerLabel.getLayoutX()+towerLabel.getWidth();
+                double positionY = (coor.getY() > paneArena.getWidth()/2) ? coor.getY()-GRID_HEIGHT*2 : coor.getY()+GRID_HEIGHT;
+                vb.setLayoutX(positionX);
+                vb.setLayoutY(positionY);
                 Button upgradeBtn = new Button("upgrade");
                 Button destroyBtn = new Button("destory");
                 vb.getChildren().addAll(upgradeBtn, destroyBtn);
@@ -305,6 +319,14 @@ public class UIController {
                     paneArena.getChildren().remove(vb);
                     arena.destroyTower(t, paneArena);
                 });
+                Node[] ns = {vb, upgradeBtn, destroyBtn};
+                for (Node n: ns) {
+                    n.setOnMouseClicked(en -> {
+                        if (en.getButton() == MouseButton.SECONDARY) {
+                            paneArena.getChildren().remove(vb);
+                        }
+                    });
+                }
 
                 paneArena.getChildren().add(vb);
             }
