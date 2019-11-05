@@ -66,9 +66,9 @@ class Grid {
     
     /**
      * Accesses all objects contained within the grid.
-     * @return A READONLY linked list containing a reference to each object in the grid.
+     * @return A linked list containing a reference to each object in the grid.
      */
-    LinkedList<ExistsInArena> getAllObjects() { return (LinkedList<ExistsInArena>) Collections.unmodifiableList(objects); }
+    LinkedList<ExistsInArena> getAllObjects() { return objects; }
 
     /**
      * Adds an object to the grid.
@@ -117,6 +117,8 @@ class Grid {
      * @return The coordinates of the center of the specified grid.
      */
     static Coordinates findGridCenter(int xPos, int yPos) {
+        System.out.println((int) ((xPos + 0.5) * UIController.GRID_WIDTH));
+        System.out.println((int) ((yPos + 0.5) * UIController.GRID_HEIGHT));
         return new Coordinates((int) ((xPos + 0.5) * UIController.GRID_WIDTH), (int) ((yPos + 0.5) * UIController.GRID_HEIGHT));
     }
 }
