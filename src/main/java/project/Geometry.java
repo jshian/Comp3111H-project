@@ -7,7 +7,7 @@ import javafx.geometry.Point2D;
 /**
  * Helper class to implement geometry-related functions.
  */
-public class Geometry {
+public final class Geometry {
     private Geometry() {}
 
     /**
