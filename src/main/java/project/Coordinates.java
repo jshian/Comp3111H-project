@@ -87,6 +87,15 @@ public class Coordinates implements Serializable {
     }
 
     /**
+     * Updates both coordinates.
+     * @param other The other object.
+     * @exception IllegalArgumentException Either of x,y in the coordinates is outside the arena.
+     */
+    public void update(Coordinates other) {
+        update(other.getX(), other.getY());
+    }
+
+    /**
      * Determines whether an object in the arena is at the Cartesian coordinates represented by this Coordinate object.
      * @param other The object in the arena.
      * @return Whether the object in the arena is at the Cartesian coordinates represented by this Coordinate object.
