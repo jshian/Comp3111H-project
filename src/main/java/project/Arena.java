@@ -68,11 +68,6 @@ public final class Arena {
     private static final int WAVE_INTERVAL = 300;
 
     /**
-     * The resources the player have to build/upgrade towers.
-     */
-    private static IntegerProperty resources = new SimpleIntegerProperty(200);
-
-    /**
      * Describes the state of the Arena during a frame.
      */
     private static class ArenaState {
@@ -134,6 +129,11 @@ public final class Arena {
     private static ArenaState currentState = new ArenaState();
 
     /**
+     * The ArenaState of the current frame.
+     */
+    private static Player player;
+
+    /**
      * The default constructor of the Arena class.
      */
     public Arena() {}
@@ -143,7 +143,8 @@ public final class Arena {
      * @param resourceLabel the label to show remaining resources of player.
      */
     public Arena(@NonNull Label resourceLabel) {
-        resourceLabel.textProperty().bind(Bindings.format("Money: %d", resources));
+        player = new Player("name", 200);
+        resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
     }
 
     /**
@@ -321,6 +322,25 @@ public final class Arena {
     }
 
     /**
+     * check if the player has enough resources to build the tower.
+     * @param type type of the tower.
+     * @return true if the player has enough resources or false otherwise.
+     */
+    public static boolean hasResources(@NonNull String type)
+    {
+        int cost = 500;
+        Coordinates c = new Coordinates(0,0);
+        switch(type) {
+            case "Basic Tower": cost = new BasicTower(c).getBuildingCost(); break;
+            case "Ice Tower": cost = new IceTower(c).getBuildingCost(); break;
+            case "Catapult": cost = new Catapult(c).getBuildingCost(); break;
+            case "Laser Tower": cost = new LaserTower(c).getBuildingCost(); break;
+        }
+        return player.hasResources(cost);
+    }
+
+
+    /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @param type type of the tower.
@@ -342,36 +362,6 @@ public final class Arena {
         return true;
     }
 
-    /**
-     * check if the player has enough resources to perform the action.
-     * @param cost cost of an action.
-     * @return true if the player has enough resources or false otherwise.
-     */
-    public static boolean hasResources(@NonNull int cost)
-    {
-        if (cost > resources.get()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * check if the player has enough resources to build the tower.
-     * @param type type of the tower.
-     * @return true if the player has enough resources or false otherwise.
-     */
-    public static boolean hasResources(@NonNull String type)
-    {
-        int cost = 500;
-        switch(type) {
-            case "Basic Tower": cost = new BasicTower(STARTING_COORDINATES).getBuildingCost(); break;
-            case "Ice Tower": cost = new IceTower(STARTING_COORDINATES).getBuildingCost(); break;
-            case "Catapult": cost = new Catapult(STARTING_COORDINATES).getBuildingCost(); break;
-            case "Laser Tower": cost = new LaserTower(STARTING_COORDINATES).getBuildingCost(); break;
-        }
-        return hasResources(cost);
-    }
 
     /**
      * Builds a Tower at the grid where a specified pixel is located.
@@ -393,8 +383,8 @@ public final class Arena {
         }
         cost = t.getBuildingCost();
 
-        if (hasResources(cost)) {
-            resources.setValue(resources.get() - cost);
+        if (player.hasResources(cost)) {
+            player.spendResources(cost);
             currentState.towers.add(t);
             return t;
         } else {
@@ -409,9 +399,9 @@ public final class Arena {
      * @return true if upgrade is successful, false if player don't have enough resources.
      */
     public static boolean upgradeTower(@NonNull Tower t) {
-        boolean canbuild = t.upgrade(resources.getValue());
+        boolean canbuild = t.upgrade(player.getResources());
         if (canbuild) {
-            resources.set(resources.getValue() - t.getUpgradeCost());
+            player.spendResources(t.getUpgradeCost());
             return true;
         } else {
             return false;

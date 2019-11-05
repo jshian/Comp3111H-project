@@ -1,24 +1,57 @@
 package project;
 
-import project.towers.Tower;
-
-import java.util.ArrayList;
-import java.util.List;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class Player {
 
 
     // Attribute
     private final String name;
-    private int resource;
+    private static IntegerProperty resources = new SimpleIntegerProperty(0);
 
+    /**
+     * Constructor of player
+     * @param name the name of player
+     * @param resource the amount of resources player has.
+     */
     public Player(String name, int resource) {
         this.name = name;
-        this.resource = resource;
+        this.resources.set(resource);
+    }
+
+    /**
+     * get the amount of resources of player.
+     * @return the amount of resources of player.
+     */
+    public int getResources() {
+        return resources.get();
+    }
+
+    /**
+     * get resources Property of player.
+     * @return resources Property of player.
+     */
+    public IntegerProperty resourcesProperty() {
+        return resources;
+    }
+
+    /**
+     * check if the player has enough resources to perform the action.
+     * @param cost cost of an action.
+     * @return true if the player has enough resources or false otherwise.
+     */
+    public static boolean hasResources(int cost)
+    {
+        if (cost > resources.get()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void spendResources(int amount) {
-        resource = Math.max(0,  resource - amount);
+        resources.set(Math.max(0,  resources.get() - amount));
     }
 
 }
