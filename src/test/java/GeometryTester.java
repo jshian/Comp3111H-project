@@ -107,9 +107,9 @@ public class GeometryTester {
         expectedException.expect(UnsupportedOperationException.class);
         Point2D p2 = Geometry.intersectBox(5, 0, 5, 0, 30, 4);
         expectedException.expect(UnsupportedOperationException.class);
-        Point2D p3 = Geometry.intersectBox(0, -10, 0, -10, 230, 495);
+        Point2D p3 = Geometry.intersectBox(0, 10, 0, 10, 230, 495);
         expectedException.expect(UnsupportedOperationException.class);
-        Point2D p4 = Geometry.intersectBox(32, -456, 32, -456, 534, 54);
+        Point2D p4 = Geometry.intersectBox(32, 456, 32, 456, 534, 54);
 
         // Invalid box size
         expectedException.expect(UnsupportedOperationException.class);
@@ -128,34 +128,48 @@ public class GeometryTester {
         Point2D p10 = Geometry.intersectBox(0, 0, 63, 0, 61, 7);
         expectedException.expect(UnsupportedOperationException.class);
         Point2D p11 = Geometry.intersectBox(0, 0, 0, 56, 4, 42);
+        expectedException.expect(UnsupportedOperationException.class);
+        Point2D p12 = Geometry.intersectBox(-1, 0, 0, 0, 8, 10);
+        expectedException.expect(UnsupportedOperationException.class);
+        Point2D p13 = Geometry.intersectBox(0, -1, 0, 0, 5, 3);
+        expectedException.expect(UnsupportedOperationException.class);
+        Point2D p14 = Geometry.intersectBox(0, 0, -1, 0, 61, 7);
+        expectedException.expect(UnsupportedOperationException.class);
+        Point2D p15 = Geometry.intersectBox(0, 0, 0, -1, 4, 42);
 
         // Boundary of box
-        Point2D p12 = Geometry.intersectBox(30, 0, 0, 0, 30, 67);
-        assertTrue(p12.getX() == 0 && p12.getY() == 0);
-        Point2D p13 = Geometry.intersectBox(0, 0, 30, 0, 30, 67);
-        assertTrue(p13.getX() == 30 && p13.getY() == 0);
-        Point2D p14 = Geometry.intersectBox(0, 67, 0, 0, 30, 67);
-        assertTrue(p14.getX() == 0 && p14.getY() == 0);
-        Point2D p15 = Geometry.intersectBox(0, 0, 0, 67, 30, 67);
-        assertTrue(p15.getX() == 0 && p15.getY() == 67);
+        Point2D p16 = Geometry.intersectBox(30, 0, 0, 0, 30, 67);
+        assertEquals(p16.getX(), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p16.getY(), 0, Geometry.EQUALITY_THRESHOLD);
+        Point2D p17 = Geometry.intersectBox(0, 0, 30, 0, 30, 67);
+        assertEquals(p17.getX(), 30, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p17.getY(), 0, Geometry.EQUALITY_THRESHOLD);
+        Point2D p18 = Geometry.intersectBox(0, 67, 0, 0, 30, 67);
+        assertEquals(p18.getX(), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p18.getY(), 0, Geometry.EQUALITY_THRESHOLD);
+        Point2D p19 = Geometry.intersectBox(0, 0, 0, 67, 30, 67);
+        assertEquals(p19.getX(), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p19.getY(), 67, Geometry.EQUALITY_THRESHOLD);
 
         // One equal coordinate
-        // Point2D p16 = Geometry.intersectBox(-1, 0, 0, 0, 5, 10);
-        // Point2D p17 = Geometry.intersectBox(0, -2, 0, 0, 59, 30);
-        // Point2D p18 = Geometry.intersectBox(0, 0, -3, 0, 18, 49);
-        // Point2D p19 = Geometry.intersectBox(0, 0, 0, -4, 231, 54);
-        // Point2D p20 = Geometry.intersectBox(6, 0, 0, 0, 50, 50);
-        // Point2D p21 = Geometry.intersectBox(0, 7, 0, 0, 1, 1);
-        // Point2D p22 = Geometry.intersectBox(0, 0, 8, 0), 0, ALLOWABLE_ERROR);
-        // Point2D p23 = Geometry.intersectBox(0, 0, 0, 9), Math.PI / 2, ALLOWABLE_ERROR);
-        // Point2D p24 = Geometry.intersectBox(-1, 0, 1, 0), 0, ALLOWABLE_ERROR);
-        // Point2D p25 = Geometry.intersectBox(0, 2, 0, -2), 3 * Math.PI / 2, ALLOWABLE_ERROR);
+        Point2D p20 = Geometry.intersectBox(6, 2, 10, 2, 50, 50);
+        assertEquals(p20.getX(), 50, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p20.getY(), 2, Geometry.EQUALITY_THRESHOLD);
+        Point2D p21 = Geometry.intersectBox(48, 5, 8, 5, 345, 13);
+        assertEquals(p21.getX(), 0 , Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p21.getY(), 5, Geometry.EQUALITY_THRESHOLD);
+        Point2D p22 = Geometry.intersectBox(3, 7, 3, 79, 296, 305);
+        assertEquals(p22.getX(), 0, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p22.getY(), 305, Geometry.EQUALITY_THRESHOLD);
+        Point2D p23 = Geometry.intersectBox(47, 432, 47, 45, 479, 345);
+        assertEquals(p23.getX(), 47, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p23.getY(), 0, Geometry.EQUALITY_THRESHOLD);
 
         // Distinct x- and y- coordinates
-        // Point2D p26 = Geometry.intersectBox(-5, 7, -3, 6), Math.toRadians(301.60750), ALLOWABLE_ERROR);
-        // Point2D p27 = Geometry.intersectBox(490, 234, 436, -50), Math.toRadians(259.23424), ALLOWABLE_ERROR);
-        // Point2D p28 = Geometry.intersectBox(56, 14, 43, 2), Math.toRadians(222.70938), ALLOWABLE_ERROR);
-        // Point2D p29 = Geometry.intersectBox(30, -19, 329, 10), Math.toRadians(5.5397881), ALLOWABLE_ERROR);
-        // Point2D p30 = Geometry.intersectBox(130, -50, -40, -20), Math.toRadians(169.99202), ALLOWABLE_ERROR);
+        // Point2D p24 = Geometry.intersectBox(-5, 7, -3, 6), Math.toRadians(301.60750), ALLOWABLE_ERROR);
+        // Point2D p25 = Geometry.intersectBox(490, 234, 436, -50), Math.toRadians(259.23424), ALLOWABLE_ERROR);
+        // Point2D p26 = Geometry.intersectBox(56, 14, 43, 2), Math.toRadians(222.70938), ALLOWABLE_ERROR);
+        // Point2D p27 = Geometry.intersectBox(30, -19, 329, 10), Math.toRadians(5.5397881), ALLOWABLE_ERROR);
+        // Point2D p28 = Geometry.intersectBox(130, -50, -40, -20), Math.toRadians(169.99202), ALLOWABLE_ERROR);
     }
 } 
