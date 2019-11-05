@@ -437,11 +437,11 @@ public final class Arena {
         if (hasResources(cost)) {
             resources.setValue(resources.get() - cost);
             currentState.towers.add(t);
+            currentState.getGrid(coordinates).addObject(t);
             return t;
         } else {
             return null;
         }
-
     }
 
     /**
@@ -467,6 +467,7 @@ public final class Arena {
     public static void destroyTower(@NonNull Tower tower, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(tower.getImageView());
+        currentState.getGrid(new Coordinates(tower.getX(), tower.getY())).removeObject(tower);
         currentState.towers.remove(tower);
     }
 
@@ -487,6 +488,7 @@ public final class Arena {
     public static void removeProjectile(@NonNull Projectile projectile, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(projectile.getImageView());
+        currentState.getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
         currentState.projectiles.remove(projectile);
     }
 
@@ -499,12 +501,16 @@ public final class Arena {
         int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
+            Monster newMonster;
             if (randomNumber < 1/3)
-                currentState.monsters.add(new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+                newMonster = new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
             else if (randomNumber < 2/3)
-                currentState.monsters.add(new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+                newMonster = new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
             else
-                currentState.monsters.add(new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+                newMonster = new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
+
+            currentState.monsters.add(newMonster);
+            currentState.getGrid(STARTING_COORDINATES).addObject(newMonster);
         }
 
         currentState.difficulty += 1;    // Modified by settings later
@@ -518,7 +524,25 @@ public final class Arena {
     public static void removeMonster(@NonNull Monster monster, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(monster.getImageView());
+        currentState.getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
         currentState.monsters.remove(monster);
+    }
+
+    /**
+     * Moves the specified Monster to another location.
+     * @param monster The Monster to be moved.
+     * @param newCoordinates The coordinates of the new location.
+     * @param paneArena the pane where graphic of monster needed to be removed.
+     */
+    public static void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates, @NonNull AnchorPane paneArena)
+    {
+        currentState.getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
+
+        int newX = newCoordinates.getX();
+        int newY = newCoordinates.getY();
+        monster.setLocation(newX, newY);
+
+        currentState.getGrid(newCoordinates).addObject(monster);
     }
     
     /**
