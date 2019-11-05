@@ -252,8 +252,12 @@ public class UIController {
             towerCircle = new Circle();
             towerCircle.setCenterX(center.getX());
             towerCircle.setCenterY(center.getY());
-            towerCircle.setRadius(t.getShootingRange());
-            towerCircle.setFill(Color.rgb(0,101,255,0.4));
+            // set StrokeWidth to simulate a ring (for catapult).
+            double avgOfRangeAndLimit = (t.getShootingRange() + t.getShootLimit()) / 2;
+            towerCircle.setRadius(avgOfRangeAndLimit);
+            towerCircle.setFill(Color.TRANSPARENT);
+            towerCircle.setStrokeWidth(t.getShootingRange() - t.getShootLimit());
+            towerCircle.setStroke(Color.rgb(0,101,255,0.4));
             paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), towerCircle);
 
             // display tower information
