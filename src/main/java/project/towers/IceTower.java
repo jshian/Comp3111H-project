@@ -3,6 +3,10 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.IceProjectile;
+import project.projectiles.Projectile;
+
+import java.util.LinkedList;
 
 /**
  * IceTower slow down the speed of monster without damage.
@@ -12,7 +16,7 @@ public class IceTower extends Tower{
     /**
      * The slow down duration of ice tower.
      */
-    private double slowDown;
+    private int slowDown;
 
 
     /**
@@ -25,6 +29,7 @@ public class IceTower extends Tower{
         this.buildingCost = 15;
         this.shootingRange = 50;
         this.slowDown = 10;
+        this.attackSpeed = 5;
     }
 
     /**
@@ -38,6 +43,7 @@ public class IceTower extends Tower{
         this.buildingCost = 15;
         this.shootingRange = 50;
         this.slowDown = 10;
+        this.attackSpeed = 5;
     }
 
     /**
@@ -54,12 +60,20 @@ public class IceTower extends Tower{
         return false;
     }
 
+    /**
+     * Attack the monster closest to destination and in shooting range.
+     * @return The projectile of tower attack, return null if cannot shoot any monster.
+     */
     @Override
-    public void attackMonster(Monster monster){
-        if(canShoot(monster)){
-            monster.setSpeed(monster.getSpeed()-this.slowDown);
-            monster.setHealth((int)(monster.getHealth()-this.attackPower));
+    public Projectile attackMonster(){
+        if(isReload()) {
+            LinkedList<Monster> monsters = Arena.getMonsters();
+            for (Monster m : monsters) {
+                if (canShoot(m))
+                    return new IceProjectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);
+            }
         }
+        return null;
     }
 
     @Override

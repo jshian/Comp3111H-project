@@ -1,5 +1,7 @@
-package project;
+package project.projectiles;
 
+import project.Arena;
+import project.Coordinates;
 import project.monsters.*;
 
 import javax.persistence.*;
@@ -14,7 +16,7 @@ import javafx.scene.image.ImageView;
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Projectile implements Arena.MovesInArena {
+public class Projectile implements Arena.MovesInArena {
     /**
      * ID for storage using Java Persistence API
      */
@@ -35,10 +37,10 @@ public abstract class Projectile implements Arena.MovesInArena {
     private Coordinates coordinates;
 
     /**
-     * The Monster that the projectile is travelling towards.
+     * The coordinate of Monster that the projectile is travelling towards.
      */
     @NotNull
-    private Monster target;
+    private Coordinates target;
 
     /**
      * The maximum number of pixels the projectile can travel per frame.
@@ -51,7 +53,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      * The current attack power of the projectile.
      */
     @NotNull
-    protected int attackPower;
+    private int attackPower;
 
     /**
      * Constructor for the Projectile class.
@@ -60,7 +62,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public Projectile(Coordinates coordinates, Monster target, double speed, int attackPower) {
+    public Projectile(Coordinates coordinates, Coordinates target, double speed, int attackPower) {
         this.coordinates = coordinates;
         this.target = target;
         this.speed = speed;
@@ -69,8 +71,10 @@ public abstract class Projectile implements Arena.MovesInArena {
 
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
-    public Coordinates getCoordinates() { return coordinates; }
+    public int getX() { return coordinates.getX(); }
+    public int getY() { return coordinates.getY(); }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
     public void MoveOneFrame() {
         double distance = coordinates.diagonalDistanceFrom(target);
 

@@ -3,6 +3,8 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.CatapultProjectile;
+import project.projectiles.Projectile;
 
 import java.util.LinkedList;
 import java.util.Timer;
@@ -12,17 +14,6 @@ import java.util.TimerTask;
  * Catapult can attack many monsters at the same time and has high shooting range.
  */
 public class Catapult extends Tower {
-
-    /**
-     * The reload time for catapult after it attack monsters.
-     */
-    private int reload;
-
-    /**
-     * The counter used to count the reload time.
-     */
-    private int counter;
-
 
     /**
      * Constructor of catapult.
@@ -36,6 +27,7 @@ public class Catapult extends Tower {
         this.reload = 10;
         this.shootLimit = 50;
         this.counter = reload;
+        this.attackSpeed = 50;
     }
 
     /**
@@ -50,6 +42,7 @@ public class Catapult extends Tower {
         this.shootingRange = 150;
         this.reload = 10;
         this.shootLimit = 50;
+        this.attackSpeed = 50;
     }
 
     /**
@@ -77,24 +70,22 @@ public class Catapult extends Tower {
         return dis <= shootingRange && dis >= shootLimit;
     }
 
-    @Override
-    protected void attackMonster(Monster monster){
-        monster.setHealth((int)(monster.getHealth()-this.attackPower));
-    }
-
     /**
-     * Attack the monsters selected by seleteMonster function and with a reload second delay
+     * Attack the coordinate that contains a monster within a circle which closest to destination and in shooting range.
+     * The coordinate cover most of monster.
+     * Cannot shoot during reload time.
+     * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
-    public void attackMonsters(){
-        if(counter==0) {
+    @Override
+    protected Projectile attackMonster(){
+        if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
             Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
             throwStone(coordinate);
-            for (Monster m : monsters) {
-                attackMonster(m);
-            }
             counter = 10;
-        }else counter--;
+            return new CatapultProjectile(this.coordinates,coordinate,attackSpeed,attackPower);
+        }
+        return null;
     }
 
     /**

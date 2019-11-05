@@ -3,6 +3,8 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.Projectile;
+
 import java.util.LinkedList;
 
 
@@ -63,23 +65,30 @@ public class LaserTower extends Tower{
         return false;
     }
 
+    /**
+     * Attack the nearest monster and the monster in the line.
+     * @return null always since it is immediate attack
+     */
     @Override
-    public void attackMonster(Monster monster){
+    public Projectile attackMonster(){
+        if(!isReload()) {
+            Monster monster = Arena.getMonsters().get(0);
+            Coordinates currentPt = new Coordinates(getX(), getY());
+            Coordinates edgePt = currentPt.findEdgePt(monster);
+            currentPt.drawLine(edgePt);
+            int tX = getX();
+            int tY = getY();
+            int mX = monster.getX();
+            int mY = monster.getY();
 
-        Coordinates currentPt = new Coordinates(getX(), getY());
-        Coordinates edgePt = currentPt.findEdgePt(monster);
-        currentPt.drawLine(edgePt);
-        int tX = getX();
-        int tY = getY();
-        int mX = monster.getX();
-        int mY = monster.getY();
-
-        LinkedList<Monster> monsters = Arena.getMonsters();
-        for (Monster m:monsters) {
-            for (int x = tX, y = tY; x> mX && y> mY; x+=(mX - tX)*0.01,y+=(mY - tY)*0.01)
-                if ((new Coordinates(x,y)).isInCircle(m,3))
-                    m.setHealth((int)(m.getHealth()-this.attackPower));
+            LinkedList<Monster> monsters = Arena.getMonsters();
+            for (Monster m : monsters) {
+                for (int x = tX, y = tY; x > mX && y > mY; x += (mX - tX) * 0.01, y += (mY - tY) * 0.01)
+                    if ((new Coordinates(x, y)).isInCircle(m, 3))
+                        m.setHealth((int) (m.getHealth() - this.attackPower));
+            }
         }
+        return null;
     }
 
     @Override

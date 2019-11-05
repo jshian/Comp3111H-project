@@ -5,6 +5,8 @@ import org.apache.commons.lang3.NotImplementedException;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.Projectile;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -76,7 +78,20 @@ public abstract class Tower implements ExistsInArena {
     @NotNull
     protected int shootLimit;
 
-    protected Projectile projectile;
+    /**
+     * The attack speed of tower for how many px per frame
+     */
+    protected int attackSpeed;
+
+    /**
+     * The reload time for tower after it attack monsters.
+     */
+    protected int reload;
+
+    /**
+     * The counter used to count the reload time.
+     */
+    protected int counter;
 
     /**
      * Constructor for Tower class.
@@ -84,6 +99,7 @@ public abstract class Tower implements ExistsInArena {
      */
     public Tower(Coordinates coordinates){
         this.coordinates = coordinates;
+        this.reload = 2;
     }
 
     /**
@@ -94,6 +110,7 @@ public abstract class Tower implements ExistsInArena {
     public Tower(Coordinates coordinates, ImageView imageView) {
         this.coordinates = coordinates;
         this.imageView = imageView;
+        this.reload=2;
     }
 
     // Inferface implementation
@@ -111,10 +128,10 @@ public abstract class Tower implements ExistsInArena {
     public abstract boolean upgrade(int resource);
 
     /**
-     * Decrease the health, speed etc of the attacked monster
-     * @param monster The monster closest to the destination was attacked
+     * Attack the monster closest to destination and in shooting range.
+     * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
-    protected abstract void attackMonster(Monster monster);
+    protected abstract Projectile attackMonster();
 
     /**
      * To determine whether the monster is in shooting range or not.
@@ -157,9 +174,19 @@ public abstract class Tower implements ExistsInArena {
         return shootingRange;
     }
 
+
+    public boolean isReload(){
+        if(this.counter==0){
+            this.counter=this.reload;
+            return false;
+        }else this.counter--;
+        return true;
+    }
+
     /**Accesses the information of tower.
      * @return the information of tower.
      */
     public abstract String getInformation();
+
 
 }

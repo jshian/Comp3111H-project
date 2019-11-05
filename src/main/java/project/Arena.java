@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
+import project.projectiles.Projectile;
 import project.towers.*;
 
 import java.util.*;
