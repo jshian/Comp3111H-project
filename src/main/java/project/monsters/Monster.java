@@ -89,10 +89,13 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param difficulty The difficulty of the monster.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
+     * @param imageView The image of the monster.
      */
-    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
+    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination, @NonNull ImageView imageView) {
         this.coordinates = start;
         this.destination = destination;
+        this.imageView = imageView;
+        this.coordinates.bindByImage(this.imageView);
     }
     
     // Inferface implementation
