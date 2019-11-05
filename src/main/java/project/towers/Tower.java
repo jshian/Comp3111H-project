@@ -174,6 +174,7 @@ public abstract class Tower implements ExistsInArena {
         return shootingRange;
     }
 
+
     public boolean isReload(){
         if(this.counter==0){
             this.counter=this.reload;
@@ -181,5 +182,11 @@ public abstract class Tower implements ExistsInArena {
         }else this.counter--;
         return true;
     }
+
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
+    public abstract String getInformation();
+
 
 }

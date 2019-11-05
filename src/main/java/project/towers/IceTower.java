@@ -75,4 +75,11 @@ public class IceTower extends Tower{
         }
         return null;
     }
+
+    @Override
+    public String getInformation() {
+        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"
+                + "slow down: %s", this.attackPower, this.buildingCost, this.shootingRange,
+                this.slowDown);
+    }
 }

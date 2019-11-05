@@ -1,5 +1,11 @@
 package project;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
 import project.projectiles.Projectile;
 import project.towers.*;
@@ -64,12 +70,28 @@ public final class Arena {
     /**
      * The resources the player have to build/upgrade towers.
      */
-    private static int resources = 100;
+    private static IntegerProperty resources = new SimpleIntegerProperty(200);
 
     /**
      * Describes the state of the Arena during a frame.
      */
     private static class ArenaState {
+    	/**
+    	 * Stores the cost for a monster in each pixel to reach the end-zone due to movement. Indices correspond to the x- and y- coordinates.
+    	 * The cost is in terms of per unit speed of the monster.
+    	 * @see Monster
+    	 * @see Coordinates
+    	 */
+    	private double[][] movementCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+    	
+    	/**
+    	 * Stores the cost for a monster in each pixel o reach the end-zone due to being attacked. Indices correspond to the x- and y- coordinates.
+    	 * The cost is in terms of per unit speed of the monster.
+    	 * @see Monster
+    	 * @see Coordinates
+    	 */
+    	private double[][] attackCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+    	
         /**
          * Contains a reference to each Tower on the Arena.
          * @see Tower
@@ -104,7 +126,7 @@ public final class Arena {
     /**
      * The ArenaState of the previous frame. Only used for saving the game.
      */
-    private static ArenaState shadowState;
+    private static ArenaState shadowState = null;
 
     /**
      * The ArenaState of the current frame.
@@ -115,6 +137,14 @@ public final class Arena {
      * The default constructor of the Arena class.
      */
     public Arena() {}
+
+    /**
+     * constructor of the Arena class. Bind the label to resources.
+     * @param resourceLabel the label to show remaining resources of player.
+     */
+    public Arena(@NonNull Label resourceLabel) {
+        resourceLabel.textProperty().bind(Bindings.format("Money: %d", resources));
+    }
 
     /**
      * An enum for filtering objects in the Arena according to type.
@@ -300,6 +330,20 @@ public final class Arena {
         return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
     }
 
+    /**
+     * Deduct resources from arena if the player has enough resources to perform the action.
+     * @param cost cost of an action.
+     * @return true if the player has enough resources or false otherwise.
+     */
+    public static boolean useResources(@NonNull int cost)
+    {
+        if (cost > resources.get()) {
+            return false;
+        } else {
+            resources.setValue(resources.get() - cost);
+            return true;
+        }
+    }
 
     /**
      * Builds a Tower at the grid where a specified pixel is located.
@@ -308,21 +352,20 @@ public final class Arena {
      * @param type specify the class of tower.
      * @return the tower being built, or null if not enough resources
      */
-    public static Tower buildTower(@NonNull Coordinates coordinates, ImageView iv, String type)
+    public static Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull String type)
     {
         Tower t = null;
         int cost = 0;
         switch(type) {
-            case "basic": t = new BasicTower(coordinates, iv); break;
-            case "ice": t = new IceTower(coordinates, iv); break;
-            case "catapult": t = new Catapult(coordinates, iv); break;
-            case "laser": t = new LaserTower(coordinates, iv); break;
+            case "Basic Tower": t = new BasicTower(coordinates, iv); break;
+            case "Ice Tower": t = new IceTower(coordinates, iv); break;
+            case "Catapult": t = new Catapult(coordinates, iv); break;
+            case "Laser Tower": t = new LaserTower(coordinates, iv); break;
             default: return null;
         }
         cost = t.getBuildingCost();
 
-        if (resources >= cost) {
-            resources -= cost;
+        if (useResources(cost)) {
             currentState.towers.add(t);
             return t;
         } else {
@@ -334,9 +377,11 @@ public final class Arena {
     /**
      * Destroys the specified Tower.
      * @param tower The Tower to be destroyed.
+     * @param paneArena the pane where graphic of Tower needed to be removed.
      */
-    public static void destroyTower(Tower tower)
+    public static void destroyTower(@NonNull Tower tower, @NonNull AnchorPane paneArena)
     {
+        paneArena.getChildren().remove(tower.getImageView());
         currentState.towers.remove(tower);
     }
 
@@ -352,9 +397,11 @@ public final class Arena {
     /**
      * Removes the specified Projectile from the arena.
      * @param projectile The Projectile to be removed.
+     * @param paneArena the pane where graphic of projectile needed to be removed.
      */
-    public static void removeProjectile(Projectile projectile)
+    public static void removeProjectile(@NonNull Projectile projectile, @NonNull AnchorPane paneArena)
     {
+        paneArena.getChildren().remove(projectile.getImageView());
         currentState.projectiles.remove(projectile);
     }
 
@@ -380,10 +427,59 @@ public final class Arena {
     /**
      * Removes the specified Monster from the arena.
      * @param monster The Monster to be removed.
+     * @param paneArena the pane where graphic of monster needed to be removed.
      */
-    public static void removeMonster(Monster monster)
+    public static void removeMonster(@NonNull Monster monster, @NonNull AnchorPane paneArena)
     {
+        paneArena.getChildren().remove(monster.getImageView());
         currentState.monsters.remove(monster);
+    }
+    
+    /**
+     * Updates the costs to reach the end-zone from each pixel for the current ArenaState.
+     * @see ArenaState#MovementCostToEnd
+     * @see ArenaState#attackCostToEnd
+     */
+    private static void updateCosts() {
+    	class IntTuple {
+    		private int x;
+    		private int y;
+    		
+    		IntTuple(int x, int y) {
+    			this.x = x;
+    			this.y = y;
+    		}
+    	}
+    	
+    	PriorityQueue<IntTuple> openSet = new PriorityQueue<>(UIController.ARENA_WIDTH * UIController.ARENA_HEIGHT - currentState.towers.size());
+    	openSet.add(new IntTuple(END_ZONE_X, END_ZONE_Y));
+    	
+    	// Reset values
+    	for (int i = 0; i < END_ZONE_X; i++) {
+    		for (int j = 0; j < END_ZONE_Y; j++) {
+    			currentState.movementCostToEnd[i][j] = Double.POSITIVE_INFINITY;
+    	    	currentState.attackCostToEnd[i][j] = 0; // Placeholder. Should count number of Towers that cover this pixel.
+    		}
+    	}
+    	
+    	currentState.movementCostToEnd[END_ZONE_X][END_ZONE_Y] = 0;
+    	
+    	while (!openSet.isEmpty()) {
+    		IntTuple current = openSet.poll();
+    		
+    		// Monsters can only travel horizontally or vertically
+    		LinkedList<Coordinates> neighbours = taxicabNeighbours(new Coordinates(current.x, current.y));
+    		for (Coordinates c : neighbours) {
+    			// Monsters can only go to grids that do not contain a Tower
+    			if (objectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
+        			double newCost = currentState.movementCostToEnd[current.x][current.y] + 1;
+        			if (currentState.movementCostToEnd[c.getX()][c.getY()] > newCost ) {
+        				currentState.movementCostToEnd[c.getX()][c.getY()] = newCost;
+        				openSet.add(new IntTuple(c.getX(), c.getY()));
+        			}
+    			}
+    		}
+    	}
     }
 
     /**

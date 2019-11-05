@@ -91,4 +91,9 @@ public class LaserTower extends Tower{
         return null;
     }
 
+    @Override
+    public String getInformation() {
+        return String.format("attack power: %s\nbuilding cost: %s\nconsume: %s", this.attackPower,
+                this.buildingCost, this.consume);
+    }
 }
