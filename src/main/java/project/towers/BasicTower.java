@@ -6,6 +6,7 @@ import project.monsters.Monster;
 import project.projectiles.Projectile;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
  * Basic tower has no any special ability.
@@ -60,7 +61,7 @@ public class BasicTower extends Tower {
     @Override
     public Projectile attackMonster(){
         if(!isReload()) {
-            LinkedList<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m))
                     return new Projectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);

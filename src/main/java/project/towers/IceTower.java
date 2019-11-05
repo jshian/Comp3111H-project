@@ -7,6 +7,7 @@ import project.projectiles.IceProjectile;
 import project.projectiles.Projectile;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
  * IceTower slow down the speed of monster without damage.
@@ -69,7 +70,7 @@ public class IceTower extends Tower{
     @Override
     public Projectile attackMonster(){
         if(isReload()) {
-            LinkedList<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m))
                     return new IceProjectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);

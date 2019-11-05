@@ -111,7 +111,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Sets the health of the monster.
      * @param health The health of the monster.
      */
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 

@@ -1,10 +1,11 @@
 import org.junit.Assert;
 import org.junit.Test;
 import project.Coordinates;
-import project.monsters.Monster;
-import project.monsters.Unicorn;
+import project.monsters.*;
 import project.towers.Catapult;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
+
 import static org.junit.Assert.*;
 
 public class CatapultTest {
@@ -12,7 +13,7 @@ public class CatapultTest {
     @Test
     public void selectMonster() {
         Coordinates destination = new Coordinates(440,0);
-        LinkedList<Monster> testList = new LinkedList<>();
+        PriorityQueue<Monster> testList = new PriorityQueue<>();
         LinkedList<Monster> selectList = new LinkedList<>();
         LinkedList<Monster> answerList = new LinkedList<>();
         Coordinates target;
