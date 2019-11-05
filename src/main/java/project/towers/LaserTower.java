@@ -48,9 +48,14 @@ public class LaserTower extends Tower{
     /**
      * Laser tower consume player's resource to attack monster.
      * @param player The player who build the tower.
+     * @return true if player has enough resources to attack, false otherwise.
      */
-    public void consumeResource(Player player){
-        player.spendResources(consume);
+    public boolean consumeResource(Player player){
+        if (player.hasResources(consume)) {
+            player.spendResources(consume);
+            return true;
+        }
+        return false;
     }
 
 
