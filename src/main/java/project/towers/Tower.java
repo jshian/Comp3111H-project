@@ -76,7 +76,7 @@ public abstract class Tower implements ExistsInArena {
      * The current shooting limit of the tower. It cannot go beyond {@link #maxShootingRange}.
      */
     @NotNull
-    protected int shootLimit;
+    protected int shootLimit = 0;
 
     /**
      * The attack speed of tower for how many px per frame
@@ -92,6 +92,11 @@ public abstract class Tower implements ExistsInArena {
      * The counter used to count the reload time.
      */
     protected int counter;
+
+    /**
+     * The resources needed to upgrade the tower
+     */
+    protected int upgradeCost;
 
     /**
      * Constructor for Tower class.
@@ -110,13 +115,16 @@ public abstract class Tower implements ExistsInArena {
     public Tower(Coordinates coordinates, ImageView imageView) {
         this.coordinates = coordinates;
         this.imageView = imageView;
+        this.coordinates.bindByImage(this.imageView);
         this.reload=2;
     }
 
-    // Inferface implementation
+    // Interface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
+    public int getShootLimit() { return shootLimit; }
+    public int getUpgradeCost() { return upgradeCost; }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
 

@@ -30,6 +30,7 @@ public class IceTower extends Tower{
         this.shootingRange = 50;
         this.slowDown = 10;
         this.attackSpeed = 5;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -44,6 +45,7 @@ public class IceTower extends Tower{
         this.shootingRange = 50;
         this.slowDown = 10;
         this.attackSpeed = 5;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -53,7 +55,7 @@ public class IceTower extends Tower{
      */
     @Override
     public boolean upgrade(int resource){
-        if(resource >= 20){
+        if(resource >= this.upgradeCost){
             this.slowDown+=5;
             return true;
         }
@@ -76,6 +78,9 @@ public class IceTower extends Tower{
         return null;
     }
 
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
         return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"

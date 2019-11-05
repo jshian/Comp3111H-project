@@ -38,7 +38,7 @@ Members:
 		* The *Resource Pool* is lower than the tower's cost.
 		* *The Grid* contains at least one monster.
 		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
-	* Otherwise, *The Grid* glows green, indicating that the tower can be built there, i.e. *The Grid* is valid.
+	* Otherwise, *The Grid* glows blue, indicating that the tower can be built there, i.e. *The Grid* is valid.
 1. Move the mouse pointer to a valid grid before releasing left-click. Verify the behaviour of attempting to build a tower in a valid grid, which are as follows:
 	* The tower is built, i.e. a solid, permament version of the *Tower Sihouette* exactly replaces the *Tower Sihouette*, and begins to exist on the arena. (Regular Task 1(ii))
 	* The cost of the tower is deducted from the *Resource Pool*. (Regular Task 1(ii)(b))
@@ -66,7 +66,7 @@ Members:
 1. Mouse over any one of the towers previously built, and then left-click on it. Verify the following:
 	* Two buttons `destroy the tower` and `upgrade` appear near the *Tower Information*. (Regular Task 1(ii)(e))
 1. Right-click anywhere, including the buttons and on the tower itself. Verify the following:
-	* The *Tower Information* and two buttons disappear.
+	* The two buttons disappear.
 1. Exit the mouse pointer from the tower and left-click on it again.
 1. Left-click on the `destroy the tower` button. Verify the following:
 	* The tower is destroyed, i.e. it disappears and no longer exists in the arena. (Regular Task 1(ii)(e)(a))
