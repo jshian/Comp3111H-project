@@ -50,7 +50,7 @@ public final class Geometry {
     }
 
     /**
-     * Finds the intersection between a line defined by two points and a box of a specified size with the top-left corner positioned at (0, 0).
+     * Finds the intersection between a line defined by two points and an enclosing box of a specified size with the top-left corner positioned at (0, 0).
      * @param x1 The x-coordinate of the first point in the line.
      * @param y1 The y-coordinate of the first point in the line.
      * @param x2 The x-coordinate of the second point in the line.
@@ -58,8 +58,15 @@ public final class Geometry {
      * @param boxWidth The width of the box.
      * @param boxHeight The height of the box.
      * @return The Point2D object representing the intersection point that is closer to the second point than it is the first point, and closest to the second point.
+     * @throws UnsupportedOperationException If the two points are the same, or either box width and box height is not greater than zero, or either point is outside the box.
      */
-    public static Point2D intersectBox(int x1, int y1, int x2, int y2, int boxWidth, int boxHeight) {
+    public static Point2D intersectBox(int x1, int y1, int x2, int y2, int boxWidth, int boxHeight) throws UnsupportedOperationException {
+        if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
+        if (boxWidth <= 0) throw new UnsupportedOperationException("The box width should be greater than zero.");
+        if (boxHeight <= 0) throw new UnsupportedOperationException("The box height should be greater than zero.");
+        if (x1 > boxWidth || y1 > boxHeight) throw new UnsupportedOperationException("The first point is outside the box.");
+        if (x2 > boxWidth || y2 > boxHeight) throw new UnsupportedOperationException("The second point is outside the box.");
+
         // Vertical line
         if (x1 == x2) {
             if (y1 < y2) return new Point2D(x1, boxHeight); // Bottom edge
@@ -122,8 +129,12 @@ public final class Geometry {
      * @param y2 The y-coordinate of the second point in the line.
      * @param error Allowable distance from the line.
      * @return Whether the test point is within the specified error of the line.
+     * @throws UnsupportedOperationException If the two points are the same, or that the error is negative.
      */
-    public static boolean isInLine(int testX, int testY, int x1, int y1, int x2, int y2, double error) {
+    public static boolean isInLine(int testX, int testY, int x1, int y1, int x2, int y2, double error) throws UnsupportedOperationException {
+        if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
+        if (error < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
+
         // Vertical line
         if (x1 == x2) return (testX - x1) <= error;
 
@@ -146,8 +157,11 @@ public final class Geometry {
      * @param y The y-coordinate of the center of the circle.
      * @param r The radius of the circle.
      * @return Whether the test point is within the circle, including the boundary.
+     * @throws UnsupportedOperationException If the radius is negative.
      */
-    public static boolean isInCircle(int xTest, int yTest, int x, int y, int r) {
+    public static boolean isInCircle(int xTest, int yTest, int x, int y, int r) throws UnsupportedOperationException {
+        if (r < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
+        
         return diagonalDistance(xTest, yTest, x, y) <= r;
     }
 }
