@@ -404,6 +404,21 @@ public final class Arena {
     }
 
     /**
+     * Upgrade the tower at the grid where a specified pixel is located.
+     * @param t the tower to be upgrade
+     * @return true if upgrade is successful, false if player don't have enough resources.
+     */
+    public static boolean upgradeTower(@NonNull Tower t) {
+        boolean canbuild = t.upgrade(resources.getValue());
+        if (canbuild) {
+            resources.set(resources.getValue() - t.getUpgradeCost());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Destroys the specified Tower.
      * @param tower The Tower to be destroyed.
      * @param paneArena the pane where graphic of Tower needed to be removed.

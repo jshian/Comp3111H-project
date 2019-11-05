@@ -1,7 +1,9 @@
 package project;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,14 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.event.*;
 import javafx.fxml.FXML;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -62,6 +57,11 @@ public class UIController {
     static modes mode = modes.normal;
 
     private Arena arena;
+    private Circle towerCircle; // circle that shows shooting range of tower
+    private Label towerLabel; // Label that shows the information of tower
+    private VBox vb; // the vbox that use to upgrade/destory tower
+
+
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
     private int x = -1, y = 0; //where is my monster
     /**
@@ -186,6 +186,7 @@ public class UIController {
             		} else {
             		    target.setStyle("-fx-border-color: red;");
                     }
+
             		e.consume();
             	});
 
@@ -214,11 +215,7 @@ public class UIController {
 
                     if(!arena.hasResources(type)) {
                         // not enough resources
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Not enough resources");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Do not have enough resources to build " + type + "!");
-                        alert.showAndWait();
+                        showAlert("Not enough resources", "Do not have enough resources to build " + type + "!");
 
                     } else if (img != null && arena.canBuildTower(c, type)) {
                         ImageView iv = new ImageView(img);
@@ -233,14 +230,15 @@ public class UIController {
 
                     e.consume();
             	});
+
             }
     	}
 
     }
 
     /**
-     * add event listener to display the tower information when hover
-     * @param t the tower in the arena
+     * add event listener to display the tower information and upgrade/destroy the tower.
+     * @param t a tower in the arena.
      */
     private void setTowerEvent(Tower t) {
         Coordinates coor = new Coordinates(t.getX(), t.getY());
@@ -248,35 +246,79 @@ public class UIController {
         Coordinates center = grid.getCenterCoordinates();
 
         ImageView iv = t.getImageView();
-        Circle circle = new Circle();
-        Label label = new Label();
 
         iv.setOnMouseEntered(e -> {
             // display shooting range
-            circle.setCenterX(center.getX());
-            circle.setCenterY(center.getY());
-            circle.setRadius(t.getShootingRange());
-            circle.setFill(Color.rgb(0,101,255,0.4));
-            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), circle);
+            towerCircle = new Circle();
+            towerCircle.setCenterX(center.getX());
+            towerCircle.setCenterY(center.getY());
+            towerCircle.setRadius(t.getShootingRange());
+            towerCircle.setFill(Color.rgb(0,101,255,0.4));
+            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), towerCircle);
 
             // display tower information
-            label.setText(t.getInformation());
-            label.setAlignment(Pos.CENTER);
-            label.setMinWidth(GRID_WIDTH * 3);
-            label.setMinHeight(GRID_HEIGHT * 2);
+            towerLabel = new Label(t.getInformation());
+            towerLabel.setAlignment(Pos.CENTER);
+            towerLabel.setMinWidth(GRID_WIDTH * 3);
+            towerLabel.setMinHeight(GRID_HEIGHT * 2);
             double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
             double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
-            label.setLayoutX(positionX);
-            label.setLayoutY(positionY);
-            label.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
-            label.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
-            paneArena.getChildren().add(label);
+            towerLabel.setLayoutX(positionX);
+            towerLabel.setLayoutY(positionY);
+            towerLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
+            towerLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+            paneArena.getChildren().add(towerLabel);
         });
         iv.setOnMouseExited(e -> {
             // remove info & shooting range
-            paneArena.getChildren().removeAll(circle, label);
+            paneArena.getChildren().removeAll(towerCircle, towerLabel);
         });
 
+        iv.setOnMouseClicked(e -> {
+            if (paneArena.getChildren().contains(vb)) {
+                paneArena.getChildren().remove(vb);
+            }
+
+            MouseButton button = e.getButton();
+            if (button == MouseButton.PRIMARY) {
+                vb = new VBox(15);
+                vb.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+                vb.setAlignment(Pos.CENTER);
+                Button upgradeBtn = new Button("upgrade");
+                Button destroyBtn = new Button("destory");
+                vb.getChildren().addAll(upgradeBtn, destroyBtn);
+
+                upgradeBtn.setOnAction(e2 -> {
+                    if(arena.upgradeTower(t)) {
+                        // TODO: a line 'XXX tower is being upgraded' is printed on the console.
+
+                    } else {
+                        // TODO: a line 'not enough resource to upgrade XXX tower' is printed on the console
+                    }
+                    paneArena.getChildren().remove(vb);
+                });
+                destroyBtn.setOnAction(e2 -> {
+                    paneArena.getChildren().remove(vb);
+                    arena.destroyTower(t, paneArena);
+                });
+
+                paneArena.getChildren().add(vb);
+            }
+        });
+
+    }
+
+    /**
+     * show an alert to notify the player some information.
+     * @param title title of the dialog box.
+     * @param content content of the dialog box.
+     */
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
 
