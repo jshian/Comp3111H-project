@@ -216,9 +216,7 @@ public class UIController {
 
 
             // show shooting range
-            Coordinates coor = new Coordinates(t.getX(), t.getY());
-            Grid grid = Grid.findGrid(coor);
-            Coordinates center = grid.getCenterCoordinates();
+            Coordinates center = Grid.findGridCenter(t.getX(), t.getY());
 
             c.setCenterX(center.getX());
             c.setCenterY(center.getY());

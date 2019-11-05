@@ -5,6 +5,7 @@ import project.*;
 import project.monsters.Monster;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class LaserTower extends Tower{
     // State
@@ -47,7 +48,7 @@ public class LaserTower extends Tower{
         int mX = monster.getX();
         int mY = monster.getY();
 
-        LinkedList<Monster> monsters = Arena.getMonsters();
+        PriorityQueue<Monster> monsters = Arena.getMonsters();
         for (Monster m:monsters) {
             for (int x = tX, y = tY; x> mX && y> mY; x+=(mX - tX)*0.01,y+=(mY - tY)*0.01)
                 if ((new Coordinates(x,y)).isInCircle(m,3))

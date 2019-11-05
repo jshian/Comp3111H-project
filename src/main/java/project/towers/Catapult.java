@@ -5,6 +5,7 @@ import project.*;
 import project.monsters.Monster;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class Catapult extends Tower {
     // States
@@ -70,7 +71,7 @@ public class Catapult extends Tower {
     }
 
     //Algorithm for selecting monster
-    public Coordinates selectMonster(LinkedList<Monster> monsters,LinkedList<Monster> attackedMon){
+    public Coordinates selectMonster(PriorityQueue<Monster> monsters,LinkedList<Monster> attackedMon){
         LinkedList<Monster> nearestMon=new LinkedList<>();
         double nearest=0;
         //find nearest distance
