@@ -8,7 +8,7 @@ public class Player {
 
     // Attribute
     private final String name;
-    private static IntegerProperty resources = new SimpleIntegerProperty(0);
+    private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
      * Constructor of player
@@ -41,7 +41,7 @@ public class Player {
      * @param cost cost of an action.
      * @return true if the player has enough resources or false otherwise.
      */
-    public static boolean hasResources(int cost)
+    public boolean hasResources(int cost)
     {
         if (cost > resources.get()) {
             return false;
