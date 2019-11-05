@@ -454,19 +454,42 @@ public final class Arena {
      */
     public static void spawnWave()
     {
-        // TODO: add UI, log. may use a function to generate each monster
-        int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
-        for (int i = 0; i < spawnCount; i++) {
-            double randomNumber = Math.random();
-            if (randomNumber < 1/3)
-                currentState.monsters.add(new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
-            else if (randomNumber < 2/3)
-                currentState.monsters.add(new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
-            else
-                currentState.monsters.add(new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
-        }
+        // TODO: generate monster in fixed period of time instead.
+//        int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
+//        for (int i = 0; i < spawnCount; i++) {
+//            double randomNumber = Math.random();
+//            if (randomNumber < 1/3)
+//                currentState.monsters.add(new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+//            else if (randomNumber < 2/3)
+//                currentState.monsters.add(new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+//            else
+//                currentState.monsters.add(new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+//        }
 
         currentState.difficulty += 1;    // Modified by settings later
+    }
+
+    /**
+     * Generate a monster to t he arena.
+     * @param iv the image of the monster.
+     * @param type specify the type of the monster.
+     * @return the monster being generated.
+     */
+    public static Monster generateMonster(@NonNull ImageView iv, @NonNull String type)
+    {
+        Monster m = null;
+        Coordinates c = new Coordinates(STARTING_POSITION_X, STARTING_POSITION_Y);
+        switch(type) {
+            case "Fox": m = new Fox(currentState.difficulty, c, END_COORDINATES, iv); break;
+            case "Penguin": m = new Penguin(currentState.difficulty, c, END_COORDINATES, iv); break;
+            case "Unicorn": m = new Unicorn(currentState.difficulty, c, END_COORDINATES, iv); break;
+        }
+        if (m == null)
+            return null;
+        currentState.monsters.add(m);
+        System.out.println(String.format("%s:%f generated", type, m.getHealth()));
+        currentState.difficulty += 1;    // Modified by settings later
+        return m;
     }
 
     /**
