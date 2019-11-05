@@ -110,6 +110,7 @@ public abstract class Tower implements ExistsInArena {
     public Tower(Coordinates coordinates, ImageView imageView) {
         this.coordinates = coordinates;
         this.imageView = imageView;
+        this.coordinates.bindByImage(this.imageView);
         this.reload=2;
     }
 

@@ -41,15 +41,23 @@ class Grid {
     
     /**
      * Accesses the horizontal position.
-     * @return The horizontal position, as defined in {@link Grid#Grid()}.
+     * @return The horizontal position, as defined in {@link Grid#Grid}.
      */
     int getXPos() { return xPos; }
 
     /**
      * Accesses the vertical position.
-     * @return The vertical position, as defined in {@link Grid#Grid()}.
+     * @return The vertical position, as defined in {@link Grid#Grid}.
      */
     int getYPos() { return yPos; }
+
+    /**
+     * Accesses the coordinates of the grid.
+     * @return The coordinates of the grid.
+     */
+    Coordinates getCoordinates() {
+        return new Coordinates((xPos * UIController.GRID_WIDTH), (yPos * UIController.GRID_HEIGHT));
+    }
 
     /**
      * Accesses the coordinates of the center of the grid.

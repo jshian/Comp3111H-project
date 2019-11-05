@@ -172,7 +172,9 @@ public class UIController {
             	target.setOnDragEntered(e -> { // grids[y][x]
             		if (arena.canBuildTower(c)) {
             			target.setStyle("-fx-border-color: blue;");
-            		}
+            		} else {
+            		    target.setStyle("-fx-border-color: red;");
+                    }
             		e.consume();
             	});
 
@@ -182,47 +184,43 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    if (arena.canBuildTower(c)) {
-	            		Image img = null;
-	            		String type = null;
-	            		Object source = e.getGestureSource();
-	            		if (source.equals(labelBasicTower)) {
-	            			img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "Basic Tower";
-	            		} else if (source.equals(labelIceTower)) {
-	            			img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "Ice Tower";
-	            		} else if (source.equals(labelCatapult)) {
-	            			img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "Catapult";
-	            		} else if (source.equals(labelLaserTower)) {
-	            			img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-	            			type = "Laser Tower";
-	            		}
+                    Image img = null;
+                    String type = null;
+                    Object source = e.getGestureSource();
+                    if (source.equals(labelBasicTower)) {
+                        img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                        type = "Basic Tower";
+                    } else if (source.equals(labelIceTower)) {
+                        img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                        type = "Ice Tower";
+                    } else if (source.equals(labelCatapult)) {
+                        img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                        type = "Catapult";
+                    } else if (source.equals(labelLaserTower)) {
+                        img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                        type = "Laser Tower";
+                    }
 
-	                    if (img != null) {
-	                    	ImageView iv = new ImageView(img);
-                            Tower t = arena.buildTower(c, iv, type);
+                    if(!arena.hasResources(type)) {
+                        // not enough resources
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Not enough resources");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Do not have enough resources to build " + type + "!");
+                        alert.showAndWait();
 
-                            if (t != null) {
-                                // enough resources
-                                setTowerEvent(t);
-                                paneArena.getChildren().add(iv);
-                                e.setDropCompleted(true);
-                            } else {
-                                // not enough resources
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                alert.setTitle("Not enough resources");
-                                alert.setHeaderText(null);
-                                alert.setContentText("Do not have enough resources to build " + type + "!");
+                    } else if (img != null && arena.canBuildTower(c, type)) {
+                        ImageView iv = new ImageView(img);
+                        Tower t = arena.buildTower(c, iv, type);
 
-                                alert.showAndWait();
-                            }
-
-	                    }
-	                    e.consume();
-
+                        if (t != null) {
+                            setTowerEvent(t);
+                            paneArena.getChildren().add(iv);
+                            e.setDropCompleted(true);
+                        }
             		}
+
+                    e.consume();
             	});
             }
     	}

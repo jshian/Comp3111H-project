@@ -323,26 +323,54 @@ public final class Arena {
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
+     * @param type type of the tower.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
-    public static boolean canBuildTower(@NonNull Coordinates coordinates)
+    public static boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull String type)
     {
-        return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
+        boolean empty = objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
+        if (!empty)
+            return false;
+
+        Grid grid = Grid.findGrid(coordinates);
+        Coordinates gridCoordinates = grid.getCoordinates();
+        if(gridCoordinates.isAt(STARTING_COORDINATES) || gridCoordinates.isAt(END_COORDINATES)
+            || !hasResources(type))
+            return false;
+
+        // TODO: false when grid prevents at least one monster from reaching the end-zone by completely blocking its path.
+        return true;
     }
 
     /**
-     * Deduct resources from arena if the player has enough resources to perform the action.
+     * check if the player has enough resources to perform the action.
      * @param cost cost of an action.
      * @return true if the player has enough resources or false otherwise.
      */
-    public static boolean useResources(@NonNull int cost)
+    public static boolean hasResources(@NonNull int cost)
     {
         if (cost > resources.get()) {
             return false;
         } else {
-            resources.setValue(resources.get() - cost);
             return true;
         }
+    }
+
+    /**
+     * check if the player has enough resources to build the tower.
+     * @param type type of the tower.
+     * @return true if the player has enough resources or false otherwise.
+     */
+    public static boolean hasResources(@NonNull String type)
+    {
+        int cost = 500;
+        switch(type) {
+            case "Basic Tower": cost = new BasicTower(STARTING_COORDINATES).getBuildingCost(); break;
+            case "Ice Tower": cost = new IceTower(STARTING_COORDINATES).getBuildingCost(); break;
+            case "Catapult": cost = new Catapult(STARTING_COORDINATES).getBuildingCost(); break;
+            case "Laser Tower": cost = new LaserTower(STARTING_COORDINATES).getBuildingCost(); break;
+        }
+        return hasResources(cost);
     }
 
     /**
@@ -354,7 +382,6 @@ public final class Arena {
      */
     public static Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull String type)
     {
-        coordinates.bindByImage(iv);
         Tower t = null;
         int cost = 0;
         switch(type) {
@@ -366,7 +393,8 @@ public final class Arena {
         }
         cost = t.getBuildingCost();
 
-        if (useResources(cost)) {
+        if (hasResources(cost)) {
+            resources.setValue(resources.get() - cost);
             currentState.towers.add(t);
             return t;
         } else {
@@ -411,6 +439,7 @@ public final class Arena {
      */
     public static void spawnWave()
     {
+        // TODO: add UI, log. may use a function to generate each monster
         int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
@@ -438,7 +467,7 @@ public final class Arena {
     
     /**
      * Updates the costs to reach the end-zone from each pixel for the current ArenaState.
-     * @see ArenaState#MovementCostToEnd
+     * @see ArenaState#movementCostToEnd
      * @see ArenaState#attackCostToEnd
      */
     private static void updateCosts() {
@@ -490,6 +519,9 @@ public final class Arena {
         shadowState = currentState;
 
         // Now update currentState
+        for (Monster m : currentState.monsters) {
+            m.MoveOneFrame();
+        }
         throw new NotImplementedException("TODO");
         // currentState.monsters.sort(null);
         // currentState.currentFrame++;
