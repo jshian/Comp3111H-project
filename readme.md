@@ -15,6 +15,7 @@ Members:
 	1. ...
 1. Clone this repository to two different lab machines. They shall be referred to as *Machine A* and *Machine B* respectively.
 1. Complete `Grade Task 1`, `Grade Task 2` and `Grade Task 3` on *Machine A*. (See below)
+1. Complete `Grade Extra Tasks` on both *Machine A* and *Machine B*. (See below)
 ### Grade Task 1
 1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
 	* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
@@ -100,7 +101,7 @@ Members:
 1. Separately, attempt to enter *Tower Placing Mode*, upgrade and destroy a tower. Verify that none of these work. (Honors Task 1(ii))
 1. Close the application.
 ### Grade Task 2
-1. Start the application using the same `.jar` file as Task 1.
+1. Start the application using the same `.jar` file as `Grade Task 1`.
 1. Build one of each tower, namely Basic Tower, Ice Tower, Catapult and Laser Tower.
 1. Start the game in `play` mode.
 1. Verify the following:
@@ -125,14 +126,15 @@ Members:
 1. Open the project using Eclipse IDE and run the Gradle task `PPP` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
 1. Close the project.
 ### Grade Task 3
-1. Start the application using the same `.jar` file as Task 1.
+1. Start the application using the same `.jar` file as `Grade Task 1`.
 1. Start the game in `play` mode.
 1. Verify the following:
 	* Monsters are generated every fixed period of time at the starting position. (Task 3(i))
 	* The generated monsters move towards the end-zone either horizontally or vertically per frame. (Task 3(ii))
 	* When any monster reaches the end-zone, the game is over and the line `Gameover` is printed on the console. (Task 3(ii)(a))
 	* When the above happens, everything on the arena is frozen and a dialog box informing that the game is over. (Task 3(ii)(a)(a))
-1. Save your score. Record down the value of this score.
+1. After the game is over, submit your score to the leaderboard. Note down the value of this score as *Score A*.
+1. Verify that the arena has been reset.
 1. This time, build some towers to defend yourself before starting the game in `play` mode.
 1. Verify the following:
 	* Monsters never move into a grid containing a tower. (Game Physics Requirement)
@@ -150,10 +152,26 @@ Members:
 1. Open the project using Eclipse IDE and run the Gradle task `QQQ` which uses JUnit to test the Fox pathfinding algorithm. (Whole of Honors Task 3)
 1. Close the project.
 
-Demonstrate that the following extra tasks have been completed:
-1.  Adopt the following technologies into your project. 
-	1. Use Java Persistence API or Hibernate Framework to connect to a small database that stores your game data (attributes of Towers/Monsters); (2.5% Group)
-	1. Use Java spring framework that allows the game be played in different machines while a server records the top 10 highest scores; (2.5% Group)
+### Grade Extra Tasks
+1. Start the application on both machines using the same `.jar` file as `Grade Task 1`.
+1. On *Machine A*, do the following: (Honors Extra Task 1)
+	1. Set up your towers however you like.
+	1. Run the game in `play` mode.
+	1. During the game, click on the `Save Game` button once. Record down the real-world time as `Time 1`.
+	1. Close the application, and then restart it using the same `.jar` file.
+	1. Click on the `Load Game` button and select the save file that corresponds to `Time 1`. Verify that the game state at the time of clicking `Save Game` has been recovered.
+	1. Close the application, and then restart it using the same `.jar` file.
+	1. Again, set up your towers however you like.
+	1. Run the game in `play` mode.
+	1. During the game, click on the `Load Game` button and, again, select the save file that corresponds to `Time 1`. Verify that the game state at the time of clicking `Save Game` has been recovered but the game is not running yet.
+	1. Click on either `Simulate` or `Play`. Verify that the game runs accordingly.
+1. On *Machine B*, do the following: (Honors Extra Task 2)
+	1. Set up your towers however you like.
+	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.
+	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard and note it down as *Score B*. Verify that the leaderboard is in descending order from top to bottom.
+	1. Playthrough 8 more games in `play` mode but without building any towers, and submit each score to the leaderboard. Verify that the leaderboard is still in descending order from top to bottom.
+	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard and note it down as *Score B*. Verify that the leaderboard is in descending order from top to bottom, and that only 10 scores are being displayed.
+	
 
 ### Notes
  * All file paths are relative to the root directory of the project.
