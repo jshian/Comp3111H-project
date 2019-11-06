@@ -98,6 +98,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Determines whether an object in the arena is at the Cartesian coordinates represented by this Coordinate object.
+     * @deprecated Please replace with {@link Geometry#isAt(int, int, int, int)}.
      * @param other The object in the arena.
      * @return Whether the object in the arena is at the Cartesian coordinates represented by this Coordinate object.
      */
@@ -107,13 +108,15 @@ public class Coordinates implements Serializable {
 
     /**
      * Determines whether two Coordinate objects represent the same Cartesian coordinates.
+     * @deprecated Please replace with {@link Geometry#isAt(int, int, int, int)}.
      * @param other The other object.
      * @return Whether the two Coordinate objects represent the same Cartesian coordinates.
      */
-    public boolean isAt(@NonNull Coordinates other) { return (taxicabDistanceFrom(other)) == 0; }
+    public boolean isAt(@NonNull Coordinates other) { return Geometry.isAt(other.getX(), other.getY(), getX(), getY()); }
 
     /**
      * Calculates the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     * @deprecated Please replace with {@link Geometry#findTaxicabDistance(int, int, int, int)}.
      * @param other The object in the arena.
      * @return The the taxicab distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
@@ -124,6 +127,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Calculates the taxicab distance between the Cartesian coordinates represented by two Coordinate objects.
+     * @deprecated Please replace with {@link Geometry#findTaxicabDistance(int, int, int, int)}.
      * @param other The other object.
      * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
@@ -133,6 +137,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Calculates the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     * @deprecated Please replace with {@link Geometry#findEuclideanDistance(int, int, int, int)}.
      * @param other The object in the arena.
      * @return The the diagonal distance between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
      */
@@ -142,6 +147,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Calculates the diagonal distance between the Cartesian coordinates represented by two Coordinate objects.
+     * @deprecated Please replace with {@link Geometry#findEuclideanDistance(int, int, int, int)}.
      * @param other The other object.
      * @return The diagonal distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
@@ -151,6 +157,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Calculates the angle between an object in the arena and the Cartesian coordinates represented by this Coordinate object.
+     * @deprecated Please replace with {@link Geometry#findAngleFrom(int, int, int, int)}.
      * @param other The object in the arena.
      * @return The angle in radians from this object to the object in the arena, as if this object is at the origin of a polar coordinate system.
      */
@@ -160,6 +167,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Calculates the angle between the coordinates represented by two Coordinate objects.
+     * @deprecated Please replace with {@link Geometry#findAngleFrom(int, int, int, int)}.
      * @param other The other object.
      * @return The angle in radians from this object to the other object, as if this object is at the origin of a polar coordinate system.
      */
@@ -169,6 +177,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Test whether an object in the arena is within a certain distance of a line defined by this point and another object in the arena, extending towards infinity.
+     * @deprecated Please replace with {@link Geometry#isInRay(int, int, int, int, int, int, double)}.
      * @param endObj The other object in the arena that represents the line, which should not be at the same coordinates as this object.
      * @param testObj The object in the arena to be tested.
      * @param error Allowable distance in terms of pixels.
@@ -180,6 +189,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Test whether a point is within a certain distance of a line defined by this point and another point, extending towards infinity.
+     * @deprecated Please replace with {@link Geometry#isInRay(int, int, int, int, int, int, double)}.
      * @param endPt The other point of the line, which should not be at the same coordinates as this object.
      * @param testPt The point to be tested.
      * @param error Allowable distance in terms of pixels.
@@ -191,6 +201,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Test whether an object is within a circle with current point as the center.
+     * @deprecated Please replace with {@link Geometry#isInCircle(int, int, int, int, double)}.
      * @param obj The object which to be tested.
      * @param radius The radius of the circle.
      * @return Whether the tested coordinate is in the circle.
@@ -201,6 +212,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Test whether a point is within a circle with current point as the center.
+     * @deprecated Please replace with {@link Geometry#isInCircle(int, int, int, int, double)}.
      * @param coordinates The coordinates which to be tested.
      * @param radius Whether the tested coordinate is in the circle.
      * @return Whether the tested coordinate is in the circle.
@@ -211,6 +223,7 @@ public class Coordinates implements Serializable {
     
     /**
      * Find the point in the edge which is in the line of the current point and given object.
+     * @deprecated Please replace with {@link Geometry#intersectBox(int, int, int, int, int, int, int, int)}.
      * @param dirObj The object will form a extended line with the current point.
      * @return The point in the edge of the extended line
      */
@@ -220,6 +233,7 @@ public class Coordinates implements Serializable {
 
     /**
      * Find the point in the edge which is in the line of the current point and given point.
+     * @deprecated Please replace with {@link Geometry#intersectBox(int, int, int, int, int, int, int, int)}.
      * @param dirPt The point will form a extended line with the current point.
      * @return  The point in the edge of the extended line.
      */
