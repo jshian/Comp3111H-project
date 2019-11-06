@@ -5,7 +5,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
 import project.projectiles.Projectile;
 import project.towers.*;
@@ -130,8 +129,12 @@ public final class Arena {
 
             for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
                 for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                    Coordinates otherGridCoordinates = Grid.findGridCenter(grids[i][j].getXPos(), grids[i][j].getYPos());
-                    if (coordinates.diagonalDistanceFrom(otherGridCoordinates)
+                    int x = coordinates.getX();
+                    int y = coordinates.getY();
+                    int gridX = Grid.findGridCenterX(i, j);
+                    int gridY = Grid.findGridCenterY(i, j);
+
+                    if (Geometry.findEuclideanDistance(x, y, gridX, gridY)
                         <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
                         {
                             result.add(grids[i][j]);
@@ -353,7 +356,7 @@ public final class Arena {
      * @param coordinates The specified coordinates.
      * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
      */
-    public LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
+    public static LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
     {
         LinkedList<Object> result = new LinkedList<>();
 
@@ -361,6 +364,32 @@ public final class Arena {
         result.addAll(findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
         
         return result;
+    }
+
+    /**
+     * Finds the number of towers that can shoot at the specified pixel.
+     * @param coordinates The coordinates of the specified pixel.
+     * @return The number of towers that can shoot at the specified pixel.
+     */
+    public static int countInRangeOfTowers(@NonNull Coordinates coordinates) {
+        int x = coordinates.getX();
+        int y = coordinates.getY();
+
+        int count = 0;
+        for (Tower t : currentState.towers) {
+            int towerX = t.getX();
+            int towerY = t.getY();
+            int minRange = t.getShootLimit();
+            int maxRange = t.getShootingRange();
+
+            if (!Geometry.isInCircle(x, y, towerX, towerY, minRange)
+                && Geometry.isInCircle(x, y, towerX, towerY, maxRange))
+                {
+                    count++;
+                }
+        }
+
+        return count;
     }
 
     /**
@@ -375,8 +404,10 @@ public final class Arena {
         if (!empty)
             return false;
 
-        Coordinates gridCoordinates = Grid.findGridCenter(coordinates);
-        if(gridCoordinates.isAt(STARTING_COORDINATES) || gridCoordinates.isAt(END_COORDINATES)
+        int gridX = Grid.findGridCenterX(coordinates);
+        int gridY = Grid.findGridCenterY(coordinates);
+        if (Geometry.isAt(gridX, gridY, STARTING_POSITION_X, STARTING_POSITION_Y)
+            || Geometry.isAt(gridX, gridY, END_ZONE_X, END_ZONE_Y)
             || !hasResources(type))
             return false;
 
@@ -562,19 +593,19 @@ public final class Arena {
     		}
     	}
     	
-    	PriorityQueue<IntTuple> openSet = new PriorityQueue<>(UIController.ARENA_WIDTH * UIController.ARENA_HEIGHT - currentState.towers.size());
-    	openSet.add(new IntTuple(END_ZONE_X, END_ZONE_Y));
-    	
     	// Reset values
     	for (int i = 0; i < END_ZONE_X; i++) {
     		for (int j = 0; j < END_ZONE_Y; j++) {
     			currentState.movementCostToEnd[i][j] = Double.POSITIVE_INFINITY;
-    	    	currentState.totalCostToEnd[i][j] = 0; // Placeholder. Should count number of Towers that cover this pixel.
+    	    	currentState.totalCostToEnd[i][j] = Double.POSITIVE_INFINITY;
     		}
     	}
-    	
+        
+        // Calculate movement costs
+    	PriorityQueue<IntTuple> openSet = new PriorityQueue<>(UIController.ARENA_WIDTH * UIController.ARENA_HEIGHT - currentState.towers.size());
+        openSet.add(new IntTuple(END_ZONE_X, END_ZONE_Y));
+        
     	currentState.movementCostToEnd[END_ZONE_X][END_ZONE_Y] = 0;
-    	
     	while (!openSet.isEmpty()) {
     		IntTuple current = openSet.poll();
     		
@@ -590,7 +621,69 @@ public final class Arena {
         			}
     			}
     		}
-    	}
+        }
+        
+        // Calculate total costs
+        final int MOVEMENT_TO_ATTACKED_COST_RATIO = 100000; // The ratio between the cost of moving one pixel and the cost of getting attacked once.
+
+        openSet.add(new IntTuple(END_ZONE_X, END_ZONE_Y));
+
+    	currentState.totalCostToEnd[END_ZONE_X][END_ZONE_Y] = 0;
+    	while (!openSet.isEmpty()) {
+    		IntTuple current = openSet.poll();
+    		
+    		// Monsters can only travel horizontally or vertically
+    		LinkedList<Coordinates> neighbours = findTaxicabNeighbours(new Coordinates(current.x, current.y));
+    		for (Coordinates c : neighbours) {
+    			// Monsters can only go to grids that do not contain a Tower
+    			if (findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
+                    double newCost = currentState.totalCostToEnd[current.x][current.y] + 1
+                        + countInRangeOfTowers(c) * MOVEMENT_TO_ATTACKED_COST_RATIO;
+        			if (currentState.totalCostToEnd[c.getX()][c.getY()] > newCost ) {
+        				currentState.totalCostToEnd[c.getX()][c.getY()] = newCost;
+        				openSet.add(new IntTuple(c.getX(), c.getY()));
+        			}
+    			}
+    		}
+        }
+    }
+
+    /**
+     * Finds the lowest cost path from the specified pixel to the end-zone.
+     * @param coordinates The coordinates of the pixel.
+     * @param movementOnly Whether the method should only consider movement cost. Otherwise, it also considers the cost of being attacked by Towers.
+     * @return A linked list representing the lowest cost path, with the first element being the coordinates of the first pixel to move to.
+     */
+    public static LinkedList<Coordinates> findPathToEndZone(@NonNull Coordinates coordinates, boolean movementOnly) {
+        Coordinates currentCoordinates = coordinates;
+
+        LinkedList<Coordinates> path = new LinkedList<>();
+        path.add(coordinates);
+
+        while (!Geometry.isAt(END_ZONE_X, END_ZONE_Y, currentCoordinates.getX(), currentCoordinates.getY())) {
+            currentCoordinates = path.peekLast();
+            LinkedList<Coordinates> neighbours = findTaxicabNeighbours(currentCoordinates);
+
+            double lowestCost = Double.POSITIVE_INFINITY;
+            Coordinates lowestCostNeighbour = null;
+            for (Coordinates neighbour : neighbours) {
+                double cost;
+                if (movementOnly) {
+                    cost = currentState.movementCostToEnd[neighbour.getX()][neighbour.getY()];
+                } else {
+                    cost = currentState.TotalCostToEnd[neighbour.getX()][neighbour.getY()];
+                }
+
+                if (cost < lowestCost) {
+                    lowestCost = cost;
+                    lowestCostNeighbour = neighbour;
+                }
+            }
+
+            path.add(lowestCostNeighbour);
+        }
+
+        return path;
     }
 
     /**

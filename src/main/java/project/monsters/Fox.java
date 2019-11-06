@@ -23,6 +23,6 @@ public class Fox extends Monster {
 
     @Override
     public void recalculateFuturePath() {
-        throw new NotImplementedException("TODO: A* Search");
+        futurePath = Arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
     }
 }

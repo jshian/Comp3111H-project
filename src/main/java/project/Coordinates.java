@@ -7,14 +7,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
 import project.Arena.ExistsInArena;
 
-import java.io.Console;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
-import java.util.*;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import project.monsters.Monster;
 
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the Arena
