@@ -244,6 +244,11 @@ public final class Arena {
     public static enum TypeFilter { Tower, Projectile, Monster }
 
     /**
+     * An enum for generate monster in the Arena according to type.
+     */
+    public static enum MonsterType { Fox, Penguin, Unicorn }
+
+    /**
      * Finds all objects that are located at a specified pixel.
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
@@ -501,11 +506,11 @@ public final class Arena {
             double randomNumber = Math.random();
             Monster newMonster;
             if (randomNumber < 1/3)
-                newMonster = generateMonster("Fox");
+                newMonster = generateMonster(MonsterType.Fox);
             else if (randomNumber < 2/3)
-                newMonster = generateMonster("Penguin");
+                newMonster = generateMonster(MonsterType.Penguin);
             else
-                newMonster = generateMonster("Unicorn");
+                newMonster = generateMonster(MonsterType.Unicorn);
 
             currentState.monsters.add(newMonster);
             currentState.getGrid(STARTING_COORDINATES).addObject(newMonster);
@@ -519,21 +524,23 @@ public final class Arena {
      * @param type specify the type of the monster.
      * @return the monster being generated.
      */
-    public static Monster generateMonster(@NonNull String type)
+    public static Monster generateMonster(@NonNull MonsterType type)
     {
         Monster m = null;
+        ImageView iv = null;
         // we need to update c when monster move so create a new Coordinate instead.
         Coordinates c = new Coordinates(STARTING_POSITION_X, STARTING_POSITION_Y);
         switch(type) {
-            case "Fox": m = new Fox(currentState.difficulty, c, END_COORDINATES,
-                    new ImageView(new Image("/fox.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true))); break;
-            case "Penguin": m = new Penguin(currentState.difficulty, c, END_COORDINATES,
-                new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true))); break;
-            case "Unicorn": m = new Unicorn(currentState.difficulty, c, END_COORDINATES,
-                    new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true))); break;
+            case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+                m = new Fox(currentState.difficulty, c, END_COORDINATES, iv); break;
+            case Penguin: iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+                m = new Penguin(currentState.difficulty, c, END_COORDINATES, iv); break;
+            case Unicorn: iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+                m = new Unicorn(currentState.difficulty, c, END_COORDINATES, iv); break;
         }
         if (m == null)
             return null;
+        paneArena.getChildren().add(iv);
         currentState.monsters.add(m);
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
 
@@ -622,10 +629,9 @@ public final class Arena {
         shadowState = currentState;
 
         // Now update currentState
-        for (Monster m : currentState.monsters) {
-            m.MoveOneFrame();
-        }
-        throw new NotImplementedException("TODO");
+        generateMonster(MonsterType.Penguin);
+
+        // TODO: all.
         // currentState.monsters.sort(null);
         // currentState.currentFrame++;
     }
