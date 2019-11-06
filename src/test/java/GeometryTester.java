@@ -260,4 +260,12 @@ public class GeometryTester {
         assertEquals(Geometry.isInCircle(30, -19, 329, 10, Math.sqrt(90242 + 1)), false);
         assertEquals(Geometry.isInCircle(130, -50, -40, -20, Math.sqrt(29800)), true);
     }
+
+    @Test
+    public void testIsAt() {
+        assertEquals(Geometry.isAt(0, 0, 0, 0), true);
+        assertEquals(Geometry.isAt(5, 0, 4, 0), false);
+        assertEquals(Geometry.isAt(0, -10, 0, -10), true);
+        assertEquals(Geometry.isAt(32, -456, 32, -455), false);
+    }
 }

@@ -2,6 +2,7 @@ package project;
 
 import java.util.LinkedList;
 
+import math.geom2d.Point2D;
 import math.geom2d.line.LineSegment2D;
 import math.geom2d.line.Ray2D;
 
@@ -113,7 +114,7 @@ public final class Geometry {
     }
 
     /**
-     * Test whether a point is within a certain distance of a ray defined by two other points.
+     * Tests whether a point is within a certain distance of a ray defined by two other points.
      * @param testX The x-coordinate of the test point.
      * @param testY The y-coordinate of the test point.
      * @param x0 The x-coordinate of the origin of the ray.
@@ -135,7 +136,7 @@ public final class Geometry {
     }
 
     /**
-     * Test whether a point is within a circle with a specified point as the center.
+     * Tests whether a point is within a circle with a specified point as the center.
      * @param xTest The x-coordinate of the test point.
      * @param yTest The y-coordinate of the test point.
      * @param x The x-coordinate of the center of the circle.
@@ -149,5 +150,17 @@ public final class Geometry {
         
         double distance = findEuclideanDistance(xTest, yTest, x, y);
         return distance < r || distance - r < EQUALITY_THRESHOLD;
+    }
+
+    /**
+     * Tests whether a point is at another point.
+     * @param xTest The x-coordinate of the test point.
+     * @param yTest The y-coordinate of the test point.
+     * @param x The x-coordinate of the other point.
+     * @param y The y-coordinate of the other point.
+     * @return Whether the test point is at the other point.
+     */
+    public static boolean isAt(int xTest, int yTest, int x, int y) {
+        return new math.geom2d.Point2D(xTest, yTest).almostEquals(new Point2D(x, y), EQUALITY_THRESHOLD);
     }
 }
