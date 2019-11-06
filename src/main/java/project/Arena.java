@@ -151,12 +151,12 @@ public final class Arena {
     	private double[][] movementCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
     	
     	/**
-    	 * Stores the cost for a monster in each pixel to reach the end-zone due to being attacked. Indices correspond to the x- and y- coordinates.
+    	 * Stores the cost for a monster in each pixel to reach the end-zone due to movement and being attacked. Indices correspond to the x- and y- coordinates.
     	 * The cost is in terms of per unit speed of the monster.
     	 * @see Monster
     	 * @see Coordinates
     	 */
-        private double[][] attackCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+        private double[][] totalCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
 
         private ArenaState() {
             for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++)
@@ -241,7 +241,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<ExistsInArena> objectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public static LinkedList<ExistsInArena> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
         
@@ -268,7 +268,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<ExistsInArena> objectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
+    public static LinkedList<ExistsInArena> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
         
@@ -298,11 +298,10 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<ExistsInArena> objectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public static LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
         
-        // READONLY
         LinkedList<ExistsInArena> list = currentState.getGrid(coordinates).getAllObjects();
         for (ExistsInArena obj : list)
         {
@@ -322,7 +321,7 @@ public final class Arena {
      * @param coordinates The coordinates of the pixel.
      * @return A linked list containing a reference to the coordinates of the center of each taxicab neighbour.
      */
-    public static LinkedList<Coordinates> taxicabNeighbours(@NonNull Coordinates coordinates)
+    public static LinkedList<Coordinates> findTaxicabNeighbours(@NonNull Coordinates coordinates)
     {
         LinkedList<Coordinates> result = new LinkedList<>();
 
@@ -358,8 +357,8 @@ public final class Arena {
     {
         LinkedList<Object> result = new LinkedList<>();
 
-        result.addAll(objectsAtPixel(coordinates, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
-        result.addAll(objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
+        result.addAll(findObjectsAtPixel(coordinates, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
+        result.addAll(findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
         
         return result;
     }
@@ -372,7 +371,7 @@ public final class Arena {
      */
     public static boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull String type)
     {
-        boolean empty = objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
+        boolean empty = findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
         if (!empty)
             return false;
 
@@ -550,7 +549,7 @@ public final class Arena {
     /**
      * Updates the costs to reach the end-zone from each pixel for the current ArenaState.
      * @see ArenaState#movementCostToEnd
-     * @see ArenaState#attackCostToEnd
+     * @see ArenaState#totalCostToEnd
      */
     private static void updateCosts() {
     	class IntTuple {
@@ -570,7 +569,7 @@ public final class Arena {
     	for (int i = 0; i < END_ZONE_X; i++) {
     		for (int j = 0; j < END_ZONE_Y; j++) {
     			currentState.movementCostToEnd[i][j] = Double.POSITIVE_INFINITY;
-    	    	currentState.attackCostToEnd[i][j] = 0; // Placeholder. Should count number of Towers that cover this pixel.
+    	    	currentState.totalCostToEnd[i][j] = 0; // Placeholder. Should count number of Towers that cover this pixel.
     		}
     	}
     	
@@ -580,10 +579,10 @@ public final class Arena {
     		IntTuple current = openSet.poll();
     		
     		// Monsters can only travel horizontally or vertically
-    		LinkedList<Coordinates> neighbours = taxicabNeighbours(new Coordinates(current.x, current.y));
+    		LinkedList<Coordinates> neighbours = findTaxicabNeighbours(new Coordinates(current.x, current.y));
     		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
-    			if (objectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
+    			if (findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
         			double newCost = currentState.movementCostToEnd[current.x][current.y] + 1;
         			if (currentState.movementCostToEnd[c.getX()][c.getY()] > newCost ) {
         				currentState.movementCostToEnd[c.getX()][c.getY()] = newCost;
