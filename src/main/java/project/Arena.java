@@ -11,6 +11,7 @@ import project.monsters.*;
 import project.projectiles.Projectile;
 import project.towers.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
@@ -411,11 +412,58 @@ public final class Arena {
 
         Coordinates gridCoordinates = Grid.findGridCenter(coordinates);
         if(gridCoordinates.isAt(Grid.findGridCenter(STARTING_COORDINATES)) || gridCoordinates.isAt(Grid.findGridCenter(END_COORDINATES))
-            || !hasResources(type))
+            || !hasResources(type) || !hasRoute(coordinates))
             return false;
-
-        // TODO: false when grid prevents at least one monster from reaching the end-zone by completely blocking its path.
         return true;
+    }
+
+    private static boolean hasRoute(@NonNull Coordinates coordinates) {
+        Grid gridToBeBuilt = currentState.getGrid(coordinates);
+
+        boolean[][] noTower = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
+        boolean[][] visited = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
+        for (int i = 0; i < noTower.length; i++) {
+            for (int j = 0; j < noTower[0].length; j++) {
+                noTower[i][j] = objectsInGrid(Grid.findGridCenter(i,j), EnumSet.of(TypeFilter.Tower)).isEmpty();
+                visited[i][j] = false;
+            }
+        }
+        noTower[gridToBeBuilt.getXPos()][gridToBeBuilt.getYPos()] = false;
+        gridDFS(noTower, visited, Grid.findGridXPos(END_COORDINATES), Grid.findGridYPos(END_COORDINATES));
+
+        ArrayList<Grid> hasMonster = new ArrayList<>();
+        hasMonster.add(new Grid(0,0));
+        for (Monster m : currentState.monsters) {
+            Coordinates c = new Coordinates(m.getX(), m.getY());
+            hasMonster.add(currentState.getGrid(c));
+        }
+
+        for (Grid g : hasMonster) {
+            if (!visited[g.getXPos()][g.getYPos()])
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * helper function of hasRoute(). It performs DFS to find positions of monster where it can reach the ending-zone.
+     * @param noTower 2d boolean array to indicate which grid does not contain tower.
+     * @param visited 2d boolean array to indicate which grid has already visited by DFS.
+     * @param x current x-position.
+     * @param y current y-position.
+     */
+    private static void gridDFS(@NonNull boolean[][] noTower, @NonNull boolean[][] visited, int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= noTower.length || y >= noTower[0].length)
+            return;
+        if (visited[x][y] == true || noTower[x][y] == false)
+            return;
+        visited[x][y] = true;
+
+        gridDFS(noTower, visited, x+1, y);
+        gridDFS(noTower, visited, x-1, y);
+        gridDFS(noTower, visited, x, y+1);
+        gridDFS(noTower, visited, x, y-1);
     }
 
 
