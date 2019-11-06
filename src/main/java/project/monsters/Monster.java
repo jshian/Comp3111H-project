@@ -175,7 +175,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         
         // Coordinates/Cost pair representing the center of each grid that has been searched
         PriorityQueue<CoordinatesCostPair> gridCenters = new PriorityQueue<>(
-                (int) (Math.pow(2, (int) (Math.log(this.coordinates.taxicabDistanceFrom(this.destination)) / Math.log(2)) + 1))
+            (int) (Math.pow(2, (int) (Math.log(this.coordinates.taxicabDistanceFrom(this.destination)) / Math.log(2)) + 1))
         );
         gridCenters.add(new CoordinatesCostPair(this.coordinates, 0, this.coordinates.taxicabDistanceFrom(this.destination)));
 

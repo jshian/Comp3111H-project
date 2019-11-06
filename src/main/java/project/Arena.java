@@ -639,7 +639,7 @@ public final class Arena {
 //        }
         if (currentState.monsters.isEmpty())
             generateMonster(MonsterType.Penguin);
-        else
+        else // this is for testing only
             moveMonster(currentState.monsters.peek(), END_COORDINATES);
 //        newMonster.recalculateFuturePath();
 

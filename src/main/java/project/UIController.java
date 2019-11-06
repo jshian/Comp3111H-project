@@ -136,17 +136,6 @@ public class UIController {
     @FXML
     private void nextFrame() {
         arena.nextFrame();
-//        if (x == -1) {
-//            grids[0][0].setText("M");
-//            x = 0;
-//            return;
-//        }
-//        if (y == MAX_V_NUM_GRID - 1)
-//            return;
-//        grids[y++][x].setText("");
-//        grids[y][x].setText("M");
-
-
     }
 
     /**
