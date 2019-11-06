@@ -193,10 +193,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
 
             // Add viable neighbours:
             // Monsters cannot move diagonally.
-            LinkedList<Coordinates> neighbours = Arena.taxicabNeighbours(this.coordinates);
+            LinkedList<Coordinates> neighbours = Arena.findTaxicabNeighbours(this.coordinates);
             for (Coordinates nextCoordinates : neighbours) {
                 // Grid cannot contain a tower
-                if (Arena.objectsInGrid(nextCoordinates, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
+                if (Arena.findObjectsInGrid(nextCoordinates, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
                     double nextCost = Double.POSITIVE_INFINITY;
                     for (CoordinatesCostPair pair : gridCenters)
                         if (pair.coordinates.isAt(nextCoordinates))

@@ -12,7 +12,7 @@ import project.*;
 @Entity
 public class Penguin extends Monster {
     /**
-     * @see Monster#Monster
+     * @see Monster#Monster(double, Coordinates, Coordinates)
      */
     public Penguin(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
         super(difficulty, start, destination);
