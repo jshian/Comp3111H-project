@@ -126,7 +126,7 @@ public class UIController {
                 });
             }
 
-        arena = new Arena(remainingResources);
+        arena = new Arena(remainingResources, paneArena);
         setDragLabel();
     }
 
@@ -328,7 +328,7 @@ public class UIController {
                 });
                 destroyBtn.setOnAction(e2 -> {
                     paneArena.getChildren().remove(vb);
-                    arena.destroyTower(t, paneArena);
+                    arena.destroyTower(t);
                 });
                 Node[] ns = {vb, upgradeBtn, destroyBtn};
                 for (Node n: ns) {

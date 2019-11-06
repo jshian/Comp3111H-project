@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
@@ -116,7 +117,7 @@ public final class Arena {
 
         /**
          * Finds the grids that may be within a specified distance of a specified pixel.
-         * @param The coordinates of the pixel.
+         * @param coordinates The coordinates of the pixel.
          * @param range The maximum allowable distance.
          * @return A linked list containing references to the conservative estimate of the grids that are within a specified distance of the specified pixel.
          */
@@ -171,9 +172,14 @@ public final class Arena {
     private static ArenaState currentState = new ArenaState();
 
     /**
-     * The ArenaState of the current frame.
+     * The player of the game.
      */
     private static Player player;
+
+    /**
+     * The arena of the game.
+     */
+    private static AnchorPane paneArena;
 
     /**
      * Adds an object to the current arena state.
@@ -221,10 +227,12 @@ public final class Arena {
     /**
      * Constructor of the Arena class. Bind the label to resources.
      * @param resourceLabel the label to show remaining resources of player.
+     * @param paneArena the arena pane of the game.
      */
-    public Arena(@NonNull Label resourceLabel) {
+    public Arena(@NonNull Label resourceLabel, @NonNull AnchorPane paneArena) {
         player = new Player("name", 200);
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        this.paneArena = paneArena;
     }
 
     /**
@@ -397,7 +405,7 @@ public final class Arena {
             return false;
 
         Coordinates gridCoordinates = Grid.findGridCenter(coordinates);
-        if(gridCoordinates.isAt(STARTING_COORDINATES) || gridCoordinates.isAt(END_COORDINATES)
+        if(gridCoordinates.isAt(Grid.findGridCenter(STARTING_COORDINATES)) || gridCoordinates.isAt(Grid.findGridCenter(END_COORDINATES))
             || !hasResources(type))
             return false;
 
@@ -454,9 +462,8 @@ public final class Arena {
     /**
      * Destroys the specified Tower.
      * @param tower The Tower to be destroyed.
-     * @param paneArena the pane where graphic of Tower needed to be removed.
      */
-    public static void destroyTower(@NonNull Tower tower, @NonNull AnchorPane paneArena)
+    public static void destroyTower(@NonNull Tower tower)
     {
         paneArena.getChildren().remove(tower.getImageView());
         currentState.getGrid(new Coordinates(tower.getX(), tower.getY())).removeObject(tower);
@@ -475,9 +482,8 @@ public final class Arena {
     /**
      * Removes the specified Projectile from the arena.
      * @param projectile The Projectile to be removed.
-     * @param paneArena the pane where graphic of projectile needed to be removed.
      */
-    public static void removeProjectile(@NonNull Projectile projectile, @NonNull AnchorPane paneArena)
+    public static void removeProjectile(@NonNull Projectile projectile)
     {
         paneArena.getChildren().remove(projectile.getImageView());
         currentState.getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
@@ -495,11 +501,11 @@ public final class Arena {
             double randomNumber = Math.random();
             Monster newMonster;
             if (randomNumber < 1/3)
-                newMonster = new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
+                newMonster = generateMonster("Fox");
             else if (randomNumber < 2/3)
-                newMonster = new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
+                newMonster = generateMonster("Penguin");
             else
-                newMonster = new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
+                newMonster = generateMonster("Unicorn");
 
             currentState.monsters.add(newMonster);
             currentState.getGrid(STARTING_COORDINATES).addObject(newMonster);
@@ -509,24 +515,28 @@ public final class Arena {
     }
 
     /**
-     * Generate a monster to t he arena.
-     * @param iv the image of the monster.
+     * Generate a monster to the arena.
      * @param type specify the type of the monster.
      * @return the monster being generated.
      */
-    public static Monster generateMonster(@NonNull ImageView iv, @NonNull String type)
+    public static Monster generateMonster(@NonNull String type)
     {
         Monster m = null;
+        // we need to update c when monster move so create a new Coordinate instead.
         Coordinates c = new Coordinates(STARTING_POSITION_X, STARTING_POSITION_Y);
         switch(type) {
-            case "Fox": m = new Fox(currentState.difficulty, c, END_COORDINATES, iv); break;
-            case "Penguin": m = new Penguin(currentState.difficulty, c, END_COORDINATES, iv); break;
-            case "Unicorn": m = new Unicorn(currentState.difficulty, c, END_COORDINATES, iv); break;
+            case "Fox": m = new Fox(currentState.difficulty, c, END_COORDINATES,
+                    new ImageView(new Image("/fox.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true))); break;
+            case "Penguin": m = new Penguin(currentState.difficulty, c, END_COORDINATES,
+                new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true))); break;
+            case "Unicorn": m = new Unicorn(currentState.difficulty, c, END_COORDINATES,
+                    new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true))); break;
         }
         if (m == null)
             return null;
         currentState.monsters.add(m);
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
+
         currentState.difficulty += 1;    // Modified by settings later
         return m;
     }
@@ -534,9 +544,8 @@ public final class Arena {
     /**
      * Removes the specified Monster from the arena.
      * @param monster The Monster to be removed.
-     * @param paneArena the pane where graphic of monster needed to be removed.
      */
-    public static void removeMonster(@NonNull Monster monster, @NonNull AnchorPane paneArena)
+    public static void removeMonster(@NonNull Monster monster)
     {
         paneArena.getChildren().remove(monster.getImageView());
         currentState.getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
@@ -547,9 +556,8 @@ public final class Arena {
      * Moves the specified Monster to another location.
      * @param monster The Monster to be moved.
      * @param newCoordinates The coordinates of the new location.
-     * @param paneArena the pane where graphic of monster needed to be removed.
      */
-    public static void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates, @NonNull AnchorPane paneArena)
+    public static void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates)
     {
         currentState.getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
 

@@ -242,5 +242,6 @@ public class Coordinates implements Serializable {
      */
     public void drawLine(@NonNull Coordinates cor){
         Line line = new Line(this.x.get(),this.y.get(),cor.x.get(),cor.y.get());
+
     }
 }
