@@ -430,11 +430,12 @@ public final class Arena {
     {
         Tower t = null;
         int cost = 0;
+        Coordinates center = Grid.findGridCenter(coordinates);
         switch(type) {
-            case "Basic Tower": t = new BasicTower(coordinates, iv); break;
-            case "Ice Tower": t = new IceTower(coordinates, iv); break;
-            case "Catapult": t = new Catapult(coordinates, iv); break;
-            case "Laser Tower": t = new LaserTower(coordinates, iv); break;
+            case "Basic Tower": t = new BasicTower(center, iv); break;
+            case "Ice Tower": t = new IceTower(center, iv); break;
+            case "Catapult": t = new Catapult(center, iv); break;
+            case "Laser Tower": t = new LaserTower(center, iv); break;
             default: return null;
         }
         cost = t.getBuildingCost();
@@ -529,7 +530,7 @@ public final class Arena {
         Monster m = null;
         ImageView iv = null;
         // we need to update c when monster move so create a new Coordinate instead.
-        Coordinates c = new Coordinates(STARTING_POSITION_X, STARTING_POSITION_Y);
+        Coordinates c = Grid.findGridCenter(STARTING_POSITION_X, STARTING_POSITION_Y);
         switch(type) {
             case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
                 m = new Fox(currentState.difficulty, c, END_COORDINATES, iv); break;
@@ -640,7 +641,7 @@ public final class Arena {
         if (currentState.monsters.isEmpty())
             generateMonster(MonsterType.Penguin);
         else // this is for testing only
-            moveMonster(currentState.monsters.peek(), END_COORDINATES);
+            moveMonster(currentState.monsters.peek(), Grid.findGridCenter(10, 10));
 //        newMonster.recalculateFuturePath();
 
         // currentState.monsters.sort(null);
