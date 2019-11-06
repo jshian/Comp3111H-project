@@ -2,7 +2,8 @@ package project;
 
 import java.util.LinkedList;
 
-import javafx.geometry.Point2D;
+import math.geom2d.line.LineSegment2D;
+import math.geom2d.line.Ray2D;
 
 /**
  * Helper class to implement geometry-related functions.
@@ -23,20 +24,20 @@ public final class Geometry {
      * @param y2 The y-coordinate of the second point.
      * @return The taxicab distance between the two points
      */
-    public static int taxicabDistance(int x1, int y1, int x2, int y2) {
+    public static int findTaxicabDistance(int x1, int y1, int x2, int y2) {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
     /**
-     * Calculates the diagonal distance between two points.
+     * Calculates the Euclidean distance between two points.
      * @param x1 The x-coordinate of the first point.
      * @param y1 The y-coordinate of the first point.
      * @param x2 The x-coordinate of the second point.
      * @param y2 The y-coordinate of the second point.
-     * @return The diagonal distance between the two points.
+     * @return The Euclidean distance between the two points.
      */
-    public static double diagonalDistance(int x1, int y1, int x2, int y2) {
-        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    public static double findEuclideanDistance(int x1, int y1, int x2, int y2) {
+        return math.geom2d.Point2D.distance(x1, y1, x2, y2);
     }
     
     /**
@@ -48,109 +49,88 @@ public final class Geometry {
      * @return The angle in radians from the first point to the second point, as if the first point is at the origin of a polar coordinate system. The range of the angle is from 0 to 2 times PI inclusive.
      * @throws UnsupportedOperationException If the two points are the same.
      */
-    public static double angleFrom(int x1, int y1, int x2, int y2) throws UnsupportedOperationException {
+    public static double findAngleFrom(int x1, int y1, int x2, int y2) throws UnsupportedOperationException {
         if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined angle because the two points are the same.");
-        double angle = Math.atan2(y2 - y1, x2 - x1);
-        return angle < 0 ? angle + 2 * Math.PI : angle;
+        return math.geom2d.Angle2D.angle(x1 + 1, y1, x1, y1, x2, y2);
     }
 
     /**
-     * Finds the intersection between a line defined by two points and an enclosing box of a specified size with the top-left corner positioned at (0, 0).
-     * @param x1 The x-coordinate of the first point in the line.
-     * @param y1 The y-coordinate of the first point in the line.
-     * @param x2 The x-coordinate of the second point in the line.
-     * @param y2 The y-coordinate of the second point in the line.
+     * Finds the intersection between a ray defined by two points and an enclosing box of a specified size.
+     * @param x0 The x-coordinate of the origin of the ray.
+     * @param y0 The y-coordinate of the origin of the ray.
+     * @param x The x-coordinate of a point in the ray.
+     * @param y The y-coordinate of a point in the ray.
+     * @param boxMinX The minimum x-coordinate of the box.
+     * @param boxMinY The minimum y-coordinate of the box.
      * @param boxWidth The width of the box.
      * @param boxHeight The height of the box.
-     * @return The Point2D object representing the intersection point that is closer to the second point than it is the first point, and closest to the second point.
-     * @throws UnsupportedOperationException If the two points are the same, or either box width and box height is not greater than zero, or either point is outside the box.
+     * @return The Point2D object representing the intersection point between the ray and the box that is closest to (x, y). If not found, returns <code>null</code>.
+     * @throws UnsupportedOperationException If the two points are the same, or either box width and box height is not greater than zero.
      */
-    public static Point2D intersectBox(int x1, int y1, int x2, int y2, int boxWidth, int boxHeight) throws UnsupportedOperationException {
-        if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
+    public static javafx.geometry.Point2D intersectBox(int x0, int y0, int x, int y, int boxMinX, int boxMinY, int boxWidth, int boxHeight) throws UnsupportedOperationException {
+        if (x0 == x && y0 == y) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
         if (boxWidth <= 0) throw new UnsupportedOperationException("The box width should be greater than zero.");
         if (boxHeight <= 0) throw new UnsupportedOperationException("The box height should be greater than zero.");
-        if (x1 > boxWidth || y1 > boxHeight) throw new UnsupportedOperationException("The first point is outside the box.");
-        if (x2 > boxWidth || y2 > boxHeight) throw new UnsupportedOperationException("The second point is outside the box.");
 
-        // Vertical line
-        if (x1 == x2) {
-            if (y1 < y2) return new Point2D(x1, boxHeight); // Bottom edge
+        Ray2D ray = new Ray2D(x0, y0, x, y);
 
-            return new Point2D(x1, 0); // Top edge
-        }
-
-        // Horizontal line
-        if (y1 == y2) {
-            if (x1 < x2) return new Point2D(boxWidth, y1); // Right edge
-
-            return new Point2D(0, y1); // Left edge
-        } 
-
-        // The equation of the line is (y2-y1)/(x2-x1)=(y-y1)/(x-x1) => (y2-y1)(x-x1)=(x2-x1)(y-y1) => (y2-y1)x+(x1-x2)y+(x2y1-x1y2)=0.
-
-        // Set y=0, x=(x1y2-x2y1)/(y2-y1).
-        Point2D topPoint = new Point2D((x1 * y2 - x2 * y1) / (y2 - y1), 0);
-
-        // Set y=boxHeight, x=(x1y2-x2y1+(x2-x1)boxHeight)/(y2-y1)
-        Point2D bottomPoint = new Point2D((x1 * y2 - x2 * y1 + (x2 - x1) * boxHeight) / (y2 - y1), 0);
-
-        // Set x=0, y=(x1y2-x2y1)/(x1-x2).
-        Point2D leftPoint = new Point2D((x1 * y2 - x2 * y1) / (x1 - x2), 0);
-
-        // Set x=boxWidth, y=(x1y2-x2y1+(y1-y2)boxWidth)/(x1-x2).
-        Point2D rightPoint = new Point2D((x1 * y2 - x2 * y1 + (y1 - y2) * boxWidth) / (x1 - x2), 0);
-
-        LinkedList<Point2D> potentialPoints = new LinkedList<>();
-        if (topPoint.distance(x2, y2) < topPoint.distance(x1, y1))
-            potentialPoints.add(topPoint);
-        if (bottomPoint.distance(x2, y2) < bottomPoint.distance(x1, y1))
-            potentialPoints.add(bottomPoint);
-        if (leftPoint.distance(x2, y2) < leftPoint.distance(x1, y1))
-            potentialPoints.add(leftPoint);
-        if (rightPoint.distance(x2, y2) < rightPoint.distance(x1, y1))
-            potentialPoints.add(rightPoint);
-
-        Point2D minPoint = null;
-        double minDist = Double.POSITIVE_INFINITY;
-        for (Point2D p : potentialPoints) {
-            if (p.distance(x2, y2) < minDist) {
-                minPoint = p;
-                minDist = p.distance(x2, y2);
+        math.geom2d.Point2D boxCorner00 = new math.geom2d.Point2D(boxMinX, boxMinY);
+        math.geom2d.Point2D boxCorner01 = new math.geom2d.Point2D(boxMinX, boxMinY + boxHeight);
+        math.geom2d.Point2D boxCorner10 = new math.geom2d.Point2D(boxMinX + boxWidth, boxMinY);
+        math.geom2d.Point2D boxCorner11 = new math.geom2d.Point2D(boxMinX + boxWidth, boxMinY + boxHeight);
+        math.geom2d.Point2D[] corners = {boxCorner00, boxCorner01, boxCorner10, boxCorner11};
+        for (math.geom2d.Point2D corner : corners) {
+            if (corner.x() == x && corner.y() == y) {
+                return new javafx.geometry.Point2D(corner.x(), corner.y()); 
             }
         }
 
-        assert minPoint != null;
 
-        return minPoint;
+        LineSegment2D boxEdge0001 = new LineSegment2D(boxCorner00, boxCorner01);
+        LineSegment2D boxEdge0010 = new LineSegment2D(boxCorner00, boxCorner10);
+        LineSegment2D boxEdge0111 = new LineSegment2D(boxCorner01, boxCorner11);
+        LineSegment2D boxEdge1011 = new LineSegment2D(boxCorner10, boxCorner11);
+
+        LinkedList<math.geom2d.Point2D> intersections = new LinkedList<>();
+        LineSegment2D[] edges = {boxEdge0001, boxEdge0010, boxEdge0111, boxEdge1011};
+        for (LineSegment2D edge : edges) {
+            math.geom2d.Point2D intersection = ray.intersection(edge);
+            if (intersection != null) intersections.add(intersection);
+        }
+
+        math.geom2d.Point2D p = new math.geom2d.Point2D(x, y);
+        double minDistance = Double.POSITIVE_INFINITY;
+        math.geom2d.Point2D minPoint = null;
+        for (math.geom2d.Point2D intersection : intersections) {
+            double distance = p.distance(intersection);
+            if (distance < minDistance) {
+                minDistance = distance;
+                minPoint = intersection;
+            }
+        }
+
+        return new javafx.geometry.Point2D(minPoint.x(), minPoint.y());
     }
 
     /**
-     * Test whether a point is within a certain distance of a line defined by two other points, extending towards infinity.
+     * Test whether a point is within a certain distance of a ray defined by two other points.
      * @param testX The x-coordinate of the test point.
      * @param testY The y-coordinate of the test point.
-     * @param x1 The x-coordinate of the first point in the line.
-     * @param y1 The y-coordinate of the first point in the line.
-     * @param x2 The x-coordinate of the second point in the line.
-     * @param y2 The y-coordinate of the second point in the line.
-     * @param error Allowable distance from the line.
-     * @return Whether the test point is within the specified error of the line.
+     * @param x0 The x-coordinate of the origin of the ray.
+     * @param y0 The y-coordinate of the origin of the ray.
+     * @param x The x-coordinate of a point in the ray.
+     * @param y The y-coordinate of a point in the ray.
+     * @param error Allowable Euclidean distance from the ray.
+     * @return Whether the test point is within the specified error of the ray.
      * @throws UnsupportedOperationException If the two points are the same, or that the error is negative.
      */
-    public static boolean isInLine(int testX, int testY, int x1, int y1, int x2, int y2, double error) throws UnsupportedOperationException {
-        if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
+    public static boolean isInRay(int testX, int testY, int x0, int y0, int x, int y, double error) throws UnsupportedOperationException {
+        if (x0 == x && y0 == y) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
         if (error < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
 
-        // Vertical line
-        if (x1 == x2) return (testX - x1) <= error;
+        Ray2D ray = new Ray2D(x0, y0, x, y);
 
-        // Horizontal line
-        if (y1 == y2) return (testY - y1) <= error;
-
-        // The equation of the line is (y2-y1)/(x2-x1)=(y-y1)/(x-x1) => (y2-y1)(x-x1)=(x2-x1)(y-y1) => (y2-y1)x+(x1-x2)y+(x2y1-x1y2)=0.
-        // Applying the distance formula between a point and a line,
-        double distance = Math.abs((y2 - y1) * testX + (x1 - x2) * testY + (x2 * y1 - x1 * y2))
-                            / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x1 - x2, 2));
-
+        double distance = ray.distance(testX, testY);
         return distance < error || distance - error < EQUALITY_THRESHOLD;
     }
 
@@ -164,11 +144,10 @@ public final class Geometry {
      * @return Whether the test point is within the circle, including the boundary.
      * @throws UnsupportedOperationException If the radius is negative.
      */
-    public static boolean isInCircle(int xTest, int yTest, int x, int y, int r) throws UnsupportedOperationException {
+    public static boolean isInCircle(int xTest, int yTest, int x, int y, double r) throws UnsupportedOperationException {
         if (r < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
         
-        double distance = diagonalDistance(xTest, yTest, x, y);
-
+        double distance = findEuclideanDistance(xTest, yTest, x, y);
         return distance < r || distance - r < EQUALITY_THRESHOLD;
     }
 }

@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
 import project.Arena.ExistsInArena;
 
 import java.io.Console;
@@ -13,7 +14,6 @@ import java.util.*;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javafx.scene.shape.Line;
 import project.monsters.Monster;
 
 /**
@@ -128,7 +128,7 @@ public class Coordinates implements Serializable {
      * @return The taxicab distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public int taxicabDistanceFrom(@NonNull Coordinates other) {
-        return Geometry.taxicabDistance(getX(), getY(), other.getX(), other.getY());
+        return Geometry.findTaxicabDistance(getX(), getY(), other.getX(), other.getY());
     }
 
     /**
@@ -146,7 +146,7 @@ public class Coordinates implements Serializable {
      * @return The diagonal distance between the Cartesian coordinates represented by the two Coordinate objects.
      */
     public double diagonalDistanceFrom(@NonNull Coordinates other) {
-        return Geometry.diagonalDistance(getX(), getY(), other.getX(), other.getY());
+        return Geometry.findEuclideanDistance(getX(), getY(), other.getX(), other.getY());
     }
 
     /**
@@ -164,7 +164,7 @@ public class Coordinates implements Serializable {
      * @return The angle in radians from this object to the other object, as if this object is at the origin of a polar coordinate system.
      */
     public double angleFrom(@NonNull Coordinates other) {
-        return Geometry.angleFrom(getX(), getY(), other.getX(), other.getY());
+        return Geometry.findAngleFrom(getX(), getY(), other.getX(), other.getY());
     }
 
     /**
@@ -174,7 +174,7 @@ public class Coordinates implements Serializable {
      * @param error Allowable distance in terms of pixels.
      * @return Whether the test object is within the specified distance of the line.
      */
-    public boolean isInLine(@NonNull ExistsInArena endObj, @NonNull ExistsInArena testObj, double error) {
+    public boolean isInLine(@NonNull ExistsInArena endObj, @NonNull ExistsInArena testObj, int error) {
         return isInLine(new Coordinates(endObj.getX(), endObj.getY()), new Coordinates(testObj.getX(), testObj.getY()), error);
     }
 
@@ -185,8 +185,8 @@ public class Coordinates implements Serializable {
      * @param error Allowable distance in terms of pixels.
      * @return Whether the test point is within the specified error of the line.
      */
-    public boolean isInLine(@NonNull Coordinates endPt, @NonNull Coordinates testPt, double error) {
-        return Geometry.isInLine(testPt.getX(), testPt.getY(), getX(), getY(), endPt.getX(), endPt.getY(), error);
+    public boolean isInLine(@NonNull Coordinates endPt, @NonNull Coordinates testPt, int error) {
+        return Geometry.isInRay(testPt.getX(), testPt.getY(), getX(), getY(), endPt.getX(), endPt.getY(), error);
     }
 
     /**
@@ -224,8 +224,8 @@ public class Coordinates implements Serializable {
      * @return  The point in the edge of the extended line.
      */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
-        Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
-        return new Coordinates((int) point.getX(), (int) point.getY());
+        Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), 0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
+        return new Coordinates((int) Math.round(point.getX()), (int) Math.round(point.getY()));
     }
 
     /**
@@ -241,6 +241,6 @@ public class Coordinates implements Serializable {
      * @param cor The coordinates of the target.
      */
     public void drawLine(@NonNull Coordinates cor){
-        Line line = new Line(this.x.get(),this.y.get(),cor.x.get(),cor.y.get());
+        Line line = new Line(this.getX(),this.getY(),cor.getX(),cor.getY());
     }
 }
