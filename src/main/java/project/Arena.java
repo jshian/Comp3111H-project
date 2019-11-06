@@ -417,6 +417,11 @@ public final class Arena {
         return true;
     }
 
+    /**
+     * Determines whether some monster cannot go to end-zone after building a tower.
+     * @param coordinates The coordinates of tower to be built.
+     * @return true if all monster can go to end-zone after building a tower, false otherwise.
+     */
     private static boolean hasRoute(@NonNull Coordinates coordinates) {
         Grid gridToBeBuilt = currentState.getGrid(coordinates);
 
@@ -446,7 +451,7 @@ public final class Arena {
     }
 
     /**
-     * helper function of hasRoute(). It performs DFS to find positions of monster where it can reach the ending-zone.
+     * helper function of hasRoute(). It performs DFS to find positions of monster where it can go to ending-zone.
      * @param noTower 2d boolean array to indicate which grid does not contain tower.
      * @param visited 2d boolean array to indicate which grid has already visited by DFS.
      * @param x current x-position.
