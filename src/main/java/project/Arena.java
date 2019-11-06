@@ -671,7 +671,7 @@ public final class Arena {
                 if (movementOnly) {
                     cost = currentState.movementCostToEnd[neighbour.getX()][neighbour.getY()];
                 } else {
-                    cost = currentState.TotalCostToEnd[neighbour.getX()][neighbour.getY()];
+                    cost = currentState.totalCostToEnd[neighbour.getX()][neighbour.getY()];
                 }
 
                 if (cost < lowestCost) {
