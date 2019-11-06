@@ -447,6 +447,7 @@ public final class Arena {
         } else {
             return null;
         }
+        // TODO: recalculate monster path.
     }
 
     /**
@@ -500,7 +501,6 @@ public final class Arena {
      */
     public static void spawnWave()
     {
-        // TODO: add UI, log. may use a function to generate each monster
         int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
@@ -544,6 +544,7 @@ public final class Arena {
         currentState.monsters.add(m);
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
 
+        // TODO: (modify by setting?)
         currentState.difficulty += 1;    // Modified by settings later
         return m;
     }
@@ -629,9 +630,19 @@ public final class Arena {
         shadowState = currentState;
 
         // Now update currentState
-        generateMonster(MonsterType.Penguin);
-
         // TODO: all.
+//        for (Monster m : currentState.monsters) {
+//            Coordinates nextFrame = m.getNextFrame();
+//            if (nextFrame != null) {
+//                moveMonster(m, nextFrame);
+//            }
+//        }
+        if (currentState.monsters.isEmpty())
+            generateMonster(MonsterType.Penguin);
+        else
+            moveMonster(currentState.monsters.peek(), END_COORDINATES);
+//        newMonster.recalculateFuturePath();
+
         // currentState.monsters.sort(null);
         // currentState.currentFrame++;
     }

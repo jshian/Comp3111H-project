@@ -104,6 +104,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public int getY() { return coordinates.getY(); }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates.update(x, y); }
+    public Coordinates getNextFrame() { return !futurePath.isEmpty() ? futurePath.removeFirst() : null; }
     public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
@@ -174,7 +175,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         
         // Coordinates/Cost pair representing the center of each grid that has been searched
         PriorityQueue<CoordinatesCostPair> gridCenters = new PriorityQueue<>(
-            (int) (Math.pow(2, (int) (Math.log(this.coordinates.taxicabDistanceFrom(this.destination)) / Math.log(2)) + 1))
+                (int) (Math.pow(2, (int) (Math.log(this.coordinates.taxicabDistanceFrom(this.destination)) / Math.log(2)) + 1))
         );
         gridCenters.add(new CoordinatesCostPair(this.coordinates, 0, this.coordinates.taxicabDistanceFrom(this.destination)));
 
