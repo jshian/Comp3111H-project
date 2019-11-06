@@ -451,11 +451,11 @@ public final class Arena {
     }
 
     /**
-     * helper function of hasRoute(). It performs DFS to find positions of monster where it can go to ending-zone.
+     * helper function of hasRoute(). It performs DFS to find positions of monster where it can go to a destination.
      * @param noTower 2d boolean array to indicate which grid does not contain tower.
      * @param visited 2d boolean array to indicate which grid has already visited by DFS.
-     * @param x current x-position.
-     * @param y current y-position.
+     * @param x x-position of the destination.
+     * @param y y-position of the destination.
      */
     private static void gridDFS(@NonNull boolean[][] noTower, @NonNull boolean[][] visited, int x, int y)
     {
