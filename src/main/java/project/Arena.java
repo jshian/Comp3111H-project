@@ -76,42 +76,6 @@ public final class Arena {
      * Describes the state of the Arena during a frame.
      */
     private static class ArenaState {
-    	/**
-    	 * Stores the cost for a monster in each pixel to reach the end-zone due to movement. Indices correspond to the x- and y- coordinates.
-    	 * The cost is in terms of per unit speed of the monster.
-    	 * @see Monster
-    	 * @see Coordinates
-    	 */
-    	private double[][] movementCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
-    	
-    	/**
-    	 * Stores the cost for a monster in each pixel o reach the end-zone due to being attacked. Indices correspond to the x- and y- coordinates.
-    	 * The cost is in terms of per unit speed of the monster.
-    	 * @see Monster
-    	 * @see Coordinates
-    	 */
-    	private double[][] attackCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
-    	
-        /**
-         * Contains a reference to each Tower on the Arena.
-         * @see Tower
-         */
-        private LinkedList<Tower> towers = new LinkedList<>();
-
-        /**
-         * Contains a reference to each Projectile on the Arena.
-         * @see Projectile
-         */
-        private LinkedList<Projectile> projectiles = new LinkedList<>();
-
-        /**
-         * Contains a reference to each Monster on the Arena.
-         * In addition, the monsters are sorted according to how close they are from reaching the end zone.
-         * The first element is closest to the end zone while the last element is furthest.
-         * @see Monster
-         */
-        private LinkedList<Monster> monsters = new LinkedList<>();
-
         /**
          * The current frame number of the Arena since the game began.
          */
@@ -121,6 +85,84 @@ public final class Arena {
          * The current difficulty of the Arena.
          */
         private double difficulty;
+
+        /**
+         * Contains a reference to each Tower on the arena.
+         * @see Tower
+         */
+        private LinkedList<Tower> towers = new LinkedList<>();
+
+        /**
+         * Contains a reference to each Projectile on the arena.
+         * @see Projectile
+         */
+        private LinkedList<Projectile> projectiles = new LinkedList<>();
+
+        /**
+         * Contains a reference to each Monster on the arena.
+         * In addition, the monsters are sorted according to how close they are from reaching the end zone.
+         * The first element is closest to the end zone while the last element is furthest.
+         * @see Monster
+         */
+        private PriorityQueue<Monster> monsters = new PriorityQueue<>();
+
+        /**
+         * Stores grid information of the arena.
+         */
+        private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
+
+        /**
+         * Accesses the grid that contains the specified pixel.
+         * @param coordinates The coordinates of the pixel.
+         */
+        private Grid getGrid(Coordinates coordinates) {
+            return grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
+        }
+
+        /**
+         * Finds the grids that may be within a specified distance of a specified pixel.
+         * @param The coordinates of the pixel.
+         * @param range The maximum allowable distance.
+         * @return A linked list containing references to the conservative estimate of the grids that are within a specified distance of the specified pixel.
+         */
+        private LinkedList<Grid> getPotentialGridsInRange(Coordinates coordinates, double range) {
+            LinkedList<Grid> result = new LinkedList<>();
+
+            for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
+                for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+                    Coordinates otherGridCoordinates = Grid.findGridCenter(grids[i][j].getXPos(), grids[i][j].getYPos());
+                    if (coordinates.diagonalDistanceFrom(otherGridCoordinates)
+                        <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
+                        {
+                            result.add(grids[i][j]);
+                        }
+                }
+            }
+
+            return result;
+        }
+
+    	/**
+    	 * Stores the cost for a monster in each pixel to reach the end-zone due to movement. Indices correspond to the x- and y- coordinates.
+    	 * The cost is in terms of per unit speed of the monster.
+    	 * @see Monster
+    	 * @see Coordinates
+    	 */
+    	private double[][] movementCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+    	
+    	/**
+    	 * Stores the cost for a monster in each pixel to reach the end-zone due to being attacked. Indices correspond to the x- and y- coordinates.
+    	 * The cost is in terms of per unit speed of the monster.
+    	 * @see Monster
+    	 * @see Coordinates
+    	 */
+        private double[][] attackCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+
+        private ArenaState() {
+            for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++)
+                for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++)
+                    grids[i][j] = new Grid(i, j);
+        }
     }
 
     /**
@@ -134,12 +176,50 @@ public final class Arena {
     private static ArenaState currentState = new ArenaState();
 
     /**
-     * The default constructor of the Arena class.
+     * Adds an object to the current arena state.
+     * @param obj The object to add.
+     * @throws IllegalArgumentException The object type is not recognized.
      */
-    public Arena() {}
+    private void addObjectToCurrentState(ExistsInArena obj) {
+        if (obj instanceof Tower) {
+            if (!currentState.towers.contains(obj))
+                currentState.towers.add((Tower)obj);
+        } else if (obj instanceof Projectile) {
+            if (!currentState.projectiles.contains(obj))
+                currentState.projectiles.add((Projectile)obj);
+        } else if (obj instanceof Monster) {
+            if (!currentState.monsters.contains(obj))
+                currentState.monsters.add((Monster)obj);
+        } else {
+            throw new IllegalArgumentException("The object type is not recognized");
+        }
+
+        Coordinates c = new Coordinates(obj.getX(), obj.getY());
+        currentState.getGrid(c).addObject(obj);
+    }
 
     /**
-     * constructor of the Arena class. Bind the label to resources.
+     * Removes an object to the current arena state.
+     * @param obj The object to remove.
+     * @throws IllegalArgumentException The object type is not recognized.
+     */
+    private void removeObjectFromCurrentState(ExistsInArena obj) {
+        if (obj instanceof Tower) {
+            currentState.towers.remove((Tower)obj);
+        } else if (obj instanceof Projectile) {
+            currentState.projectiles.remove((Projectile)obj);
+        } else if (obj instanceof Monster) {
+            currentState.monsters.remove((Monster)obj);
+        } else {
+            throw new IllegalArgumentException("The object type is not recognized");
+        }
+
+        Coordinates c = new Coordinates(obj.getX(), obj.getY());
+        currentState.getGrid(c).removeObject(obj);
+    }
+
+    /**
+     * Constructor of the Arena class. Bind the label to resources.
      * @param resourceLabel the label to show remaining resources of player.
      */
     public Arena(@NonNull Label resourceLabel) {
@@ -161,26 +241,23 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<Object> objectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public static LinkedList<ExistsInArena> objectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<Object> list = new LinkedList<>();
-
-        if (filter.contains(TypeFilter.Tower))
-            for (Tower t : currentState.towers)
-                if (coordinates.isAt(t))
-                    list.add(t);
+        LinkedList<ExistsInArena> result = new LinkedList<>();
         
-        if (filter.contains(TypeFilter.Projectile))
-            for (Projectile p : currentState.projectiles)
-                if (coordinates.isAt(p))
-                    list.add(p);
+        LinkedList<ExistsInArena> list = currentState.getGrid(coordinates).getAllObjects();
 
-        if (filter.contains(TypeFilter.Monster))
-            for (Monster m : currentState.monsters)
-                if (coordinates.isAt(m))
-                    list.add(m);
+        for (ExistsInArena obj : list)
+        {
+            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
+                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
+                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
+                {
+                    result.add(obj);
+                }
+        }
 
-        return list;
+        return result;
     }
 
     /**
@@ -191,26 +268,27 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<Object> objectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
+    public static LinkedList<ExistsInArena> objectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<Object> list = new LinkedList<>();
-
-        if (filter.contains(TypeFilter.Tower))
-            for (Tower t : currentState.towers)
-                if (coordinates.diagonalDistanceFrom(t) <= range)
-                    list.add(t);
+        LinkedList<ExistsInArena> result = new LinkedList<>();
         
-        if (filter.contains(TypeFilter.Projectile))
-            for (Projectile p : currentState.projectiles)
-                if (coordinates.diagonalDistanceFrom(p) <= range)
-                    list.add(p);
+        LinkedList<Grid> grids = currentState.getPotentialGridsInRange(coordinates, range);
 
-        if (filter.contains(TypeFilter.Monster))
-            for (Monster m : currentState.monsters)
-                if (coordinates.diagonalDistanceFrom(m) <= range)
-                    list.add(m);
+        for (Grid grid : grids) {
+            LinkedList<ExistsInArena> list = grid.getAllObjects();
 
-        return list;
+            for (ExistsInArena obj : list)
+            {
+                if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
+                    || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
+                    || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
+                    {
+                        result.add(obj);
+                    }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -220,44 +298,23 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public static LinkedList<Object> objectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public static LinkedList<ExistsInArena> objectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<Object> list = new LinkedList<>();
-
-        if (filter.contains(TypeFilter.Tower)) {
-            for (Tower t : currentState.towers) {
-                Coordinates c = new Coordinates(t.getX(), t.getY());
-    
-                if (coordinates.isAt(c))
-                    list.add(t);
-                else {
-                    Grid grid = Grid.findGrid(c);
-    
-                    int xMin = grid.getXPos() * UIController.GRID_WIDTH;
-                    int xMax = xMin + UIController.GRID_WIDTH;
-                    int yMin = grid.getYPos() * UIController.GRID_HEIGHT;
-                    int yMax = yMin + UIController.GRID_HEIGHT;
-                    
-                    int x = coordinates.getX();
-                    int y = coordinates.getY();
-
-                    if (xMin <= x && x < xMax && yMin <= y && y < yMax)
-                        list.add(t);
-                }
-            }
-        }
+        LinkedList<ExistsInArena> result = new LinkedList<>();
         
-        if (filter.contains(TypeFilter.Projectile))
-            for (Projectile p : currentState.projectiles)
-                if (coordinates.isAt(p))
-                    list.add(p);
+        // READONLY
+        LinkedList<ExistsInArena> list = currentState.getGrid(coordinates).getAllObjects();
+        for (ExistsInArena obj : list)
+        {
+            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
+                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
+                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
+                {
+                    result.add(obj);
+                }
+        }
 
-        if (filter.contains(TypeFilter.Monster))
-            for (Monster m : currentState.monsters)
-                if (coordinates.isAt(m))
-                    list.add(m);
-
-        return list;
+        return result;
     }
 
     /**
@@ -269,38 +326,25 @@ public final class Arena {
     {
         LinkedList<Coordinates> result = new LinkedList<>();
 
-        Grid grid = Grid.findGrid(coordinates);
-        int gridX = grid.getXPos();
-        int gridY = grid.getYPos();
-        Coordinates gridC = grid.getCenterCoordinates();
+        Grid grid = currentState.getGrid(coordinates);
+        int gridXPos = grid.getXPos();
+        int gridYPos = grid.getYPos();
 
         // Left neighbour
-        if (gridX > 0)
-            result.add(new Coordinates(
-                gridC.getX() - UIController.GRID_WIDTH,
-                gridC.getY()
-            ));
+        if (gridXPos > 0)
+            result.add(Grid.findGridCenter(gridXPos - 1, gridYPos));
         
         // Right neighbour
-        if (gridX < UIController.MAX_H_NUM_GRID - 1)
-            result.add(new Coordinates(
-                gridC.getX() + UIController.GRID_WIDTH,
-                gridC.getY()
-            ));
+        if (gridXPos < UIController.MAX_H_NUM_GRID - 1)
+            result.add(Grid.findGridCenter(gridXPos + 1, gridYPos));
         
         // Top neighbour
-        if (gridY > 0)
-            result.add(new Coordinates(
-                gridC.getX(),
-                gridC.getY() - UIController.GRID_HEIGHT
-            ));
+        if (gridYPos > 0)
+            result.add(Grid.findGridCenter(gridXPos, gridYPos - 1));
 
         // Bottom neighbour
-        if (gridY < UIController.MAX_V_NUM_GRID - 1)
-            result.add(new Coordinates(
-                gridC.getX(),
-                gridC.getY() + UIController.GRID_HEIGHT
-            ));
+        if (gridYPos < UIController.MAX_V_NUM_GRID - 1)
+            result.add(Grid.findGridCenter(gridXPos, gridYPos + 1));
 
         return result;
     }
@@ -323,26 +367,53 @@ public final class Arena {
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
+     * @param type type of the tower.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
-    public static boolean canBuildTower(@NonNull Coordinates coordinates)
+    public static boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull String type)
     {
-        return objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
+        boolean empty = objectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
+        if (!empty)
+            return false;
+
+        Coordinates gridCoordinates = Grid.findGridCenter(coordinates);
+        if(gridCoordinates.isAt(STARTING_COORDINATES) || gridCoordinates.isAt(END_COORDINATES)
+            || !hasResources(type))
+            return false;
+
+        // TODO: false when grid prevents at least one monster from reaching the end-zone by completely blocking its path.
+        return true;
     }
 
     /**
-     * Deduct resources from arena if the player has enough resources to perform the action.
+     * check if the player has enough resources to perform the action.
      * @param cost cost of an action.
      * @return true if the player has enough resources or false otherwise.
      */
-    public static boolean useResources(@NonNull int cost)
+    public static boolean hasResources(@NonNull int cost)
     {
         if (cost > resources.get()) {
             return false;
         } else {
-            resources.setValue(resources.get() - cost);
             return true;
         }
+    }
+
+    /**
+     * check if the player has enough resources to build the tower.
+     * @param type type of the tower.
+     * @return true if the player has enough resources or false otherwise.
+     */
+    public static boolean hasResources(@NonNull String type)
+    {
+        int cost = 500;
+        switch(type) {
+            case "Basic Tower": cost = new BasicTower(STARTING_COORDINATES).getBuildingCost(); break;
+            case "Ice Tower": cost = new IceTower(STARTING_COORDINATES).getBuildingCost(); break;
+            case "Catapult": cost = new Catapult(STARTING_COORDINATES).getBuildingCost(); break;
+            case "Laser Tower": cost = new LaserTower(STARTING_COORDINATES).getBuildingCost(); break;
+        }
+        return hasResources(cost);
     }
 
     /**
@@ -365,13 +436,29 @@ public final class Arena {
         }
         cost = t.getBuildingCost();
 
-        if (useResources(cost)) {
+        if (hasResources(cost)) {
+            resources.setValue(resources.get() - cost);
             currentState.towers.add(t);
+            currentState.getGrid(coordinates).addObject(t);
             return t;
         } else {
             return null;
         }
+    }
 
+    /**
+     * Upgrade the tower at the grid where a specified pixel is located.
+     * @param t the tower to be upgrade
+     * @return true if upgrade is successful, false if player don't have enough resources.
+     */
+    public static boolean upgradeTower(@NonNull Tower t) {
+        boolean canbuild = t.upgrade(resources.getValue());
+        if (canbuild) {
+            resources.set(resources.getValue() - t.getUpgradeCost());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -382,6 +469,7 @@ public final class Arena {
     public static void destroyTower(@NonNull Tower tower, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(tower.getImageView());
+        currentState.getGrid(new Coordinates(tower.getX(), tower.getY())).removeObject(tower);
         currentState.towers.remove(tower);
     }
 
@@ -402,6 +490,7 @@ public final class Arena {
     public static void removeProjectile(@NonNull Projectile projectile, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(projectile.getImageView());
+        currentState.getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
         currentState.projectiles.remove(projectile);
     }
 
@@ -410,15 +499,20 @@ public final class Arena {
      */
     public static void spawnWave()
     {
+        // TODO: add UI, log. may use a function to generate each monster
         int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
+            Monster newMonster;
             if (randomNumber < 1/3)
-                currentState.monsters.add(new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+                newMonster = new Fox(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
             else if (randomNumber < 2/3)
-                currentState.monsters.add(new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+                newMonster = new Penguin(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
             else
-                currentState.monsters.add(new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES));
+                newMonster = new Unicorn(currentState.difficulty, STARTING_COORDINATES, END_COORDINATES);
+
+            currentState.monsters.add(newMonster);
+            currentState.getGrid(STARTING_COORDINATES).addObject(newMonster);
         }
 
         currentState.difficulty += 1;    // Modified by settings later
@@ -432,7 +526,25 @@ public final class Arena {
     public static void removeMonster(@NonNull Monster monster, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(monster.getImageView());
+        currentState.getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
         currentState.monsters.remove(monster);
+    }
+
+    /**
+     * Moves the specified Monster to another location.
+     * @param monster The Monster to be moved.
+     * @param newCoordinates The coordinates of the new location.
+     * @param paneArena the pane where graphic of monster needed to be removed.
+     */
+    public static void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates, @NonNull AnchorPane paneArena)
+    {
+        currentState.getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
+
+        int newX = newCoordinates.getX();
+        int newY = newCoordinates.getY();
+        monster.setLocation(newX, newY);
+
+        currentState.getGrid(newCoordinates).addObject(monster);
     }
     
     /**
@@ -489,6 +601,9 @@ public final class Arena {
         shadowState = currentState;
 
         // Now update currentState
+        for (Monster m : currentState.monsters) {
+            m.MoveOneFrame();
+        }
         throw new NotImplementedException("TODO");
         // currentState.monsters.sort(null);
         // currentState.currentFrame++;
@@ -496,21 +611,21 @@ public final class Arena {
 
     /**
      * Finds all Towers that are in the arena.
-     * @return A READONLY linked list containing a reference to each Tower in the Arena.
+     * @return A linked list containing a reference to each Tower in the Arena.
      */
-    public static LinkedList<Tower> getTowers() { return (LinkedList<Tower>) Collections.unmodifiableList(currentState.towers); }
+    public static LinkedList<Tower> getTowers() { return currentState.towers; }
 
     /**
      * Finds all Monsters that are in the arena.
-     * @return A READONLY linked list containing a reference to each Monster in the Arena. The first element is closest to the end zone while the last element is furthest.
+     * @return A priority queue containing a reference to each Monster in the Arena. The first element is closest to the end zone while the last element is furthest.
      */
-    public static LinkedList<Monster> getMonsters() { return (LinkedList<Monster>) Collections.unmodifiableList(currentState.monsters); }
+    public static PriorityQueue<Monster> getMonsters() { return currentState.monsters; }
 
     /**
      * Finds all Projectile that are in the arena.
-     * @return A READONLY linked list containing a reference to each Projectile in the Arena.
+     * @return A linked list containing a reference to each Projectile in the Arena.
      */
-    public static LinkedList<Projectile> getProjectiles() { return (LinkedList<Projectile>) Collections.unmodifiableList(currentState.projectiles); }
+    public static LinkedList<Projectile> getProjectiles() { return currentState.projectiles; }
 
     /**
      * Interface for objects that exist inside the arena.

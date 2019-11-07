@@ -7,6 +7,7 @@ import project.projectiles.IceProjectile;
 import project.projectiles.Projectile;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
  * IceTower slow down the speed of monster without damage.
@@ -30,6 +31,7 @@ public class IceTower extends Tower{
         this.shootingRange = 50;
         this.slowDown = 10;
         this.attackSpeed = 5;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -44,6 +46,7 @@ public class IceTower extends Tower{
         this.shootingRange = 50;
         this.slowDown = 10;
         this.attackSpeed = 5;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -53,7 +56,7 @@ public class IceTower extends Tower{
      */
     @Override
     public boolean upgrade(int resource){
-        if(resource >= 20){
+        if(resource >= this.upgradeCost){
             this.slowDown+=5;
             return true;
         }
@@ -67,7 +70,7 @@ public class IceTower extends Tower{
     @Override
     public Projectile attackMonster(){
         if(isReload()) {
-            LinkedList<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m))
                     return new IceProjectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);
@@ -76,6 +79,9 @@ public class IceTower extends Tower{
         return null;
     }
 
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
         return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"

@@ -6,6 +6,7 @@ import project.monsters.Monster;
 import project.projectiles.Projectile;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
  * Basic tower has no any special ability.
@@ -22,6 +23,7 @@ public class BasicTower extends Tower {
         this.buildingCost = 10;
         this.shootingRange = 65;
         this.attackSpeed = 5;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -35,6 +37,7 @@ public class BasicTower extends Tower {
         this.buildingCost = 10;
         this.shootingRange = 65;
         this.attackSpeed = 5;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -44,7 +47,7 @@ public class BasicTower extends Tower {
      */
     @Override
     public boolean upgrade(int resource){
-        if(resource >= 10){
+        if(resource >= this.upgradeCost){
             this.attackPower+=5;
             return true;
         }
@@ -58,7 +61,7 @@ public class BasicTower extends Tower {
     @Override
     public Projectile attackMonster(){
         if(!isReload()) {
-            LinkedList<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m))
                     this.hasAttack = true;
@@ -68,6 +71,9 @@ public class BasicTower extends Tower {
         return null;
     }
 
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
         return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s", this.attackPower,

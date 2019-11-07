@@ -2,13 +2,14 @@ package project.towers;
 
 import javafx.scene.image.ImageView;
 import project.*;
+import project.Arena.ExistsInArena;
 import project.monsters.Monster;
 import project.projectiles.CatapultProjectile;
 import project.projectiles.Projectile;
 
+import java.util.EnumSet;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.PriorityQueue;
 
 /**
  * Catapult can attack many monsters at the same time and has high shooting range.
@@ -30,6 +31,7 @@ public class Catapult extends Tower {
         this.shootLimit = 50;
         this.counter = 0;
         this.attackSpeed = 50;
+        this.upgradeCost = 20;
     }
 
     /**
@@ -45,6 +47,7 @@ public class Catapult extends Tower {
         this.reload = 10;
         this.shootLimit = 50;
         this.attackSpeed = 50;
+        this.upgradeCost = 20;
     }
 
     /**
@@ -54,7 +57,7 @@ public class Catapult extends Tower {
      */
     @Override
     public boolean upgrade(int resource){
-        if(resource >= 20){
+        if(resource >= this.upgradeCost){
             if(reload>0)reload-=1;
             return true;
         }
@@ -96,7 +99,7 @@ public class Catapult extends Tower {
      * @param attackedMon The monsters will be attacked
      * @return The coordinate that will be attacked by Catapult
      */
-    public Coordinates selectMonster(LinkedList<Monster> monsters,LinkedList<Monster> attackedMon){
+    public Coordinates selectMonster(PriorityQueue<Monster> monsters,LinkedList<Monster> attackedMon){
         LinkedList<Monster> nearestMon=new LinkedList<>();
         double nearest=0;
         //find nearest distance
@@ -115,6 +118,7 @@ public class Catapult extends Tower {
         Coordinates target = null;
         for (Monster m :nearestMon) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
+
             for (int i = m.getX()-radius; i < m.getX()+radius; i++) {//square width
                 for (int j = m.getY()-radius; j < m.getY()+radius; j++) {//square length
                     Coordinates c = new Coordinates(i,j);//tested coordinate
@@ -131,6 +135,17 @@ public class Catapult extends Tower {
         return target;
     }
 
+
+    /**
+     * Throw stone to certain position.
+     * @param cor The coordinate of the target.
+     */
+    public void throwStone(Coordinates cor){
+    }
+
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
         return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"
