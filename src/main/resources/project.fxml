@@ -61,8 +61,7 @@
                         <Insets left="10.0" />
                      </padding>
                   </Label>
-                  <Label layoutX="17.0" layoutY="381.0" text="Money: " />
-                  <Label fx:id="remainingResources" layoutX="62.0" layoutY="382.0" text="0" />
+                  <Label fx:id="remainingResources" layoutX="17.0" layoutY="381.0" text="Money: " />
                </children>
                <padding>
                   <Insets left="10.0" />

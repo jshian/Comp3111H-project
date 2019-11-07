@@ -1,5 +1,3 @@
-import java.security.InvalidParameterException;
-
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
@@ -30,10 +28,5 @@ public class CoordinatesTester {
 		expectedException.expect(IllegalArgumentException.class); Coordinates c_t6 = new Coordinates(0, -159);
 		expectedException.expect(IllegalArgumentException.class); Coordinates c_t7 = new Coordinates(1203, 0);
 		expectedException.expect(IllegalArgumentException.class); Coordinates c_t8 = new Coordinates(0, 800);
-	}
-
-	@Test
-	public void testCoordinateHelperFunctions() {
-
 	}
 } 

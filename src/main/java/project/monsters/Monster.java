@@ -89,10 +89,13 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param difficulty The difficulty of the monster.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
+     * @param imageView The imageView of the monster.
      */
-    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
+    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination, @NonNull ImageView imageView) {
         this.coordinates = start;
         this.destination = destination;
+        this.imageView = imageView;
+        this.coordinates.bindByImage(this.imageView);
     }
     
     // Inferface implementation
@@ -100,15 +103,16 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
-    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
-    public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
+    public void setLocation(int x, int y) { coordinates.update(x, y); }
+    public Coordinates getNextFrame() { return !futurePath.isEmpty() ? futurePath.removeFirst() : null; }
+    public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
      * Sets the health of the monster.
      * @param health The health of the monster.
      */
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.health = health;
     }
 
