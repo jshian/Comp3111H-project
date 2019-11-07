@@ -1,6 +1,7 @@
 package project.towers;
 
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
 import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
@@ -17,6 +18,13 @@ public class LaserTower extends Tower{
      * The consumption of resources by laser tower each time.
      */
     private int consume;
+
+
+    /**
+     * The laser display on the arena.
+     */
+    private Line laserLine;
+
 
     /**
      * Constructor of laser tower.
@@ -85,11 +93,12 @@ public class LaserTower extends Tower{
                     monster = m;
             }
             if (monster == null) {
+                laserLine = null;
                 return null;
             }
             Coordinates currentPt = new Coordinates(getX(), getY());
             Coordinates edgePt = currentPt.findEdgePt(monster);
-            currentPt.drawLine(edgePt);
+            laserLine = new Line(currentPt.getX(), currentPt.getY(), edgePt.getX(), edgePt.getY());
 
             PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
@@ -99,6 +108,12 @@ public class LaserTower extends Tower{
         }
         return null;
     }
+
+    /**
+     * get the laserLine.
+     * @return get the laserLine
+     */
+    public Line getLaserLine() { return this.laserLine;}
 
     /**Accesses the information of tower.
      * @return the information of tower.

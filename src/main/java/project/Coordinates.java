@@ -225,7 +225,7 @@ public class Coordinates implements Serializable {
      * @return  The point in the edge of the extended line.
      */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
-        Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
+        Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), UIController.ARENA_WIDTH - 1, UIController.ARENA_HEIGHT - 1);
         return new Coordinates((int) point.getX(), (int) point.getY());
     }
 

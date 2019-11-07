@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Line;
 import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
 import project.projectiles.Projectile;
@@ -70,6 +71,11 @@ public final class Arena {
     private static final int WAVE_INTERVAL = 300;
 
     /**
+     * The duration of laser being displayed.
+     */
+    private static final int laserDuration = 4;
+
+    /**
      * Describes the state of the Arena during a frame.
      */
     private static class ArenaState {
@@ -94,6 +100,11 @@ public final class Arena {
          * @see Projectile
          */
         private LinkedList<Projectile> projectiles = new LinkedList<>();
+
+        /**
+         * Contains a reference to each laser shot by LaserTower on the arena.
+         */
+        private HashMap<Line, Integer> lasers = new HashMap<>();
 
         /**
          * Contains a reference to each Monster on the arena.
@@ -677,6 +688,29 @@ public final class Arena {
     	}
     }
 
+    private static void attackMonster() {
+        // remove previous lasers from arena
+
+
+        // attack monster
+        for (Tower t : currentState.towers) {
+            if (t instanceof LaserTower) {
+                ((LaserTower) t).attackMonster();
+                Line laserLine = ((LaserTower) t).getLaserLine();
+                if (laserLine != null) {
+                    if (!currentState.lasers.containsKey(laserLine)) {
+                        currentState.lasers.put(laserLine, currentState.currentFrame);
+                        paneArena.getChildren().add(laserLine);
+                    }
+                }
+
+            } else {
+
+
+            }
+        }
+    }
+
     /**
      * Updates the arena by one frame.
      */
@@ -696,9 +730,10 @@ public final class Arena {
         else // this is for testing only
             moveMonster(currentState.monsters.peek(), Grid.findGridCenter(10, 10));
 //        newMonster.recalculateFuturePath();
+        attackMonster();
 
         // currentState.monsters.sort(null);
-        // currentState.currentFrame++;
+        currentState.currentFrame++;
     }
 
     /**

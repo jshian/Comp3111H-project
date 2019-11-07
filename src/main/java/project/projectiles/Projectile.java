@@ -74,7 +74,7 @@ public class Projectile implements Arena.MovesInArena {
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
-    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
+    public void setLocation(int x, int y) { coordinates.update(new Coordinates(x, y)); }
     public void MoveOneFrame() {
         double distance = coordinates.diagonalDistanceFrom(target);
 
