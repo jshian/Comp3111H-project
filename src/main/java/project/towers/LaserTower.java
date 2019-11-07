@@ -5,7 +5,7 @@ import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
 
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 
 /**
@@ -28,6 +28,7 @@ public class LaserTower extends Tower{
         this.buildingCost = 20;
         this.shootingRange = 50;
         this.consume = 2;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -39,7 +40,9 @@ public class LaserTower extends Tower{
         super(coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;
+        this.shootingRange = 50;
         this.consume = 2;
+        this.upgradeCost = 10;
     }
 
     /**
@@ -50,7 +53,6 @@ public class LaserTower extends Tower{
         player.spendResources(consume);
     }
 
-
     /**
      * Laser tower increases its attack power when it upgraded.
      * @param resource The resources needed for tower to upgrade.
@@ -58,7 +60,7 @@ public class LaserTower extends Tower{
      */
     @Override
     public boolean upgrade(int resource){
-        if(resource >= 10){
+        if(resource >= this.upgradeCost){
             this.attackPower+=5;
             return true;
         }
@@ -72,28 +74,33 @@ public class LaserTower extends Tower{
     @Override
     public Projectile attackMonster(){
         if(!isReload()) {
-            Monster monster = Arena.getMonsters().get(0);
+            Monster monster = null;
+            for (Monster m : Arena.getMonsters()) {
+                if (canShoot(m))
+                    monster = m;
+            }
+            if (monster == null) {
+                return null;
+            }
             Coordinates currentPt = new Coordinates(getX(), getY());
             Coordinates edgePt = currentPt.findEdgePt(monster);
             currentPt.drawLine(edgePt);
-            int tX = getX();
-            int tY = getY();
-            int mX = monster.getX();
-            int mY = monster.getY();
 
-            LinkedList<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
-                for (int x = tX, y = tY; x > mX && y > mY; x += (mX - tX) * 0.01, y += (mY - tY) * 0.01)
-                    if ((new Coordinates(x, y)).isInCircle(m, 3))
-                        m.setHealth((int) (m.getHealth() - this.attackPower));
+                if (coordinates.isInLine(monster, m, 3))
+                    m.setHealth(m.getHealth() - this.attackPower);
             }
         }
         return null;
     }
 
+    /**Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
-        return String.format("attack power: %s\nbuilding cost: %s\nconsume: %s", this.attackPower,
-                this.buildingCost, this.consume);
+        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\nconsume: %s", this.attackPower,
+                this.buildingCost, this.shootingRange, this.consume);
     }
 }
