@@ -546,11 +546,37 @@ public final class Arena {
 
     /**
      * Creates a Projectile at a specified pixel.
-     * @param coordinates The coordinates of the pixel.
+     * @param t the tower which attack the monster by creating projectile.
      */
-    public static void createProjectile(@NonNull Coordinates coordinates)
+    public static void createProjectile(@NonNull Tower t)
     {
-        throw new NotImplementedException("TODO");
+        // laser tower
+        if (t instanceof LaserTower) {
+            ((LaserTower) t).attackMonster();
+            Line laserLine = ((LaserTower) t).getLaserLine();
+            if (laserLine != null && !currentState.lasers.containsKey(laserLine)) {
+                currentState.lasers.put(laserLine, currentState.currentFrame);
+                paneArena.getChildren().add(laserLine);
+            }
+
+        } else { // other towers
+            Projectile p = t.attackMonster();
+            if (p != null) {
+                paneArena.getChildren().add(p.getImageView());
+                currentState.projectiles.add(p);
+                currentState.getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
+            }
+        }
+    }
+
+    /**
+     * Move the specified Projectile.
+     * @param projectile The Projectile to be moved.
+     */
+    public static void moveProjectile(@NonNull Projectile projectile) {
+        currentState.getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
+        projectile.moveOneFrame();
+        currentState.getGrid(new Coordinates(projectile.getX(), projectile.getY())).addObject(projectile);
     }
 
     /**
@@ -721,11 +747,12 @@ public final class Arena {
      * tower attack monsters.
      */
     private static void attackMonster() {
-        // projectile
+        // update projectile
         List<Projectile> toRemove3 = new ArrayList();
         for (Projectile p : getProjectiles()) {
-            p.moveOneFrame();
-            // has monster being attacked.
+
+            moveProjectile(p);
+            // when projectile reach its destination
             if (p.hasReachedTarget()) {
                 // find monster in target grid
                 Coordinates targetCoordinates = new Coordinates(p.getX(), p.getY());
@@ -735,7 +762,7 @@ public final class Arena {
 
                 // find the first monster at attack it
                 if (p instanceof IceProjectile) {
-                    if (targets != null && targets.size() > 0) {
+                    if (targets.size() > 0) {
                         Monster target = (Monster)targets.get(0);
                         if (target != null) {
                             target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
@@ -751,7 +778,7 @@ public final class Arena {
                                 , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
                     }
                 } else {
-                    if (targets != null && targets.size() > 0) {
+                    if (targets.size() > 0) {
                         Monster target = (Monster)targets.get(0);
                         if (target != null) {
                             target.setHealth(target.getHealth() - attackPower);
@@ -763,33 +790,17 @@ public final class Arena {
                 toRemove3.add(p);
             }
         }
-        // remove projectiles from arena
+        // remove projectiles that reach its destination.
         for (Projectile p : toRemove3) {
-            currentState.projectiles.remove(p);
-            paneArena.getChildren().remove(p.getImageView());
+            removeProjectile(p);
         }
 
         // towers attack monsters
         for (Tower t : getTowers()) {
-            // laser tower
-            if (t instanceof LaserTower) {
-                ((LaserTower) t).attackMonster();
-                Line laserLine = ((LaserTower) t).getLaserLine();
-                if (laserLine != null && !currentState.lasers.containsKey(laserLine)) {
-                    currentState.lasers.put(laserLine, currentState.currentFrame);
-                    paneArena.getChildren().add(laserLine);
-                }
-
-            } else { // other towers
-                Projectile p = t.attackMonster();
-                if (p != null) {
-                    paneArena.getChildren().add(p.getImageView());
-                    currentState.projectiles.add(p);
-                }
-            }
+            createProjectile(t);
         }
 
-        // turn monster with 0 hp to explosion.png
+        // turn monster with 0hp to explosion.png
         for (Monster m : getMonsters()) {
             if (m.getHealth() <= 0) {
                 removeMonster(m);
@@ -802,7 +813,6 @@ public final class Arena {
             }
         }
 
-
     }
 
     /**
@@ -813,7 +823,10 @@ public final class Arena {
         shadowState = currentState;
 
         // Now update currentState
-        // TODO: all.
+        // TODO:
+        if (objectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
+            return true;
+
         removeLaser();
         attackMonster();
 
