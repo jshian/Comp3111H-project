@@ -81,6 +81,7 @@ public abstract class Tower implements ExistsInArena {
     /**
      * The attack speed of tower for how many px per frame
      */
+    @NotNull
     protected int attackSpeed;
 
     /**
