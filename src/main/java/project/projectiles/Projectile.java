@@ -2,6 +2,7 @@ package project.projectiles;
 
 import project.Arena;
 import project.Coordinates;
+import project.Geometry;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -83,13 +84,14 @@ public class Projectile implements Arena.MovesInArena {
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
     public void MoveOneFrame() {
-        double distance = coordinates.diagonalDistanceFrom(target);
+        double distance = Geometry.findEuclideanDistance(this.getX(), this.getY(), target.getX(), target.getY());
 
         if (distance <= speed)
             coordinates.update(target.getX(), target.getY());
         else {
-            int newX = coordinates.getX() + (int) (speed * Math.cos(coordinates.angleFrom(target)));
-            int newY = coordinates.getY() + (int) (speed * Math.sin(coordinates.angleFrom(target)));
+            double angleFromTarget = Geometry.findAngleFrom(this.getX(), this.getY(), target.getX(), target.getY());
+            int newX = coordinates.getX() + (int) (speed * Math.cos(angleFromTarget));
+            int newY = coordinates.getY() + (int) (speed * Math.sin(angleFromTarget));
             coordinates.update(newX, newY);
         }
     }
@@ -98,5 +100,5 @@ public class Projectile implements Arena.MovesInArena {
      * Determines whether the projectile has reached its target.
      * @return Whether the projectile has reached its target.
      */
-    public boolean hasReachedTarget() { return coordinates.isAt(target); }
+    public boolean hasReachedTarget() { return Geometry.isAt(target.getX(), target.getY(), this.getX(), this.getY()); }
 }

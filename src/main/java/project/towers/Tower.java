@@ -164,16 +164,16 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Monster monster){
-        return coordinates.diagonalDistanceFrom(monster) <= shootingRange ;
+        return Geometry.findEuclideanDistance(this.getX(), this.getY(), monster.getX(), monster.getY()) <= shootingRange;
     }
 
     /**
-     * To determine whether the coordinate is in the shooting range or not.
-     * @param coordinate the coordinate that to be shoot.
+     * To determine whether the coordinates is in the shooting range or not.
+     * @param coordinate the coordinates that to be shoot.
      * @return True if it is in the shooting range otherwise false.
      */
-    public boolean canShoot(Coordinates coordinate){
-        return this.coordinates.diagonalDistanceFrom(coordinate) <= shootingRange ;
+    public boolean canShoot(Coordinates coordinates){
+        return Geometry.findEuclideanDistance(this.getX(), this.getY(), coordinates.getX(), coordinates.getY()) <= shootingRange;
     }
 
     /**

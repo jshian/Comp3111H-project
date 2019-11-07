@@ -35,9 +35,23 @@ class StatusEffect {
     @NotNull
     private int duration;
 
+    /**
+     * Default constructor for StatusEffect class.
+     * @param effectType The type of effect.
+     * @param duration The duration of the effect in number of frames.
+     */
     StatusEffect(@NonNull EffectType effectType, int duration) {
         this.effectType = effectType;
         this.duration = duration;
+    }
+
+    /**
+     * Copy constructor for StatusEffect class.
+     * @param other The other object to copy from.
+     */
+    StatusEffect(StatusEffect other) {
+        this.effectType = other.effectType;
+        this.duration = other.duration;
     }
 
     /**
