@@ -64,6 +64,7 @@ public class BasicTower extends Tower {
             PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m))
+                    this.hasAttack = true;
                     return new Projectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
             }
         }

@@ -16,6 +16,8 @@ import java.util.PriorityQueue;
  */
 public class Catapult extends Tower {
 
+    public static int damageRange = 25;
+
     /**
      * Constructor of catapult.
      * @param coordinates The coordinate of catapult.
@@ -27,7 +29,7 @@ public class Catapult extends Tower {
         this.shootingRange = 150;
         this.reload = 10;
         this.shootLimit = 50;
-        this.counter = reload;
+        this.counter = 0;
         this.attackSpeed = 50;
         this.upgradeCost = 20;
     }
@@ -84,7 +86,6 @@ public class Catapult extends Tower {
         if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
             Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
-            throwStone(coordinate);
             counter = 10;
             return new CatapultProjectile(this.coordinates,coordinate,attackSpeed,attackPower);
         }
@@ -115,13 +116,14 @@ public class Catapult extends Tower {
         //find the target coordinate to attack
         int radius = 25;
         Coordinates target = null;
-        for (Monster m :nearestMon) {
+        for (Monster m :nearestMon) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
-            for (int i = m.getX()-radius; i < m.getX()+radius; i++) {
-                for (int j = m.getY()-radius; j < m.getY()+radius; j++) {
-                    Coordinates c = new Coordinates(i,j);
-                    if (canShoot(c)){
-                        LinkedList<ExistsInArena> monInCircle = Arena.findObjectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
+
+            for (int i = m.getX()-radius; i < m.getX()+radius; i++) {//square width
+                for (int j = m.getY()-radius; j < m.getY()+radius; j++) {//square length
+                    Coordinates c = new Coordinates(i,j);//tested coordinate
+                    if (canShoot(c) && Math.pow(radius,2)>=Math.pow(i-m.getX(),2)+Math.pow(j-m.getY(),2)){//damage range in current point
+                        LinkedList<ExistsInArena> monInCircle = Arena.objectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
                         if(count < monInCircle.size()){
                             count=monInCircle.size();
                             target = c;

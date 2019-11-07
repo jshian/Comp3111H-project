@@ -5,7 +5,7 @@ import project.monsters.Monster;
 
 public class IceProjectile extends Projectile{
     /**
-     * The slow down time of projectile.
+     * The slow down time to monsters of projectile.
      */
     private int slowDown;
 
