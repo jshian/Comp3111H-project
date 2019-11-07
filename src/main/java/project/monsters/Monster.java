@@ -35,6 +35,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     private ImageView imageView;
 
     /**
+     * The Arena that this monster is attached to.
+     */
+    @Transient
+    protected final Arena arena;
+
+    /**
      * Represents the position of the monster.
      */
     @NotNull
@@ -86,28 +92,44 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
 
     /**
      * Constructor for the Monster class.
-     * @param difficulty The difficulty of the monster.
+     * @param arena The arena the monster is attached to.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
+     * @param imageView The ImageView that displays the monster.
+     * @param difficulty The difficulty of the monster.
      */
-    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
+    public Monster(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+        this.imageView = imageView;
+        this.arena = arena;
         this.coordinates = start;
         this.destination = destination;
         this.coordinates.bindByImage(this.imageView);
+
+        this.futurePath = new LinkedList<>();
+        this.statusEffects = new LinkedList<>();
     }
 
     /**
-     * Constructor for the Monster class.
-     * @param difficulty The difficulty of the monster.
-     * @param start The starting location of the monster.
-     * @param destination The destination of the monster. It will try to move there.
-     * @param imageView The imageView of the monster.
+     * Copy constructor for the Monster class. Performs deep copy.
+     * @param other The other object to copy form.
      */
-    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination, @NonNull ImageView imageView) {
-        this.coordinates = start;
-        this.destination = destination;
-        this.imageView = imageView;
+    public Monster(Monster other) {
+        this.imageView = new ImageView(other.imageView.getImage());
+        this.arena = other.arena;
+        this.coordinates = other.coordinates;
+        this.maxHealth = other.maxHealth;
+        this.health = other.health;
+        this.maxSpeed = other.maxSpeed;
+        this.speed = other.speed;
+        this.destination = new Coordinates(other.destination);
         this.coordinates.bindByImage(this.imageView);
+
+        this.futurePath = new LinkedList<>();
+        for (Coordinates c : other.futurePath) this.futurePath.add(c);
+
+        this.statusEffects = new LinkedList<>();
+        for (StatusEffect se : other.statusEffects) this.statusEffects.add(se);
+
     }
     
     // Inferface implementation
@@ -175,69 +197,9 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     }
 
     /**
-     * Recalculates the future path of the monster using A* search.
+     * Recalculates the future path of the monster.
      */
     public void recalculateFuturePath() {
-        class CoordinatesCostPair implements Comparable<CoordinatesCostPair> {
-            private Coordinates coordinates;
-            private double cost;    // Length of shortest path up to this point
-            private double heruistic;   // Distance from coordinates to destination
-
-            public CoordinatesCostPair(Coordinates coordinates, double cost, double heruistic) {
-                this.coordinates = coordinates;
-                this.cost = cost;
-                this.heruistic = heruistic;
-            }
-
-            @Override
-            public int compareTo(CoordinatesCostPair other) {
-                return Double.compare(this.cost + this.heruistic, other.cost + other.heruistic);
-            }
-        }
-        
-        // Coordinates/Cost pair representing the center of each grid that has been searched
-        PriorityQueue<CoordinatesCostPair> gridCenters = new PriorityQueue<>(
-            (int) (Math.pow(2, (int) (Math.log(this.coordinates.taxicabDistanceFrom(this.destination)) / Math.log(2)) + 1))
-        );
-        gridCenters.add(new CoordinatesCostPair(this.coordinates, 0, this.coordinates.taxicabDistanceFrom(this.destination)));
-
-        // Coordinates representing the center of the previous grid relative to this element on the least cost path
-        Hashtable<Coordinates, Coordinates> previousGridFrom = new Hashtable<>();
-
-        while (!gridCenters.isEmpty()) {
-            CoordinatesCostPair currentPair = gridCenters.poll();
-
-            // Check if reached destination
-            if (currentPair.coordinates.isAt(this.destination)) {
-                this.futurePath = new LinkedList<>();
-                while (!previousGridFrom.isEmpty()) {
-                    Coordinates prevCoordinates = previousGridFrom.remove(currentPair.coordinates);
-                    futurePath.addFirst(prevCoordinates);
-                }
-                return;
-            }
-
-            // Add viable neighbours:
-            // Monsters cannot move diagonally.
-            LinkedList<Coordinates> neighbours = Arena.taxicabNeighbours(this.coordinates);
-            for (Coordinates nextCoordinates : neighbours) {
-                // Grid cannot contain a tower
-                if (Arena.objectsInGrid(nextCoordinates, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-                    double nextCost = Double.POSITIVE_INFINITY;
-                    for (CoordinatesCostPair pair : gridCenters)
-                        if (pair.coordinates.isAt(nextCoordinates))
-                            nextCost = pair.cost;
-
-                    if (currentPair.cost + 1 < nextCost) {
-                        gridCenters.add(new CoordinatesCostPair(nextCoordinates,
-                            currentPair.cost + 1,
-                            nextCoordinates.taxicabDistanceFrom(this.destination)
-                        ));
-                        previousGridFrom.put(nextCoordinates, currentPair.coordinates);
-                    }
-
-                }
-            }
-        }
+        futurePath = arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
     }
 }

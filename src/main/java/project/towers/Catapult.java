@@ -20,10 +20,11 @@ public class Catapult extends Tower {
 
     /**
      * Constructor of catapult.
+     * @param arena The arena to attach the catapult to.
      * @param coordinates The coordinate of catapult.
      */
-    public Catapult(Coordinates coordinates){
-        super(coordinates);
+    public Catapult(Arena arena, Coordinates coordinates){
+        super(arena, coordinates);
         this.attackPower = 25;
         this.buildingCost = 20;
         this.shootingRange = 150;
@@ -36,11 +37,12 @@ public class Catapult extends Tower {
 
     /**
      * Constructor of catapult.
+     * @param arena The arena to attach the catapult to.
      * @param coordinates The coordinate of catapult.
      * @param imageView The image view of catapult.
      */
-    public Catapult(Coordinates coordinates, ImageView imageView) {
-        super(coordinates, imageView);
+    public Catapult(Arena arena, Coordinates coordinates, ImageView imageView) {
+        super(arena, coordinates, imageView);
         this.attackPower = 25;
         this.buildingCost = 20;
         this.shootingRange = 150;
@@ -85,9 +87,9 @@ public class Catapult extends Tower {
     public Projectile attackMonster(){
         if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
-            Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
+            Coordinates coordinate = selectMonster(arena.getMonsters(), monsters);
             counter = 10;
-            return new CatapultProjectile(this.coordinates,coordinate,attackSpeed,attackPower);
+            return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower);
         }
         return null;
     }
@@ -123,7 +125,7 @@ public class Catapult extends Tower {
                 for (int j = m.getY()-radius; j < m.getY()+radius; j++) {//square length
                     Coordinates c = new Coordinates(i,j);//tested coordinate
                     if (canShoot(c) && Math.pow(radius,2)>=Math.pow(i-m.getX(),2)+Math.pow(j-m.getY(),2)){//damage range in current point
-                        LinkedList<ExistsInArena> monInCircle = Arena.objectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
+                        LinkedList<ExistsInArena> monInCircle = arena.findObjectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
                         if(count < monInCircle.size()){
                             count=monInCircle.size();
                             target = c;

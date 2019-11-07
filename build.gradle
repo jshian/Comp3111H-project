@@ -64,6 +64,10 @@ dependencies {
     // https://mvnrepository.com/artifact/javax.validation/validation-api/2.0.1.Final
     compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
+    // https://mvnrepository.com/artifact/math.geom2d/javaGeom/0.11.1
+    compile group: 'math.geom2d', name: 'javaGeom', version: '0.11.1'
+
+
     // VSCode only
     // compileClasspath fileTree('C:/Program Files/Java/jre1.8.0_231/lib/ext')
 }

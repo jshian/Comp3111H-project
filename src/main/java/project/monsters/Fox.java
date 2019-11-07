@@ -5,8 +5,9 @@ import project.*;
 
 import javax.persistence.Entity;
 
-import org.apache.commons.lang3.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javafx.scene.image.ImageView;
 
 /**
  * Fox is the fastest Monster. It also tries to follow the path where it receives the minimum number of attacks from Towers.
@@ -14,10 +15,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @Entity
 public class Fox extends Monster {
     /**
-     * @see Monster#Monster
+     * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
      */
-    public Fox(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
-        super(difficulty, start, destination);
+    public Fox(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+        super(arena, start, destination, imageView, difficulty);
         this.health = 5 * difficulty;
         this.speed = 1 + 0.01 * difficulty;
     }
@@ -39,6 +40,6 @@ public class Fox extends Monster {
 
     @Override
     public void recalculateFuturePath() {
-        throw new NotImplementedException("TODO: A* Search");
+        futurePath = arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
     }
 }

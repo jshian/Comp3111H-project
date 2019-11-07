@@ -5,7 +5,6 @@ import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
 
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 /**
@@ -15,10 +14,11 @@ public class BasicTower extends Tower {
 
     /**
      * Constructor of basic tower.
+     * @param arena The arena to attach the tower to.
      * @param coordinates The coordinate of basic tower.
      */
-    public BasicTower(Coordinates coordinates){
-        super(coordinates);
+    public BasicTower(Arena arena, Coordinates coordinates){
+        super(arena, coordinates);
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;
@@ -28,11 +28,12 @@ public class BasicTower extends Tower {
 
     /**
      * Constructor of basic tower.
-     * @param coordinates The coordinate of basic tower.
-     * @param imageView The image view of basic tower.
+     * @param arena The arena to attach the tower to.
+     * @param coordinates The coordinates of the tower.
+     * @param imageView The image view of the tower.
      */
-    public BasicTower(Coordinates coordinates, ImageView imageView) {
-        super(coordinates, imageView);
+    public BasicTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+        super(arena, coordinates, imageView);
         this.attackPower = 10;
         this.buildingCost = 10;
         this.shootingRange = 65;
@@ -61,11 +62,11 @@ public class BasicTower extends Tower {
     @Override
     public Projectile attackMonster(){
         if(!isReload()) {
-            PriorityQueue<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m))
                     this.hasAttack = true;
-                    return new Projectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
+                    return new Projectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
             }
         }
         return null;

@@ -3,8 +3,6 @@ package project.projectiles;
 import javafx.scene.image.Image;
 import project.Arena;
 import project.Coordinates;
-import project.Grid;
-import project.UIController;
 import project.monsters.*;
 
 import javax.persistence.*;
@@ -13,10 +11,6 @@ import javax.validation.constraints.*;
 import org.apache.commons.lang3.*;
 
 import javafx.scene.image.ImageView;
-import project.towers.Tower;
-
-import java.util.EnumSet;
-import java.util.LinkedList;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
@@ -42,7 +36,13 @@ public class Projectile implements Arena.MovesInArena {
      */
     @Transient
     private Tower tower;
-    
+
+    /**
+     * The Arena that this projectile is attached to.
+     */
+    @Transient
+    protected final Arena arena;
+
     /**
      * Represents the position of the projectile.
      */
@@ -70,12 +70,14 @@ public class Projectile implements Arena.MovesInArena {
 
     /**
      * Constructor for the Projectile class.
+     * @param arena The arena the projectile is attached to.
      * @param coordinates The coordinates of the pixel where the projectile is initially located.
      * @param target The Monster that the projectile will pursue, which should not be <code>null</code>.
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public Projectile(Coordinates coordinates, Coordinates target, double speed, int attackPower) {
+    public Projectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int attackPower) {
+        this.arena = arena;
         this.coordinates = Grid.findGridCenter(coordinates);
         this.target = target;
         this.speed = speed;

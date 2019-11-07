@@ -29,10 +29,11 @@ public class LaserTower extends Tower{
 
     /**
      * Constructor of laser tower.
+     * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of laser tower.
      */
-    public LaserTower(Coordinates coordinates){
-        super(coordinates);
+    public LaserTower(Arena arena, Coordinates coordinates){
+        super(arena, coordinates);
         this.attackPower = 30;
         this.buildingCost = 20;
         this.shootingRange = 100;
@@ -42,11 +43,12 @@ public class LaserTower extends Tower{
 
     /**
      * Constructor of laser tower.
+     * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of laser tower.
      * @param imageView The image view of laser tower.
      */
-    public LaserTower(Coordinates coordinates, ImageView imageView) {
-        super(coordinates, imageView);
+    public LaserTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+        super(arena, coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;
         this.shootingRange = 100;
@@ -89,7 +91,7 @@ public class LaserTower extends Tower{
     public Projectile attackMonster(){
         if(!isReload()) {
             Monster monster = null;
-            for (Monster m : Arena.getMonsters()) {
+            for (Monster m : arena.getMonsters()) {
                 if (canShoot(m))
                     monster = m;
             }
@@ -103,7 +105,7 @@ public class LaserTower extends Tower{
             laserLine.setStroke(javafx.scene.paint.Color.rgb(255,255,0));
             laserLine.setStrokeWidth(3);
 
-            PriorityQueue<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
                 if (coordinates.isInLine(monster, m, 3)) {
                     m.setHealth(m.getHealth() - this.attackPower);

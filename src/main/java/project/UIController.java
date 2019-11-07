@@ -208,7 +208,6 @@ public class UIController {
                             target.setStyle("-fx-border-color: red;");
                         }
                     }
-
             		e.consume();
             	});
 
