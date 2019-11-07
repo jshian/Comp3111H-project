@@ -89,6 +89,18 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param difficulty The difficulty of the monster.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
+     */
+    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
+        this.coordinates = start;
+        this.destination = destination;
+        this.coordinates.bindByImage(this.imageView);
+    }
+
+    /**
+     * Constructor for the Monster class.
+     * @param difficulty The difficulty of the monster.
+     * @param start The starting location of the monster.
+     * @param destination The destination of the monster. It will try to move there.
      * @param imageView The imageView of the monster.
      */
     public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination, @NonNull ImageView imageView) {
