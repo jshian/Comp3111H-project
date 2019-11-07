@@ -122,10 +122,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.destination = new Coordinates(other.destination);
         
         this.futurePath = new LinkedList<>();
-        for (Coordinates c : other.futurePath) this.futurePath.add(c);
+        for (Coordinates c : other.futurePath) this.futurePath.add(new Coordinates(c));
 
         this.statusEffects = new LinkedList<>();
-        for (StatusEffect se : other.statusEffects) this.statusEffects.add(se);
+        for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
     
     // Inferface implementation

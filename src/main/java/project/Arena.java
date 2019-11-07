@@ -311,8 +311,10 @@ public final class Arena {
 
         this.towers = new LinkedList<>();
         for (Tower t : other.towers) {
-
+            
         }
+
+        throw new NotImplementedException("TODO");
     }
 
     /**
