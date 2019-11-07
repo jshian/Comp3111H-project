@@ -133,7 +133,6 @@ public abstract class Tower implements ExistsInArena {
     public int getY() { return coordinates.getY(); }
     public int getShootLimit() { return shootLimit; }
     public int getUpgradeCost() { return upgradeCost; }
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
 
     /**

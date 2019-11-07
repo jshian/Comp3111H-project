@@ -114,7 +114,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates.update(x, y); }
     public void moveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
