@@ -186,7 +186,6 @@ public class UIController {
             		} else {
             		    target.setStyle("-fx-border-color: red;");
                     }
-
             		e.consume();
             	});
 

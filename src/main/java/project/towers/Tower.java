@@ -31,6 +31,12 @@ public abstract class Tower implements ExistsInArena {
     protected ImageView imageView;
 
     /**
+     * The Arena that this tower is attached to.
+     */
+    @Transient
+    protected final Arena arena;
+
+    /**
      * Represents the position of the tower.
      */
     @NotNull
@@ -52,19 +58,19 @@ public abstract class Tower implements ExistsInArena {
      * The maximum building cost of the tower.
      */
     @NotNull
-    protected  int maxBuildingCost;
+    protected int maxBuildingCost;
 
     /**
      * The current building cost of the tower. It cannot go beyond {@link #maxBuildingCost}.
      */
     @NotNull
-    protected  int buildingCost;
+    protected int buildingCost;
 
     /**
      * The maximum shooting range of the tower.
      */
     @NotNull
-    protected  int maxShootingRange;
+    protected int maxShootingRange;
 
     /**
      * The current shooting range of the tower. It cannot go beyond {@link #maxShootingRange}.
@@ -106,9 +112,10 @@ public abstract class Tower implements ExistsInArena {
 
     /**
      * Constructor for Tower class.
-     * @param coordinates The coordinate of tower.
+     * @param coordinates The coordinates of the tower.
      */
-    public Tower(Coordinates coordinates){
+    public Tower(Arena arena, Coordinates coordinates){
+        this.arena = arena;
         this.coordinates = coordinates;
         this.reload = 2;
         this.counter = 0;
@@ -116,10 +123,12 @@ public abstract class Tower implements ExistsInArena {
 
     /**
      * Constructor for Tower class.
-     * @param coordinates The coordinate of tower.
+     * @param arena The arena to attach the tower to.
+     * @param coordinates The coordinates of the tower.
      * @param imageView The image view of the tower.
      */
-    public Tower(Coordinates coordinates, ImageView imageView) {
+    public Tower(Arena arena, Coordinates coordinates, ImageView imageView) {
+        this.arena = arena;
         this.coordinates = coordinates;
         this.imageView = imageView;
         this.coordinates.bindByImage(this.imageView);

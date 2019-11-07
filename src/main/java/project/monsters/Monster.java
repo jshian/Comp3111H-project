@@ -35,6 +35,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     private ImageView imageView;
 
     /**
+     * The Arena that this monster is attached to.
+     */
+    @Transient
+    protected final Arena arena;
+
+    /**
      * Represents the position of the monster.
      */
     @NotNull
@@ -86,13 +92,40 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
 
     /**
      * Constructor for the Monster class.
-     * @param difficulty The difficulty of the monster.
+     * @param arena The arena the monster is attached to.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
+     * @param imageView The ImageView that displays the monster.
+     * @param difficulty The difficulty of the monster.
      */
-    public Monster(double difficulty, @NonNull Coordinates start, @NonNull Coordinates destination) {
+    public Monster(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+        this.imageView = imageView;
+        this.arena = arena;
         this.coordinates = start;
         this.destination = destination;
+        this.futurePath = new LinkedList<>();
+        this.statusEffects = new LinkedList<>();
+    }
+
+    /**
+     * Copy constructor for the Monster class. Performs deep copy.
+     * @param other The other object to copy form.
+     */
+    public Monster(Monster other) {
+        this.imageView = new ImageView(other.imageView.getImage());
+        this.arena = other.arena;
+        this.coordinates = other.coordinates;
+        this.maxHealth = other.maxHealth;
+        this.health = other.health;
+        this.maxSpeed = other.maxSpeed;
+        this.speed = other.speed;
+        this.destination = new Coordinates(other.destination);
+        
+        this.futurePath = new LinkedList<>();
+        for (Coordinates c : other.futurePath) this.futurePath.add(c);
+
+        this.statusEffects = new LinkedList<>();
+        for (StatusEffect se : other.statusEffects) this.statusEffects.add(se);
     }
     
     // Inferface implementation
@@ -152,6 +185,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Recalculates the future path of the monster.
      */
     public void recalculateFuturePath() {
-        futurePath = Arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
+        futurePath = arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
     }
 }
