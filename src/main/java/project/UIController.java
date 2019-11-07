@@ -1,5 +1,7 @@
 package project;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -16,6 +18,7 @@ import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 import project.towers.BasicTower;
 import project.towers.Catapult;
 import project.towers.IceTower;
@@ -65,40 +68,34 @@ public class UIController {
     private Circle towerCircle; // circle that shows shooting range of tower
     private Label towerLabel; // Label that shows the information of tower
     private VBox vb; // the vbox that use to upgrade/destory tower
-
+    private Timeline timeline;
 
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
     private int x = -1, y = 0; //where is my monster
     /**
-     * Play the game.
+     * Play the game. Build towers are allowed.
      */
     @FXML
     private void play() {
-//        mode = modes.play;
-//        boolean gameOver = false;
-//        long startTime = System.currentTimeMillis();
-//        while (!gameOver) {
-//            gameOver = arena.nextFrame();
-//            while (!gameOver && System.currentTimeMillis() - startTime < 1/60.0) {}
-//            startTime = System.currentTimeMillis();
-//        }
-//        mode = modes.normal;
+        mode = modes.play;
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> {
+            nextFrame();
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     /**
-     * Simulate the game.
+     * Simulate the game. Build towers are not allowed.
      */
     @FXML
     private void simulate() {
-//        mode = modes.simulate;
-//        boolean gameOver = false;
-//        long startTime = System.currentTimeMillis();
-//        while (!gameOver) {
-//            gameOver = arena.nextFrame();
-//            while (!gameOver && System.currentTimeMillis() - startTime < 1/60.0) {}
-//            startTime = System.currentTimeMillis();
-//        }
-//        mode = modes.normal;
+        mode = modes.simulate;
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> {
+            nextFrame();
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     /**
@@ -151,7 +148,11 @@ public class UIController {
      */
     @FXML
     private void nextFrame() {
-        arena.nextFrame();
+        boolean gameOver = arena.nextFrame();
+        if (gameOver && timeline != null) {
+            mode = modes.normal;
+            timeline.stop();
+        }
     }
 
     /**
@@ -263,8 +264,8 @@ public class UIController {
      * @param t a tower in the arena.
      */
     private void setTowerEvent(Tower t) {
-        Coordinates coor = new Coordinates(t.getX(), t.getY());
-        Coordinates center = Grid.findGridCenter(coor);
+        Coordinates center = Grid.findGridCenter(new Coordinates(t.getX(), t.getY()));
+        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
 
         ImageView iv = t.getImageView();
 

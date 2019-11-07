@@ -11,6 +11,7 @@ import project.projectiles.IceProjectile;
 import project.projectiles.Projectile;
 import project.towers.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
@@ -762,7 +763,7 @@ public final class Arena {
 
                 // find the first monster at attack it
                 if (p instanceof IceProjectile) {
-                    if (targets.size() > 0) {
+                    if (targets.size() > 0 && targets.get(0) instanceof Monster) {
                         Monster target = (Monster)targets.get(0);
                         if (target != null) {
                             target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
@@ -773,12 +774,14 @@ public final class Arena {
                 } else if (p instanceof CatapultProjectile) {
                     LinkedList<ExistsInArena> monsters = objectsInRange(targetCoordinates, 25, EnumSet.of(TypeFilter.Monster));
                     for (ExistsInArena monster : monsters) {
-                        ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
-                        System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
-                                , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
+                        if (monster instanceof Monster) {
+                            ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
+                            System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
+                                    , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
+                        }
                     }
                 } else {
-                    if (targets.size() > 0) {
+                    if (targets.size() > 0 && targets.get(0) instanceof Monster) {
                         Monster target = (Monster)targets.get(0);
                         if (target != null) {
                             target.setHealth(target.getHealth() - attackPower);
@@ -801,16 +804,20 @@ public final class Arena {
         }
 
         // turn monster with 0hp to explosion.png
+        ArrayList<Monster> monsters = new ArrayList<>();
         for (Monster m : getMonsters()) {
             if (m.getHealth() <= 0) {
-                removeMonster(m);
-                Coordinates c = new Coordinates(m.getX(), m.getY());
-                ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
-                    , UIController.GRID_WIDTH, true, true));
-                c.bindByImage(explosion);
-                paneArena.getChildren().add(explosion);
-                currentState.explosions.put(explosion, currentState.currentFrame);
+                monsters.add(m);
             }
+        }
+        for (Monster m : monsters) {
+            removeMonster(m);
+            Coordinates c = new Coordinates(m.getX(), m.getY());
+            ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
+                    , UIController.GRID_WIDTH, true, true));
+            c.bindByImage(explosion);
+            paneArena.getChildren().add(explosion);
+            currentState.explosions.put(explosion, currentState.currentFrame);
         }
 
     }
