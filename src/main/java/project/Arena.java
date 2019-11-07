@@ -724,9 +724,9 @@ public final class Arena {
                 int attackPower = p.getAttackPower();
 
                 // find the first monster at attack it
-                Monster target = (Monster)targets.get(0);
                 if (p instanceof IceProjectile) {
-                    if (target != null) {
+                    if (targets != null) {
+                        Monster target = (Monster)targets.get(0);
                         target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
                     }
                 } else if (p instanceof CatapultProjectile) {
@@ -735,7 +735,8 @@ public final class Arena {
                         ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
                     }
                 } else {
-                    if (target != null) {
+                    if (targets != null) {
+                        Monster target = (Monster)targets.get(0);
                         target.setHealth(target.getHealth() - attackPower);
                     }
                 }
@@ -745,11 +746,12 @@ public final class Arena {
         // remove projectiles from arena
         for (Projectile p : toRemove3) {
             currentState.projectiles.remove(p);
-            paneArena.getChildren().remove(p);
+            paneArena.getChildren().remove(p.getImageView());
         }
 
         // towers attack monsters
         for (Tower t : getTowers()) {
+            // laser tower
             if (t instanceof LaserTower) {
                 ((LaserTower) t).attackMonster();
                 Line laserLine = ((LaserTower) t).getLaserLine();
@@ -758,7 +760,7 @@ public final class Arena {
                     paneArena.getChildren().add(laserLine);
                 }
 
-            } else {
+            } else { // other towers
                 Projectile p = t.attackMonster();
                 if (p != null) {
                     paneArena.getChildren().add(p.getImageView());
@@ -791,6 +793,8 @@ public final class Arena {
 
         // Now update currentState
         // TODO: all.
+        attackMonster();
+
 //        for (Monster m : currentState.monsters) {
 //            Coordinates nextFrame = m.getNextFrame();
 //            if (nextFrame != null) {
@@ -803,7 +807,6 @@ public final class Arena {
             if (currentState.monsters.peek() != null)
                 moveMonster(currentState.monsters.peek(), Grid.findGridCenter(10, 10));
 //        newMonster.recalculateFuturePath();
-        attackMonster();
 
         currentState.currentFrame++;
     }
