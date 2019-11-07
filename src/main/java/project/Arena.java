@@ -832,6 +832,9 @@ public final class Arena {
 
         currentState.currentFrame++;
 
+        if (objectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
+            return true;
+
         return false;
     }
 
