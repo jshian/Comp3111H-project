@@ -437,7 +437,7 @@ public final class Arena {
     
     /**
      * Updates the costs to reach the end-zone from each pixel for the current ArenaState.
-     * @see ArenaState#MovementCostToEnd
+     * @see ArenaState#movementCostToEnd
      * @see ArenaState#attackCostToEnd
      */
     private static void updateCosts() {
