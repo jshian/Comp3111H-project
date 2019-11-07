@@ -95,12 +95,18 @@ public abstract class Tower implements ExistsInArena {
     protected int counter;
 
     /**
+     * Does the tower attacked before the second attack.
+     */
+    protected boolean hasAttack;
+
+    /**
      * Constructor for Tower class.
      * @param coordinates The coordinate of tower.
      */
     public Tower(Coordinates coordinates){
         this.coordinates = coordinates;
         this.reload = 2;
+        this.counter = 0;
     }
 
     /**
@@ -111,7 +117,8 @@ public abstract class Tower implements ExistsInArena {
     public Tower(Coordinates coordinates, ImageView imageView) {
         this.coordinates = coordinates;
         this.imageView = imageView;
-        this.reload=2;
+        this.reload = 2;
+        this.counter = 0;
     }
 
     // Inferface implementation
@@ -175,13 +182,20 @@ public abstract class Tower implements ExistsInArena {
         return shootingRange;
     }
 
-
+    /**
+     * Tower has the reload time to do next attack
+     * @return whether the tower is reloading or not.
+     */
     public boolean isReload(){
-        if(this.counter==0){
-            this.counter=this.reload;
-            return false;
-        }else this.counter--;
-        return true;
+        if(hasAttack){
+            if(this.counter==0){
+                this.counter=this.reload;
+                this.hasAttack = false;
+                return false;
+            }else this.counter--;
+            return true;
+        }
+        return false;
     }
 
     /**Accesses the information of tower.

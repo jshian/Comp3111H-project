@@ -15,6 +15,8 @@ import java.util.TimerTask;
  */
 public class Catapult extends Tower {
 
+    public static int damageRange = 25;
+
     /**
      * Constructor of catapult.
      * @param coordinates The coordinate of catapult.
@@ -26,7 +28,7 @@ public class Catapult extends Tower {
         this.shootingRange = 150;
         this.reload = 10;
         this.shootLimit = 50;
-        this.counter = reload;
+        this.counter = 0;
         this.attackSpeed = 50;
     }
 
@@ -81,7 +83,6 @@ public class Catapult extends Tower {
         if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
             Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);
-            throwStone(coordinate);
             counter = 10;
             return new CatapultProjectile(this.coordinates,coordinate,attackSpeed,attackPower);
         }
@@ -128,14 +129,6 @@ public class Catapult extends Tower {
             }
         }
         return target;
-    }
-
-
-    /**
-     * Throw stone to certain position.
-     * @param cor The coordinate of the target.
-     */
-    public void throwStone(Coordinates cor){
     }
 
     @Override
