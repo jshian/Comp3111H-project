@@ -84,20 +84,20 @@ public class LaserTower extends Tower{
             if (monster == null) {
                 return null;
             }
-            Coordinates currentPt = new Coordinates(getX(), getY());
-            Coordinates edgePt = currentPt.findEdgePt(monster);
-            currentPt.drawLine(edgePt);
+
+            arena.drawRay(this.coordinates, new Coordinates(monster.getX(), monster.getY()));
 
             PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
-                if (coordinates.isInLine(monster, m, 3))
+                if (Geometry.isInRay(m.getX(), m.getY(), this.getX(), this.getY(), monster.getX(), monster.getY(), 3))
                     m.setHealth(m.getHealth() - this.attackPower);
             }
         }
         return null;
     }
 
-    /**Accesses the information of tower.
+    /**
+     * Accesses the information of tower.
      * @return the information of tower.
      */
     @Override

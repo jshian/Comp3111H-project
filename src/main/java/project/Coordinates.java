@@ -244,20 +244,4 @@ public class Coordinates implements Serializable {
         Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), 0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
         return new Coordinates((int) Math.round(point.getX()), (int) Math.round(point.getY()));
     }
-
-    /**
-     * Draw a line from the laser tower to certain position.
-     * @param obj The target.
-     */
-    public void drawLine(@NonNull ExistsInArena obj){
-        drawLine(new Coordinates(obj.getX(),obj.getY()));
-    }
-
-    /**
-     * Draw a line from the laser tower to certain position.
-     * @param cor The coordinates of the target.
-     */
-    public void drawLine(@NonNull Coordinates cor){
-        Line line = new Line(this.getX(),this.getY(),cor.getX(),cor.getY());
-    }
 }

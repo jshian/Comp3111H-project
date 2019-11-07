@@ -3,8 +3,10 @@ package project;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Line;
 import project.monsters.*;
 import project.projectiles.Projectile;
 import project.towers.*;
@@ -575,6 +577,8 @@ public final class Arena {
             resources.setValue(resources.get() - cost);
             towers.add(t);
             getGrid(coordinates).addObject(t);
+
+            updateCosts();
             return t;
         } else {
             return null;
@@ -590,6 +594,8 @@ public final class Arena {
         boolean canbuild = t.upgrade(resources.getValue());
         if (canbuild) {
             resources.set(resources.getValue() - t.getUpgradeCost());
+
+            updateCosts();
             return true;
         } else {
             return false;
@@ -606,6 +612,8 @@ public final class Arena {
         paneArena.getChildren().remove(tower.getImageView());
         getGrid(new Coordinates(tower.getX(), tower.getY())).removeObject(tower);
         towers.remove(tower);
+
+        updateCosts();
     }
 
     /**
@@ -747,8 +755,18 @@ public final class Arena {
             m.MoveOneFrame();
         }
         throw new NotImplementedException("TODO");
-        // currentState.monsters.sort(null);
         // currentState.currentFrame++;
+    }
+
+    /**
+     * Draws a ray from one point to another point, extending towards the edge of the arena.
+     * @return The instance of the ray.
+     */
+    public Line drawRay(@NonNull Coordinates source, @NonNull Coordinates target) {
+        Point2D edge = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
+                                                    0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
+        
+        return new Line(source.getX(), source.getY(), edge.getX(), edge.getY());
     }
 
     /**

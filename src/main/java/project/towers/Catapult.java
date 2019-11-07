@@ -73,7 +73,7 @@ public class Catapult extends Tower {
      */
     @Override
     public boolean canShoot(Monster monster){
-        double dis = coordinates.diagonalDistanceFrom(monster);
+        double dis = Geometry.findEuclideanDistance(this.getX(), this.getY(), monster.getX(), monster.getY());
         return dis <= shootingRange && dis >= shootLimit;
     }
 
