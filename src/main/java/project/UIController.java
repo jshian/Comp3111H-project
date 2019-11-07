@@ -78,7 +78,8 @@ public class UIController {
     @FXML
     private void play() {
         mode = modes.play;
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> {
+        disableGameButton();
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> {
             nextFrame();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -91,11 +92,30 @@ public class UIController {
     @FXML
     private void simulate() {
         mode = modes.simulate;
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> {
+        disableGameButton();
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> {
             nextFrame();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+    }
+
+    /**
+     * Disable "next frame", "simulate" and "play" button.
+     */
+    private void disableGameButton() {
+        buttonNextFrame.setDisable(true);
+        buttonPlay.setDisable(true);
+        buttonSimulate.setDisable(true);
+    }
+
+    /**
+     * Enable "next frame", "simulate" and "play" button.
+     */
+    private void enableGameButton() {
+        buttonNextFrame.setDisable(false);
+        buttonPlay.setDisable(false);
+        buttonSimulate.setDisable(false);
     }
 
     /**
@@ -151,6 +171,7 @@ public class UIController {
         boolean gameOver = arena.nextFrame();
         if (gameOver && timeline != null) {
             mode = modes.normal;
+            enableGameButton();
             timeline.stop();
         }
     }

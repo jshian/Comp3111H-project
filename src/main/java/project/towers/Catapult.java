@@ -88,8 +88,10 @@ public class Catapult extends Tower {
         if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
             Coordinates coordinate = selectMonster(arena.getMonsters(), monsters);
-            counter = 10;
-            return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower);
+            if (coordinate != null) {
+                hasAttack = true;
+                return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower);
+            }
         }
         return null;
     }

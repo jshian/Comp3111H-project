@@ -101,8 +101,8 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public Monster(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         this.imageView = imageView;
         this.arena = arena;
-        this.coordinates = start;
-        this.destination = destination;
+        this.coordinates = new Coordinates(start);
+        this.destination = new Coordinates(destination);
         this.coordinates.bindByImage(this.imageView);
 
         this.futurePath = new LinkedList<>();
@@ -116,7 +116,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public Monster(Monster other) {
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
-        this.coordinates = other.coordinates;
+        this.coordinates = new Coordinates(other.coordinates);
         this.maxHealth = other.maxHealth;
         this.health = other.health;
         this.maxSpeed = other.maxSpeed;

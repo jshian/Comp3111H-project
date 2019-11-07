@@ -21,6 +21,12 @@ public class Player {
     }
 
     /**
+     * get the name of player.
+     * @return the amount of resources of player.
+     */
+    public String getName() { return name; }
+
+    /**
      * get the amount of resources of player.
      * @return the amount of resources of player.
      */

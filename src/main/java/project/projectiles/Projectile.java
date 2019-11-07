@@ -1,8 +1,7 @@
 package project.projectiles;
 
 import javafx.scene.image.Image;
-import project.Arena;
-import project.Coordinates;
+import project.*;
 import project.monsters.*;
 
 import javax.persistence.*;
@@ -11,6 +10,10 @@ import javax.validation.constraints.*;
 import org.apache.commons.lang3.*;
 
 import javafx.scene.image.ImageView;
+import project.towers.Tower;
+
+import java.util.EnumSet;
+import java.util.LinkedList;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
@@ -85,7 +88,7 @@ public class Projectile implements Arena.MovesInArena {
         this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
                 UIController.GRID_HEIGHT/4, true, true));
         this.coordinates.bindByImage(this.imageView);
-        LinkedList<Arena.ExistsInArena> l = Arena.objectsInGrid(Grid.findGridCenter(coordinates), EnumSet.of(Arena.TypeFilter.Tower));
+        LinkedList<Arena.ExistsInArena> l = arena.findObjectsInGrid(Grid.findGridCenter(coordinates), EnumSet.of(Arena.TypeFilter.Tower));
         this.tower = (Tower)l.peek();
     }
 
@@ -97,13 +100,13 @@ public class Projectile implements Arena.MovesInArena {
     public int getAttackPower() { return attackPower; }
     public void setLocation(int x, int y) { coordinates.update(new Coordinates(x, y)); }
     public void moveOneFrame() {
-        double distance = coordinates.diagonalDistanceFrom(target);
+        double distance = Geometry.findEuclideanDistance(getX(),getY(),target.getX(),target.getY());
 
         if (distance <= speed)
             coordinates.update(target.getX(), target.getY());
         else {
-            int newX = coordinates.getX() + (int) (speed * Math.cos(coordinates.angleFrom(target)));
-            int newY = coordinates.getY() + (int) (speed * Math.sin(coordinates.angleFrom(target)));
+            int newX = coordinates.getX() + (int) (speed * Math.cos(Geometry.findAngleFrom(getX(),getY(),target.getX(),target.getY())));
+            int newY = coordinates.getY() + (int) (speed * Math.sin(Geometry.findAngleFrom(getX(),getY(),target.getX(),target.getY())));
             coordinates.update(newX, newY);
         }
     }
@@ -112,5 +115,5 @@ public class Projectile implements Arena.MovesInArena {
      * Determines whether the projectile has reached its target.
      * @return Whether the projectile has reached its target.
      */
-    public boolean hasReachedTarget() { return coordinates.isAt(target); }
+    public boolean hasReachedTarget() { return Geometry.isAt(getX(),getY(),target.getX(),target.getY()); }
 }
