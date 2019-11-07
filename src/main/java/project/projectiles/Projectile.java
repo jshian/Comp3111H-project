@@ -13,6 +13,10 @@ import javax.validation.constraints.*;
 import org.apache.commons.lang3.*;
 
 import javafx.scene.image.ImageView;
+import project.towers.Tower;
+
+import java.util.EnumSet;
+import java.util.LinkedList;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
@@ -32,6 +36,12 @@ public class Projectile implements Arena.MovesInArena {
      */
     @Transient
     private ImageView imageView;
+
+    /**
+     * The tower that create this projectile.
+     */
+    @Transient
+    private Tower tower;
     
     /**
      * Represents the position of the projectile.
@@ -73,12 +83,15 @@ public class Projectile implements Arena.MovesInArena {
         this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
                 UIController.GRID_HEIGHT/4, true, true));
         this.coordinates.bindByImage(this.imageView);
+        LinkedList<Arena.ExistsInArena> l = Arena.objectsInGrid(Grid.findGridCenter(coordinates), EnumSet.of(Arena.TypeFilter.Tower));
+        this.tower = (Tower)l.peek();
     }
 
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
+    public Tower getTower() { return this.tower; }
     public int getAttackPower() { return attackPower; }
     public void setLocation(int x, int y) { coordinates.update(new Coordinates(x, y)); }
     public void moveOneFrame() {

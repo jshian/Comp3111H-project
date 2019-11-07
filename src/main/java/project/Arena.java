@@ -686,7 +686,10 @@ public final class Arena {
     	}
     }
 
-    private static void attackMonster() {
+    /**
+     * remove laser and explosion that generate a few frames ago.
+     */
+    private static void removeLaser() {
         // remove previous lasers and explosion from arena
         List<Line> toRemove = new ArrayList();
         for(Map.Entry<Line, Integer> entry : currentState.lasers.entrySet()) {
@@ -712,32 +715,49 @@ public final class Arena {
             currentState.lasers.remove(key);
             paneArena.getChildren().remove(key);
         }
+    }
 
+    /**
+     * tower attack monsters.
+     */
+    private static void attackMonster() {
         // projectile
         List<Projectile> toRemove3 = new ArrayList();
         for (Projectile p : getProjectiles()) {
             p.moveOneFrame();
+            // has monster being attacked.
             if (p.hasReachedTarget()) {
                 // find monster in target grid
                 Coordinates targetCoordinates = new Coordinates(p.getX(), p.getY());
                 LinkedList<ExistsInArena> targets = objectsInGrid(targetCoordinates, EnumSet.of(TypeFilter.Monster));
                 int attackPower = p.getAttackPower();
 
+
                 // find the first monster at attack it
                 if (p instanceof IceProjectile) {
-                    if (targets != null) {
+                    if (targets != null && targets.size() > 0) {
                         Monster target = (Monster)targets.get(0);
-                        target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
+                        if (target != null) {
+                            target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
+                            System.out.println(String.format("Ice Tower@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
+                                    , target.getClassName(), target.getX(), target.getY()));
+                        }
                     }
                 } else if (p instanceof CatapultProjectile) {
                     LinkedList<ExistsInArena> monsters = objectsInRange(targetCoordinates, 25, EnumSet.of(TypeFilter.Monster));
                     for (ExistsInArena monster : monsters) {
                         ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
+                        System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
+                                , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
                     }
                 } else {
-                    if (targets != null) {
+                    if (targets != null && targets.size() > 0) {
                         Monster target = (Monster)targets.get(0);
-                        target.setHealth(target.getHealth() - attackPower);
+                        if (target != null) {
+                            target.setHealth(target.getHealth() - attackPower);
+                            System.out.println(String.format("Basic Tower@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
+                                    , target.getClassName(), target.getX(), target.getY()));
+                        }
                     }
                 }
                 toRemove3.add(p);
@@ -787,12 +807,14 @@ public final class Arena {
 
     /**
      * Updates the arena by one frame.
+     * @return true if gameover, false otherwise.
      */
-    public static void nextFrame() {
+    public static boolean nextFrame() {
         shadowState = currentState;
 
         // Now update currentState
         // TODO: all.
+        removeLaser();
         attackMonster();
 
 //        for (Monster m : currentState.monsters) {
@@ -809,6 +831,8 @@ public final class Arena {
 //        newMonster.recalculateFuturePath();
 
         currentState.currentFrame++;
+
+        return false;
     }
 
     /**

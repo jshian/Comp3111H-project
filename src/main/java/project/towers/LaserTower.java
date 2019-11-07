@@ -105,8 +105,11 @@ public class LaserTower extends Tower{
 
             PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
-                if (coordinates.isInLine(monster, m, 3))
+                if (coordinates.isInLine(monster, m, 3)) {
                     m.setHealth(m.getHealth() - this.attackPower);
+                    System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
+                            , m.getClassName(), m.getX(), m.getY()));
+                }
             }
         } else {
             this.laserLine = null;

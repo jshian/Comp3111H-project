@@ -29,4 +29,10 @@ public class Unicorn extends Monster {
         this.health = 10 * difficulty;
         this.speed = 0.5 + 0.005 * difficulty;
     }
+
+    /**
+     * get class name.
+     * @return class name.
+     */
+    public String getClassName() { return "Unicorn"; }
 }

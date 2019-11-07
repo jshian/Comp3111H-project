@@ -30,6 +30,23 @@ public class Penguin extends Monster {
         this.speed = 0.75 + 0.0075 * difficulty;
     }
 
+    /**
+     * get class name.
+     * @return class name.
+     */
+    @Override
+    public String getClassName() { return "Penguin"; }
+
+    /**
+     * get the coordinate of monster in next frame.
+     * @return coordinate of monster in next frame.
+     */
+    @Override
+    public Coordinates getNextFrame() {
+        this.health += 0.1;
+        return !futurePath.isEmpty() ? futurePath.removeFirst() : null;
+    }
+
     @Override
     public void moveOneFrame() {
         super.moveOneFrame();

@@ -21,6 +21,8 @@ import project.towers.Catapult;
 import project.towers.IceTower;
 import project.towers.Tower;
 
+import java.util.Timer;
+
 public class UIController {
     @FXML
     private Button buttonNextFrame;
@@ -68,21 +70,35 @@ public class UIController {
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
     private int x = -1, y = 0; //where is my monster
     /**
-     * A dummy function to show how button click works
+     * Play the game.
      */
     @FXML
     private void play() {
-        Label newLabel = new Label();
-        newLabel.setLayoutX(GRID_WIDTH * 3 / 4);
-        newLabel.setLayoutY(GRID_WIDTH * 3 / 4);
-        newLabel.setMinWidth(GRID_WIDTH / 5);
-        newLabel.setMaxWidth(GRID_WIDTH / 5);
-        newLabel.setMinHeight(GRID_WIDTH / 3);
-        newLabel.setMaxHeight(GRID_WIDTH / 3);
-        newLabel.setStyle("-fx-border-color: black;");
-        newLabel.setText("*");
-        newLabel.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
-        paneArena.getChildren().addAll(newLabel);
+//        mode = modes.play;
+//        boolean gameOver = false;
+//        long startTime = System.currentTimeMillis();
+//        while (!gameOver) {
+//            gameOver = arena.nextFrame();
+//            while (!gameOver && System.currentTimeMillis() - startTime < 1/60.0) {}
+//            startTime = System.currentTimeMillis();
+//        }
+//        mode = modes.normal;
+    }
+
+    /**
+     * Simulate the game.
+     */
+    @FXML
+    private void simulate() {
+//        mode = modes.simulate;
+//        boolean gameOver = false;
+//        long startTime = System.currentTimeMillis();
+//        while (!gameOver) {
+//            gameOver = arena.nextFrame();
+//            while (!gameOver && System.currentTimeMillis() - startTime < 1/60.0) {}
+//            startTime = System.currentTimeMillis();
+//        }
+//        mode = modes.normal;
     }
 
     /**
@@ -145,11 +161,13 @@ public class UIController {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
     		l.setOnDragDetected(e -> {
-    	        Dragboard db = l.startDragAndDrop(TransferMode.ANY);
+    	        if (mode != modes.simulate) {
+                    Dragboard db = l.startDragAndDrop(TransferMode.ANY);
 
-    	        ClipboardContent content = new ClipboardContent();
-    	        content.putString(l.getText());
-    	        db.setContent(content);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(l.getText());
+                    db.setContent(content);
+                }
 
     	        e.consume();
     	    });
@@ -171,21 +189,23 @@ public class UIController {
                 });
 
             	target.setOnDragEntered(e -> { // grids[y][x]
-                    Object source = e.getGestureSource();
-            	    String type = null;
-                    if (source.equals(labelBasicTower)) {
-                        type = "Basic Tower";
-                    } else if (source.equals(labelIceTower)) {
-                        type = "Ice Tower";
-                    } else if (source.equals(labelCatapult)) {
-                        type = "Catapult";
-                    } else if (source.equals(labelLaserTower)) {
-                        type = "Laser Tower";
-                    }
-            		if (arena.canBuildTower(c, type)) {
-            			target.setStyle("-fx-border-color: blue;");
-            		} else {
-            		    target.setStyle("-fx-border-color: red;");
+                    if(mode != modes.simulate) {
+                        Object source = e.getGestureSource();
+                        String type = null;
+                        if (source.equals(labelBasicTower)) {
+                            type = "Basic Tower";
+                        } else if (source.equals(labelIceTower)) {
+                            type = "Ice Tower";
+                        } else if (source.equals(labelCatapult)) {
+                            type = "Catapult";
+                        } else if (source.equals(labelLaserTower)) {
+                            type = "Laser Tower";
+                        }
+                        if (arena.canBuildTower(c, type)) {
+                            target.setStyle("-fx-border-color: blue;");
+                        } else {
+                            target.setStyle("-fx-border-color: red;");
+                        }
                     }
 
             		e.consume();
@@ -197,38 +217,39 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-                    Image img = null;
-                    String type = null;
-                    Object source = e.getGestureSource();
-                    if (source.equals(labelBasicTower)) {
-                        img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                        type = "Basic Tower";
-                    } else if (source.equals(labelIceTower)) {
-                        img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                        type = "Ice Tower";
-                    } else if (source.equals(labelCatapult)) {
-                        img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                        type = "Catapult";
-                    } else if (source.equals(labelLaserTower)) {
-                        img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                        type = "Laser Tower";
-                    }
-
-                    if(!arena.hasResources(type)) {
-                        // not enough resources
-                        showAlert("Not enough resources", "Do not have enough resources to build " + type + "!");
-
-                    } else if (img != null && arena.canBuildTower(c, type)) {
-                        ImageView iv = new ImageView(img);
-                        Tower t = arena.buildTower(c, iv, type);
-
-                        if (t != null) {
-                            setTowerEvent(t);
-                            paneArena.getChildren().add(iv);
-                            e.setDropCompleted(true);
+            	    if (mode != modes.simulate) {
+                        Image img = null;
+                        String type = null;
+                        Object source = e.getGestureSource();
+                        if (source.equals(labelBasicTower)) {
+                            img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                            type = "Basic Tower";
+                        } else if (source.equals(labelIceTower)) {
+                            img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                            type = "Ice Tower";
+                        } else if (source.equals(labelCatapult)) {
+                            img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                            type = "Catapult";
+                        } else if (source.equals(labelLaserTower)) {
+                            img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                            type = "Laser Tower";
                         }
-            		}
 
+                        if (!arena.hasResources(type)) {
+                            // not enough resources
+                            showAlert("Not enough resources", "Do not have enough resources to build " + type + "!");
+
+                        } else if (img != null && arena.canBuildTower(c, type)) {
+                            ImageView iv = new ImageView(img);
+                            Tower t = arena.buildTower(c, iv, type);
+
+                            if (t != null) {
+                                setTowerEvent(t);
+                                paneArena.getChildren().add(iv);
+                                e.setDropCompleted(true);
+                            }
+                        }
+                    }
                     e.consume();
             	});
 
