@@ -80,7 +80,7 @@ public class Catapult extends Tower {
      * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
     @Override
-    protected Projectile attackMonster(){
+    public Projectile attackMonster(){
         if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
             Coordinates coordinate = selectMonster(Arena.getMonsters(), monsters);

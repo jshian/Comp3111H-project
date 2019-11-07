@@ -1,7 +1,10 @@
 package project.projectiles;
 
+import javafx.scene.image.Image;
 import project.Arena;
 import project.Coordinates;
+import project.Grid;
+import project.UIController;
 import project.monsters.*;
 
 import javax.persistence.*;
@@ -63,19 +66,22 @@ public class Projectile implements Arena.MovesInArena {
      * @param attackPower The attack power of the projectile.
      */
     public Projectile(Coordinates coordinates, Coordinates target, double speed, int attackPower) {
-        this.coordinates = coordinates;
+        this.coordinates = Grid.findGridCenter(coordinates);
         this.target = target;
         this.speed = speed;
         this.attackPower = attackPower;
+        this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
+                UIController.GRID_HEIGHT/4, true, true));
+        this.coordinates.bindByImage(this.imageView);
     }
 
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
+    public int getAttackPower() { return attackPower; }
     public void setLocation(int x, int y) { coordinates.update(new Coordinates(x, y)); }
-    public void MoveOneFrame() {
+    public void moveOneFrame() {
         double distance = coordinates.diagonalDistanceFrom(target);
 
         if (distance <= speed)

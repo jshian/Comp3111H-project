@@ -1,18 +1,16 @@
 package project;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
-import javafx.util.converter.NumberStringConverter;
 import project.monsters.*;
+import project.projectiles.CatapultProjectile;
+import project.projectiles.IceProjectile;
 import project.projectiles.Projectile;
 import project.towers.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import org.apache.commons.lang3.*;
@@ -82,12 +80,12 @@ public final class Arena {
         /**
          * The current frame number of the Arena since the game began.
          */
-        private int currentFrame;
+        private int currentFrame = 0;
 
         /**
          * The current difficulty of the Arena.
          */
-        private double difficulty;
+        private double difficulty = 1;
 
         /**
          * Contains a reference to each Tower on the arena.
@@ -105,6 +103,11 @@ public final class Arena {
          * Contains a reference to each laser shot by LaserTower on the arena.
          */
         private HashMap<Line, Integer> lasers = new HashMap<>();
+
+        /**
+         * Contains a reference explosion of monster when it died.
+         */
+        private HashMap<ImageView, Integer> explosions = new HashMap<>();
 
         /**
          * Contains a reference to each Monster on the arena.
@@ -569,19 +572,15 @@ public final class Arena {
         int spawnCount = (int) (1 + currentState.difficulty * 0.2 + 2 * Math.random());
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
-            Monster newMonster;
-            if (randomNumber < 1/3)
-                newMonster = generateMonster(MonsterType.Fox);
-            else if (randomNumber < 2/3)
-                newMonster = generateMonster(MonsterType.Penguin);
+            if (randomNumber < 1/3.0)
+                generateMonster(MonsterType.Fox);
+            else if (randomNumber < 2/3.0)
+                generateMonster(MonsterType.Penguin);
             else
-                newMonster = generateMonster(MonsterType.Unicorn);
-
-            currentState.monsters.add(newMonster);
-            currentState.getGrid(STARTING_COORDINATES).addObject(newMonster);
+                generateMonster(MonsterType.Unicorn);
         }
 
-        currentState.difficulty += 1;    // Modified by settings later
+        currentState.difficulty += 1;
     }
 
     /**
@@ -607,10 +606,9 @@ public final class Arena {
             return null;
         paneArena.getChildren().add(iv);
         currentState.monsters.add(m);
+        currentState.getGrid(STARTING_COORDINATES).addObject(m);
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
 
-        // TODO: (modify by setting?)
-        currentState.difficulty += 1;    // Modified by settings later
         return m;
     }
 
@@ -689,7 +687,7 @@ public final class Arena {
     }
 
     private static void attackMonster() {
-        // remove previous lasers from arena
+        // remove previous lasers and explosion from arena
         List<Line> toRemove = new ArrayList();
         for(Map.Entry<Line, Integer> entry : currentState.lasers.entrySet()) {
             Line key = entry.getKey();
@@ -702,23 +700,87 @@ public final class Arena {
             currentState.lasers.remove(key);
             paneArena.getChildren().remove(key);
         }
+        List<ImageView> toRemove2 = new ArrayList();
+        for(Map.Entry<ImageView, Integer> entry : currentState.explosions.entrySet()) {
+            ImageView key = entry.getKey();
+            Integer value = entry.getValue();
+            if (value < currentState.currentFrame - laserDuration) {
+                toRemove2.add(key);
+            }
+        }
+        for (ImageView key : toRemove2) {
+            currentState.lasers.remove(key);
+            paneArena.getChildren().remove(key);
+        }
 
-        // attack monster
-        for (Tower t : currentState.towers) {
+        // projectile
+        List<Projectile> toRemove3 = new ArrayList();
+        for (Projectile p : getProjectiles()) {
+            p.moveOneFrame();
+            if (p.hasReachedTarget()) {
+                // find monster in target grid
+                Coordinates targetCoordinates = new Coordinates(p.getX(), p.getY());
+                LinkedList<ExistsInArena> targets = objectsInGrid(targetCoordinates, EnumSet.of(TypeFilter.Monster));
+                int attackPower = p.getAttackPower();
+
+                // find the first monster at attack it
+                Monster target = (Monster)targets.get(0);
+                if (p instanceof IceProjectile) {
+                    if (target != null) {
+                        target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
+                    }
+                } else if (p instanceof CatapultProjectile) {
+                    LinkedList<ExistsInArena> monsters = objectsInRange(targetCoordinates, 25, EnumSet.of(TypeFilter.Monster));
+                    for (ExistsInArena monster : monsters) {
+                        ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
+                    }
+                } else {
+                    if (target != null) {
+                        target.setHealth(target.getHealth() - attackPower);
+                    }
+                }
+                toRemove3.add(p);
+            }
+        }
+        // remove projectiles from arena
+        for (Projectile p : toRemove3) {
+            currentState.projectiles.remove(p);
+            paneArena.getChildren().remove(p);
+        }
+
+        // towers attack monsters
+        for (Tower t : getTowers()) {
             if (t instanceof LaserTower) {
                 ((LaserTower) t).attackMonster();
                 Line laserLine = ((LaserTower) t).getLaserLine();
                 if (laserLine != null && !currentState.lasers.containsKey(laserLine)) {
                     currentState.lasers.put(laserLine, currentState.currentFrame);
                     paneArena.getChildren().add(laserLine);
-
                 }
 
             } else {
-
-
+                Projectile p = t.attackMonster();
+                if (p != null) {
+                    paneArena.getChildren().add(p.getImageView());
+                    currentState.projectiles.add(p);
+                }
             }
         }
+
+        // turn monster with 0 hp to explosion.png
+        for (Monster m : getMonsters()) {
+            if (m.getHealth() <= 0) {
+                removeMonster(m);
+                Coordinates c = new Coordinates(m.getX(), m.getY());
+                ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
+                    , UIController.GRID_WIDTH, true, true));
+                c.bindByImage(explosion);
+                paneArena.getChildren().add(explosion);
+                currentState.explosions.put(explosion, currentState.currentFrame);
+            }
+        }
+
+
     }
 
     /**
@@ -735,14 +797,14 @@ public final class Arena {
 //                moveMonster(m, nextFrame);
 //            }
 //        }
-        if (currentState.monsters.isEmpty())
-            generateMonster(MonsterType.Penguin);
+        if (currentState.currentFrame % WAVE_INTERVAL == 0)
+            spawnWave();
         else // this is for testing only
-            moveMonster(currentState.monsters.peek(), Grid.findGridCenter(10, 10));
+            if (currentState.monsters.peek() != null)
+                moveMonster(currentState.monsters.peek(), Grid.findGridCenter(10, 10));
 //        newMonster.recalculateFuturePath();
         attackMonster();
 
-        // currentState.monsters.sort(null);
         currentState.currentFrame++;
     }
 
@@ -789,11 +851,6 @@ public final class Arena {
         public int getY();
 
         /**
-         * Updates the corresponding UI object.
-         */
-        public void refreshDisplay();
-
-        /**
          * Updates the coordinates of the object.
          * @param x The new x-coordinate.
          * @param y The new y-coordinate.
@@ -809,6 +866,6 @@ public final class Arena {
         /**
          * Moves the object by one frame.
          */
-        public void MoveOneFrame();
+        public void moveOneFrame();
     }
 }

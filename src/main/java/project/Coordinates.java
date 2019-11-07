@@ -67,8 +67,8 @@ public class Coordinates implements Serializable {
      */
     public void bindByImage(@NonNull ImageView iv)
     {
-        iv.xProperty().bind(Bindings.add(this.x, -UIController.GRID_WIDTH/2));
-        iv.yProperty().bind(Bindings.add(this.y, -UIController.GRID_HEIGHT/2));
+        iv.xProperty().bind(Bindings.add(this.x, -iv.getImage().getWidth()/2));
+        iv.yProperty().bind(Bindings.add(this.y, -iv.getImage().getHeight()/2));
     }
 
     /**

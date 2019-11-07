@@ -117,7 +117,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates.update(x, y); }
     public Coordinates getNextFrame() { return !futurePath.isEmpty() ? futurePath.removeFirst() : null; }
-    public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
+    public void moveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
@@ -125,7 +125,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param health The health of the monster.
      */
     public void setHealth(double health) {
-        this.health = health;
+        this.health = health < 0 ? 0 : health;
     }
 
     /**

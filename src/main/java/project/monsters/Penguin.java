@@ -31,8 +31,8 @@ public class Penguin extends Monster {
     }
 
     @Override
-    public void MoveOneFrame() {
-        super.MoveOneFrame();
+    public void moveOneFrame() {
+        super.moveOneFrame();
         this.health += 0.1;
     }
 }

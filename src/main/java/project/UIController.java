@@ -49,12 +49,12 @@ public class UIController {
     @FXML
     private Label remainingResources;
 
-    static final int ARENA_WIDTH = 480;
-    static final int ARENA_HEIGHT = 480;
-    static final int GRID_WIDTH = 40;
-    static final int GRID_HEIGHT = 40;
-    static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
-    static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
+    public static final int ARENA_WIDTH = 480;
+    public static final int ARENA_HEIGHT = 480;
+    public static final int GRID_WIDTH = 40;
+    public static final int GRID_HEIGHT = 40;
+    public static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
+    public static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
     static enum modes {normal, simulate, play};
     static modes mode = modes.normal;

@@ -139,7 +139,7 @@ public abstract class Tower implements ExistsInArena {
      * Attack the monster closest to destination and in shooting range.
      * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
-    protected abstract Projectile attackMonster();
+    public abstract Projectile attackMonster();
 
     /**
      * To determine whether the monster is in shooting range or not.
