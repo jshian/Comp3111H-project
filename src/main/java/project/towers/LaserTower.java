@@ -6,6 +6,7 @@ import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
 
+import java.awt.*;
 import java.util.PriorityQueue;
 
 
@@ -34,7 +35,7 @@ public class LaserTower extends Tower{
         super(coordinates);
         this.attackPower = 30;
         this.buildingCost = 20;
-        this.shootingRange = 50;
+        this.shootingRange = 100;
         this.consume = 2;
         this.upgradeCost = 10;
     }
@@ -48,7 +49,7 @@ public class LaserTower extends Tower{
         super(coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;
-        this.shootingRange = 50;
+        this.shootingRange = 100;
         this.consume = 2;
         this.upgradeCost = 10;
     }
@@ -93,18 +94,22 @@ public class LaserTower extends Tower{
                     monster = m;
             }
             if (monster == null) {
-                laserLine = null;
+                this.laserLine = null;
                 return null;
             }
             Coordinates currentPt = new Coordinates(getX(), getY());
             Coordinates edgePt = currentPt.findEdgePt(monster);
             laserLine = new Line(currentPt.getX(), currentPt.getY(), edgePt.getX(), edgePt.getY());
+            laserLine.setStroke(javafx.scene.paint.Color.rgb(255,255,0));
+            laserLine.setStrokeWidth(3);
 
             PriorityQueue<Monster> monsters = Arena.getMonsters();
             for (Monster m : monsters) {
                 if (coordinates.isInLine(monster, m, 3))
                     m.setHealth(m.getHealth() - this.attackPower);
             }
+        } else {
+            this.laserLine = null;
         }
         return null;
     }
@@ -114,6 +119,7 @@ public class LaserTower extends Tower{
      * @return get the laserLine
      */
     public Line getLaserLine() { return this.laserLine;}
+
 
     /**Accesses the information of tower.
      * @return the information of tower.

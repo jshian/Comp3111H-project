@@ -690,18 +690,28 @@ public final class Arena {
 
     private static void attackMonster() {
         // remove previous lasers from arena
-
+        List<Line> toRemove = new ArrayList();
+        for(Map.Entry<Line, Integer> entry : currentState.lasers.entrySet()) {
+            Line key = entry.getKey();
+            Integer value = entry.getValue();
+            if (value < currentState.currentFrame - laserDuration) {
+                toRemove.add(key);
+            }
+        }
+        for (Line key : toRemove) {
+            currentState.lasers.remove(key);
+            paneArena.getChildren().remove(key);
+        }
 
         // attack monster
         for (Tower t : currentState.towers) {
             if (t instanceof LaserTower) {
                 ((LaserTower) t).attackMonster();
                 Line laserLine = ((LaserTower) t).getLaserLine();
-                if (laserLine != null) {
-                    if (!currentState.lasers.containsKey(laserLine)) {
-                        currentState.lasers.put(laserLine, currentState.currentFrame);
-                        paneArena.getChildren().add(laserLine);
-                    }
+                if (laserLine != null && !currentState.lasers.containsKey(laserLine)) {
+                    currentState.lasers.put(laserLine, currentState.currentFrame);
+                    paneArena.getChildren().add(laserLine);
+
                 }
 
             } else {

@@ -78,10 +78,10 @@ public class Coordinates implements Serializable {
      * @exception IllegalArgumentException Either of the coordinates is outside the arena.
      */
     public void update(int x, int y) {
-        if (x < 0 || x >= UIController.ARENA_WIDTH)
+        if (x < 0 || x > UIController.ARENA_WIDTH)
             throw new IllegalArgumentException(
                 String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH - 1));
-        if (y < 0 || y >= UIController.ARENA_HEIGHT)
+        if (y < 0 || y > UIController.ARENA_HEIGHT)
             throw new IllegalArgumentException(
                 String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT - 1));
 
@@ -225,7 +225,7 @@ public class Coordinates implements Serializable {
      * @return  The point in the edge of the extended line.
      */
     public Coordinates findEdgePt(@NonNull Coordinates dirPt){
-        Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), UIController.ARENA_WIDTH - 1, UIController.ARENA_HEIGHT - 1);
+        Point2D point = Geometry.intersectBox(getX(), getY(), dirPt.getX(), dirPt.getY(), UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
         return new Coordinates((int) point.getX(), (int) point.getY());
     }
 

@@ -116,7 +116,7 @@ public abstract class Tower implements ExistsInArena {
         this.coordinates = coordinates;
         this.imageView = imageView;
         this.coordinates.bindByImage(this.imageView);
-        this.reload=2;
+        this.reload=8;
     }
 
     // Interface implementation

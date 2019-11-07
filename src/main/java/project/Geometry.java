@@ -33,7 +33,7 @@ public final class Geometry {
     public static double diagonalDistance(int x1, int y1, int x2, int y2) {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
-    
+
     /**
      * Calculates the angle between two points.
      * @param x1 The x-coordinate of the first point.
@@ -61,7 +61,7 @@ public final class Geometry {
      * @throws UnsupportedOperationException If the two points are the same, or either box width and box height is not greater than zero, or either point is outside the box.
      */
     public static Point2D intersectBox(int x1, int y1, int x2, int y2, int boxWidth, int boxHeight) throws UnsupportedOperationException {
-        if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
+        if (x1 == x2 && y1 == y2) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
         if (boxWidth <= 0) throw new UnsupportedOperationException("The box width should be greater than zero.");
         if (boxHeight <= 0) throw new UnsupportedOperationException("The box height should be greater than zero.");
         if (x1 > boxWidth || y1 > boxHeight) throw new UnsupportedOperationException("The first point is outside the box.");
@@ -79,7 +79,7 @@ public final class Geometry {
             if (x1 < x2) return new Point2D(boxWidth, y1); // Right edge
 
             return new Point2D(0, y1); // Left edge
-        } 
+        }
 
         // The equation of the line is (y2-y1)/(x2-x1)=(y-y1)/(x-x1) => (y2-y1)(x-x1)=(x2-x1)(y-y1) => (y2-y1)x+(x1-x2)y+(x2y1-x1y2)=0.
 
@@ -161,7 +161,7 @@ public final class Geometry {
      */
     public static boolean isInCircle(int xTest, int yTest, int x, int y, int r) throws UnsupportedOperationException {
         if (r < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
-        
+
         return diagonalDistance(xTest, yTest, x, y) <= r;
     }
 }
