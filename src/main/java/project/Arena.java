@@ -112,7 +112,7 @@ public final class Arena {
      * Accesses the grid that contains the specified pixel.
      * @param coordinates The coordinates of the pixel.
      */
-    private Grid getGrid(Coordinates coordinates) {
+    private Grid getGrid(@NonNull Coordinates coordinates) {
         return grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
     }
 
@@ -122,7 +122,7 @@ public final class Arena {
      * @param range The maximum allowable distance.
      * @return A linked list containing references to the conservative estimate of the grids that are within a specified distance of the specified pixel.
      */
-    private LinkedList<Grid> getPotentialGridsInRange(Coordinates coordinates, double range) {
+    private LinkedList<Grid> getPotentialGridsInRange(@NonNull Coordinates coordinates, double range) {
         LinkedList<Grid> result = new LinkedList<>();
 
         for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
@@ -241,34 +241,41 @@ public final class Arena {
     private Arena shadowArena;
 
     /**
-     * Adds an object to the current arena state.
+     * Adds an object from the arena.
      * @param obj The object to add.
      * @throws IllegalArgumentException The object type is not recognized.
      */
-    private void addObjectToCurrentState(ExistsInArena obj) {
+    private void addObject(@NonNull ExistsInArena obj) {
         if (obj instanceof Tower) {
-            if (!towers.contains(obj))
+            if (!towers.contains(obj)) {
                 towers.add((Tower)obj);
+            }
         } else if (obj instanceof Projectile) {
-            if (!projectiles.contains(obj))
+            if (!projectiles.contains(obj)) {
                 projectiles.add((Projectile)obj);
+            }
         } else if (obj instanceof Monster) {
-            if (!monsters.contains(obj))
+            if (!monsters.contains(obj)) {
                 monsters.add((Monster)obj);
+            }
         } else {
             throw new IllegalArgumentException("The object type is not recognized");
         }
 
         Coordinates c = new Coordinates(obj.getX(), obj.getY());
         getGrid(c).addObject(obj);
+
+        if (obj instanceof Tower) {
+            updateCosts();
+        }
     }
 
     /**
-     * Removes an object to the current arena state.
+     * Removes an object from the arena.
      * @param obj The object to remove.
      * @throws IllegalArgumentException The object type is not recognized.
      */
-    private void removeObjectFromCurrentState(ExistsInArena obj) {
+    private void removeObject(@NonNull ExistsInArena obj) {
         if (obj instanceof Tower) {
             towers.remove((Tower)obj);
         } else if (obj instanceof Projectile) {
@@ -281,6 +288,26 @@ public final class Arena {
 
         Coordinates c = new Coordinates(obj.getX(), obj.getY());
         getGrid(c).removeObject(obj);
+
+        if (obj instanceof Tower) {
+            updateCosts();
+        }
+    }
+
+    /**
+     * Moves an object to another location in the arena.
+     * @param obj The object to move.
+     * @param newCoordinates The coordinates of the new location.
+     * @throws IllegalArgumentException The object type is not recognized.
+     */
+    private void moveObject(@NonNull ExistsInArena obj, @NonNull Coordinates newCoordinates)
+    {
+        Coordinates c = new Coordinates(obj.getX(), obj.getY());
+        getGrid(c).removeObject(obj);
+
+        obj.setLocation(newCoordinates);
+
+        getGrid(newCoordinates).addObject(obj);
     }
 
     /**
@@ -577,10 +604,7 @@ public final class Arena {
 
         if (hasResources(cost)) {
             resources.setValue(resources.get() - cost);
-            towers.add(t);
-            getGrid(coordinates).addObject(t);
-
-            updateCosts();
+            addObject(t);
             return t;
         } else {
             return null;
@@ -612,10 +636,7 @@ public final class Arena {
     public void destroyTower(@NonNull Tower tower, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(tower.getImageView());
-        getGrid(new Coordinates(tower.getX(), tower.getY())).removeObject(tower);
-        towers.remove(tower);
-
-        updateCosts();
+        removeObject(tower);
     }
 
     /**
@@ -635,8 +656,7 @@ public final class Arena {
     public void removeProjectile(@NonNull Projectile projectile, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(projectile.getImageView());
-        getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
-        projectiles.remove(projectile);
+        removeObject(projectile);
     }
 
     /**
@@ -666,8 +686,7 @@ public final class Arena {
                 newMonster = new Unicorn(this, STARTING_COORDINATES, END_COORDINATES, iv, difficulty);
             }
 
-            monsters.add(newMonster);
-            getGrid(STARTING_COORDINATES).addObject(newMonster);
+            addObject(newMonster);
         }
 
         difficulty += 1;    // Modified by settings later
@@ -681,25 +700,17 @@ public final class Arena {
     public void removeMonster(@NonNull Monster monster, @NonNull AnchorPane paneArena)
     {
         paneArena.getChildren().remove(monster.getImageView());
-        getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
-        monsters.remove(monster);
+        removeObject(monster);
     }
 
     /**
-     * Moves the specified Monster to another location.
+     * Moves the specified Monster to another location in the arena.
      * @param monster The Monster to be moved.
      * @param newCoordinates The coordinates of the new location.
-     * @param paneArena the pane where graphic of monster needed to be removed.
      */
-    public void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates, @NonNull AnchorPane paneArena)
+    public void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates)
     {
-        getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
-
-        int newX = newCoordinates.getX();
-        int newY = newCoordinates.getY();
-        monster.setLocation(newX, newY);
-
-        getGrid(newCoordinates).addObject(monster);
+        moveObject(monster, newCoordinates);
     }
 
     // For debugging
@@ -796,17 +807,18 @@ public final class Arena {
         public int getY();
 
         /**
-         * Updates the corresponding UI object.
-         */
-        public void refreshDisplay();
-
-        /**
          * Updates the coordinates of the object.
          * @param x The new x-coordinate.
          * @param y The new y-coordinate.
          * @see Coordinates
          */
         public void setLocation(int x, int y);
+
+        /**
+         * Updates the coordinates of the object.
+         * @param coordinates The new coordinates.
+         */
+        public void setLocation(@NonNull Coordinates coordinates);
     }
     
     /**

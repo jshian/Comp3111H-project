@@ -2,6 +2,8 @@ package project.towers;
 
 import project.Arena.ExistsInArena;
 import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
@@ -142,8 +144,8 @@ public abstract class Tower implements ExistsInArena {
     public int getY() { return coordinates.getY(); }
     public int getShootLimit() { return shootLimit; }
     public int getUpgradeCost() { return upgradeCost; }
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
+    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates = new Coordinates(coordinates); }
 
     /**
      * Upgrade the tower by adding the power, slow duration, reload time etc.
