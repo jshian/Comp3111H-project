@@ -41,7 +41,7 @@ public class Coordinates implements Serializable {
     public Coordinates() {}
 
     /**
-     * Parametized constructor for the Coordinate class.
+     * Parameterized constructor for the Coordinate class.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
      * @exception InvalidParameterException Either of the coordinates is outside the arena.
