@@ -146,6 +146,7 @@ public final class Arena {
     /**
      * Stores the cost for a monster in each pixel to reach the end-zone due to movement. Indices correspond to the x- and y- coordinates.
      * The cost is in terms of per unit speed of the monster.
+     * This is essentially a potential field for determining monster movement.
      * @see Monster
      * @see Coordinates
      */
@@ -154,6 +155,7 @@ public final class Arena {
     /**
      * Stores the cost for a monster in each pixel to reach the end-zone due to movement and being attacked. Indices correspond to the x- and y- coordinates.
      * The cost is in terms of per unit speed of the monster.
+     * This is essentially a potential field for determining monster movement.
      * @see Monster
      * @see Coordinates
      */
