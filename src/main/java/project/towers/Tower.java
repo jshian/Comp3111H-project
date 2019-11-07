@@ -81,6 +81,7 @@ public abstract class Tower implements ExistsInArena {
     /**
      * The attack speed of tower for how many px per frame
      */
+    @NotNull
     protected int attackSpeed;
 
     /**
@@ -99,12 +100,18 @@ public abstract class Tower implements ExistsInArena {
     protected int upgradeCost;
 
     /**
+     * Does the tower attacked before the second attack.
+     */
+    protected boolean hasAttack;
+
+    /**
      * Constructor for Tower class.
      * @param coordinates The coordinate of tower.
      */
     public Tower(Coordinates coordinates){
         this.coordinates = coordinates;
         this.reload = 2;
+        this.counter = 0;
     }
 
     /**
@@ -116,7 +123,8 @@ public abstract class Tower implements ExistsInArena {
         this.coordinates = coordinates;
         this.imageView = imageView;
         this.coordinates.bindByImage(this.imageView);
-        this.reload=8;
+        this.reload = 8;
+        this.counter = 0;
     }
 
     // Interface implementation
@@ -182,13 +190,20 @@ public abstract class Tower implements ExistsInArena {
         return shootingRange;
     }
 
-
+    /**
+     * Tower has the reload time to do next attack
+     * @return whether the tower is reloading or not.
+     */
     public boolean isReload(){
-        if(this.counter==0){
-            this.counter=this.reload;
-            return false;
-        }else this.counter--;
-        return true;
+        if(hasAttack){
+            if(this.counter==0){
+                this.counter=this.reload;
+                this.hasAttack = false;
+                return false;
+            }else this.counter--;
+            return true;
+        }
+        return false;
     }
 
     /**Accesses the information of tower.
