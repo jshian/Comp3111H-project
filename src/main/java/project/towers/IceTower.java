@@ -6,7 +6,6 @@ import project.monsters.Monster;
 import project.projectiles.IceProjectile;
 import project.projectiles.Projectile;
 
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 /**
@@ -22,10 +21,11 @@ public class IceTower extends Tower{
 
     /**
      * Constructor of ice tower.
+     * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of ice tower.
      */
-    public IceTower(Coordinates coordinates){
-        super(coordinates);
+    public IceTower(Arena arena, Coordinates coordinates){
+        super(arena, coordinates);
         this.attackPower = 5;
         this.buildingCost = 15;
         this.shootingRange = 50;
@@ -36,11 +36,12 @@ public class IceTower extends Tower{
 
     /**
      * Constructor of ice tower.
+     * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of ice tower.
      * @param imageView The image view of ice tower.
      */
-    public IceTower(Coordinates coordinates, ImageView imageView) {
-        super(coordinates, imageView);
+    public IceTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+        super(arena, coordinates, imageView);
         this.attackPower = 5;
         this.buildingCost = 15;
         this.shootingRange = 50;
@@ -70,10 +71,10 @@ public class IceTower extends Tower{
     @Override
     public Projectile attackMonster(){
         if(isReload()) {
-            PriorityQueue<Monster> monsters = Arena.getMonsters();
+            PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m))
-                    return new IceProjectile(coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);
+                    return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);
             }
         }
         return null;

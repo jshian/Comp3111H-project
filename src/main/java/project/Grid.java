@@ -102,6 +102,44 @@ class Grid {
     }
 
     /**
+     * Finds the x-coordinate of the center of the grid which encloses the specified set of coordinates.
+     * @param coordinates The set of coordinates.
+     * @return The x-coordinate of the center of the grid which encloses the specified set of coordinates.
+     */
+    static int findGridCenterX(@NonNull Coordinates coordinates) {
+        return findGridCenterX(findGridXPos(coordinates), findGridYPos(coordinates));
+    }
+
+    /**
+     * Finds the x-coordinate of the center of the specified grid.
+     * @param xPos The x-position of the grid, where 0 is left-most, increasing towards the right.
+     * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
+     * @return The x-coordinate of the center of the specified grid.
+     */
+    static int findGridCenterX(int xPos, int yPos) {
+        return (int) ((xPos + 0.5) * UIController.GRID_WIDTH);
+    }
+
+    /**
+     * Finds the y-coordinate of the center of the grid which encloses the specified set of coordinates.
+     * @param coordinates The set of coordinates.
+     * @return The y-coordinate of the center of the grid which encloses the specified set of coordinates.
+     */
+    static int findGridCenterY(@NonNull Coordinates coordinates) {
+        return findGridCenterY(findGridXPos(coordinates), findGridYPos(coordinates));
+    }
+
+    /**
+     * Finds the y-coordinate of the center of the specified grid.
+     * @param xPos The x-position of the grid, where 0 is left-most, increasing towards the right.
+     * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
+     * @return The y-coordinate of the center of the specified grid.
+     */
+    static int findGridCenterY(int xPos, int yPos) {
+        return (int) ((yPos + 0.5) * UIController.GRID_HEIGHT);
+    }
+
+    /**
      * Finds the coordinates of the center of the grid which encloses the specified set of coordinates.
      * @param coordinates The set of coordinates.
      * @return The coordinates of the center of the grid which encloses the specified set of coordinates.
@@ -117,6 +155,6 @@ class Grid {
      * @return The coordinates of the center of the specified grid.
      */
     static Coordinates findGridCenter(int xPos, int yPos) {
-        return new Coordinates((int) ((xPos + 0.5) * UIController.GRID_WIDTH), (int) ((yPos + 0.5) * UIController.GRID_HEIGHT));
+        return new Coordinates(findGridCenterX(xPos, yPos), findGridCenterY(xPos, yPos));
     }
 }
