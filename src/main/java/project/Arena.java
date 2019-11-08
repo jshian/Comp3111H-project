@@ -915,15 +915,19 @@ public final class Arena {
      * remove laser, circle and explosion that generate a few frames ago.
      */
     private void remove() {
+        List<Node> list = new ArrayList<>();
         for(Map.Entry<Node, Integer> entry : toRemove.entrySet()) {
             Node key = entry.getKey();
             Integer value = entry.getValue();
             if (value > 0 ) {
                 entry.setValue(--value);
             }else {
-                toRemove.remove(key);
-                paneArena.getChildren().remove(key);
+                list.add(key);
             }
+        }
+        for(Node n:list){
+            toRemove.remove(n);
+            paneArena.getChildren().remove(n);
         }
         // remove previous lasers， circle and explosion from arena
 //        List<Line> toRemove = new ArrayList();
