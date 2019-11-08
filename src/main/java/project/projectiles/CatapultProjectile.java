@@ -41,8 +41,8 @@ public class CatapultProjectile extends Projectile{
     }
 
     @Override
-    public void moveOneFrame() {
-        super.moveOneFrame();
+    public void nextFrame() {
+        super.nextFrame();
         if (hasReachedTarget()){
             //draw damage circle
             arena.drawCircle(target,damageRange);
@@ -51,7 +51,7 @@ public class CatapultProjectile extends Projectile{
             LinkedList<Arena.ExistsInArena> monsters = arena.findObjectsInRange(target, damageRange, EnumSet.of(Arena.TypeFilter.Monster));
             for (Arena.ExistsInArena monster : monsters) {
                 if (monster instanceof Monster) {
-                    ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
+                    ((Monster) monster).takeDamage(attackPower);
                     System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
                             , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
                 }

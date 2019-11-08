@@ -103,19 +103,17 @@ public class Catapult extends Tower {
     }
 
     /**
-     * Attack the coordinate that contains a monster within a circle which closest to destination and in shooting range.
-     * The coordinate cover most of monster.
-     * Cannot shoot during reload time.
-     * @return The projectile of tower attack, return null if cannot shoot any monster.
+     * Generates a projectile that attacks the target of the tower.
+     * The target coordinates is set such that the splash effect hits the monster that is closest to the end-zone and in shooting range; and hits the most monsters.
+     * @return The projectile that attacks the target of the tower, or <code>null</code> if either there is no valid target or the tower is reloading.
      */
     @Override
-    public CatapultProjectile attackMonster(){
+    public CatapultProjectile generateProjectile(){
         if(!isReload()) {
             LinkedList<Arena.ExistsInArena> selectList = new LinkedList<>();
             Coordinates coordinate = selectMonster(arena.getMonsters(),selectList);
             if (coordinate != null) {
                 hasAttack = true;
-                counter = this.reload;//start reload
                 return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower,damageRange);
             }
         }
@@ -166,7 +164,8 @@ public class Catapult extends Tower {
         return target;
     }
 
-    /**Accesses the information of tower.
+    /**
+     * Accesses the information of tower.
      * @return the information of tower.
      */
     @Override

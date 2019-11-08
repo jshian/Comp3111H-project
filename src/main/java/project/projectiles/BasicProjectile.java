@@ -8,7 +8,7 @@ import project.monsters.Monster;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-public class BasicProjectile extends Projectile{
+public class BasicProjectile extends Projectile {
 
     /**
      * Constructor for the Projectile class.
@@ -35,14 +35,14 @@ public class BasicProjectile extends Projectile{
     }
 
     @Override
-    public void moveOneFrame() {
-        super.moveOneFrame();
+    public void nextFrame() {
+        super.nextFrame();
         if (hasReachedTarget()){
             LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
             if(targets.size()>0){
                 Monster target = (Monster)targets.get(0);
                 if (target != null) {
-                    target.setHealth(target.getHealth() - attackPower);
+                    target.takeDamage(attackPower);
                     System.out.println(String.format("Basic Tower@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
                             , target.getClassName(), target.getX(), target.getY()));
                 }

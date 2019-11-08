@@ -52,15 +52,14 @@ public class IceProjectile extends Projectile{
     public int getSlowDownTime() { return slowDownTime; }
 
     @Override
-    public void moveOneFrame() {
-        super.moveOneFrame();
+    public void nextFrame() {
+        super.nextFrame();
         if (hasReachedTarget()){
             LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
             if(targets.size()>0){
                 Monster target = (Monster)targets.get(0);
-                //target.setStatusEffects(target.getStatusEffects().add(new StatusEffect(0,slowDownTime)));
                 if (target != null) {
-                    target.setSpeed(target.getSpeed() - slowDownSpeed);
+                    target.addStatusEffect(new StatusEffect(StatusEffect.EffectType.Slow, slowDownTime));
                     System.out.println(String.format("Ice Tower@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
                             , target.getClassName(), target.getX(), target.getY()));
                 }
