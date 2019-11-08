@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.event.*;
 import javafx.fxml.FXML;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
@@ -22,7 +21,6 @@ import project.towers.Catapult;
 import project.towers.IceTower;
 import project.towers.Tower;
 
-import java.util.Timer;
 
 public class UIController {
     @FXML

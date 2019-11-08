@@ -2,7 +2,6 @@ package project.projectiles;
 
 import javafx.scene.image.Image;
 import project.*;
-import project.monsters.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;

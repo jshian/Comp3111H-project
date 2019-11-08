@@ -1,8 +1,6 @@
 package project;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -11,18 +9,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import project.monsters.*;
-import project.projectiles.CatapultProjectile;
-import project.projectiles.IceProjectile;
 import project.projectiles.Projectile;
 import project.towers.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
-import org.apache.commons.lang3.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**

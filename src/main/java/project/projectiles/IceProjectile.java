@@ -2,7 +2,6 @@ package project.projectiles;
 
 import project.*;
 import project.monsters.Monster;
-import project.towers.Tower;
 
 import java.util.EnumSet;
 import java.util.LinkedList;

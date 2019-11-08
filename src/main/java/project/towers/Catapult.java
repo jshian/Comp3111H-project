@@ -5,7 +5,6 @@ import project.*;
 import project.Arena.ExistsInArena;
 import project.monsters.Monster;
 import project.projectiles.CatapultProjectile;
-import project.projectiles.Projectile;
 
 import java.util.EnumSet;
 import java.util.LinkedList;

@@ -1,10 +1,8 @@
 package project.projectiles;
 
-import javafx.scene.shape.Circle;
 import project.*;
 import project.monsters.Monster;
 import project.towers.Catapult;
-import project.towers.Tower;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
