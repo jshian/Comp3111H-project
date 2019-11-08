@@ -163,6 +163,8 @@ public final class Arena {
      * This is essentially a potential field for determining monster movement.
      * @see Monster
      * @see Coordinates
+     * @see #updateCosts()
+     * @see #findPathToEndZone(Coordinates, boolean)
      */
     private double[][] movementCostToEnd;
 
@@ -172,6 +174,8 @@ public final class Arena {
      * This is essentially a potential field for determining monster movement.
      * @see Monster
      * @see Coordinates
+     * @see #updateCosts()
+     * @see #findPathToEndZone(Coordinates, boolean)
      */
     private double[][] totalCostToEnd;
 
@@ -834,10 +838,12 @@ public final class Arena {
      * Finds the lowest cost path from the specified pixel to the end-zone.
      * @param coordinates The coordinates of the pixel.
      * @param movementOnly Whether the method should only consider movement cost. Otherwise, it also considers the cost of being attacked by Towers.
-     * @return A linked list representing the lowest cost path, with the first element being the coordinates of the first pixel to move to.
+     * @return A linked list representing the lowest cost path, with the first element being the coordinates of the first pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
      */
     public LinkedList<Coordinates> findPathToEndZone(@NonNull Coordinates coordinates, boolean movementOnly) {
         Coordinates currentCoordinates = coordinates;
+        if (Double.isInfinite(movementCostToEnd[coordinates.getX()][coordinates.getY()])) return new LinkedList<>();
+        if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return new LinkedList<>();
 
         LinkedList<Coordinates> path = new LinkedList<>();
         path.add(coordinates);
