@@ -48,7 +48,7 @@ public abstract class Tower implements ExistsInArena {
      * The maximum attack power of the tower.
      */
     @NotNull
-    protected int maxAttackPower;
+    protected int maxAttackPower = 100;
 
     /**
      * The current attack power of the tower. It cannot go beyond {@link #maxAttackPower}.
@@ -57,13 +57,7 @@ public abstract class Tower implements ExistsInArena {
     protected int attackPower;
 
     /**
-     * The maximum building cost of the tower.
-     */
-    @NotNull
-    protected int maxBuildingCost;
-
-    /**
-     * The current building cost of the tower. It cannot go beyond {@link #maxBuildingCost}.
+     * The current building cost of the tower.
      */
     @NotNull
     protected int buildingCost;
@@ -75,42 +69,36 @@ public abstract class Tower implements ExistsInArena {
     protected int maxShootingRange;
 
     /**
-     * The current shooting range of the tower. It cannot go beyond {@link #maxShootingRange}.
-     */
-    @NotNull
-    protected int shootingRange;
-
-    /**
      * The current shooting limit of the tower. It cannot go beyond {@link #maxShootingRange}.
      */
     @NotNull
-    protected int shootLimit = 0;
+    protected int minShootingRange = 0;
 
     /**
      * The attack speed of tower for how many px per frame
      */
     @NotNull
-    protected int attackSpeed;
+    protected int attackSpeed = 5;
 
     /**
      * The reload time for tower after it attack monsters.
      */
-    protected int reload;
+    protected int reload = 5;
 
     /**
      * The counter used to count the reload time.
      */
-    protected int counter;
+    protected int counter = 0;
 
     /**
      * The resources needed to upgrade the tower
      */
-    protected int upgradeCost;
+    protected int upgradeCost = 10;
 
     /**
      * Does the tower attacked before the second attack.
      */
-    protected boolean hasAttack;
+    protected boolean hasAttack = false;
 
     /**
      * Constructor for Tower class.
@@ -119,8 +107,6 @@ public abstract class Tower implements ExistsInArena {
     public Tower(Arena arena, Coordinates coordinates){
         this.arena = arena;
         this.coordinates = coordinates;
-        this.reload = 2;
-        this.counter = 0;
     }
 
     /**
@@ -134,16 +120,12 @@ public abstract class Tower implements ExistsInArena {
         this.coordinates = coordinates;
         this.imageView = imageView;
         this.coordinates.bindByImage(this.imageView);
-        this.reload = 8;
-        this.counter = 0;
     }
 
     // Interface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
-    public int getShootLimit() { return shootLimit; }
-    public int getUpgradeCost() { return upgradeCost; }
     public void setLocation(int x, int y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
 
@@ -166,7 +148,8 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Monster monster){
-        return Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY()) <= shootingRange;
+        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
+        return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
     }
 
     /**
@@ -175,30 +158,65 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Coordinates coordinate){
-        return Geometry.findEuclideanDistance(getX(), getY(), coordinate.getX(), coordinate.getY()) <= shootingRange;
+        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinate.getX(), coordinate.getY());
+        return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
     }
 
     /**
-     * Accesses the attack power of tower.
-     * @return The attack power of tower.
+     * Accesses the attack power of the tower.
+     * @return The attack power of the tower.
      */
     public int getAttackPower() {
         return attackPower;
     }
 
     /**
-     * Accesses the building cost of tower.
-     * @return The building cost of tower.
+     * Accesses the building cost of the tower.
+     * @return The building cost of the tower.
      */
     public int getBuildingCost() {
         return buildingCost;
     }
 
-    /**Accesses the shooting range of tower.
-     * @return The shooting range of tower.
+    /**
+     * Accesses the maximum shooting range of the tower.
+     * @return The maximum shooting range of the tower.
      */
-    public int getShootingRange() {
-        return shootingRange;
+    public int getMaxShootingRange() {
+        return maxShootingRange;
+    }
+
+    /**
+     * Accesses the minimum shooting range of the tower.
+     * @return The minimum shooting range of the tower.
+     */
+    public int getMinShootingRange() {
+        return minShootingRange;
+    }
+
+
+    /**
+     * Accesses the attack speed of the tower.
+     * @return The attack speed of the tower.
+     */
+    public int getAttackSpeed() {
+        return attackSpeed;
+    }
+
+    /**
+     * Accesses the reload time of the tower
+     * @return The reload time of the tower.
+     */
+    public int getReload() {
+        return reload;
+    }
+
+    /**
+     * Accesses the upgrade cost of the tower.
+     * @return The upgrade cost of the tower.
+     */
+    public int getUpgradeCost() {
+        return upgradeCost;
     }
 
     /**
@@ -208,7 +226,7 @@ public abstract class Tower implements ExistsInArena {
     public boolean isReload(){
         if(hasAttack){
             if(this.counter==0){
-                this.counter=this.reload;
+                this.counter = this.reload;
                 this.hasAttack = false;
                 return false;
             }else this.counter--;
