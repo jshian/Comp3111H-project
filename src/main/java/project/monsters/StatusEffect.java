@@ -21,7 +21,7 @@ public class StatusEffect {
     /**
      * An enum to categorize different types of status effects.
      */
-    enum EffectType { Slow };
+    public enum EffectType { Slow };
 
     /**
      * The type of status effect.
@@ -40,7 +40,7 @@ public class StatusEffect {
      * @param effectType The type of effect.
      * @param duration The duration of the effect in number of frames.
      */
-    StatusEffect(@NonNull EffectType effectType, int duration) {
+    public StatusEffect(@NonNull EffectType effectType, int duration) {
         this.effectType = effectType;
         this.duration = duration;
     }
@@ -49,13 +49,25 @@ public class StatusEffect {
      * Copy constructor for StatusEffect class.
      * @param other The other object to copy from.
      */
-    StatusEffect(StatusEffect other) {
+    public StatusEffect(StatusEffect other) {
         this.effectType = other.effectType;
         this.duration = other.duration;
     }
 
     /**
+     * Accesses the type of the status effect.
+     * @return The type of the status effect.
+     */
+    public EffectType getEffectType() { return effectType; }
+
+    /**
+     * Accesses the remaining duration of the status effect.
+     * @return The remaining duration of the status effect.
+     */
+    public int getDuration() { return duration; }
+
+    /**
      * Counts down the status effect by one frame.
      */
-    void countDown() { duration -= 1; }
+    public void countDown() { duration -= 1; }
 }
