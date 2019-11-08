@@ -35,8 +35,8 @@ public class Penguin extends Monster {
 
     // Interface implementation
     @Override
-    public void moveOneFrame() {
-        super.moveOneFrame();
+    public void nextFrame() {
+        super.nextFrame();
         this.health += 0.1;
     }
     

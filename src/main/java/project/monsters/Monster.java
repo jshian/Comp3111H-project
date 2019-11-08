@@ -132,9 +132,19 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public int getY() { return coordinates.getY(); }
     public void setLocation(int x, int y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
-    public void moveOneFrame() {
+    public double getSpeed() { return speed; }
+    public void nextFrame() {
         Coordinates nextCoordinates = arena.findNextTowardsEnd(coordinates, true);
         if (nextCoordinates != null) coordinates.update(nextCoordinates);
+
+        boolean isSlowed = false;
+        for (StatusEffect se : statusEffects) {
+            if (se.getEffectType() == StatusEffect.EffectType.Slow) {
+                isSlowed = true;
+            }
+            se.countDown();
+        }
+        if (isSlowed) speed = maxSpeed / 5;
     }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
@@ -151,34 +161,17 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public double getHealth() { return health; }
 
     /**
-     * Accesses the speed of the monster.
-     * @return The speed of the monster.
-     */
-    public double getSpeed() { return speed; }
-
-    /**
      * Accesses the status effects of the monster.
      * @return The status effects of the monster.
      */
     public LinkedList<StatusEffect> getStatusEffects() { return statusEffects; }
 
     /**
-     * Sets the health of the monster.
-     * @param health The health of the monster.
+     * Reduces the health of the monster.
+     * @param amount The amount by which to reduce.
      */
-    public void setHealth(double health) {
-        this.health = health < 0 ? 0 : health;
-    }
-
-    /**
-     * Sets the speed of the monster.
-     * @param speed The speed of the monster.
-     */
-    public void setSpeed(double speed) {
-        if (speed <=0){
-            this.speed = 0;
-        }else
-            this.speed = speed;
+    public void takeDamage(double amount) {
+        this.health -= amount;
     }
 
     /**

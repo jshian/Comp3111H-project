@@ -36,11 +36,11 @@ public class Fox extends Monster {
 
     // Inferface implementation
     @Override
-    public void moveOneFrame() {
+    public void nextFrame() {
         Coordinates nextCoordinates = arena.findNextTowardsEnd(coordinates, false);
         if (nextCoordinates != null) coordinates.update(nextCoordinates);
     }
-    
+
     @Override
     public String getClassName() { return "Fox"; }
 
