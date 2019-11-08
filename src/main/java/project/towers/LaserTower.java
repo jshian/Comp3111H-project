@@ -104,11 +104,11 @@ public class LaserTower extends Tower{
     }
 
     /**
-     * Attack the nearest monster and the monster in the line.
-     * @return null always since it is immediate attack
+     * Generates a projectile that attacks the target of the tower.
+     * @return Always <code>null</code> because the ray generated isn't a projectile.
      */
     @Override
-    public Projectile attackMonster(){
+    public Projectile generateProjectile(){
         if(!isReload()) {
             Monster monster = null;
             for (Monster m : arena.getMonsters()) {
@@ -120,7 +120,6 @@ public class LaserTower extends Tower{
                 return null;
             }
             hasAttack = true;
-            this.counter = this.reload;
             laserLine = arena.drawRay(this, monster);
 
             PriorityQueue<Monster> monsters = arena.getMonsters();

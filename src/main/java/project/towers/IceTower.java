@@ -86,18 +86,13 @@ public class IceTower extends Tower{
         return false;
     }
 
-    /**
-     * Attack the monster closest to destination and in shooting range.
-     * @return The projectile of tower attack, return null if cannot shoot any monster.
-     */
     @Override
-    public Projectile attackMonster(){
+    public Projectile generateProjectile(){
         if(!isReload()) {
             PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m)) {
                     this.hasAttack = true;
-                    this.counter = this.reload;
                     return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDownTime);
                 }
             }
@@ -105,7 +100,8 @@ public class IceTower extends Tower{
         return null;
     }
 
-    /**Accesses the information of tower.
+    /**
+     * Accesses the information of tower.
      * @return the information of tower.
      */
     @Override

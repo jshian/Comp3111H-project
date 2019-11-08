@@ -57,7 +57,7 @@ public class BasicTower extends Tower {
 
     /**
      * Basic tower increases its attack power when it upgraded.
-     * @param  player The player who build the tower.
+     * @param player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
@@ -72,18 +72,13 @@ public class BasicTower extends Tower {
         return false;
     }
 
-    /**
-     * Attack the monster closest to destination and in shooting range.
-     * @return The projectile of tower attack, return null if cannot shoot any monster.
-     */
     @Override
-    public Projectile attackMonster(){
+    public Projectile generateProjectile(){
         if(!isReload()) {
             PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
                 if (canShoot(m)) {
                     this.hasAttack = true;
-                    this.counter = this.reload;
                     return new BasicProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
                 }
             }
@@ -91,7 +86,8 @@ public class BasicTower extends Tower {
         return null;
     }
 
-    /**Accesses the information of tower.
+    /**
+     * Accesses the information of tower.
      * @return the information of tower.
      */
     @Override
