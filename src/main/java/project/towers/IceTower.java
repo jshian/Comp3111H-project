@@ -70,11 +70,13 @@ public class IceTower extends Tower{
      */
     @Override
     public Projectile attackMonster(){
-        if(isReload()) {
+        if(!isReload()) {
             PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
-                if (canShoot(m))
+                if (canShoot(m)) {
+                    this.hasAttack = true;
                     return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);
+                }
             }
         }
         return null;

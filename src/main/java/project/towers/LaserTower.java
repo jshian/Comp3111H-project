@@ -1,10 +1,12 @@
 package project.towers;
 
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
 import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
 
+import java.awt.*;
 import java.util.PriorityQueue;
 
 
@@ -18,6 +20,13 @@ public class LaserTower extends Tower{
      */
     private int consume;
 
+
+    /**
+     * The laser display on the arena.
+     */
+    private Line laserLine;
+
+
     /**
      * Constructor of laser tower.
      * @param arena The arena to attach the tower to.
@@ -27,7 +36,7 @@ public class LaserTower extends Tower{
         super(arena, coordinates);
         this.attackPower = 30;
         this.buildingCost = 20;
-        this.shootingRange = 50;
+        this.shootingRange = 100;
         this.consume = 2;
         this.upgradeCost = 10;
     }
@@ -42,7 +51,7 @@ public class LaserTower extends Tower{
         super(arena, coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;
-        this.shootingRange = 50;
+        this.shootingRange = 100;
         this.consume = 2;
         this.upgradeCost = 10;
     }
@@ -50,9 +59,14 @@ public class LaserTower extends Tower{
     /**
      * Laser tower consume player's resource to attack monster.
      * @param player The player who build the tower.
+     * @return true if player has enough resources to attack, false otherwise.
      */
-    public void consumeResource(Player player){
-        player.spendResources(consume);
+    public boolean consumeResource(Player player){
+        if (player.hasResources(consume)) {
+            player.spendResources(consume);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -82,20 +96,37 @@ public class LaserTower extends Tower{
                     monster = m;
             }
             if (monster == null) {
+                this.laserLine = null;
                 return null;
             }
+            hasAttack = true;
             Coordinates currentPt = new Coordinates(getX(), getY());
-            Coordinates edgePt = currentPt.findEdgePt(monster);
-            currentPt.drawLine(edgePt);
+            javafx.geometry.Point2D edgePt = Geometry.intersectBox(getX(),getY(),monster.getX(),monster.getY(),0,0,
+                    UIController.ARENA_WIDTH,UIController.ARENA_HEIGHT);
+            laserLine = new Line(currentPt.getX(), currentPt.getY(), edgePt.getX(), edgePt.getY());
+            laserLine.setStroke(javafx.scene.paint.Color.rgb(255,255,0));
+            laserLine.setStrokeWidth(3);
 
             PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
-                if (coordinates.isInLine(monster, m, 3))
+                if (Geometry.isInRay(m.getX(),m.getY(), getX(),getY(),monster.getX(),monster.getY(), 3)) {
                     m.setHealth(m.getHealth() - this.attackPower);
+                    System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
+                            , m.getClassName(), m.getX(), m.getY()));
+                }
             }
+        } else {
+            this.laserLine = null;
         }
         return null;
     }
+
+    /**
+     * get the laserLine.
+     * @return get the laserLine
+     */
+    public Line getLaserLine() { return this.laserLine;}
+
 
     /**Accesses the information of tower.
      * @return the information of tower.

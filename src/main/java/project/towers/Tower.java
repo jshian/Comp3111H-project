@@ -132,7 +132,7 @@ public abstract class Tower implements ExistsInArena {
         this.coordinates = coordinates;
         this.imageView = imageView;
         this.coordinates.bindByImage(this.imageView);
-        this.reload = 2;
+        this.reload = 8;
         this.counter = 0;
     }
 
@@ -142,7 +142,6 @@ public abstract class Tower implements ExistsInArena {
     public int getY() { return coordinates.getY(); }
     public int getShootLimit() { return shootLimit; }
     public int getUpgradeCost() { return upgradeCost; }
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
     public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
 
     /**
@@ -156,7 +155,7 @@ public abstract class Tower implements ExistsInArena {
      * Attack the monster closest to destination and in shooting range.
      * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
-    protected abstract Projectile attackMonster();
+    public abstract Projectile attackMonster();
 
     /**
      * To determine whether the monster is in shooting range or not.
@@ -164,7 +163,7 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Monster monster){
-        return coordinates.diagonalDistanceFrom(monster) <= shootingRange ;
+        return Geometry.findEuclideanDistance(getX(),getY(),monster.getX(),monster.getY()) <= shootingRange ;
     }
 
     /**
@@ -173,7 +172,7 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Coordinates coordinate){
-        return this.coordinates.diagonalDistanceFrom(coordinate) <= shootingRange ;
+        return Geometry.findEuclideanDistance(getX(),getY(),coordinate.getX(),coordinate.getY()) <= shootingRange ;
     }
 
     /**

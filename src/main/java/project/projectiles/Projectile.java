@@ -1,7 +1,8 @@
 package project.projectiles;
 
-import project.Arena;
-import project.Coordinates;
+import javafx.scene.image.Image;
+import project.*;
+import project.monsters.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -9,6 +10,10 @@ import javax.validation.constraints.*;
 import org.apache.commons.lang3.*;
 
 import javafx.scene.image.ImageView;
+import project.towers.Tower;
+
+import java.util.EnumSet;
+import java.util.LinkedList;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
@@ -30,11 +35,17 @@ public class Projectile implements Arena.MovesInArena {
     private ImageView imageView;
 
     /**
+     * The tower that create this projectile.
+     */
+    @Transient
+    private Tower tower;
+
+    /**
      * The Arena that this projectile is attached to.
      */
     @Transient
     protected final Arena arena;
-    
+
     /**
      * Represents the position of the projectile.
      */
@@ -70,26 +81,32 @@ public class Projectile implements Arena.MovesInArena {
      */
     public Projectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int attackPower) {
         this.arena = arena;
-        this.coordinates = coordinates;
+        this.coordinates = Grid.findGridCenter(coordinates);
         this.target = target;
         this.speed = speed;
         this.attackPower = attackPower;
+        this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
+                UIController.GRID_HEIGHT/4, true, true));
+        this.coordinates.bindByImage(this.imageView);
+        LinkedList<Arena.ExistsInArena> l = arena.findObjectsInGrid(Grid.findGridCenter(coordinates), EnumSet.of(Arena.TypeFilter.Tower));
+        this.tower = (Tower)l.peek();
     }
 
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
-    public void refreshDisplay() { throw new NotImplementedException("TODO"); }
-    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
-    public void MoveOneFrame() {
-        double distance = coordinates.diagonalDistanceFrom(target);
+    public Tower getTower() { return this.tower; }
+    public int getAttackPower() { return attackPower; }
+    public void setLocation(int x, int y) { coordinates.update(new Coordinates(x, y)); }
+    public void moveOneFrame() {
+        double distance = Geometry.findEuclideanDistance(getX(),getY(),target.getX(),target.getY());
 
         if (distance <= speed)
             coordinates.update(target.getX(), target.getY());
         else {
-            int newX = coordinates.getX() + (int) (speed * Math.cos(coordinates.angleFrom(target)));
-            int newY = coordinates.getY() + (int) (speed * Math.sin(coordinates.angleFrom(target)));
+            int newX = coordinates.getX() + (int) (speed * Math.cos(Geometry.findAngleFrom(getX(),getY(),target.getX(),target.getY())));
+            int newY = coordinates.getY() + (int) (speed * Math.sin(Geometry.findAngleFrom(getX(),getY(),target.getX(),target.getY())));
             coordinates.update(newX, newY);
         }
     }
@@ -98,5 +115,5 @@ public class Projectile implements Arena.MovesInArena {
      * Determines whether the projectile has reached its target.
      * @return Whether the projectile has reached its target.
      */
-    public boolean hasReachedTarget() { return coordinates.isAt(target); }
+    public boolean hasReachedTarget() { return Geometry.isAt(getX(),getY(),target.getX(),target.getY()); }
 }

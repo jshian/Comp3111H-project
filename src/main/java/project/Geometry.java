@@ -51,7 +51,7 @@ public final class Geometry {
      * @throws UnsupportedOperationException If the two points are the same.
      */
     public static double findAngleFrom(int x1, int y1, int x2, int y2) throws UnsupportedOperationException {
-        if (x1 == y1 && x2 == y2) throw new UnsupportedOperationException("Undefined angle because the two points are the same.");
+        if (x1 == x2 && y1 == y2) throw new UnsupportedOperationException("Undefined angle because the two points are the same.");
         return math.geom2d.Angle2D.angle(x1 + 1, y1, x1, y1, x2, y2);
     }
 
