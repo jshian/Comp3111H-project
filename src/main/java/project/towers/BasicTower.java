@@ -3,6 +3,7 @@ package project.towers;
 import javafx.scene.image.ImageView;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.BasicProjectile;
 import project.projectiles.Projectile;
 
 import java.util.PriorityQueue;
@@ -70,7 +71,7 @@ public class BasicTower extends Tower {
                 if (canShoot(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new Projectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
+                    return new BasicProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
                 }
             }
         }

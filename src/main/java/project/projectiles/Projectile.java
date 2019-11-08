@@ -20,7 +20,7 @@ import java.util.LinkedList;
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public class Projectile implements Arena.MovesInArena {
+public abstract class Projectile implements Arena.MovesInArena {
     /**
      * ID for storage using Java Persistence API
      */
@@ -38,7 +38,7 @@ public class Projectile implements Arena.MovesInArena {
      * The tower that create this projectile.
      */
     @Transient
-    private Tower tower;
+    protected Tower tower;
 
     /**
      * The Arena that this projectile is attached to.
@@ -50,26 +50,26 @@ public class Projectile implements Arena.MovesInArena {
      * Represents the position of the projectile.
      */
     @NotNull
-    private Coordinates coordinates;
+    protected Coordinates coordinates;
 
     /**
      * The coordinate of Monster that the projectile is travelling towards.
      */
     @NotNull
-    private Coordinates target;
+    protected Coordinates target;
 
     /**
      * The maximum number of pixels the projectile can travel per frame.
      * Projectiles can travel diagonally.
      */
     @NotNull
-    private double speed;
+    protected double speed;
 
     /**
      * The current attack power of the projectile.
      */
     @NotNull
-    private int attackPower;
+    protected int attackPower;
 
     /**
      * Constructor for the Projectile class.
@@ -96,8 +96,6 @@ public class Projectile implements Arena.MovesInArena {
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
-    public Tower getTower() { return this.tower; }
-    public int getAttackPower() { return attackPower; }
     public void setLocation(int x, int y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public void moveOneFrame() {
@@ -111,6 +109,8 @@ public class Projectile implements Arena.MovesInArena {
             int newY = coordinates.getY() + (int) (speed * Math.sin(angleFromTarget));
             coordinates.update(newX, newY);
         }
+
+
     }
 
     /**
@@ -118,4 +118,17 @@ public class Projectile implements Arena.MovesInArena {
      * @return Whether the projectile has reached its target.
      */
     public boolean hasReachedTarget() { return Geometry.isAt(getX(), getY(), target.getX(), target.getY()); }
+
+
+    /**
+     * Accesses the tower that throws the current projectile.
+     * @return The tower that throws the current projectile.
+     */
+    public Tower getTower() { return this.tower; }
+
+    /**
+     * Accesses the attack power of the current projectile.
+     * @return The attack power of the current projectile.
+     */
+    public int getAttackPower() { return attackPower; }
 }

@@ -293,10 +293,10 @@ public class UIController {
             towerCircle.setCenterX(center.getX());
             towerCircle.setCenterY(center.getY());
             // set StrokeWidth to simulate a ring (for catapult).
-            double avgOfRangeAndLimit = (t.getShootingRange() + t.getShootLimit()) / 2;
+            double avgOfRangeAndLimit = (t.getMaxShootingRange() + t.getMinShootingRange()) / 2;
             towerCircle.setRadius(avgOfRangeAndLimit);
             towerCircle.setFill(Color.TRANSPARENT);
-            towerCircle.setStrokeWidth(t.getShootingRange() - t.getShootLimit());
+            towerCircle.setStrokeWidth(t.getMaxShootingRange() - t.getMinShootingRange());
             towerCircle.setStroke(Color.rgb(0,101,255,0.4));
             paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), towerCircle);
 
