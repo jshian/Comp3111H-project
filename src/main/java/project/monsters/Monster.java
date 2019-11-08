@@ -158,6 +158,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public Coordinates getNextFrame() { return !futurePath.isEmpty() ? futurePath.removeFirst() : null; }
 
     /**
+     * Accesses the health of the monster.
+     * @return The health of the monster.
+     */
+    public double getHealth() { return health; }
+
+    /**
      * Sets the health of the monster.
      * @param health The health of the monster.
      */
@@ -166,10 +172,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     }
 
     /**
-     * Accesses the health of the monster.
-     * @return The health of the monster.
+     * Accesses the speed of the monster.
+     * @return The speed of the monster.
      */
-    public double getHealth() { return health; }
+    public double getSpeed() { return speed; }
 
     /**
      * Sets the speed of the monster.
@@ -180,10 +186,16 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     }
 
     /**
-     * Accesses the speed of the monster.
-     * @return The speed of the monster.
+     * Accesses the status effects of the monster.
+     * @return The status effects of the monster.
      */
-    public double getSpeed() { return speed; }
+    public LinkedList<StatusEffect> getStatusEffects() { return statusEffects; }
+
+    /**
+     * Adds a status effect to the monster.
+     * @param statusEffect The status effect to add.
+     */
+    public void addStatusEffect(StatusEffect statusEffect) { this.statusEffects.add(statusEffect); }
 
     /**
      * Determines whether the monster has died.
