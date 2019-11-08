@@ -75,16 +75,15 @@ public class Coordinates implements Serializable {
      * Updates both coordinates.
      * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
      * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
-     * @exception IllegalArgumentException Either of the coordinates is outside the arena boundary (assumed to be 1px thick).
+     * @exception IllegalArgumentException Either of the coordinates is outside the arena.
      */
     public void update(int x, int y) {
-        final int BOUNDARY_THICKNESS = 1;
-        if (x < 0 - BOUNDARY_THICKNESS|| x >= UIController.ARENA_WIDTH + BOUNDARY_THICKNESS)
+        if (x < 0 || x > UIController.ARENA_WIDTH)
             throw new IllegalArgumentException(
-                String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH - 1));
-        if (y < 0 - BOUNDARY_THICKNESS || y >= UIController.ARENA_HEIGHT + BOUNDARY_THICKNESS)
+                String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH));
+        if (y < 0 || y > UIController.ARENA_HEIGHT)
             throw new IllegalArgumentException(
-                String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT - 1));
+                String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT));
 
         this.x.set(x);
         this.y.set(y);

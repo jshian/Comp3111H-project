@@ -11,13 +11,13 @@ public class CoordinatesTester {
 	public void testCoordinateConstructor() {
 		// Boundary Cases
 		Coordinates c_b1 = new Coordinates(0, 0);
-		Coordinates c_b2 = new Coordinates(0, 479);
-		Coordinates c_b3 = new Coordinates(479, 0);
-		Coordinates c_b4 = new Coordinates(479, 479);
+		Coordinates c_b2 = new Coordinates(0, 480);
+		Coordinates c_b3 = new Coordinates(480, 0);
+		Coordinates c_b4 = new Coordinates(480, 480);
 		expectedException.expect(IllegalArgumentException.class); Coordinates c_b5 = new Coordinates(-1, 0);
 		expectedException.expect(IllegalArgumentException.class); Coordinates c_b6 = new Coordinates(0, -1);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_b7 = new Coordinates(480, 0);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_b8 = new Coordinates(0, 480);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_b7 = new Coordinates(481, 0);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_b8 = new Coordinates(0, 481);
 
 		// Typical Cases
 		Coordinates c_t1 = new Coordinates(123, 407);
