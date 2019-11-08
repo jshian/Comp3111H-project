@@ -21,6 +21,18 @@ public class BasicProjectile extends Projectile{
         super(arena,coordinates,target,speed,attackPower);
     }
 
+    /**
+     * @see Projectile#Projectile(Projectile)
+     */
+    public BasicProjectile(BasicProjectile other){
+        super(other);
+    }
+
+    @Override
+    public BasicProjectile deepCopy() {
+        return new BasicProjectile(this);
+    }
+
     @Override
     public void moveOneFrame() {
         super.moveOneFrame();

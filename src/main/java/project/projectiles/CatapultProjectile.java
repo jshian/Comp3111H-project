@@ -23,6 +23,18 @@ public class CatapultProjectile extends Projectile{
         super(arena,coordinates,target,speed,attackPower);
     }
 
+    /**
+     * @see Projectile#Projectile(Projectile)
+     */
+    public CatapultProjectile(CatapultProjectile other){
+        super(other);
+    }
+
+    @Override
+    public CatapultProjectile deepCopy() {
+        return new CatapultProjectile(this);
+    }
+
     @Override
     public void moveOneFrame() {
         super.moveOneFrame();

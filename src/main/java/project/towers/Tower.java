@@ -123,6 +123,32 @@ public abstract class Tower implements ExistsInArena {
         this.coordinates.bindByImage(this.imageView);
     }
 
+    /**
+     * Copy constructor for the Tower class. Performs deep copy.
+     * @param other The other object to copy form.
+     */
+    public Tower(Tower other) {
+        this.imageView = new ImageView(other.imageView.getImage());
+        this.arena = other.arena;
+        this.coordinates = new Coordinates(other.coordinates);
+        this.attackPower = other.attackPower;
+        this.buildingCost = other.buildingCost;
+        this.maxShootingRange = other.maxShootingRange;
+        this.minShootingRange = other.minShootingRange;
+        this.attackSpeed = other.attackSpeed;
+        this.reload = other.reload;
+        this.counter = other.counter;
+        this.upgradeCost = other.upgradeCost;
+        this.hasAttack = other.hasAttack;
+        this.coordinates.bindByImage(this.imageView);
+    }
+
+    /**
+     * Creates a deep copy of the tower.
+     * @return A deep copy of the tower.
+     */
+    public abstract Tower deepCopy();
+
     // Interface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }

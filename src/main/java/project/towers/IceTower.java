@@ -56,6 +56,19 @@ public class IceTower extends Tower{
     }
 
     /**
+     * @see Tower#Tower(Tower)
+     */
+    public IceTower(IceTower other){
+        super(other);
+        this.slowDownTime = other.slowDownTime;
+    }
+
+    @Override
+    public IceTower deepCopy() {
+        return new IceTower(this);
+    }
+
+    /**
      * Ice tower increases its slow down duration when it upgraded.
      * @param player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.

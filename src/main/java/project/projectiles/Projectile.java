@@ -92,6 +92,27 @@ public abstract class Projectile implements Arena.MovesInArena {
         this.tower = (Tower)l.peek();
     }
 
+    /**
+     * Copy constructor for the Projectile class. Performs deep copy.
+     * @param other The other object to copy form.
+     */
+    public Projectile(Projectile other){
+        this.imageView = new ImageView(other.imageView.getImage());
+        this.arena = other.arena;
+        this.coordinates = new Coordinates(other.coordinates);
+        this.target = new Coordinates(other.target);
+        this.speed = other.speed;
+        this.attackPower = other.attackPower;
+        this.coordinates.bindByImage(this.imageView);
+        this.tower = other.tower;
+    }
+
+    /**
+     * Creates a deep copy of the projectile.
+     * @return A deep copy of the projectile.
+     */
+    public abstract Projectile deepCopy();
+
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }

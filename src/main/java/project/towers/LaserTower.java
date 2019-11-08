@@ -58,6 +58,21 @@ public class LaserTower extends Tower{
     }
 
     /**
+     * @see Tower#Tower(Tower)
+     */
+    public LaserTower(LaserTower other){
+        super(other);
+        this.consume = other.consume;
+        this.laserLine = new Line(other.laserLine.getStartX(),other.laserLine.getStartY(),
+                other.laserLine.getEndX(),other.laserLine.getEndY());
+    }
+
+    @Override
+    public LaserTower deepCopy() {
+        return new LaserTower(this);
+    }
+
+    /**
      * Laser tower consume player's resource to attack monster.
      * @param player The player who build the tower.
      * @return true if player has enough resources to attack, false otherwise.

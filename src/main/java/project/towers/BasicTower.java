@@ -43,6 +43,18 @@ public class BasicTower extends Tower {
     }
 
     /**
+     * @see Tower#Tower(Tower)
+     */
+    public BasicTower(BasicTower other){
+        super(other);
+    }
+
+    @Override
+    public BasicTower deepCopy() {
+        return new BasicTower(this);
+    }
+
+    /**
      * Basic tower increases its attack power when it upgraded.
      * @param  player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.

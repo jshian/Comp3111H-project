@@ -2,6 +2,7 @@ package project.projectiles;
 
 import project.*;
 import project.monsters.Monster;
+import project.towers.Tower;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -31,10 +32,23 @@ public class IceProjectile extends Projectile{
     }
 
     /**
+     * @see Projectile#Projectile(Projectile)
+     */
+    public IceProjectile(IceProjectile other){
+        super(other);
+        this.slowDownTime = other.slowDownTime;
+    }
+
+    @Override
+    public Projectile deepCopy() {
+        return new IceProjectile(this);
+    }
+
+    /**
      * get slow down time of projectile.
      * @return slow down time of projectile.
      */
-    public int getSlowDown() { return slowDownTime; }
+    public int getSlowDownTime() { return slowDownTime; }
 
     @Override
     public void moveOneFrame() {

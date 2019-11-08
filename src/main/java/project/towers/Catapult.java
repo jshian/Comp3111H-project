@@ -63,6 +63,18 @@ public class Catapult extends Tower {
     }
 
     /**
+     * @see Tower#Tower(Tower)
+     */
+    public Catapult(Catapult other){
+        super(other);
+    }
+
+    @Override
+    public Catapult deepCopy() {
+        return new Catapult(this);
+    }
+
+    /**
      * Catapult decreases its reload time when it upgraded.
      * @param player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.
