@@ -111,18 +111,21 @@ public class LaserTower extends Tower{
     @Override
     public Projectile generateProjectile(){
         if(!isReload()) {
-            Monster monster = null;
+//            Monster monster = null;
+
             for (Monster m : arena.getMonsters()) {
-                if (canShoot(m))
-                    monster = m;
+                if (canShoot(m)) {
+                    hasAttack = true;
+                    this.counter = this.reload;
+                    return new LaserProjectile(arena, this.coordinates, new Coordinates(m.getX(), m.getY()), attackPower);
+                }
+//                    monster = m;
             }
-            if (monster == null) {
-//                this.laserLine = null;
-                return null;
-            }
-            hasAttack = true;
-            this.counter = this.reload;
-            return new LaserProjectile(arena,this.coordinates,new Coordinates(monster.getX(),monster.getY()),attackPower);
+//            if (monster == null) {
+////                this.laserLine = null;
+//                return null;
+//            }
+//
 //            laserLine = arena.drawRay(this, monster);
 //
 //            PriorityQueue<Monster> monsters = arena.getMonsters();
