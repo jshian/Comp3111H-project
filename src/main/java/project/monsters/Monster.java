@@ -176,7 +176,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param speed The speed of the monster.
      */
     public void setSpeed(double speed) {
-        this.speed = speed;
+        if (speed <=0){
+            this.speed = 0;
+        }else
+            this.speed = speed;
     }
 
     /**
@@ -206,5 +209,21 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      */
     public void recalculateFuturePath() {
         futurePath = arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
+    }
+
+    /**
+     * Accesses the status effects list of monster.
+     * @return The status effects list of monster.
+     */
+    public List<StatusEffect> getStatusEffects() {
+        return statusEffects;
+    }
+
+    /**
+     * Sets the status effects list of monster.
+     * @param statusEffects The status effects list of monster.
+     */
+    public void setStatusEffects(List<StatusEffect> statusEffects) {
+        this.statusEffects = statusEffects;
     }
 }
