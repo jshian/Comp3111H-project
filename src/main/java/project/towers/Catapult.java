@@ -114,6 +114,7 @@ public class Catapult extends Tower {
             Coordinates coordinate = selectMonster(arena.getMonsters(),selectList);
             if (coordinate != null) {
                 hasAttack = true;
+                this.counter = this.reload;
                 return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower,damageRange);
             }
         }
