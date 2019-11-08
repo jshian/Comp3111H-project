@@ -29,11 +29,12 @@ public class Fox extends Monster {
     public Fox(Fox other) {
         super(other);
     }
-
-    /**
-     * get class name.
-     * @return class name.
-     */
+    
+    @Override
+    public Fox deepCopy() {
+        return new Fox(this);
+    }
+    
     @Override
     public String getClassName() { return "Fox"; }
 
