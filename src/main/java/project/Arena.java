@@ -1105,7 +1105,7 @@ public final class Arena {
         circle.setCenterX(source.getX());
         circle.setCenterY(source.getY());
         circle.setRadius(damageRange);
-        circle.setFill(Color.rgb(100,0,0));
+        circle.setFill(Color.rgb(255, 255, 0));
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
     }
