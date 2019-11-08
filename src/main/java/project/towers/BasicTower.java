@@ -21,7 +21,7 @@ public class BasicTower extends Tower {
         super(arena, coordinates);
         this.attackPower = 10;
         this.buildingCost = 10;
-        this.shootingRange = 65;
+        this.maxShootingRange = 65;
         this.attackSpeed = 5;
         this.upgradeCost = 10;
     }
@@ -36,7 +36,7 @@ public class BasicTower extends Tower {
         super(arena, coordinates, imageView);
         this.attackPower = 10;
         this.buildingCost = 10;
-        this.shootingRange = 65;
+        this.maxShootingRange = 65;
         this.attackSpeed = 5;
         this.upgradeCost = 10;
     }
@@ -49,7 +49,9 @@ public class BasicTower extends Tower {
     @Override
     public boolean upgrade(int resource){
         if(resource >= this.upgradeCost){
-            this.attackPower+=5;
+            if(this.attackPower+5>=maxAttackPower)
+                this.attackPower = maxAttackPower;
+            else this.attackPower += 5;
             return true;
         }
         return false;
@@ -66,6 +68,7 @@ public class BasicTower extends Tower {
             for (Monster m : monsters) {
                 if (canShoot(m)) {
                     this.hasAttack = true;
+                    this.counter = this.reload;
                     return new Projectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
                 }
             }
@@ -78,7 +81,7 @@ public class BasicTower extends Tower {
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s", this.attackPower,
-                this.buildingCost, this.shootingRange);
+        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]", this.attackPower,
+                this.buildingCost, this.minShootingRange,this.maxShootingRange);
     }
 }
