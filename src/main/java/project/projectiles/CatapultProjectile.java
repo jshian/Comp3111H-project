@@ -3,7 +3,6 @@ package project.projectiles;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
-import project.towers.Catapult;
 
 import java.util.EnumSet;
 import java.util.LinkedList;

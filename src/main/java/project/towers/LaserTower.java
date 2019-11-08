@@ -5,6 +5,7 @@ import javafx.scene.shape.Line;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.LaserProjectile;
 import project.projectiles.Projectile;
 
 import java.util.PriorityQueue;
@@ -20,11 +21,11 @@ public class LaserTower extends Tower{
      */
     private int consume;
 
-
-    /**
-     * The laser display on the arena.
-     */
-    private Line laserLine;
+//
+//    /**
+//     * The laser display on the arena.
+//     */
+//    private Line laserLine;
 
 
     /**
@@ -64,8 +65,8 @@ public class LaserTower extends Tower{
     public LaserTower(@NonNull LaserTower other){
         super(other);
         this.consume = other.consume;
-        this.laserLine = new Line(other.laserLine.getStartX(),other.laserLine.getStartY(),
-                other.laserLine.getEndX(),other.laserLine.getEndY());
+//        this.laserLine = new Line(other.laserLine.getStartX(),other.laserLine.getStartY(),
+//                other.laserLine.getEndX(),other.laserLine.getEndY());
     }
 
     @Override
@@ -116,32 +117,33 @@ public class LaserTower extends Tower{
                     monster = m;
             }
             if (monster == null) {
-                this.laserLine = null;
+//                this.laserLine = null;
                 return null;
             }
             hasAttack = true;
             this.counter = this.reload;
-            laserLine = arena.drawRay(this, monster);
-
-            PriorityQueue<Monster> monsters = arena.getMonsters();
-            for (Monster m : monsters) {
-                if (Geometry.isInRay(m.getX(),m.getY(), getX(),getY(),monster.getX(),monster.getY(), 3)) {
-                    m.setHealth(m.getHealth() - this.attackPower);
-                    System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
-                            , m.getClassName(), m.getX(), m.getY()));
-                }
-            }
-        } else {
-            this.laserLine = null;
+            return new LaserProjectile(arena,this.coordinates,new Coordinates(monster.getX(),monster.getY()),attackPower);
+//            laserLine = arena.drawRay(this, monster);
+//
+//            PriorityQueue<Monster> monsters = arena.getMonsters();
+//            for (Monster m : monsters) {
+//                if (Geometry.isInRay(m.getX(),m.getY(), getX(),getY(),monster.getX(),monster.getY(), 3)) {
+//                    m.setHealth(m.getHealth() - this.attackPower);
+//                    System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
+//                            , m.getClassName(), m.getX(), m.getY()));
+//                }
+//            }
+//        } else {
+//            this.laserLine = null;
         }
         return null;
     }
 
-    /**
-     * Get the laserLine.
-     * @return get the laserLine
-     */
-    public Line getLaserLine() { return this.laserLine;}
+//    /**
+//     * Get the laserLine.
+//     * @return get the laserLine
+//     */
+//    public Line getLaserLine() { return this.laserLine;}
 
 
     /**

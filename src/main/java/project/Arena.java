@@ -2,6 +2,8 @@ package project;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -94,20 +96,20 @@ public final class Arena {
      */
     private LinkedList<Projectile> projectiles = new LinkedList<>();
 
-    /**
-     * Contains a reference to each laser shot by LaserTower on the arena.
-     */
-    private HashMap<Line, Integer> lasers = new HashMap<>();
+//    /**
+//     * Contains a reference to each laser shot by LaserTower on the arena.
+//     */
+//    private HashMap<Line, Integer> lasers = new HashMap<>();
+//
+//    /**
+//     * Contains a reference explosion of monster when it died.
+//     */
+//    private HashMap<ImageView, Integer> explosions = new HashMap<>();
 
     /**
-     * Contains a reference explosion of monster when it died.
+     * Contains a reference to line, circle, and image view on the arena.
      */
-    private HashMap<ImageView, Integer> explosions = new HashMap<>();
-
-    /**
-     * Contains a reference to each circle shot by Catapult on the arena.
-     */
-    private HashMap<Circle, Integer> circles = new HashMap<>();
+    private HashMap<Node, Integer> toRemove = new HashMap<>();
 
     /**
      * Contains a reference to each Monster on the arena.
@@ -382,14 +384,19 @@ public final class Arena {
             this.projectiles.add(p.deepCopy());
         }
 
-        this.lasers = new HashMap<>();
-        for (HashMap.Entry<Line, Integer> entry : other.lasers.entrySet()) {
-            this.lasers.put(entry.getKey(), entry.getValue());
-        }
+//        this.lasers = new HashMap<>();
+//        for (HashMap.Entry<Line, Integer> entry : other.lasers.entrySet()) {
+//            this.lasers.put(entry.getKey(), entry.getValue());
+//        }
+//
+//        this.explosions = new HashMap<>();
+//        for (HashMap.Entry<ImageView, Integer> entry : other.explosions.entrySet()) {
+//            this.explosions.put(entry.getKey(), entry.getValue());
+//        }
 
-        this.explosions = new HashMap<>();
-        for (HashMap.Entry<ImageView, Integer> entry : other.explosions.entrySet()) {
-            this.explosions.put(entry.getKey(), entry.getValue());
+        this.toRemove = new HashMap<>();
+        for (HashMap.Entry<Node, Integer> entry : other.toRemove.entrySet()) {
+            this.toRemove.put(entry.getKey(), entry.getValue());
         }
 
         this.monsters = new PriorityQueue<>();
@@ -750,23 +757,23 @@ public final class Arena {
      */
     public void createProjectile(@NonNull Tower t)
     {
-        // laser tower
-        if (t instanceof LaserTower) {
-            ((LaserTower) t).attackMonster();
-            Line laserLine = ((LaserTower) t).getLaserLine();
-            if (laserLine != null && !lasers.containsKey(laserLine)) {
-                lasers.put(laserLine, currentFrame);
-                paneArena.getChildren().add(laserLine);
-            }
-
-        } else { // other towers
+//        // laser tower
+//        if (t instanceof LaserTower) {
+//            ((LaserTower) t).attackMonster();
+//            Line laserLine = ((LaserTower) t).getLaserLine();
+//            if (laserLine != null && !lasers.containsKey(laserLine)) {
+//                lasers.put(laserLine, currentFrame);
+//                paneArena.getChildren().add(laserLine);
+//            }
+//
+//        } else { // other towers
             Projectile p = t.attackMonster();
             if (p != null) {
                 paneArena.getChildren().add(p.getImageView());
                 projectiles.add(p);
                 getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
             }
-        }
+//        }
     }
 
     /**
@@ -905,34 +912,44 @@ public final class Arena {
     }
 
     /**
-     * remove laser and explosion that generate a few frames ago.
+     * remove laser, circle and explosion that generate a few frames ago.
      */
-    private void removeLaser() {
-        // remove previous lasers and explosion from arena
-        List<Line> toRemove = new ArrayList();
-        for(Map.Entry<Line, Integer> entry : lasers.entrySet()) {
-            Line key = entry.getKey();
+    private void remove() {
+        for(Map.Entry<Node, Integer> entry : toRemove.entrySet()) {
+            Node key = entry.getKey();
             Integer value = entry.getValue();
-            if (value < currentFrame - LASER_DURATION) {
-                toRemove.add(key);
+            if (value > 0 ) {
+                entry.setValue(--value);
+            }else {
+                toRemove.remove(key);
+                paneArena.getChildren().remove(key);
             }
         }
-        for (Line key : toRemove) {
-            lasers.remove(key);
-            paneArena.getChildren().remove(key);
-        }
-        List<ImageView> toRemove2 = new ArrayList();
-        for(Map.Entry<ImageView, Integer> entry : explosions.entrySet()) {
-            ImageView key = entry.getKey();
-            Integer value = entry.getValue();
-            if (value < currentFrame - LASER_DURATION) {
-                toRemove2.add(key);
-            }
-        }
-        for (ImageView key : toRemove2) {
-            lasers.remove(key);
-            paneArena.getChildren().remove(key);
-        }
+        // remove previous lasers， circle and explosion from arena
+//        List<Line> toRemove = new ArrayList();
+//        for(Map.Entry<Line, Integer> entry : lasers.entrySet()) {
+//            Line key = entry.getKey();
+//            Integer value = entry.getValue();
+//            if (value < currentFrame - LASER_DURATION) {
+//                toRemove.add(key);
+//            }
+//        }
+//        for (Line key : toRemove) {
+//            lasers.remove(key);
+//            paneArena.getChildren().remove(key);
+//        }
+//        List<ImageView> toRemove2 = new ArrayList();
+//        for(Map.Entry<ImageView, Integer> entry : explosions.entrySet()) {
+//            ImageView key = entry.getKey();
+//            Integer value = entry.getValue();
+//            if (value < currentFrame - LASER_DURATION) {
+//                toRemove2.add(key);
+//            }
+//        }
+//        for (ImageView key : toRemove2) {
+//            lasers.remove(key);
+//            paneArena.getChildren().remove(key);
+//        }
     }
 
     /**
@@ -1008,7 +1025,7 @@ public final class Arena {
                     , UIController.GRID_WIDTH, true, true));
             c.bindByImage(explosion);
             paneArena.getChildren().add(explosion);
-            explosions.put(explosion, currentFrame);
+            toRemove.put(explosion, LASER_DURATION);
         }
 
     }
@@ -1025,16 +1042,7 @@ public final class Arena {
         if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
             return true;
 
-        //remove circle
-        for(Map.Entry<Circle, Integer> c : circles.entrySet()) {
-            Circle key = c.getKey();
-            Integer value = c.getValue();
-            if (value == 0) {
-                circles.remove(key);
-                paneArena.getChildren().remove(key);
-            }else c.setValue(0);
-        }
-        removeLaser();
+        remove();
         attackMonster();
 
 //        for (Monster m : currentState.monsters) {
@@ -1064,14 +1072,15 @@ public final class Arena {
      * @param target The target of the ray.
      * @return The instance of the ray.
      */
-    public Line drawRay(@NonNull ExistsInArena source, @NonNull ExistsInArena target) {
+    public void drawRay(@NonNull ExistsInArena source, @NonNull ExistsInArena target) {
         Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
                                                     0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
         
         Line ray = new Line(source.getX(), source.getY(), edgePt.getX(), edgePt.getY());
         ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
         ray.setStrokeWidth(3);
-        return ray;
+        toRemove.put(ray, LASER_DURATION);
+        paneArena.getChildren().add(ray);
     }
 
     /**
@@ -1080,14 +1089,15 @@ public final class Arena {
      * @param target The target of the ray.
      * @return The instance of the ray.
      */
-    public Line drawRay(@NonNull Coordinates source, @NonNull Coordinates target) {
+    public void drawRay(@NonNull Coordinates source, @NonNull Coordinates target) {
         Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
                                                     0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
         
         Line ray = new Line(source.getX(), source.getY(), edgePt.getX(), edgePt.getY());
         ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
         ray.setStrokeWidth(3);
-        return ray;
+        toRemove.put(ray, LASER_DURATION);
+        paneArena.getChildren().add(ray);
     }
 
     public void drawCircle(@NonNull Coordinates source, @NonNull int damageRange){
@@ -1097,7 +1107,7 @@ public final class Arena {
         circle.setRadius(damageRange);
         circle.setFill(Color.rgb(100,0,0));
         paneArena.getChildren().add(circle);
-        circles.put(circle,1);
+        toRemove.put(circle,1);
     }
 
     /**
