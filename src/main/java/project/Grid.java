@@ -88,7 +88,7 @@ public class Grid {
      * @return The x-position of the grid, where 0 is left-most, increasing towards the right.
      */
     public static int findGridXPos(@NonNull Coordinates coordinates) {
-        return coordinates.getX() / UIController.GRID_WIDTH;
+        return Math.min(coordinates.getX() / UIController.GRID_WIDTH, UIController.MAX_H_NUM_GRID - 1);
     }
 
     /**
@@ -97,7 +97,7 @@ public class Grid {
      * @return The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      */
     public static int findGridYPos(@NonNull Coordinates coordinates) {
-        return coordinates.getY() / UIController.GRID_HEIGHT;
+        return Math.min(coordinates.getY() / UIController.GRID_HEIGHT, UIController.MAX_V_NUM_GRID - 1);
     }
 
     /**
