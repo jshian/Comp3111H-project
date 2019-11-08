@@ -2,7 +2,6 @@ package project.towers;
 
 import project.Arena.ExistsInArena;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;

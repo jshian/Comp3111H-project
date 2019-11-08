@@ -7,7 +7,6 @@ import project.monsters.Monster;
 import project.projectiles.BasicProjectile;
 import project.projectiles.Projectile;
 
-import java.util.PriorityQueue;
 
 /**
  * Basic tower has no any special ability.
