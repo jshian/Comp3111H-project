@@ -26,9 +26,9 @@ public class IceTower extends Tower{
      */
     public IceTower(Arena arena, Coordinates coordinates){
         super(arena, coordinates);
-        this.attackPower = 5;
+        this.attackPower = 0;
         this.buildingCost = 15;
-        this.shootingRange = 50;
+        this.maxShootingRange = 50;
         this.slowDown = 10;
         this.attackSpeed = 5;
         this.upgradeCost = 10;
@@ -42,9 +42,9 @@ public class IceTower extends Tower{
      */
     public IceTower(Arena arena, Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
-        this.attackPower = 5;
+        this.attackPower = 0;
         this.buildingCost = 15;
-        this.shootingRange = 50;
+        this.maxShootingRange = 50;
         this.slowDown = 10;
         this.attackSpeed = 5;
         this.upgradeCost = 10;
@@ -75,6 +75,7 @@ public class IceTower extends Tower{
             for (Monster m : monsters) {
                 if (canShoot(m)) {
                     this.hasAttack = true;
+                    this.counter = this.reload;
                     return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);
                 }
             }
@@ -87,8 +88,8 @@ public class IceTower extends Tower{
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\n"
-                + "slow down: %s", this.attackPower, this.buildingCost, this.shootingRange,
-                this.slowDown);
+        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]\n"
+                + "slow down: %s", this.attackPower, this.buildingCost, this.minShootingRange,
+                this.maxShootingRange,this.slowDown);
     }
 }
