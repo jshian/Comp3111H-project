@@ -93,6 +93,7 @@ public abstract class Tower implements ExistsInArena {
     /**
      * The resources needed to upgrade the tower
      */
+    @NotNull
     protected int upgradeCost = 10;
 
     /**
@@ -131,10 +132,10 @@ public abstract class Tower implements ExistsInArena {
 
     /**
      * Upgrade the tower by adding the power, slow duration, reload time etc.
-     * @param resource The resources needed for tower to upgrade.
+     * @param player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.
      */
-    public abstract boolean upgrade(int resource);
+    public abstract boolean upgrade(Player player);
 
     /**
      * Attack the monster closest to destination and in shooting range.
@@ -204,7 +205,7 @@ public abstract class Tower implements ExistsInArena {
     }
 
     /**
-     * Accesses the reload time of the tower
+     * Accesses the reload time of the tower.
      * @return The reload time of the tower.
      */
     public int getReload() {
@@ -220,7 +221,7 @@ public abstract class Tower implements ExistsInArena {
     }
 
     /**
-     * Tower has the reload time to do next attack
+     * Tower has the reload time to do next attack.
      * @return whether the tower is reloading or not.
      */
     public boolean isReload(){

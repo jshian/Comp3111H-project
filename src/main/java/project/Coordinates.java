@@ -5,6 +5,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
 import project.Arena.ExistsInArena;
 
 import java.io.Serializable;

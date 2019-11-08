@@ -132,7 +132,7 @@ public final class Arena {
 
     /**
      * Finds the grids that may be within a specified distance of a specified pixel.
-     * @param The coordinates of the pixel.
+     * @param coordinates The coordinates of the pixel.
      * @param range The maximum allowable distance.
      * @return A linked list containing references to the conservative estimate of the grids that are within a specified distance of the specified pixel.
      */
@@ -566,8 +566,8 @@ public final class Arena {
         for (Tower t : towers) {
             int towerX = t.getX();
             int towerY = t.getY();
-            int minRange = t.getShootLimit();
-            int maxRange = t.getShootingRange();
+            int minRange = t.getMinShootingRange();
+            int maxRange = t.getMaxShootingRange();
 
             if (!Geometry.isInCircle(x, y, towerX, towerY, minRange)
                 && Geometry.isInCircle(x, y, towerX, towerY, maxRange))
@@ -691,13 +691,7 @@ public final class Arena {
      * @return true if upgrade is successful, false if player don't have enough resources.
      */
     public boolean upgradeTower(@NonNull Tower t) {
-        boolean canBuild = t.upgrade(player.getResources());
-        if (canBuild) {
-            player.spendResources(t.getUpgradeCost());
-            return true;
-        } else {
-            return false;
-        }
+        return t.upgrade(player);
     }
 
     /**

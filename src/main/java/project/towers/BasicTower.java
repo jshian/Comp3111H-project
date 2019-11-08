@@ -43,12 +43,13 @@ public class BasicTower extends Tower {
 
     /**
      * Basic tower increases its attack power when it upgraded.
-     * @param resource The resources needed for tower to upgrade.
+     * @param  player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
-    public boolean upgrade(int resource){
-        if(resource >= this.upgradeCost){
+    public boolean upgrade(Player player){
+        if(player.hasResources(upgradeCost)){
+            player.spendResources(upgradeCost);
             if(this.attackPower+5>=maxAttackPower)
                 this.attackPower = maxAttackPower;
             else this.attackPower += 5;

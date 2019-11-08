@@ -14,7 +14,12 @@ import java.util.PriorityQueue;
 public class IceTower extends Tower{
 
     /**
-     * The slow down duration of ice tower.
+     * The maximum slow down duration of the tower.
+     */
+    private int maxSlowDown;
+
+    /**
+     * The current slow down duration of ice tower. It cannot go beyond {@link #maxSlowDown}.
      */
     private int slowDown;
 
@@ -52,13 +57,16 @@ public class IceTower extends Tower{
 
     /**
      * Ice tower increases its slow down duration when it upgraded.
-     * @param resource The resources needed for tower to upgrade.
+     * @param player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
-    public boolean upgrade(int resource){
-        if(resource >= this.upgradeCost){
-            this.slowDown+=5;
+    public boolean upgrade(Player player){
+        if(player.hasResources(upgradeCost)){
+            player.spendResources(upgradeCost);
+            if(this.slowDown+5 >= maxSlowDown){
+                this.slowDown = maxSlowDown;
+            }else this.slowDown+=5;
             return true;
         }
         return false;
