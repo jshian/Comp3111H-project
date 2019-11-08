@@ -937,6 +937,7 @@ public final class Arena {
         // towers attack monsters
         for (Tower t : towers) {
             createProjectile(t);
+            objectNextFrame(t);
         }
 
         // turn monster with 0hp to explosion.png
