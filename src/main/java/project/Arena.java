@@ -940,12 +940,12 @@ public final class Arena {
      */
     private void attackMonster() {
         // update projectile
-        List<Projectile> toRemove3 = new ArrayList();
+//        List<Projectile> toRemove3 = new ArrayList();
         for (Projectile p : projectiles) {
 
             moveProjectile(p);
             // when projectile reach its destination
-            if (p.hasReachedTarget()) {
+            //if (p.hasReachedTarget()) {
 //                // find monster in target grid
 //                Coordinates targetCoordinates = new Coordinates(p.getX(), p.getY());
 //                LinkedList<ExistsInArena> targets = findObjectsInGrid(targetCoordinates, EnumSet.of(TypeFilter.Monster));
@@ -981,13 +981,13 @@ public final class Arena {
 //                        }
 //                    }
 //                }
-                toRemove3.add(p);
-            }
+               // toRemove3.add(p);
+           // }
         }
         // remove projectiles that reach its destination.
-        for (Projectile p : toRemove3) {
-            removeProjectile(p);
-        }
+//        for (Projectile p : toRemove3) {
+//            removeProjectile(p);
+//        }
 
         // towers attack monsters
         for (Tower t : towers) {
@@ -1010,14 +1010,6 @@ public final class Arena {
             paneArena.getChildren().add(explosion);
             explosions.put(explosion, currentFrame);
         }
-        for(Map.Entry<Circle, Integer> c : circles.entrySet()) {
-            Circle key = c.getKey();
-            Integer value = c.getValue();
-            if (value == 0) {
-                circles.remove(key);
-                paneArena.getChildren().remove(key);
-            }else c.setValue(0);
-        }
 
     }
 
@@ -1033,6 +1025,15 @@ public final class Arena {
         if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
             return true;
 
+        //remove circle
+        for(Map.Entry<Circle, Integer> c : circles.entrySet()) {
+            Circle key = c.getKey();
+            Integer value = c.getValue();
+            if (value == 0) {
+                circles.remove(key);
+                paneArena.getChildren().remove(key);
+            }else c.setValue(0);
+        }
         removeLaser();
         attackMonster();
 
