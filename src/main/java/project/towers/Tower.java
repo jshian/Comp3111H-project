@@ -158,7 +158,6 @@ public abstract class Tower implements ExistsInArena {
     public void nextFrame() {
         if (hasAttack) {
             if (this.counter == 0) {
-                this.counter = this.reload;
                 this.hasAttack = false;
             } else {
                 this.counter--;
