@@ -64,7 +64,6 @@ public class IceProjectile extends Projectile{
                             , target.getClassName(), target.getX(), target.getY()));
                 }
             }
-            arena.removeProjectile(this);
         }
     }
 }

@@ -979,9 +979,13 @@ public final class Arena {
     private void attackMonster() {
         // update projectile
 //        List<Projectile> toRemove3 = new ArrayList();
+        List<Projectile> remove = new ArrayList<>();
         for (Projectile p : projectiles) {
 
             objectNextFrame(p);
+            if (p.hasReachedTarget()) {
+                remove.add(p);
+            }
             // when projectile reach its destination
             //if (p.hasReachedTarget()) {
 //                // find monster in target grid
@@ -1021,6 +1025,10 @@ public final class Arena {
 //                }
                // toRemove3.add(p);
            // }
+        }
+
+        for (Projectile p : remove) {
+            removeProjectile(p);
         }
         // remove projectiles that reach its destination.
 //        for (Projectile p : toRemove3) {

@@ -35,17 +35,18 @@ public class LaserProjectile extends Projectile{
     }
 
     @Override
-    public void moveOneFrame() {
+    public void nextFrame() {
         arena.drawRay(tower, target);
 
         PriorityQueue<Monster> monsters = arena.getMonsters();
         for (Monster m : monsters) {
             if (Geometry.isInRay(m.getX(),m.getY(), tower.getX(),tower.getY(),target.getX(),target.getY(), 3)) {
-                m.setHealth(m.getHealth() - this.attackPower);
+                m.takeDamage(m.getHealth() - this.attackPower);
                 System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
                         , m.getClassName(), m.getX(), m.getY()));
             }
         }
-        arena.removeProjectile(this);
+
+        coordinates.update(target.getX(),target.getY());//make sure hasReachedTarget return true
     }
 }

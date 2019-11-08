@@ -56,7 +56,6 @@ public class CatapultProjectile extends Projectile{
                             , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
                 }
             }
-            arena.removeProjectile(this);
         }
     }
 }
