@@ -110,7 +110,8 @@ public class Catapult extends Tower {
     @Override
     public CatapultProjectile attackMonster(){
         if(!isReload()) {
-            Coordinates coordinate = selectMonster(arena.getMonsters());
+            LinkedList<Arena.ExistsInArena> selectList = new LinkedList<>();
+            Coordinates coordinate = selectMonster(arena.getMonsters(),selectList);
             if (coordinate != null) {
                 hasAttack = true;
                 counter = this.reload;//start reload
@@ -124,9 +125,10 @@ public class Catapult extends Tower {
      * Find a coordinate as the center of a circle with radius 25px that contains most monster.
      * The monster nearest to the end zone and in Catapult's shooting range will be include in the circle.
      * @param monsters The monsters exist in Arena.
+     * @param selectList The list of attacked monster in current position (used for testing).
      * @return The coordinate that will be attacked by Catapult.
      */
-    public Coordinates selectMonster(PriorityQueue<Monster> monsters){
+    public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<Arena.ExistsInArena> selectList){
         LinkedList<Monster> nearestMon=new LinkedList<>();
         double nearest=0;
         //find nearest to destination monster in shooting range
@@ -154,6 +156,7 @@ public class Catapult extends Tower {
                         if(count < monInCircle.size()){
                             count=monInCircle.size();
                             target = c;
+                            selectList.addAll(monInCircle);
                         }
                     }
                 }
