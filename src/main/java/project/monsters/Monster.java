@@ -8,7 +8,6 @@ import java.util.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.apache.commons.lang3.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -125,19 +124,19 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.coordinates.bindByImage(this.imageView);
 
         this.futurePath = new LinkedList<>();
-        for (Coordinates c : other.futurePath) this.futurePath.add(c);
+        for (Coordinates c : other.futurePath) this.futurePath.add(new Coordinates(c));
 
         this.statusEffects = new LinkedList<>();
-        for (StatusEffect se : other.statusEffects) this.statusEffects.add(se);
-
+        for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
     
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
-    public void setLocation(int x, int y) { coordinates.update(x, y); }
-    public void moveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
+    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+    public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**

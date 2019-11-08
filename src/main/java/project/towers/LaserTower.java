@@ -100,12 +100,7 @@ public class LaserTower extends Tower{
                 return null;
             }
             hasAttack = true;
-            Coordinates currentPt = new Coordinates(getX(), getY());
-            javafx.geometry.Point2D edgePt = Geometry.intersectBox(getX(),getY(),monster.getX(),monster.getY(),0,0,
-                    UIController.ARENA_WIDTH,UIController.ARENA_HEIGHT);
-            laserLine = new Line(currentPt.getX(), currentPt.getY(), edgePt.getX(), edgePt.getY());
-            laserLine.setStroke(javafx.scene.paint.Color.rgb(255,255,0));
-            laserLine.setStrokeWidth(3);
+            laserLine = arena.drawRay(this, monster);
 
             PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : monsters) {
@@ -122,13 +117,14 @@ public class LaserTower extends Tower{
     }
 
     /**
-     * get the laserLine.
+     * Get the laserLine.
      * @return get the laserLine
      */
     public Line getLaserLine() { return this.laserLine;}
 
 
-    /**Accesses the information of tower.
+    /**
+     * Accesses the information of tower.
      * @return the information of tower.
      */
     @Override

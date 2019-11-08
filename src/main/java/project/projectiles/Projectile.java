@@ -7,7 +7,7 @@ import project.monsters.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.apache.commons.lang3.*;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.towers.Tower;
@@ -98,15 +98,17 @@ public class Projectile implements Arena.MovesInArena {
     public int getY() { return coordinates.getY(); }
     public Tower getTower() { return this.tower; }
     public int getAttackPower() { return attackPower; }
-    public void setLocation(int x, int y) { coordinates.update(new Coordinates(x, y)); }
+    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public void moveOneFrame() {
-        double distance = Geometry.findEuclideanDistance(getX(),getY(),target.getX(),target.getY());
+        double distance = Geometry.findEuclideanDistance(getX(), getY(), target.getX(), target.getY());
 
         if (distance <= speed)
             coordinates.update(target.getX(), target.getY());
         else {
-            int newX = coordinates.getX() + (int) (speed * Math.cos(Geometry.findAngleFrom(getX(),getY(),target.getX(),target.getY())));
-            int newY = coordinates.getY() + (int) (speed * Math.sin(Geometry.findAngleFrom(getX(),getY(),target.getX(),target.getY())));
+            double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), target.getX(), target.getY());
+            int newX = coordinates.getX() + (int) (speed * Math.cos(angleFromTarget));
+            int newY = coordinates.getY() + (int) (speed * Math.sin(angleFromTarget));
             coordinates.update(newX, newY);
         }
     }
@@ -115,5 +117,5 @@ public class Projectile implements Arena.MovesInArena {
      * Determines whether the projectile has reached its target.
      * @return Whether the projectile has reached its target.
      */
-    public boolean hasReachedTarget() { return Geometry.isAt(getX(),getY(),target.getX(),target.getY()); }
+    public boolean hasReachedTarget() { return Geometry.isAt(getX(), getY(), target.getX(), target.getY()); }
 }

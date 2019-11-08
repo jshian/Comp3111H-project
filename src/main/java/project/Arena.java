@@ -3,6 +3,7 @@ package project;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -125,18 +126,18 @@ public final class Arena {
      * Accesses the grid that contains the specified pixel.
      * @param coordinates The coordinates of the pixel.
      */
-    private Grid getGrid(Coordinates coordinates) {
+    private Grid getGrid(@NonNull Coordinates coordinates) {
         return grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
     }
 
-        /**
-         * Finds the grids that may be within a specified distance of a specified pixel.
-         * @param coordinates The coordinates of the pixel.
-         * @param range The maximum allowable distance.
-         * @return A linked list containing references to the conservative estimate of the grids that are within a specified distance of the specified pixel.
-         */
-        private LinkedList<Grid> getPotentialGridsInRange(Coordinates coordinates, double range) {
-            LinkedList<Grid> result = new LinkedList<>();
+    /**
+     * Finds the grids that may be within a specified distance of a specified pixel.
+     * @param The coordinates of the pixel.
+     * @param range The maximum allowable distance.
+     * @return A linked list containing references to the conservative estimate of the grids that are within a specified distance of the specified pixel.
+     */
+    private LinkedList<Grid> getPotentialGridsInRange(@NonNull Coordinates coordinates, double range) {
+        LinkedList<Grid> result = new LinkedList<>();
 
         for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
             for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
@@ -159,6 +160,7 @@ public final class Arena {
     /**
      * Stores the cost for a monster in each pixel to reach the end-zone due to movement. Indices correspond to the x- and y- coordinates.
      * The cost is in terms of per unit speed of the monster.
+     * This is essentially a potential field for determining monster movement.
      * @see Monster
      * @see Coordinates
      */
@@ -167,6 +169,7 @@ public final class Arena {
     /**
      * Stores the cost for a monster in each pixel to reach the end-zone due to movement and being attacked. Indices correspond to the x- and y- coordinates.
      * The cost is in terms of per unit speed of the monster.
+     * This is essentially a potential field for determining monster movement.
      * @see Monster
      * @see Coordinates
      */
@@ -266,30 +269,37 @@ public final class Arena {
      * @param obj The object to add.
      * @throws IllegalArgumentException The object type is not recognized.
      */
-    private void addObjectToCurrentState(ExistsInArena obj) {
+    private void addObject(@NonNull ExistsInArena obj) {
         if (obj instanceof Tower) {
-            if (!towers.contains(obj))
+            if (!towers.contains(obj)) {
                 towers.add((Tower)obj);
+            }
         } else if (obj instanceof Projectile) {
-            if (!projectiles.contains(obj))
+            if (!projectiles.contains(obj)) {
                 projectiles.add((Projectile)obj);
+            }
         } else if (obj instanceof Monster) {
-            if (!monsters.contains(obj))
+            if (!monsters.contains(obj)) {
                 monsters.add((Monster)obj);
+            }
         } else {
             throw new IllegalArgumentException("The object type is not recognized");
         }
 
         Coordinates c = new Coordinates(obj.getX(), obj.getY());
         getGrid(c).addObject(obj);
+
+        if (obj instanceof Tower) {
+            updateCosts();
+        }
     }
 
     /**
-     * Removes an object to the current arena state.
+     * Removes an object from the arena.
      * @param obj The object to remove.
      * @throws IllegalArgumentException The object type is not recognized.
      */
-    private void removeObjectFromCurrentState(ExistsInArena obj) {
+    private void removeObject(@NonNull ExistsInArena obj) {
         if (obj instanceof Tower) {
             towers.remove((Tower)obj);
         } else if (obj instanceof Projectile) {
@@ -302,6 +312,26 @@ public final class Arena {
 
         Coordinates c = new Coordinates(obj.getX(), obj.getY());
         getGrid(c).removeObject(obj);
+
+        if (obj instanceof Tower) {
+            updateCosts();
+        }
+    }
+
+    /**
+     * Moves an object to another location in the arena.
+     * @param obj The object to move.
+     * @param newCoordinates The coordinates of the new location.
+     * @throws IllegalArgumentException The object type is not recognized.
+     */
+    private void moveObject(@NonNull ExistsInArena obj, @NonNull Coordinates newCoordinates)
+    {
+        Coordinates c = new Coordinates(obj.getX(), obj.getY());
+        getGrid(c).removeObject(obj);
+
+        obj.setLocation(newCoordinates);
+
+        getGrid(newCoordinates).addObject(obj);
     }
 
     /**
@@ -339,8 +369,10 @@ public final class Arena {
 
         this.towers = new LinkedList<>();
         for (Tower t : other.towers) {
-
+            
         }
+
+        throw new NotImplementedException("TODO");
     }
 
     /**
@@ -645,8 +677,7 @@ public final class Arena {
 
         if (player.hasResources(cost)) {
             player.spendResources(cost);
-            towers.add(t);
-            getGrid(coordinates).addObject(t);
+            addObject(t);
             return t;
         } else {
             return null;
@@ -676,8 +707,7 @@ public final class Arena {
     public void destroyTower(@NonNull Tower tower)
     {
         paneArena.getChildren().remove(tower.getImageView());
-        getGrid(new Coordinates(tower.getX(), tower.getY())).removeObject(tower);
-        towers.remove(tower);
+        removeObject(tower);
     }
 
     /**
@@ -722,8 +752,7 @@ public final class Arena {
     public void removeProjectile(@NonNull Projectile projectile)
     {
         paneArena.getChildren().remove(projectile.getImageView());
-        getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
-        projectiles.remove(projectile);
+        removeObject(projectile);
     }
 
     /**
@@ -767,9 +796,9 @@ public final class Arena {
         }
         if (m == null)
             return null;
+            
         paneArena.getChildren().add(iv);
-        monsters.add(m);
-        getGrid(STARTING_COORDINATES).addObject(m);
+        addObject(m);
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
 
         return m;
@@ -782,24 +811,17 @@ public final class Arena {
     public void removeMonster(@NonNull Monster monster)
     {
         paneArena.getChildren().remove(monster.getImageView());
-        getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
-        monsters.remove(monster);
+        removeObject(monster);
     }
 
     /**
-     * Moves the specified Monster to another location.
+     * Moves the specified Monster to another location in the arena.
      * @param monster The Monster to be moved.
      * @param newCoordinates The coordinates of the new location.
      */
     public void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates)
     {
-        getGrid(new Coordinates(monster.getX(), monster.getY())).removeObject(monster);
-
-        int newX = newCoordinates.getX();
-        int newY = newCoordinates.getY();
-        monster.setLocation(newX, newY);
-
-        getGrid(newCoordinates).addObject(monster);
+        moveObject(monster, newCoordinates);
     }
 
     // For debugging
@@ -960,7 +982,7 @@ public final class Arena {
      * @return true if gameover, false otherwise.
      */
     public boolean nextFrame() {
-            shadowArena = new Arena(this);
+        shadowArena = new Arena(this);
 
         // Now update currentState
         // TODO:
@@ -989,6 +1011,38 @@ public final class Arena {
             return true;
 
         return false;
+    }
+
+    /**
+     * Draws a ray from one object to another object, extending towards the edge of the arena.
+     * @param source The origin of the ray.
+     * @param target The target of the ray.
+     * @return The instance of the ray.
+     */
+    public Line drawRay(@NonNull ExistsInArena source, @NonNull ExistsInArena target) {
+        Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
+                                                    0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
+        
+        Line ray = new Line(source.getX(), source.getY(), edgePt.getX(), edgePt.getY());
+        ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
+        ray.setStrokeWidth(3);
+        return ray;
+    }
+
+    /**
+     * Draws a ray from one point to another point, extending towards the edge of the arena.
+     * @param source The origin of the ray.
+     * @param target The target of the ray.
+     * @return The instance of the ray.
+     */
+    public Line drawRay(@NonNull Coordinates source, @NonNull Coordinates target) {
+        Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
+                                                    0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
+        
+        Line ray = new Line(source.getX(), source.getY(), edgePt.getX(), edgePt.getY());
+        ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
+        ray.setStrokeWidth(3);
+        return ray;
     }
 
     /**
@@ -1022,6 +1076,12 @@ public final class Arena {
          * @see Coordinates
          */
         public void setLocation(int x, int y);
+
+        /**
+         * Updates the coordinates of the object.
+         * @param coordinates The new coordinates.
+         */
+        public void setLocation(@NonNull Coordinates coordinates);
     }
     
     /**
