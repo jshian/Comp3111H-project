@@ -9,6 +9,7 @@ import java.util.PriorityQueue;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.*;
+import javafx.scene.layout.AnchorPane;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +17,7 @@ public class CatapultTest {
 
     @Test
     public void selectMonster() {
-        Arena arena = new Arena(new Label());
+        Arena arena = new Arena(new Label(), new AnchorPane());
         Image img = new Image("/unicorn.png");
         ImageView iv = new ImageView(img);
         Coordinates destination = new Coordinates(440,0);
@@ -34,7 +35,7 @@ public class CatapultTest {
         answerList.add(m3);
         Assert.assertEquals(selectList,answerList);
         for (Monster m :selectList) {
-            Assert.assertTrue(target.isInCircle(m,25));
+            Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();
 
@@ -44,7 +45,7 @@ public class CatapultTest {
         target=catapult.selectMonster(testList,selectList);
         Assert.assertEquals(selectList,answerList);
         for (Monster m :selectList) {
-            Assert.assertTrue(target.isInCircle(m,25));
+            Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();
 
@@ -55,7 +56,7 @@ public class CatapultTest {
         answerList.add(m6);
         Assert.assertEquals(selectList,answerList);
         for (Monster m :selectList) {
-            Assert.assertTrue(target.isInCircle(m,25));
+            Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();
 
