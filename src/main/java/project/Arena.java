@@ -75,7 +75,7 @@ public final class Arena {
     /**
      * The duration of laser being displayed.
      */
-    private static final int laserDuration = 2;
+    private static final int LASER_DURATION = 2;
 
     /**
      * The current frame number of the arena since the game began.
@@ -201,8 +201,8 @@ public final class Arena {
         }
 
     	// Reset values
-    	for (int i = 0; i < UIController.ARENA_WIDTH; i++) {
-    		for (int j = 0; j < UIController.ARENA_HEIGHT; j++) {
+    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
+    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
     			movementCostToEnd[i][j] = Double.POSITIVE_INFINITY;
     	    	totalCostToEnd[i][j] = Double.POSITIVE_INFINITY;
     		}
@@ -261,12 +261,12 @@ public final class Arena {
     /**
      * The player of the game.
      */
-    private static Player player;
+    private Player player;
 
     /**
      * The arena of the game.
      */
-    private static AnchorPane paneArena;
+    private AnchorPane paneArena;
 
     /**
      * Adds an object to the current arena state.
@@ -355,8 +355,9 @@ public final class Arena {
             }
         }
 
-        movementCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
-        totalCostToEnd = new double[UIController.ARENA_WIDTH][UIController.ARENA_HEIGHT];
+        // Set up potential fields
+        movementCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
+        totalCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
         updateCosts();
 
         shadowArena = new Arena(this);
@@ -373,10 +374,45 @@ public final class Arena {
 
         this.towers = new LinkedList<>();
         for (Tower t : other.towers) {
-            
+            this.towers.add(t.deepCopy());
         }
 
-        throw new NotImplementedException("TODO");
+        this.projectiles = new LinkedList<>();
+        for (Projectile p : other.projectiles) {
+            this.projectiles.add(p.deepCopy());
+        }
+
+        this.lasers = new HashMap<>();
+        for (HashMap.Entry<Line, Integer> entry : other.lasers.entrySet()) {
+            this.lasers.put(entry.getKey(), entry.getValue());
+        }
+
+        this.explosions = new HashMap<>();
+        for (HashMap.Entry<ImageView, Integer> entry : other.explosions.entrySet()) {
+            this.explosions.put(entry.getKey(), entry.getValue());
+        }
+
+        this.monsters = new PriorityQueue<>();
+        for (Monster m : other.monsters) {
+            this.monsters.add(m.deepCopy());
+        }
+
+        // Set up grids
+        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
+            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+                grids[i][j] = new Grid(i, j);
+            }
+        }
+
+        // Set up potential fields
+        for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
+            for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
+                this.movementCostToEnd[i][j] = other.movementCostToEnd[i][j];
+                this.totalCostToEnd[i][j] = other.totalCostToEnd[i][j];
+            }
+        }
+
+        this.shadowArena = null;
     }
 
     /**
@@ -509,7 +545,7 @@ public final class Arena {
             result.add(new Coordinates(x - 1, y));
         
         // Right neighbour
-        if (x < UIController.ARENA_WIDTH - 1)
+        if (x < UIController.ARENA_WIDTH)
             result.add(new Coordinates(x + 1, y));
         
         // Top neighbour
@@ -517,7 +553,7 @@ public final class Arena {
             result.add(new Coordinates(x, y - 1));
 
         // Bottom neighbour
-        if (y < UIController.ARENA_HEIGHT - 1)
+        if (y < UIController.ARENA_HEIGHT)
             result.add(new Coordinates(x, y + 1));
 
         return result;
@@ -883,7 +919,7 @@ public final class Arena {
         for(Map.Entry<Line, Integer> entry : lasers.entrySet()) {
             Line key = entry.getKey();
             Integer value = entry.getValue();
-            if (value < currentFrame - laserDuration) {
+            if (value < currentFrame - LASER_DURATION) {
                 toRemove.add(key);
             }
         }
@@ -895,7 +931,7 @@ public final class Arena {
         for(Map.Entry<ImageView, Integer> entry : explosions.entrySet()) {
             ImageView key = entry.getKey();
             Integer value = entry.getValue();
-            if (value < currentFrame - laserDuration) {
+            if (value < currentFrame - LASER_DURATION) {
                 toRemove2.add(key);
             }
         }
