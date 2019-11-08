@@ -23,9 +23,17 @@ public class Penguin extends Monster {
     }
 
     /**
-     * get class name.
-     * @return class name.
+     * @see Monster#Monster(Monster)
      */
+    public Penguin(Penguin other) {
+        super(other);
+    }
+    
+    @Override
+    public Penguin deepCopy() {
+        return new Penguin(this);
+    }
+    
     @Override
     public String getClassName() { return "Penguin"; }
 

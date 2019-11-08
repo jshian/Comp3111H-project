@@ -129,6 +129,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.statusEffects = new LinkedList<>();
         for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
+
+    /**
+     * Creates a deep copy of the monster.
+     * @return A deep copy of the monster.
+     */
+    public abstract Monster deepCopy();
     
     // Inferface implementation
     public ImageView getImageView() { return imageView; }
@@ -140,14 +146,14 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
-     * get class name.
-     * @return class name.
+     * Gets the class name of the monster.
+     * @return The class name of the monster.
      */
     public abstract String getClassName();
 
     /**
-     * get the coordinate of monster in next frame.
-     * @return coordinate of monster in next frame.
+     * Gets the coordinates of the monster in the next frame.
+     * @return The coordinates of monster in the next frame.
      */
     public Coordinates getNextFrame() { return !futurePath.isEmpty() ? futurePath.removeFirst() : null; }
 

@@ -23,8 +23,17 @@ public class Unicorn extends Monster {
     }
 
     /**
-     * get class name.
-     * @return class name.
+     * @see Monster#Monster(Monster)
      */
+    public Unicorn(Unicorn other) {
+        super(other);
+    }
+    
+    @Override
+    public Unicorn deepCopy() {
+        return new Unicorn(this);
+    }
+
+    @Override
     public String getClassName() { return "Unicorn"; }
 }

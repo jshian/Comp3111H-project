@@ -24,9 +24,17 @@ public class Fox extends Monster {
     }
 
     /**
-     * get class name.
-     * @return class name.
+     * @see Monster#Monster(Monster)
      */
+    public Fox(Fox other) {
+        super(other);
+    }
+    
+    @Override
+    public Fox deepCopy() {
+        return new Fox(this);
+    }
+    
     @Override
     public String getClassName() { return "Fox"; }
 
