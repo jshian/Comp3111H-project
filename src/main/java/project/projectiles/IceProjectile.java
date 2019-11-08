@@ -1,7 +1,9 @@
 package project.projectiles;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
+import project.monsters.StatusEffect;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -25,7 +27,7 @@ public class IceProjectile extends Projectile{
      * @param speed The speed of the ice projectile.
      * @param slowDown The cold down time of the ice projectile.
      */
-    public IceProjectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int slowDown){
+    public IceProjectile(Arena arena, @NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int slowDown){
         super(arena,coordinates,target,speed,0);
         this.slowDownTime=slowDown;
     }
@@ -56,6 +58,7 @@ public class IceProjectile extends Projectile{
             LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
             if(targets.size()>0){
                 Monster target = (Monster)targets.get(0);
+                //target.setStatusEffects(target.getStatusEffects().add(new StatusEffect(0,slowDownTime)));
                 if (target != null) {
                     target.setSpeed(target.getSpeed() - slowDownSpeed);
                     System.out.println(String.format("Ice Tower@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
