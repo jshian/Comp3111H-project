@@ -16,7 +16,7 @@ public class IceTower extends Tower{
     /**
      * The maximum slow down duration of the tower.
      */
-    private int maxSlowDown;
+    private final int maxSlowDown = 100;
 
     /**
      * The current slow down duration of ice tower. It cannot go beyond {@link #maxSlowDown}.

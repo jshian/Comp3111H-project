@@ -48,7 +48,7 @@ public abstract class Tower implements ExistsInArena {
      * The maximum attack power of the tower.
      */
     @NotNull
-    protected int maxAttackPower = 100;
+    protected final int maxAttackPower = 100;
 
     /**
      * The current attack power of the tower. It cannot go beyond {@link #maxAttackPower}.
