@@ -10,6 +10,11 @@ import java.util.LinkedList;
 public class CatapultProjectile extends Projectile{
 
     /**
+     * The damage range of projectile.
+     */
+    private int damageRange;
+
+    /**
      * Constructor for the Projectile class.
      * @param arena The arena the projectile is attached to.
      * @param coordinates The coordinates of the pixel where the catapult projectile is initially located.
@@ -17,8 +22,9 @@ public class CatapultProjectile extends Projectile{
      * @param speed The speed of the catapult projectile.
      * @param attackPower The attack power of the catapult projectile.
      */
-    public CatapultProjectile(Arena arena, Coordinates coordinates, Coordinates target,double speed, int attackPower){
+    public CatapultProjectile(Arena arena, Coordinates coordinates, Coordinates target,double speed, int attackPower,int damageRange){
         super(arena,coordinates,target,speed,attackPower);
+        this.damageRange=damageRange;
     }
 
     /**
@@ -26,6 +32,7 @@ public class CatapultProjectile extends Projectile{
      */
     public CatapultProjectile(CatapultProjectile other){
         super(other);
+        this.damageRange = other.damageRange;
     }
 
     @Override
@@ -38,10 +45,10 @@ public class CatapultProjectile extends Projectile{
         super.moveOneFrame();
         if (hasReachedTarget()){
             //draw damage circle
-            arena.drawCircle(target,((Catapult)tower).getDamageRange());
+            arena.drawCircle(target,damageRange);
 
             //give damage
-            LinkedList<Arena.ExistsInArena> monsters = arena.findObjectsInRange(target, ((Catapult)tower).getDamageRange(), EnumSet.of(Arena.TypeFilter.Monster));
+            LinkedList<Arena.ExistsInArena> monsters = arena.findObjectsInRange(target, damageRange, EnumSet.of(Arena.TypeFilter.Monster));
             for (Arena.ExistsInArena monster : monsters) {
                 if (monster instanceof Monster) {
                     ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);

@@ -9,10 +9,6 @@ import javax.validation.constraints.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import project.towers.Tower;
-
-import java.util.EnumSet;
-import java.util.LinkedList;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
@@ -34,12 +30,6 @@ public abstract class Projectile implements Arena.MovesInArena {
     private ImageView imageView;
 
     /**
-     * The tower that create this projectile.
-     */
-    @Transient
-    protected Tower tower;
-
-    /**
      * The Arena that this projectile is attached to.
      */
     @Transient
@@ -50,6 +40,12 @@ public abstract class Projectile implements Arena.MovesInArena {
      */
     @NotNull
     protected Coordinates coordinates;
+
+    /**
+     * Represents the position of the tower.
+     */
+    @NotNull
+    protected Coordinates tower;
 
     /**
      * The coordinate of Monster that the projectile is travelling towards.
@@ -81,14 +77,13 @@ public abstract class Projectile implements Arena.MovesInArena {
     public Projectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int attackPower) {
         this.arena = arena;
         this.coordinates = Grid.findGridCenter(coordinates);
+        this.tower = Grid.findGridCenter(coordinates);
         this.target = target;
         this.speed = speed;
         this.attackPower = attackPower;
         this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
                 UIController.GRID_HEIGHT/4, true, true));
         this.coordinates.bindByImage(this.imageView);
-        LinkedList<Arena.ExistsInArena> l = arena.findObjectsInGrid(Grid.findGridCenter(coordinates), EnumSet.of(Arena.TypeFilter.Tower));
-        this.tower = (Tower)l.peek();
     }
 
     /**
@@ -99,11 +94,11 @@ public abstract class Projectile implements Arena.MovesInArena {
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
         this.coordinates = new Coordinates(other.coordinates);
+        this.tower = new Coordinates(other.tower);
         this.target = new Coordinates(other.target);
         this.speed = other.speed;
         this.attackPower = other.attackPower;
         this.coordinates.bindByImage(this.imageView);
-        this.tower = other.tower;
     }
 
     /**
@@ -112,7 +107,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      */
     public abstract Projectile deepCopy();
 
-    // Inferface implementation
+    // Interface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
@@ -139,12 +134,6 @@ public abstract class Projectile implements Arena.MovesInArena {
      */
     public boolean hasReachedTarget() { return Geometry.isAt(getX(), getY(), target.getX(), target.getY()); }
 
-
-    /**
-     * Accesses the tower that throws the current projectile.
-     * @return The tower that throws the current projectile.
-     */
-    public Tower getTower() { return this.tower; }
 
     /**
      * Accesses the attack power of the current projectile.

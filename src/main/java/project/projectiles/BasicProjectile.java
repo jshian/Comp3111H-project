@@ -37,7 +37,7 @@ public class BasicProjectile extends Projectile{
     public void moveOneFrame() {
         super.moveOneFrame();
         if (hasReachedTarget()){
-            LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInRange(target, tower.getMaxShootingRange(),EnumSet.of(Arena.TypeFilter.Monster));
+            LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
             if(targets.size()>0){
                 Monster target = (Monster)targets.get(0);
                 if (target != null) {
