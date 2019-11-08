@@ -1,6 +1,8 @@
 package project.towers;
 
 import project.Arena.ExistsInArena;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -154,6 +156,16 @@ public abstract class Tower implements ExistsInArena {
     public int getY() { return coordinates.getY(); }
     public void setLocation(int x, int y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+    public void nextFrame() {
+        if (hasAttack) {
+            if (this.counter == 0) {
+                this.counter = this.reload;
+                this.hasAttack = false;
+            } else {
+                this.counter--;
+            }
+        }
+    }
 
     /**
      * Upgrade the tower by adding the power, slow duration, reload time etc.
@@ -163,10 +175,10 @@ public abstract class Tower implements ExistsInArena {
     public abstract boolean upgrade(@NonNull Player player);
 
     /**
-     * Attack the monster closest to destination and in shooting range.
-     * @return The projectile of tower attack, return null if cannot shoot any monster.
+     * Generates a projectile that attacks the target of the tower.
+     * @return The projectile that attacks the target of the tower, or <code>null</code> if either there is no valid target or the tower is reloading.
      */
-    public abstract Projectile attackMonster();
+    public abstract Projectile generateProjectile();
 
     /**
      * To determine whether the monster is in shooting range or not.
@@ -249,17 +261,7 @@ public abstract class Tower implements ExistsInArena {
      * Tower has the reload time to do next attack.
      * @return whether the tower is reloading or not.
      */
-    public boolean isReload(){
-        if(hasAttack){
-            if(this.counter==0){
-                this.counter = this.reload;
-                this.hasAttack = false;
-                return false;
-            }else this.counter--;
-            return true;
-        }
-        return false;
-    }
+    public boolean isReload() { return counter > 0; }
 
     /**Accesses the information of tower.
      * @return the information of tower.

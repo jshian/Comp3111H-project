@@ -78,16 +78,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected Coordinates destination;
 
     /**
-     * A linked list of references to the coordinates of the center of each grid which the monster will travel through in order to reach its {@link #destination}.
-     */
-    @Transient
-    protected LinkedList<Coordinates> futurePath;
-
-    /**
      * A linked list of references to each status effect that is active against the monster.
      */
     @ElementCollection
-    protected List<StatusEffect> statusEffects;
+    protected LinkedList<StatusEffect> statusEffects;
 
     /**
      * Constructor for the Monster class.
@@ -104,7 +98,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.destination = new Coordinates(destination);
         this.coordinates.bindByImage(this.imageView);
 
-        this.futurePath = new LinkedList<>();
         this.statusEffects = new LinkedList<>();
     }
 
@@ -123,9 +116,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.destination = new Coordinates(other.destination);
         this.coordinates.bindByImage(this.imageView);
 
-        this.futurePath = new LinkedList<>();
-        for (Coordinates c : other.futurePath) this.futurePath.add(new Coordinates(c));
-
         this.statusEffects = new LinkedList<>();
         for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
@@ -142,7 +132,20 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public int getY() { return coordinates.getY(); }
     public void setLocation(int x, int y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
-    public void moveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
+    public double getSpeed() { return speed; }
+    public void nextFrame() {
+        Coordinates nextCoordinates = arena.findNextTowardsEnd(coordinates, true);
+        if (nextCoordinates != null) coordinates.update(nextCoordinates);
+
+        boolean isSlowed = false;
+        for (StatusEffect se : statusEffects) {
+            if (se.getEffectType() == StatusEffect.EffectType.Slow) {
+                isSlowed = true;
+            }
+            se.countDown();
+        }
+        if (isSlowed) speed = maxSpeed / 5;
+    }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
@@ -152,41 +155,30 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public abstract String getClassName();
 
     /**
-     * Gets the coordinates of the monster in the next frame.
-     * @return The coordinates of monster in the next frame.
-     */
-    public Coordinates getNextFrame() { return !futurePath.isEmpty() ? futurePath.removeFirst() : null; }
-
-    /**
-     * Sets the health of the monster.
-     * @param health The health of the monster.
-     */
-    public void setHealth(double health) {
-        this.health = health < 0 ? 0 : health;
-    }
-
-    /**
      * Accesses the health of the monster.
      * @return The health of the monster.
      */
     public double getHealth() { return health; }
 
     /**
-     * Sets the speed of the monster.
-     * @param speed The speed of the monster.
+     * Accesses the status effects of the monster.
+     * @return The status effects of the monster.
      */
-    public void setSpeed(double speed) {
-        if (speed <=0){
-            this.speed = 0;
-        }else
-            this.speed = speed;
+    public LinkedList<StatusEffect> getStatusEffects() { return statusEffects; }
+
+    /**
+     * Reduces the health of the monster.
+     * @param amount The amount by which to reduce.
+     */
+    public void takeDamage(double amount) {
+        this.health -= amount;
     }
 
     /**
-     * Accesses the speed of the monster.
-     * @return The speed of the monster.
+     * Adds a status effect to the monster.
+     * @param statusEffect The status effect to add.
      */
-    public double getSpeed() { return speed; }
+    public void addStatusEffect(StatusEffect statusEffect) { this.statusEffects.add(statusEffect); }
 
     /**
      * Determines whether the monster has died.
@@ -198,32 +190,5 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Finds the number of pixels the monster has to travel to reach its destination.
      * @return The number of pixels the monster has to travel to reach its destination.
      */
-    public int distanceToDestination() {
-        if (futurePath == null) return 0;
-
-        return futurePath.size();
-    }
-
-    /**
-     * Recalculates the future path of the monster.
-     */
-    public void recalculateFuturePath() {
-        futurePath = arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
-    }
-
-    /**
-     * Accesses the status effects list of monster.
-     * @return The status effects list of monster.
-     */
-    public List<StatusEffect> getStatusEffects() {
-        return statusEffects;
-    }
-
-    /**
-     * Sets the status effects list of monster.
-     * @param statusEffects The status effects list of monster.
-     */
-    public void setStatusEffects(List<StatusEffect> statusEffects) {
-        this.statusEffects = statusEffects;
-    }
+    public int distanceToDestination() { return arena.getTaxicabDistanceToEnd(coordinates); }
 }
