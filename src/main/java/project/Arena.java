@@ -14,6 +14,7 @@ import project.towers.*;
 
 import java.util.*;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -165,7 +166,7 @@ public final class Arena {
      * @see #updateCosts()
      * @see #findNextTowardsEnd(Coordinates, boolean)
      */
-    private int[][] distanceToEndZone;
+    private int[][] distanceToEndZone = new int[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
 
     /**
      * Stores the cost for a monster in each pixel to reach the end-zone due to movement and being attacked. Indices correspond to the x- and y- coordinates.
@@ -175,7 +176,7 @@ public final class Arena {
      * @see #updateCosts()
      * @see #findNextTowardsEnd(Coordinates, boolean)
      */
-    private double[][] totalCostToEnd;
+    private double[][] totalCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
 
     /**
      * Updates the costs to reach the end-zone from each pixel.
@@ -335,6 +336,31 @@ public final class Arena {
 
         getGrid(newCoordinates).addObject(obj);
     }
+    
+    /**
+     * Updates the object to the next frame and updates the Arena accordingly.
+     * @param obj
+     */
+    private void objectNextFrame(@NonNull ExistsInArena obj) {
+        Coordinates originalCoordinates = new Coordinates(obj.getX(), obj.getY());
+        obj.nextFrame();
+        Coordinates newCoordinates = new Coordinates(obj.getX(), obj.getY());
+
+        if (!Geometry.isAt(newCoordinates.getX(), newCoordinates.getY(), originalCoordinates.getX(), originalCoordinates.getY())) {
+            getGrid(originalCoordinates).removeObject(obj);
+            getGrid(newCoordinates).addObject(obj);
+        }
+
+        if (obj instanceof Tower) {
+            
+        } else if (obj instanceof Projectile) {
+
+        } else if (obj instanceof Monster) {
+            if (((Monster)obj).hasDied()) {
+                throw new NotImplementedException("TODO");
+            }
+        }
+    }
 
     /**
      * Constructor of the Arena class. Bind the label to resources.
@@ -354,8 +380,6 @@ public final class Arena {
         }
 
         // Set up potential fields
-        distanceToEndZone = new int[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
-        totalCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
         updateCosts();
 
         shadowArena = new Arena(this);
@@ -759,7 +783,7 @@ public final class Arena {
     {
         // laser tower
         if (t instanceof LaserTower) {
-            ((LaserTower) t).attackMonster();
+            ((LaserTower) t).generateProjectile();
             Line laserLine = ((LaserTower) t).getLaserLine();
             if (laserLine != null && !lasers.containsKey(laserLine)) {
                 lasers.put(laserLine, currentFrame);
@@ -767,23 +791,13 @@ public final class Arena {
             }
 
         } else { // other towers
-            Projectile p = t.attackMonster();
+            Projectile p = t.generateProjectile();
             if (p != null) {
                 paneArena.getChildren().add(p.getImageView());
                 projectiles.add(p);
                 getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
             }
         }
-    }
-
-    /**
-     * Move the specified Projectile.
-     * @param projectile The Projectile to be moved.
-     */
-    public void moveProjectile(@NonNull Projectile projectile) {
-        getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
-        projectile.nextFrame();
-        getGrid(new Coordinates(projectile.getX(), projectile.getY())).addObject(projectile);
     }
 
     /**
@@ -794,6 +808,16 @@ public final class Arena {
     {
         paneArena.getChildren().remove(projectile.getImageView());
         removeObject(projectile);
+    }
+
+    /**
+     * Moves the specified Projectile to the specified location.
+     * Note: Please instead use {@link #objectNextFrame(ExistsInArena)} to update it to the next frame.
+     * @param projectile The Projectile to be moved.
+     * @param coordinates The coordinates of the new location.
+     */
+    public void moveProjectile(@NonNull Projectile projectile, @NonNull Coordinates coordinates) {
+        moveObject(projectile, coordinates);
     }
 
     /**
@@ -856,19 +880,13 @@ public final class Arena {
     }
 
     /**
-     * Moves the specified Monster to another location in the arena.
+     * Moves the specified Monster to the specified location.
+     * Note: Please instead use {@link #objectNextFrame(ExistsInArena)} to update it to the next frame.
      * @param monster The Monster to be moved.
-     * @param newCoordinates The coordinates of the new location.
+     * @param coordinates The coordinates of the new location.
      */
-    public void moveMonster(@NonNull Monster monster, @NonNull Coordinates newCoordinates)
-    {
-        moveObject(monster, newCoordinates);
-    }
-
-    // For debugging
-    public void printCost(@NonNull Coordinates coordinates) {
-        System.out.println("Movement Cost = " + distanceToEndZone[coordinates.getX()][coordinates.getY()] +
-            "; Total Cost = " + totalCostToEnd[coordinates.getX()][coordinates.getY()]);
+    public void moveMonster(@NonNull Monster monster, @NonNull Coordinates coordinates) {
+        moveObject(monster, coordinates);
     }
 
     /**
@@ -941,7 +959,7 @@ public final class Arena {
         List<Projectile> toRemove3 = new ArrayList();
         for (Projectile p : projectiles) {
 
-            moveProjectile(p);
+            objectNextFrame(p);
             // when projectile reach its destination
             if (p.hasReachedTarget()) {
 //                // find monster in target grid
@@ -1045,7 +1063,6 @@ public final class Arena {
         else // this is for testing only
             if (monsters.peek() != null)
                 moveMonster(monsters.peek(), Grid.findGridCenter(10, 10));
-//        newMonster.recalculateFuturePath();
 
         currentFrame++;
 
