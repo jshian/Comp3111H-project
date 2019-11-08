@@ -1,13 +1,23 @@
 package project.projectiles;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
+import project.monsters.StatusEffect;
+
+import java.util.EnumSet;
+import java.util.LinkedList;
 
 public class IceProjectile extends Projectile{
     /**
-     * The slow down time to monsters of projectile.
+     * The slow down duration to monsters of projectile.
      */
-    private int slowDown;
+    private int slowDownTime;
+
+    /**
+     * The slow down speed to monsters of projectile.
+     */
+    private final int slowDownSpeed = 5;
 
     /**
      * Constructor for the Projectile class.
@@ -17,14 +27,44 @@ public class IceProjectile extends Projectile{
      * @param speed The speed of the ice projectile.
      * @param slowDown The cold down time of the ice projectile.
      */
-    public IceProjectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int slowDown){
+    public IceProjectile(Arena arena, @NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int slowDown){
         super(arena,coordinates,target,speed,0);
-        this.slowDown=slowDown;
+        this.slowDownTime=slowDown;
+    }
+
+    /**
+     * @see Projectile#Projectile(Projectile)
+     */
+    public IceProjectile(IceProjectile other){
+        super(other);
+        this.slowDownTime = other.slowDownTime;
+    }
+
+    @Override
+    public Projectile deepCopy() {
+        return new IceProjectile(this);
     }
 
     /**
      * get slow down time of projectile.
      * @return slow down time of projectile.
      */
-    public int getSlowDown() { return slowDown; }
+    public int getSlowDownTime() { return slowDownTime; }
+
+    @Override
+    public void moveOneFrame() {
+        super.moveOneFrame();
+        if (hasReachedTarget()){
+            LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
+            if(targets.size()>0){
+                Monster target = (Monster)targets.get(0);
+                //target.setStatusEffects(target.getStatusEffects().add(new StatusEffect(0,slowDownTime)));
+                if (target != null) {
+                    target.setSpeed(target.getSpeed() - slowDownSpeed);
+                    System.out.println(String.format("Ice Tower@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
+                            , target.getClassName(), target.getX(), target.getY()));
+                }
+            }
+        }
+    }
 }

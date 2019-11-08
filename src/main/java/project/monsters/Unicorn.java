@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javafx.scene.image.ImageView;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javafx.scene.image.ImageView;
 import project.*;
 
 /**

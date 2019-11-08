@@ -2,11 +2,11 @@ package project.towers;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
 
-import java.awt.*;
 import java.util.PriorityQueue;
 
 
@@ -29,6 +29,7 @@ public class LaserTower extends Tower{
 
     /**
      * Constructor of laser tower.
+     * The max shooting range of laser tower refers to the range that will start attack but not the damage range.
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of laser tower.
      */
@@ -36,13 +37,14 @@ public class LaserTower extends Tower{
         super(arena, coordinates);
         this.attackPower = 30;
         this.buildingCost = 20;
-        this.shootingRange = 100;
+        this.maxShootingRange = 100;
         this.consume = 2;
         this.upgradeCost = 10;
     }
 
     /**
      * Constructor of laser tower.
+     * The max shooting range of laser tower refers to the range that will start attack but not the damage range.
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of laser tower.
      * @param imageView The image view of laser tower.
@@ -51,9 +53,24 @@ public class LaserTower extends Tower{
         super(arena, coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;
-        this.shootingRange = 100;
+        this.maxShootingRange = 100;
         this.consume = 2;
         this.upgradeCost = 10;
+    }
+
+    /**
+     * @see Tower#Tower(Tower)
+     */
+    public LaserTower(@NonNull LaserTower other){
+        super(other);
+        this.consume = other.consume;
+        this.laserLine = new Line(other.laserLine.getStartX(),other.laserLine.getStartY(),
+                other.laserLine.getEndX(),other.laserLine.getEndY());
+    }
+
+    @Override
+    public LaserTower deepCopy() {
+        return new LaserTower(this);
     }
 
     /**
@@ -61,7 +78,7 @@ public class LaserTower extends Tower{
      * @param player The player who build the tower.
      * @return true if player has enough resources to attack, false otherwise.
      */
-    public boolean consumeResource(Player player){
+    public boolean consumeResource(@NonNull Player player){
         if (player.hasResources(consume)) {
             player.spendResources(consume);
             return true;
@@ -71,13 +88,16 @@ public class LaserTower extends Tower{
 
     /**
      * Laser tower increases its attack power when it upgraded.
-     * @param resource The resources needed for tower to upgrade.
+     * @param player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
-    public boolean upgrade(int resource){
-        if(resource >= this.upgradeCost){
-            this.attackPower+=5;
+    public boolean upgrade(@NonNull Player player){
+        if(player.hasResources(upgradeCost)){
+            player.spendResources(upgradeCost);
+            if(this.attackPower+5 >= maxAttackPower)
+                this.attackPower = maxAttackPower;
+            else this.attackPower += 5;
             return true;
         }
         return false;
@@ -100,6 +120,7 @@ public class LaserTower extends Tower{
                 return null;
             }
             hasAttack = true;
+            this.counter = this.reload;
             laserLine = arena.drawRay(this, monster);
 
             PriorityQueue<Monster> monsters = arena.getMonsters();
@@ -129,7 +150,7 @@ public class LaserTower extends Tower{
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %s\nbuilding cost: %s\nshooting range: %s\nconsume: %s", this.attackPower,
-                this.buildingCost, this.shootingRange, this.consume);
+        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]\nconsume: %d", this.attackPower,
+                this.buildingCost, this.minShootingRange, this.maxAttackPower, this.consume);
     }
 }
