@@ -113,7 +113,8 @@ public abstract class Projectile implements Arena.MovesInArena {
     public int getY() { return coordinates.getY(); }
     public void setLocation(int x, int y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
-    public void moveOneFrame() {
+    public double getSpeed() { return speed; }
+    public void nextFrame() {
         double distance = Geometry.findEuclideanDistance(getX(), getY(), target.getX(), target.getY());
 
         if (distance <= speed)
@@ -124,8 +125,6 @@ public abstract class Projectile implements Arena.MovesInArena {
             int newY = coordinates.getY() + (int) (speed * Math.sin(angleFromTarget));
             coordinates.update(newX, newY);
         }
-
-
     }
 
     /**

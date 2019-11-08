@@ -782,7 +782,7 @@ public final class Arena {
      */
     public void moveProjectile(@NonNull Projectile projectile) {
         getGrid(new Coordinates(projectile.getX(), projectile.getY())).removeObject(projectile);
-        projectile.moveOneFrame();
+        projectile.nextFrame();
         getGrid(new Coordinates(projectile.getX(), projectile.getY())).addObject(projectile);
     }
 
@@ -1134,6 +1134,11 @@ public final class Arena {
          * @param coordinates The new coordinates.
          */
         public void setLocation(@NonNull Coordinates coordinates);
+
+        /**
+         * Updates the object by one frame.
+         */
+        public void nextFrame();
     }
     
     /**
@@ -1141,8 +1146,9 @@ public final class Arena {
      */
     public interface MovesInArena extends ExistsInArena {
         /**
-         * Moves the object by one frame.
+         * Accesses the current speed of the object.
+         * @return The current speed of the object.
          */
-        public void moveOneFrame();
+        public double getSpeed();
     }
 }

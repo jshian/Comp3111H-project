@@ -1,6 +1,8 @@
 package project.towers;
 
 import project.Arena.ExistsInArena;
+
+import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -154,6 +156,9 @@ public abstract class Tower implements ExistsInArena {
     public int getY() { return coordinates.getY(); }
     public void setLocation(int x, int y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+    public void nextFrame() {
+        throw new NotImplementedException("TODO");
+    }
 
     /**
      * Upgrade the tower by adding the power, slow duration, reload time etc.
