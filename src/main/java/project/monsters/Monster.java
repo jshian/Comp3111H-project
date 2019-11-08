@@ -87,7 +87,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * A linked list of references to each status effect that is active against the monster.
      */
     @ElementCollection
-    protected List<StatusEffect> statusEffects;
+    protected LinkedList<StatusEffect> statusEffects;
 
     /**
      * Constructor for the Monster class.
