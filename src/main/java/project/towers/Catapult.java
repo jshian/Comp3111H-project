@@ -160,4 +160,12 @@ public class Catapult extends Tower {
                 + "reload time: %d\ndamage range: %d", this.attackPower,
                 this.buildingCost, this.minShootingRange, this.maxShootingRange, this.reload, this.damageRange);
     }
+
+    /**
+     * Accesses the damage range of catapult.
+     * @return The damage range of catapult.
+     */
+    public int getDamageRange() {
+        return damageRange;
+    }
 }

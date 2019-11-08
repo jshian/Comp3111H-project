@@ -7,6 +7,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import project.monsters.*;
 import project.projectiles.CatapultProjectile;
@@ -108,6 +110,11 @@ public final class Arena {
      * Contains a reference explosion of monster when it died.
      */
     private HashMap<ImageView, Integer> explosions = new HashMap<>();
+
+    /**
+     * Contains a reference to each circle shot by Catapult on the arena.
+     */
+    private HashMap<Circle, Integer> circles = new HashMap<>();
 
     /**
      * Contains a reference to each Monster on the arena.
@@ -904,41 +911,41 @@ public final class Arena {
             moveProjectile(p);
             // when projectile reach its destination
             if (p.hasReachedTarget()) {
-                // find monster in target grid
-                Coordinates targetCoordinates = new Coordinates(p.getX(), p.getY());
-                LinkedList<ExistsInArena> targets = findObjectsInGrid(targetCoordinates, EnumSet.of(TypeFilter.Monster));
-                int attackPower = p.getAttackPower();
-
-
-                // find the first monster at attack it
-                if (p instanceof IceProjectile) {
-                    if (targets.size() > 0 && targets.get(0) instanceof Monster) {
-                        Monster target = (Monster)targets.get(0);
-                        if (target != null) {
-                            target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
-                            System.out.println(String.format("Ice Tower@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
-                                    , target.getClassName(), target.getX(), target.getY()));
-                        }
-                    }
-                } else if (p instanceof CatapultProjectile) {
-                    LinkedList<ExistsInArena> monsters = findObjectsInRange(targetCoordinates, 25, EnumSet.of(TypeFilter.Monster));
-                    for (ExistsInArena monster : monsters) {
-                        if (monster instanceof Monster) {
-                            ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
-                            System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
-                                    , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
-                        }
-                    }
-                } else {
-                    if (targets.size() > 0 && targets.get(0) instanceof Monster) {
-                        Monster target = (Monster)targets.get(0);
-                        if (target != null) {
-                            target.setHealth(target.getHealth() - attackPower);
-                            System.out.println(String.format("Basic Tower@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
-                                    , target.getClassName(), target.getX(), target.getY()));
-                        }
-                    }
-                }
+//                // find monster in target grid
+//                Coordinates targetCoordinates = new Coordinates(p.getX(), p.getY());
+//                LinkedList<ExistsInArena> targets = findObjectsInGrid(targetCoordinates, EnumSet.of(TypeFilter.Monster));
+//                int attackPower = p.getAttackPower();
+//
+//
+//                // find the first monster at attack it
+//                if (p instanceof IceProjectile) {
+//                    if (targets.size() > 0 && targets.get(0) instanceof Monster) {
+//                        Monster target = (Monster)targets.get(0);
+//                        if (target != null) {
+//                            target.setSpeed(target.getSpeed() - ((IceProjectile) p).getSlowDown());
+//                            System.out.println(String.format("Ice Tower@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
+//                                    , target.getClassName(), target.getX(), target.getY()));
+//                        }
+//                    }
+//                } else if (p instanceof CatapultProjectile) {
+//                    LinkedList<ExistsInArena> monsters = findObjectsInRange(targetCoordinates, 25, EnumSet.of(TypeFilter.Monster));
+//                    for (ExistsInArena monster : monsters) {
+//                        if (monster instanceof Monster) {
+//                            ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
+//                            System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
+//                                    , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
+//                        }
+//                    }
+//                } else {
+//                    if (targets.size() > 0 && targets.get(0) instanceof Monster) {
+//                        Monster target = (Monster)targets.get(0);
+//                        if (target != null) {
+//                            target.setHealth(target.getHealth() - attackPower);
+//                            System.out.println(String.format("Basic Tower@(%d,%d) -> %s@(%d,%d)", p.getTower().getX(), p.getTower().getY()
+//                                    , target.getClassName(), target.getX(), target.getY()));
+//                        }
+//                    }
+//                }
                 toRemove3.add(p);
             }
         }
@@ -967,6 +974,14 @@ public final class Arena {
             c.bindByImage(explosion);
             paneArena.getChildren().add(explosion);
             explosions.put(explosion, currentFrame);
+        }
+        for(Map.Entry<Circle, Integer> c : circles.entrySet()) {
+            Circle key = c.getKey();
+            Integer value = c.getValue();
+            if (value == 0) {
+                circles.remove(key);
+                paneArena.getChildren().remove(key);
+            }else c.setValue(0);
         }
 
     }
@@ -1037,6 +1052,16 @@ public final class Arena {
         ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
         ray.setStrokeWidth(3);
         return ray;
+    }
+
+    public void drawCircle(@NonNull Coordinates source, @NonNull int damageRange){
+        Circle circle = new Circle();
+        circle.setCenterX(source.getX());
+        circle.setCenterY(source.getY());
+        circle.setRadius(damageRange);
+        circle.setFill(Color.rgb(100,0,0));
+        paneArena.getChildren().add(circle);
+        circles.put(circle,1);
     }
 
     /**

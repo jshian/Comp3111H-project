@@ -1,6 +1,13 @@
 package project.projectiles;
 
+import javafx.scene.shape.Circle;
 import project.*;
+import project.monsters.Monster;
+import project.towers.Catapult;
+import project.towers.Tower;
+
+import java.util.EnumSet;
+import java.util.LinkedList;
 
 public class CatapultProjectile extends Projectile{
 
@@ -16,4 +23,22 @@ public class CatapultProjectile extends Projectile{
         super(arena,coordinates,target,speed,attackPower);
     }
 
+    @Override
+    public void moveOneFrame() {
+        super.moveOneFrame();
+        if (hasReachedTarget()){
+            //draw damage circle
+            arena.drawCircle(target,((Catapult)tower).getDamageRange());
+
+            //give damage
+            LinkedList<Arena.ExistsInArena> monsters = arena.findObjectsInRange(target, ((Catapult)tower).getDamageRange(), EnumSet.of(Arena.TypeFilter.Monster));
+            for (Arena.ExistsInArena monster : monsters) {
+                if (monster instanceof Monster) {
+                    ((Monster) monster).setHealth(((Monster) monster).getHealth() - attackPower);
+                    System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
+                            , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
+                }
+            }
+        }
+    }
 }

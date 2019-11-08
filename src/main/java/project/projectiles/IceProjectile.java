@@ -3,11 +3,19 @@ package project.projectiles;
 import project.*;
 import project.monsters.Monster;
 
+import java.util.EnumSet;
+import java.util.LinkedList;
+
 public class IceProjectile extends Projectile{
     /**
-     * The slow down time to monsters of projectile.
+     * The slow down duration to monsters of projectile.
      */
-    private int slowDown;
+    private int slowDownTime;
+
+    /**
+     * The slow down speed to monsters of projectile.
+     */
+    private final int slowDownSpeed = 5;
 
     /**
      * Constructor for the Projectile class.
@@ -19,12 +27,28 @@ public class IceProjectile extends Projectile{
      */
     public IceProjectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int slowDown){
         super(arena,coordinates,target,speed,0);
-        this.slowDown=slowDown;
+        this.slowDownTime=slowDown;
     }
 
     /**
      * get slow down time of projectile.
      * @return slow down time of projectile.
      */
-    public int getSlowDown() { return slowDown; }
+    public int getSlowDown() { return slowDownTime; }
+
+    @Override
+    public void moveOneFrame() {
+        super.moveOneFrame();
+        if (hasReachedTarget()){
+            LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInRange(target, tower.getMaxShootingRange(), EnumSet.of(Arena.TypeFilter.Monster));
+            if(targets.size()>0){
+                Monster target = (Monster)targets.get(0);
+                if (target != null) {
+                    target.setSpeed(target.getSpeed() - slowDownSpeed);
+                    System.out.println(String.format("Ice Tower@(%d,%d) -> %s@(%d,%d)",tower.getX(), tower.getY()
+                            , target.getClassName(), target.getX(), target.getY()));
+                }
+            }
+        }
+    }
 }

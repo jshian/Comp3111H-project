@@ -16,12 +16,12 @@ public class IceTower extends Tower{
     /**
      * The maximum slow down duration of the tower.
      */
-    private final int maxSlowDown = 100;
+    private final int maxSlowDownTime = 100;
 
     /**
-     * The current slow down duration of ice tower. It cannot go beyond {@link #maxSlowDown}.
+     * The current slow down duration of ice tower. It cannot go beyond {@link #maxSlowDownTime}.
      */
-    private int slowDown;
+    private int slowDownTime;
 
 
     /**
@@ -34,7 +34,7 @@ public class IceTower extends Tower{
         this.attackPower = 0;
         this.buildingCost = 15;
         this.maxShootingRange = 50;
-        this.slowDown = 10;
+        this.slowDownTime = 10;
         this.attackSpeed = 5;
         this.upgradeCost = 10;
     }
@@ -50,7 +50,7 @@ public class IceTower extends Tower{
         this.attackPower = 0;
         this.buildingCost = 15;
         this.maxShootingRange = 50;
-        this.slowDown = 10;
+        this.slowDownTime = 10;
         this.attackSpeed = 5;
         this.upgradeCost = 10;
     }
@@ -64,9 +64,9 @@ public class IceTower extends Tower{
     public boolean upgrade(Player player){
         if(player.hasResources(upgradeCost)){
             player.spendResources(upgradeCost);
-            if(this.slowDown+5 >= maxSlowDown){
-                this.slowDown = maxSlowDown;
-            }else this.slowDown+=5;
+            if(this.slowDownTime+5 >= maxSlowDownTime){
+                this.slowDownTime = maxSlowDownTime;
+            }else this.slowDownTime+=5;
             return true;
         }
         return false;
@@ -84,7 +84,7 @@ public class IceTower extends Tower{
                 if (canShoot(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDown);
+                    return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDownTime);
                 }
             }
         }
@@ -97,7 +97,7 @@ public class IceTower extends Tower{
     @Override
     public String getInformation() {
         return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]\n"
-                + "slow down: %s", this.attackPower, this.buildingCost, this.minShootingRange,
-                this.maxShootingRange,this.slowDown);
+                + "slow down time: %d", this.attackPower, this.buildingCost, this.minShootingRange,
+                this.maxShootingRange,this.slowDownTime);
     }
 }
