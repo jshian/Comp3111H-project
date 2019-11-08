@@ -158,30 +158,28 @@ public final class Arena {
     }
 
     /**
-     * Stores the cost for a monster in each pixel to reach the end-zone due to movement. Indices correspond to the x- and y- coordinates.
-     * The cost is in terms of per unit speed of the monster.
-     * This is essentially a potential field for determining monster movement.
+     * Stores the shortest distance from each pixel to reach the end zone.
+     * This is essentially a potential field per unit speed for determining Monster movement.
      * @see Monster
      * @see Coordinates
      * @see #updateCosts()
-     * @see #findPathToEndZone(Coordinates, boolean)
+     * @see #findNextTowardsEnd(Coordinates, boolean)
      */
-    private double[][] movementCostToEnd;
+    private int[][] distanceToEndZone;
 
     /**
      * Stores the cost for a monster in each pixel to reach the end-zone due to movement and being attacked. Indices correspond to the x- and y- coordinates.
-     * The cost is in terms of per unit speed of the monster.
-     * This is essentially a potential field for determining monster movement.
+     * This is essentially a potential field per unit speed for determining Monster movement.
      * @see Monster
      * @see Coordinates
      * @see #updateCosts()
-     * @see #findPathToEndZone(Coordinates, boolean)
+     * @see #findNextTowardsEnd(Coordinates, boolean)
      */
     private double[][] totalCostToEnd;
 
     /**
      * Updates the costs to reach the end-zone from each pixel.
-     * @see #movementCostToEnd
+     * @see #distanceToEndZone
      * @see #totalCostToEnd
      */
     private void updateCosts() {
@@ -203,7 +201,7 @@ public final class Arena {
     	// Reset values
     	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
     		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
-    			movementCostToEnd[i][j] = Double.POSITIVE_INFINITY;
+    			distanceToEndZone[i][j] = Integer.MAX_VALUE;
     	    	totalCostToEnd[i][j] = Double.POSITIVE_INFINITY;
     		}
         }
@@ -211,7 +209,7 @@ public final class Arena {
         // Calculate movement costs
     	LinkedList<IntTuple> openSet = new LinkedList<>();
         openSet.add(new IntTuple(END_COORDINATES));
-        movementCostToEnd[END_COORDINATES.getX()][END_COORDINATES.getY()] = 0;
+        distanceToEndZone[END_COORDINATES.getX()][END_COORDINATES.getY()] = 0;
     	while (!openSet.isEmpty()) {
     		IntTuple current = openSet.poll();
     		// Monsters can only travel horizontally or vertically
@@ -219,9 +217,9 @@ public final class Arena {
     		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
     			if (findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-        			double newCost = movementCostToEnd[current.x][current.y] + 1;
-        			if (movementCostToEnd[c.getX()][c.getY()] > newCost ) {
-        				movementCostToEnd[c.getX()][c.getY()] = newCost;
+        			int newCost = distanceToEndZone[current.x][current.y] + 1;
+        			if (distanceToEndZone[c.getX()][c.getY()] > newCost ) {
+        				distanceToEndZone[c.getX()][c.getY()] = newCost;
         				openSet.add(new IntTuple(c.getX(), c.getY()));
         			}
     			}
@@ -356,7 +354,7 @@ public final class Arena {
         }
 
         // Set up potential fields
-        movementCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
+        distanceToEndZone = new int[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
         totalCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
         updateCosts();
 
@@ -407,7 +405,7 @@ public final class Arena {
         // Set up potential fields
         for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
             for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
-                this.movementCostToEnd[i][j] = other.movementCostToEnd[i][j];
+                this.distanceToEndZone[i][j] = other.distanceToEndZone[i][j];
                 this.totalCostToEnd[i][j] = other.totalCostToEnd[i][j];
             }
         }
@@ -432,6 +430,15 @@ public final class Arena {
      * @return A linked list containing a reference to each Projectile in the Arena.
      */
     public LinkedList<Projectile> getProjectiles() { return projectiles; }
+
+    /**
+     * Finds the taxicab distance from the specified pixel to the end-zone.
+     * @param coordinates The coordinates of the pixel.
+     * @return The taxicab distance from the specified pixel to the end-zone, in number of pixels.
+     */
+    public int getTaxicabDistanceToEnd(@NonNull Coordinates coordinates) {
+        return distanceToEndZone[coordinates.getX()][coordinates.getY()];
+    }
 
     /**
      * An enum for filtering objects in the Arena according to type.
@@ -860,48 +867,39 @@ public final class Arena {
 
     // For debugging
     public void printCost(@NonNull Coordinates coordinates) {
-        System.out.println("Movement Cost = " + movementCostToEnd[coordinates.getX()][coordinates.getY()] +
+        System.out.println("Movement Cost = " + distanceToEndZone[coordinates.getX()][coordinates.getY()] +
             "; Total Cost = " + totalCostToEnd[coordinates.getX()][coordinates.getY()]);
     }
 
     /**
-     * Finds the lowest cost path from the specified pixel to the end-zone.
-     * @param coordinates The coordinates of the pixel.
+     * Finds the next location for an object to move in order to reach the end-zone at the lowest cost.
+     * @param coordinates The coordinates of the object.
      * @param movementOnly Whether the method should only consider movement cost. Otherwise, it also considers the cost of being attacked by Towers.
-     * @return A linked list representing the lowest cost path, with the first element being the coordinates of the first pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
+     * @return The coordinates of the next pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
      */
-    public LinkedList<Coordinates> findPathToEndZone(@NonNull Coordinates coordinates, boolean movementOnly) {
-        Coordinates currentCoordinates = coordinates;
-        if (Double.isInfinite(movementCostToEnd[coordinates.getX()][coordinates.getY()])) return new LinkedList<>();
-        if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return new LinkedList<>();
+    public Coordinates findNextTowardsEnd(@NonNull Coordinates coordinates, boolean movementOnly) {
+        if (Double.isInfinite(distanceToEndZone[coordinates.getX()][coordinates.getY()])) return null;
+        if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
 
-        LinkedList<Coordinates> path = new LinkedList<>();
-        path.add(coordinates);
+        LinkedList<Coordinates> neighbours = findTaxicabNeighbours(coordinates);
 
-        while (!Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), currentCoordinates.getX(), currentCoordinates.getY())) {
-            LinkedList<Coordinates> neighbours = findTaxicabNeighbours(currentCoordinates);
-
-            double lowestCost = Double.POSITIVE_INFINITY;
-            Coordinates lowestCostNeighbour = null;
-            for (Coordinates neighbour : neighbours) {
-                double cost;
-                if (movementOnly) {
-                    cost = movementCostToEnd[neighbour.getX()][neighbour.getY()];
-                } else {
-                    cost = totalCostToEnd[neighbour.getX()][neighbour.getY()];
-                }
-
-                if (cost < lowestCost) {
-                    lowestCost = cost;
-                    lowestCostNeighbour = neighbour;
-                }
+        double lowestCost = Double.POSITIVE_INFINITY;
+        Coordinates lowestCostNeighbour = null;
+        for (Coordinates neighbour : neighbours) {
+            double cost;
+            if (movementOnly) {
+                cost = distanceToEndZone[neighbour.getX()][neighbour.getY()];
+            } else {
+                cost = totalCostToEnd[neighbour.getX()][neighbour.getY()];
             }
 
-            path.add(lowestCostNeighbour);
-            currentCoordinates = lowestCostNeighbour;
+            if (cost < lowestCost) {
+                lowestCost = cost;
+                lowestCostNeighbour = neighbour;
+            }
         }
 
-        return path;
+        return lowestCostNeighbour;
     }
 
     /**

@@ -32,23 +32,14 @@ public class Penguin extends Monster {
     public Penguin deepCopy() {
         return new Penguin(this);
     }
-    
-    @Override
-    public String getClassName() { return "Penguin"; }
 
-    /**
-     * get the coordinate of monster in next frame.
-     * @return coordinate of monster in next frame.
-     */
-    @Override
-    public Coordinates getNextFrame() {
-        this.health += 0.1;
-        return !futurePath.isEmpty() ? futurePath.removeFirst() : null;
-    }
-
+    // Interface implementation
     @Override
     public void moveOneFrame() {
         super.moveOneFrame();
         this.health += 0.1;
     }
+    
+    @Override
+    public String getClassName() { return "Penguin"; }
 }

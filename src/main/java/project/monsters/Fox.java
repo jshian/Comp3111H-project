@@ -33,12 +33,16 @@ public class Fox extends Monster {
     public Fox deepCopy() {
         return new Fox(this);
     }
+
+    // Inferface implementation
+    @Override
+    public void moveOneFrame() {
+        Coordinates nextCoordinates = arena.findNextTowardsEnd(coordinates, false);
+        if (nextCoordinates != null) coordinates.update(nextCoordinates);
+    }
     
     @Override
     public String getClassName() { return "Fox"; }
 
-    @Override
-    public void recalculateFuturePath() {
-        futurePath = arena.findPathToEndZone(new Coordinates(getX(), getY()), false);
-    }
+
 }
