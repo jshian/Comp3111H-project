@@ -4,6 +4,8 @@ import org.junit.Test;
 import project.*;
 import project.monsters.*;
 import project.towers.Catapult;
+
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -22,7 +24,7 @@ public class CatapultTest {
         ImageView iv = new ImageView(img);
         Coordinates destination = new Coordinates(440,0);
         PriorityQueue<Monster> testList = new PriorityQueue<>();
-        LinkedList<Monster> selectList = new LinkedList<>();
+        LinkedList<Arena.ExistsInArena> selectList = new LinkedList<>();
         LinkedList<Monster> answerList = new LinkedList<>();
         Coordinates target;
 
@@ -31,10 +33,11 @@ public class CatapultTest {
         Monster m1 = new Unicorn(arena, new Coordinates(100, 100), destination, iv, 1);testList.add(m1);
         Monster m2 = new Unicorn(arena, new Coordinates(101, 101), destination, iv, 1);testList.add(m2);
         Monster m3 = new Unicorn(arena, new Coordinates(400, 10), destination, iv, 1);testList.add(m3);
-        target=catapult.selectMonster(testList,selectList);
+        target=catapult.selectMonster(testList);
         answerList.add(m3);
+        selectList = arena.findObjectsInRange(target, 25, EnumSet.of(Arena.TypeFilter.Monster));
         Assert.assertEquals(selectList,answerList);
-        for (Monster m :selectList) {
+        for (Arena.ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();
@@ -42,9 +45,10 @@ public class CatapultTest {
         //test shoot monster with nearest but not most monsters
         Monster m4 = new Unicorn(arena, new Coordinates(201, 201), destination, iv, 1);testList.add(m4);
         Monster m5 = new Unicorn(arena, new Coordinates(200, 200), destination, iv, 1);testList.add(m5);
-        target=catapult.selectMonster(testList,selectList);
+        target=catapult.selectMonster(testList);
+        selectList = arena.findObjectsInRange(target, 25, EnumSet.of(Arena.TypeFilter.Monster));
         Assert.assertEquals(selectList,answerList);
-        for (Monster m :selectList) {
+        for (Arena.ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();
@@ -52,10 +56,11 @@ public class CatapultTest {
         //test shoot monster with nearest and most monster
         Monster m6 = new Unicorn(arena, new Coordinates(401, 11), destination, iv, 1);testList.add(m6);
         Monster m7 = new Unicorn(arena, new Coordinates(440, 40), destination, iv, 1);testList.add(m7);
-        target=catapult.selectMonster(testList,selectList);
+        target=catapult.selectMonster(testList);
         answerList.add(m6);
+        selectList = arena.findObjectsInRange(target, 25, EnumSet.of(Arena.TypeFilter.Monster));
         Assert.assertEquals(selectList,answerList);
-        for (Monster m :selectList) {
+        for (Arena.ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();

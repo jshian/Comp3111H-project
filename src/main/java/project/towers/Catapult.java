@@ -114,7 +114,7 @@ public class Catapult extends Tower {
             if (coordinate != null) {
                 hasAttack = true;
                 counter = this.reload;//start reload
-                return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower);
+                return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower,damageRange);
             }
         }
         return null;
