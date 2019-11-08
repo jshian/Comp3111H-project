@@ -24,6 +24,13 @@ public class Fox extends Monster {
     }
 
     /**
+     * @see Monster#Monster(Monster)
+     */
+    public Fox(Fox other) {
+        super(other);
+    }
+
+    /**
      * get class name.
      * @return class name.
      */

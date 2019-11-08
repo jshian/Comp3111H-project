@@ -23,6 +23,13 @@ public class Penguin extends Monster {
     }
 
     /**
+     * @see Monster#Monster(Monster)
+     */
+    public Penguin(Penguin other) {
+        super(other);
+    }
+
+    /**
      * get class name.
      * @return class name.
      */

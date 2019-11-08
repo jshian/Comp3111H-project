@@ -23,6 +23,13 @@ public class Unicorn extends Monster {
     }
 
     /**
+     * @see Monster#Monster(Monster)
+     */
+    public Unicorn(Unicorn other) {
+        super(other);
+    }
+
+    /**
      * get class name.
      * @return class name.
      */
