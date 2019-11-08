@@ -1,6 +1,7 @@
 package project.towers;
 
 import javafx.scene.image.ImageView;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.Arena.ExistsInArena;
 import project.monsters.Monster;
@@ -31,7 +32,7 @@ public class Catapult extends Tower {
      * @param arena The arena to attach the catapult to.
      * @param coordinates The coordinate of catapult.
      */
-    public Catapult(Arena arena, Coordinates coordinates){
+    public Catapult(Arena arena,@NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 25;
         this.buildingCost = 20;
@@ -49,7 +50,7 @@ public class Catapult extends Tower {
      * @param coordinates The coordinate of catapult.
      * @param imageView The image view of catapult.
      */
-    public Catapult(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public Catapult(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 25;
         this.buildingCost = 20;
@@ -79,7 +80,7 @@ public class Catapult extends Tower {
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
-    public boolean upgrade(Player player){
+    public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
             player.spendResources(upgradeCost);
             if(this.reload <= minReloadTime){

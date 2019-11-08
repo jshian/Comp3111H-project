@@ -1,5 +1,6 @@
 package project.projectiles;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.Arena;
 import project.Coordinates;
 import project.monsters.Monster;
@@ -17,7 +18,7 @@ public class BasicProjectile extends Projectile{
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public BasicProjectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int attackPower) {
+    public BasicProjectile(Arena arena, @NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int attackPower) {
         super(arena,coordinates,target,speed,attackPower);
     }
 

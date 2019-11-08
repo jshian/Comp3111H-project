@@ -2,6 +2,7 @@ package project.towers;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
 import project.projectiles.Projectile;
@@ -60,7 +61,7 @@ public class LaserTower extends Tower{
     /**
      * @see Tower#Tower(Tower)
      */
-    public LaserTower(LaserTower other){
+    public LaserTower(@NonNull LaserTower other){
         super(other);
         this.consume = other.consume;
         this.laserLine = new Line(other.laserLine.getStartX(),other.laserLine.getStartY(),
@@ -77,7 +78,7 @@ public class LaserTower extends Tower{
      * @param player The player who build the tower.
      * @return true if player has enough resources to attack, false otherwise.
      */
-    public boolean consumeResource(Player player){
+    public boolean consumeResource(@NonNull Player player){
         if (player.hasResources(consume)) {
             player.spendResources(consume);
             return true;
@@ -91,7 +92,7 @@ public class LaserTower extends Tower{
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
-    public boolean upgrade(Player player){
+    public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
             player.spendResources(upgradeCost);
             if(this.attackPower+5 >= maxAttackPower)

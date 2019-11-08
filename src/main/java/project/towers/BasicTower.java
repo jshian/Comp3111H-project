@@ -1,6 +1,7 @@
 package project.towers;
 
 import javafx.scene.image.ImageView;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
 import project.projectiles.BasicProjectile;
@@ -18,7 +19,7 @@ public class BasicTower extends Tower {
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinate of basic tower.
      */
-    public BasicTower(Arena arena, Coordinates coordinates){
+    public BasicTower(Arena arena,@NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 10;
         this.buildingCost = 10;
@@ -33,7 +34,7 @@ public class BasicTower extends Tower {
      * @param coordinates The coordinates of the tower.
      * @param imageView The image view of the tower.
      */
-    public BasicTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public BasicTower(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 10;
         this.buildingCost = 10;
@@ -60,7 +61,7 @@ public class BasicTower extends Tower {
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
-    public boolean upgrade(Player player){
+    public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
             player.spendResources(upgradeCost);
             if(this.attackPower+5>=maxAttackPower)

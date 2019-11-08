@@ -160,7 +160,7 @@ public abstract class Tower implements ExistsInArena {
      * @param player The player who build the tower.
      * @return True if upgrade is successful, otherwise false.
      */
-    public abstract boolean upgrade(Player player);
+    public abstract boolean upgrade(@NonNull Player player);
 
     /**
      * Attack the monster closest to destination and in shooting range.
@@ -183,7 +183,7 @@ public abstract class Tower implements ExistsInArena {
      * @param coordinate the coordinates that to be shoot.
      * @return True if it is in the shooting range otherwise false.
      */
-    public boolean canShoot(Coordinates coordinate){
+    public boolean canShoot(@NonNull Coordinates coordinate){
         double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinate.getX(), coordinate.getY());
         return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
     }

@@ -1,6 +1,7 @@
 package project.towers;
 
 import javafx.scene.image.ImageView;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
 import project.projectiles.IceProjectile;
@@ -29,7 +30,7 @@ public class IceTower extends Tower{
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of ice tower.
      */
-    public IceTower(Arena arena, Coordinates coordinates){
+    public IceTower(Arena arena,@NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 0;
         this.buildingCost = 15;
@@ -45,7 +46,7 @@ public class IceTower extends Tower{
      * @param coordinates The coordinates of ice tower.
      * @param imageView The image view of ice tower.
      */
-    public IceTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public IceTower(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 0;
         this.buildingCost = 15;
@@ -74,7 +75,7 @@ public class IceTower extends Tower{
      * @return True if upgrade is successful, otherwise false.
      */
     @Override
-    public boolean upgrade(Player player){
+    public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
             player.spendResources(upgradeCost);
             if(this.slowDownTime+5 >= maxSlowDownTime){

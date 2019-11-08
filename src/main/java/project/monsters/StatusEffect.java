@@ -10,7 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @see Monster
  */
 @Entity
-class StatusEffect {
+public class StatusEffect {
     /**
      * ID for storage using Java Persistence API
      */

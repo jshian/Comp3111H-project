@@ -74,7 +74,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public Projectile(Arena arena, Coordinates coordinates, Coordinates target, double speed, int attackPower) {
+    public Projectile(Arena arena,@NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int attackPower) {
         this.arena = arena;
         this.coordinates = Grid.findGridCenter(coordinates);
         this.tower = Grid.findGridCenter(coordinates);
