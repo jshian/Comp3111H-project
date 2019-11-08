@@ -1,5 +1,6 @@
 package project;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
@@ -67,8 +68,8 @@ public class Coordinates implements Serializable {
      */
     public void bindByImage(@NonNull ImageView iv)
     {
-        iv.xProperty().bind(this.x);
-        iv.yProperty().bind(this.y);
+        iv.xProperty().bind(Bindings.add(this.x, -iv.getImage().getWidth()/2));
+        iv.yProperty().bind(Bindings.add(this.y, -iv.getImage().getHeight()/2));
     }
 
     /**

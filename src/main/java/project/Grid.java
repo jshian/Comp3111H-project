@@ -12,7 +12,7 @@ import project.Arena.ExistsInArena;
  * @see Arena
  * @see Tower
  */
-class Grid {
+public class Grid {
     /**
      * The x-position of the grid, where 0 is left-most, increasing towards the right.
      */
@@ -87,7 +87,7 @@ class Grid {
      * @param coordinates The specified set of coordinates.
      * @return The x-position of the grid, where 0 is left-most, increasing towards the right.
      */
-    static int findGridXPos(@NonNull Coordinates coordinates) {
+    public static int findGridXPos(@NonNull Coordinates coordinates) {
         return coordinates.getX() / UIController.GRID_WIDTH;
     }
 
@@ -96,7 +96,7 @@ class Grid {
      * @param coordinates The specified set of coordinates.
      * @return The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      */
-    static int findGridYPos(@NonNull Coordinates coordinates) {
+    public static int findGridYPos(@NonNull Coordinates coordinates) {
         return coordinates.getY() / UIController.GRID_HEIGHT;
     }
 
@@ -143,7 +143,7 @@ class Grid {
      * @param coordinates The set of coordinates.
      * @return The coordinates of the center of the grid which encloses the specified set of coordinates.
      */
-    static Coordinates findGridCenter(@NonNull Coordinates coordinates) {
+    public static Coordinates findGridCenter(@NonNull Coordinates coordinates) {
         return findGridCenter(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -153,7 +153,7 @@ class Grid {
      * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      * @return The coordinates of the center of the specified grid.
      */
-    static Coordinates findGridCenter(int xPos, int yPos) {
+    public static Coordinates findGridCenter(int xPos, int yPos) {
         return new Coordinates(findGridCenterX(xPos, yPos), findGridCenterY(xPos, yPos));
     }
 }

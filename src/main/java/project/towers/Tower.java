@@ -134,7 +134,7 @@ public abstract class Tower implements ExistsInArena {
         this.coordinates = coordinates;
         this.imageView = imageView;
         this.coordinates.bindByImage(this.imageView);
-        this.reload = 2;
+        this.reload = 8;
         this.counter = 0;
     }
 
@@ -144,8 +144,8 @@ public abstract class Tower implements ExistsInArena {
     public int getY() { return coordinates.getY(); }
     public int getShootLimit() { return shootLimit; }
     public int getUpgradeCost() { return upgradeCost; }
-    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
-    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates = new Coordinates(coordinates); }
+    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
 
     /**
      * Upgrade the tower by adding the power, slow duration, reload time etc.
@@ -158,7 +158,7 @@ public abstract class Tower implements ExistsInArena {
      * Attack the monster closest to destination and in shooting range.
      * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
-    protected abstract Projectile attackMonster();
+    public abstract Projectile attackMonster();
 
     /**
      * To determine whether the monster is in shooting range or not.
@@ -166,7 +166,7 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Monster monster){
-        return Geometry.findEuclideanDistance(this.getX(), this.getY(), monster.getX(), monster.getY()) <= shootingRange;
+        return Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY()) <= shootingRange;
     }
 
     /**
@@ -174,8 +174,8 @@ public abstract class Tower implements ExistsInArena {
      * @param coordinate the coordinates that to be shoot.
      * @return True if it is in the shooting range otherwise false.
      */
-    public boolean canShoot(Coordinates coordinates){
-        return Geometry.findEuclideanDistance(this.getX(), this.getY(), coordinates.getX(), coordinates.getY()) <= shootingRange;
+    public boolean canShoot(Coordinates coordinate){
+        return Geometry.findEuclideanDistance(getX(), getY(), coordinate.getX(), coordinate.getY()) <= shootingRange;
     }
 
     /**

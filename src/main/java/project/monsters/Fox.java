@@ -1,5 +1,6 @@
 package project.monsters;
 
+import javafx.scene.image.ImageView;
 import project.*;
 
 import javax.persistence.Entity;
@@ -21,6 +22,13 @@ public class Fox extends Monster {
         this.health = 5 * difficulty;
         this.speed = 1 + 0.01 * difficulty;
     }
+
+    /**
+     * get class name.
+     * @return class name.
+     */
+    @Override
+    public String getClassName() { return "Fox"; }
 
     @Override
     public void recalculateFuturePath() {

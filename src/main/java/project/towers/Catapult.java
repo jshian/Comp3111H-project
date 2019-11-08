@@ -73,7 +73,7 @@ public class Catapult extends Tower {
      */
     @Override
     public boolean canShoot(Monster monster){
-        double dis = Geometry.findEuclideanDistance(this.getX(), this.getY(), monster.getX(), monster.getY());
+        double dis = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
         return dis <= shootingRange && dis >= shootLimit;
     }
 
@@ -84,12 +84,14 @@ public class Catapult extends Tower {
      * @return The projectile of tower attack, return null if cannot shoot any monster.
      */
     @Override
-    protected Projectile attackMonster(){
+    public Projectile attackMonster(){
         if(!isReload()) {
             LinkedList<Monster> monsters = new LinkedList<>();
             Coordinates coordinate = selectMonster(arena.getMonsters(), monsters);
-            counter = 10;
-            return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower);
+            if (coordinate != null) {
+                hasAttack = true;
+                return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower);
+            }
         }
         return null;
     }

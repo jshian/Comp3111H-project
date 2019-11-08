@@ -100,8 +100,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public Monster(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         this.imageView = imageView;
         this.arena = arena;
-        this.coordinates = start;
-        this.destination = destination;
+        this.coordinates = new Coordinates(start);
+        this.destination = new Coordinates(destination);
+        this.coordinates.bindByImage(this.imageView);
+
         this.futurePath = new LinkedList<>();
         this.statusEffects = new LinkedList<>();
     }
@@ -113,13 +115,14 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public Monster(Monster other) {
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
-        this.coordinates = other.coordinates;
+        this.coordinates = new Coordinates(other.coordinates);
         this.maxHealth = other.maxHealth;
         this.health = other.health;
         this.maxSpeed = other.maxSpeed;
         this.speed = other.speed;
         this.destination = new Coordinates(other.destination);
-        
+        this.coordinates.bindByImage(this.imageView);
+
         this.futurePath = new LinkedList<>();
         for (Coordinates c : other.futurePath) this.futurePath.add(new Coordinates(c));
 
@@ -131,17 +134,29 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
-    public void setLocation(int x, int y) { coordinates = new Coordinates(x, y); }
-    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates = new Coordinates(coordinates); }
-    public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates = futurePath.removeFirst(); }
+    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+    public void MoveOneFrame() { if (!futurePath.isEmpty()) coordinates.update(futurePath.removeFirst()); }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
+
+    /**
+     * get class name.
+     * @return class name.
+     */
+    public abstract String getClassName();
+
+    /**
+     * get the coordinate of monster in next frame.
+     * @return coordinate of monster in next frame.
+     */
+    public Coordinates getNextFrame() { return !futurePath.isEmpty() ? futurePath.removeFirst() : null; }
 
     /**
      * Sets the health of the monster.
      * @param health The health of the monster.
      */
     public void setHealth(double health) {
-        this.health = health;
+        this.health = health < 0 ? 0 : health;
     }
 
     /**
