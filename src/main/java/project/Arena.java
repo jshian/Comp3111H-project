@@ -849,7 +849,6 @@ public final class Arena {
         path.add(coordinates);
 
         while (!Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), currentCoordinates.getX(), currentCoordinates.getY())) {
-            currentCoordinates = path.peekLast();
             LinkedList<Coordinates> neighbours = findTaxicabNeighbours(currentCoordinates);
 
             double lowestCost = Double.POSITIVE_INFINITY;
@@ -869,6 +868,7 @@ public final class Arena {
             }
 
             path.add(lowestCostNeighbour);
+            currentCoordinates = lowestCostNeighbour;
         }
 
         return path;
