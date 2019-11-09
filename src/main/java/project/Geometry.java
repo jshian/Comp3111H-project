@@ -73,7 +73,9 @@ public final class Geometry {
         if (boxWidth <= 0) throw new UnsupportedOperationException("The box width should be greater than zero.");
         if (boxHeight <= 0) throw new UnsupportedOperationException("The box height should be greater than zero.");
 
-        Ray2D ray = new Ray2D(x0, y0, x, y);
+        math.geom2d.Point2D p0 = new math.geom2d.Point2D(x0, y0);
+        math.geom2d.Point2D p = new math.geom2d.Point2D(x, y);
+        Ray2D ray = new Ray2D(p0, p);
 
         math.geom2d.Point2D boxCorner00 = new math.geom2d.Point2D(boxMinX, boxMinY);
         math.geom2d.Point2D boxCorner01 = new math.geom2d.Point2D(boxMinX, boxMinY + boxHeight);
@@ -99,11 +101,11 @@ public final class Geometry {
             if (intersection != null) intersections.add(intersection);
         }
 
-        math.geom2d.Point2D p = new math.geom2d.Point2D(x, y);
+        math.geom2d.Point2D intersectPoint = new math.geom2d.Point2D(x, y);
         double minDistance = Double.POSITIVE_INFINITY;
         math.geom2d.Point2D minPoint = null;
         for (math.geom2d.Point2D intersection : intersections) {
-            double distance = p.distance(intersection);
+            double distance = intersectPoint.distance(intersection);
             if (distance < minDistance) {
                 minDistance = distance;
                 minPoint = intersection;
@@ -129,7 +131,9 @@ public final class Geometry {
         if (x0 == x && y0 == y) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
         if (maxDist < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
 
-        Ray2D ray = new Ray2D(x0, y0, x, y);
+        Point2D p0 = new Point2D(x0, y0);
+        Point2D p = new Point2D(x, y);
+        Ray2D ray = new Ray2D(p0, p);
 
         double distance = ray.distance(testX, testY);
         return distance < maxDist || distance - maxDist < EQUALITY_THRESHOLD;
