@@ -37,8 +37,6 @@ class ArenaScalarFields {
      * Indices correspond to the x- and y- positions.
      * @see Monster
      * @see Grid
-     * @see #updateCosts()
-     * @see #findNextTowardsEnd(Coordinates, boolean)
      */
     private int[][] distanceToEndZone = new int[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
 
@@ -83,8 +81,6 @@ class ArenaScalarFields {
      * Indices correspond to the x- and y- coordinates.
      * @see Monster
      * @see Coordinates
-     * @see #updateCosts()
-     * @see #findNextTowardsEnd(Coordinates, boolean)
      */
     private double[][] attacksToEndZone = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
 
@@ -93,8 +89,6 @@ class ArenaScalarFields {
      * Indices correspond to the x- and y- coordinates.
      * @see Monster
      * @see Coordinates
-     * @see #updateCosts()
-     * @see #findNextTowardsEnd(Coordinates, boolean)
      */
     private double[][] attacksPerFrame = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
 
