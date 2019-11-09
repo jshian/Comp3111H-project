@@ -121,18 +121,18 @@ public final class Geometry {
      * @param y0 The y-coordinate of the origin of the ray.
      * @param x The x-coordinate of a point in the ray.
      * @param y The y-coordinate of a point in the ray.
-     * @param error Allowable Euclidean distance from the ray.
+     * @param maxDist Allowable Euclidean distance from the ray.
      * @return Whether the test point is within the specified error of the ray.
-     * @throws UnsupportedOperationException If the two points are the same, or that the error is negative.
+     * @throws UnsupportedOperationException If the two points are the same, or that maxDist is negative.
      */
-    public static boolean isInRay(int testX, int testY, int x0, int y0, int x, int y, double error) throws UnsupportedOperationException {
+    public static boolean isInRay(int testX, int testY, int x0, int y0, int x, int y, double maxDist) throws UnsupportedOperationException {
         if (x0 == x && y0 == y) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
-        if (error < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
+        if (maxDist < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
 
         Ray2D ray = new Ray2D(x0, y0, x, y);
 
         double distance = ray.distance(testX, testY);
-        return distance < error || distance - error < EQUALITY_THRESHOLD;
+        return distance < maxDist || distance - maxDist < EQUALITY_THRESHOLD;
     }
 
     /**
