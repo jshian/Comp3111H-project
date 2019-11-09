@@ -134,7 +134,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public double getSpeed() { return speed; }
     public void nextFrame() {
-        Coordinates nextCoordinates = arena.findNextTowardsEnd(coordinates, true);
+        Coordinates nextCoordinates = arena.findNextTowardsEnd_prioritizeMovement(coordinates);
         if (nextCoordinates != null) coordinates.update(nextCoordinates);
 
         boolean isSlowed = false;
@@ -190,5 +190,5 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Finds the number of pixels the monster has to travel to reach its destination.
      * @return The number of pixels the monster has to travel to reach its destination.
      */
-    public int distanceToDestination() { return arena.getTaxicabDistanceToEnd(coordinates); }
+    public int distanceToDestination() { return arena.getTaxicabGridsToEnd(coordinates); }
 }

@@ -24,6 +24,22 @@ public class Grid {
     private final int yPos;
 
     /**
+     * Performs bounds checking of the grid.
+     * @param xPos The x position.
+     * @param yPos The y position.
+     * @throws IllegalArgumentException If the grid is outside the arena.
+     */
+    private static void checkGrid(int xPos, int yPos) throws IllegalArgumentException {
+        if (xPos < 0 || xPos >= UIController.MAX_H_NUM_GRID) {
+            throw new IllegalArgumentException("The parameter 'x' is out of bounds.");
+        }
+        
+        if (yPos < 0 || yPos >= UIController.MAX_V_NUM_GRID) {
+            throw new IllegalArgumentException("The parameter 'y' is out of bounds.");
+        }
+    }
+
+    /**
      * A linked list containing a reference to each object within the grid.
      */
     private LinkedList<ExistsInArena> objects = new LinkedList<>();
@@ -34,10 +50,7 @@ public class Grid {
      * @param yPos The vertical position of the grid, with 0 denoting the top-most grid, increasing towards the bottom. This should be at least 0 and less than {@value UIController#MAX_V_NUM_GRID}.
      */
     Grid(int xPos, int yPos) {
-        if (xPos < 0 || xPos >= UIController.MAX_H_NUM_GRID)
-            throw new IllegalArgumentException("The parameter 'x' is out of bounds.");
-        if (yPos < 0 || yPos >= UIController.MAX_V_NUM_GRID)
-            throw new IllegalArgumentException("The parameter 'y' is out of bounds.");
+        checkGrid(xPos, yPos);
 
         this.xPos = xPos;
         this.yPos = yPos;
@@ -116,6 +129,8 @@ public class Grid {
      * @return The x-coordinate of the center of the specified grid.
      */
     static int findGridCenterX(int xPos, int yPos) {
+        checkGrid(xPos, yPos);
+
         return (int) ((xPos + 0.5) * UIController.GRID_WIDTH);
     }
 
@@ -135,6 +150,8 @@ public class Grid {
      * @return The y-coordinate of the center of the specified grid.
      */
     static int findGridCenterY(int xPos, int yPos) {
+        checkGrid(xPos, yPos);
+
         return (int) ((yPos + 0.5) * UIController.GRID_HEIGHT);
     }
 
@@ -155,5 +172,44 @@ public class Grid {
      */
     public static Coordinates findGridCenter(int xPos, int yPos) {
         return new Coordinates(findGridCenterX(xPos, yPos), findGridCenterY(xPos, yPos));
+    }
+
+    /**
+     * Finds the grids within a taxicab distance of one from the grid from the grid containing the specified pixel.
+     * @param coordinates The coordinates of the pixel.
+     * @return A linked list containing a reference to the {x, y} position of each taxicab neighbour.
+     */
+    public static LinkedList<int[]> findTaxicabNeighbours(@NonNull Coordinates coordinates) {
+        return findTaxicabNeighbours(findGridXPos(coordinates), findGridYPos(coordinates));
+    }
+
+    /**
+     * Finds the grids within a taxicab distance of one from the grid from the specified grid.
+     * @param xPos The x-position of the grid.
+     * @param yPos The y-position of the grid.
+     * @return A linked list containing a reference to the {x, y} position of each taxicab neighbour.
+     */
+    public static LinkedList<int[]> findTaxicabNeighbours(int xPos, int yPos) {
+        checkGrid(xPos, yPos);
+
+        LinkedList<int[]> result = new LinkedList<>();
+
+        // Left neighbour
+        if (xPos > 0)
+            result.add(new int[] { xPos - 1, yPos });
+        
+        // Right neighbour
+        if (xPos < UIController.MAX_H_NUM_GRID - 1)
+            result.add(new int[] { xPos + 1, yPos });
+        
+        // Top neighbour
+        if (yPos > 0)
+            result.add(new int[] { xPos, yPos - 1 });
+
+        // Bottom neighbour
+        if (yPos < UIController.MAX_V_NUM_GRID - 1)
+            result.add(new int[] { xPos, yPos + 1 });
+
+        return result;
     }
 }
