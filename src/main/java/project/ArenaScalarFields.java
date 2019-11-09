@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import project.towers.*;
+import project.towers.Tower;
 
 /**
  * Manages the scalar fields of the arena.

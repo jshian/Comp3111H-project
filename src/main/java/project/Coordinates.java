@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
-import java.security.InvalidParameterException;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
