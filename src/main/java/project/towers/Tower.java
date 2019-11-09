@@ -2,7 +2,6 @@ package project.towers;
 
 import project.Arena.ExistsInArena;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -159,7 +158,6 @@ public abstract class Tower implements ExistsInArena {
     public void nextFrame() {
         if (hasAttack) {
             if (this.counter == 0) {
-                this.counter = this.reload;
                 this.hasAttack = false;
             } else {
                 this.counter--;

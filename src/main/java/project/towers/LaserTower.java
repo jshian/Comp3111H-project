@@ -1,13 +1,11 @@
 package project.towers;
 
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Line;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import project.*;
 import project.monsters.Monster;
+import project.projectiles.LaserProjectile;
 import project.projectiles.Projectile;
-
-import java.util.PriorityQueue;
 
 
 /**
@@ -19,13 +17,6 @@ public class LaserTower extends Tower{
      * The consumption of resources by laser tower each time.
      */
     private int consume;
-
-
-    /**
-     * The laser display on the arena.
-     */
-    private Line laserLine;
-
 
     /**
      * Constructor of laser tower.
@@ -64,8 +55,6 @@ public class LaserTower extends Tower{
     public LaserTower(@NonNull LaserTower other){
         super(other);
         this.consume = other.consume;
-        this.laserLine = new Line(other.laserLine.getStartX(),other.laserLine.getStartY(),
-                other.laserLine.getEndX(),other.laserLine.getEndY());
     }
 
     @Override
@@ -110,38 +99,16 @@ public class LaserTower extends Tower{
     @Override
     public Projectile generateProjectile(){
         if(!isReload()) {
-            Monster monster = null;
             for (Monster m : arena.getMonsters()) {
-                if (canShoot(m))
-                    monster = m;
-            }
-            if (monster == null) {
-                this.laserLine = null;
-                return null;
-            }
-            hasAttack = true;
-            laserLine = arena.drawRay(this, monster);
-
-            PriorityQueue<Monster> monsters = arena.getMonsters();
-            for (Monster m : monsters) {
-                if (Geometry.isInRay(m.getX(),m.getY(), getX(),getY(),monster.getX(),monster.getY(), 3)) {
-                    m.takeDamage(attackPower);
-                    System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
-                            , m.getClassName(), m.getX(), m.getY()));
+                if (canShoot(m)) {
+                    hasAttack = true;
+                    this.counter = this.reload;
+                    return new LaserProjectile(arena, this.coordinates, new Coordinates(m.getX(), m.getY()), attackPower);
                 }
             }
-        } else {
-            this.laserLine = null;
         }
         return null;
     }
-
-    /**
-     * Get the laserLine.
-     * @return get the laserLine
-     */
-    public Line getLaserLine() { return this.laserLine;}
-
 
     /**
      * Accesses the information of tower.

@@ -47,6 +47,7 @@ public class BasicProjectile extends Projectile {
                             , target.getClassName(), target.getX(), target.getY()));
                 }
             }
+
         }
     }
 }
