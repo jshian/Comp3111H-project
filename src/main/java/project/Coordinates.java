@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
+import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -30,6 +31,22 @@ public class Coordinates implements Serializable {
     private IntegerProperty y = new SimpleIntegerProperty(0);
 
     /**
+     * Performs bounds checking of the coordinates.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     * @throws IllegalArgumentException If the coordinates is outside the arena.
+     */
+    private static void checkCoordinates(int x, int y) throws IllegalArgumentException {
+        if (x < 0 || x > UIController.ARENA_WIDTH) {
+            throw new IllegalArgumentException(String.format("The parameter 'x' is out of bounds."));
+        }
+
+        if (y < 0 || y > UIController.ARENA_HEIGHT) {
+            throw new IllegalArgumentException(String.format("The parameter 'y' is out of bounds."));
+        }
+    }
+
+    /**
      * Default constructor for the Coordinate class. Both coordinates default to 0.
      */
     public Coordinates() {}
@@ -38,7 +55,6 @@ public class Coordinates implements Serializable {
      * Parameterized constructor for the Coordinate class.
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
-     * @exception InvalidParameterException Either of the coordinates is outside the arena.
      */
     public Coordinates(int x, int y) { update(x, y); }
 
@@ -74,15 +90,9 @@ public class Coordinates implements Serializable {
      * Updates both coordinates.
      * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
      * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
-     * @exception IllegalArgumentException Either of the coordinates is outside the arena.
      */
     public void update(int x, int y) {
-        if (x < 0 || x > UIController.ARENA_WIDTH)
-            throw new IllegalArgumentException(
-                String.format("The parameter 'x' is out of bounds. It should be between 0 and %d.", UIController.ARENA_WIDTH));
-        if (y < 0 || y > UIController.ARENA_HEIGHT)
-            throw new IllegalArgumentException(
-                String.format("The parameter 'y' is out of bounds. It should be between 0 and %d.", UIController.ARENA_HEIGHT));
+        checkCoordinates(x, y);
 
         this.x.set(x);
         this.y.set(y);
@@ -94,5 +104,45 @@ public class Coordinates implements Serializable {
      */
     public void update(Coordinates other) {
         update(other.getX(), other.getY());
+    }
+
+    /**
+     * Finds the coordinates within a taxicab distance of one from the specified coordinates.
+     * @param coordinates The coordinates.
+     * @return A linked list containing a reference to the coordinates of each taxicab neighbour.
+     * @exception IllegalArgumentException Either of the coordinates is outside the arena.
+     */
+    public static LinkedList<Coordinates> findTaxicabNeighbours(@NonNull Coordinates coordinates) {
+        return findTaxicabNeighbours(coordinates.getX(), coordinates.getY());
+    }
+    
+    /**
+     * Finds the coordinates within a taxicab distance of one from the specified coordinates.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     * @return A linked list containing a reference to the coordinates of each taxicab neighbour.
+     */
+    public static LinkedList<Coordinates> findTaxicabNeighbours(int x, int y) {
+        checkCoordinates(x, y);
+
+        LinkedList<Coordinates> result = new LinkedList<>();
+
+        // Left neighbour
+        if (x > 0)
+            result.add(new Coordinates(x - 1, y));
+        
+        // Right neighbour
+        if (x < UIController.ARENA_WIDTH)
+            result.add(new Coordinates(x + 1, y));
+        
+        // Top neighbour
+        if (y > 0)
+            result.add(new Coordinates(x, y - 1));
+
+        // Bottom neighbour
+        if (y < UIController.ARENA_HEIGHT)
+            result.add(new Coordinates(x, y + 1));
+
+        return result;
     }
 }

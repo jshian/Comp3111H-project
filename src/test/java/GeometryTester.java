@@ -192,6 +192,9 @@ public class GeometryTester {
         Point2D p32 = Geometry.intersectBox(130, -50, -40, -20, -70, -90, 315, 120);
         assertEquals(p32.getX(), -65, Geometry.EQUALITY_THRESHOLD);
         assertEquals(p32.getY(), 30, Geometry.EQUALITY_THRESHOLD);
+        Point2D p33 = Geometry.intersectBox(420, 460, 420, 420, 0, 0, 480, 480);
+        assertEquals(p33.getX(), 420, Geometry.EQUALITY_THRESHOLD);
+        assertEquals(p33.getY(), 0, Geometry.EQUALITY_THRESHOLD);
     }
 
     @Test

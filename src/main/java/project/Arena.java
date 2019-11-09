@@ -33,45 +33,45 @@ public final class Arena {
      * x-coordinate of the starting position.
      * @see Coordinates
      */
-    private static final int STARTING_GRID_X_POS = 0;
+    static final int STARTING_GRID_X_POS = 0;
 
     /**
      * y-coordinate of the starting position.
      * @see Coordinates
      */
-    private static final int STARTING_GRID_Y_POS = 0;
+    static final int STARTING_GRID_Y_POS = 0;
 
     /**
      * Coordinates of the starting position.
      */
-    private static final Coordinates STARTING_COORDINATES = Grid.findGridCenter(STARTING_GRID_X_POS, STARTING_GRID_Y_POS);
+    static final Coordinates STARTING_COORDINATES = Grid.findGridCenter(STARTING_GRID_X_POS, STARTING_GRID_Y_POS);
 
     /**
      * x-coordinate of the end zone.
      * @see Coordinates
      */
-    private static final int END_GRID_X_POS = 11;
+    static final int END_GRID_X_POS = 11;
 
     /**
      * y-coordinate of the end zone.
      * @see Coordinates
      */
-    private static final int END_GRID_Y_POS = 0;
+    static final int END_GRID_Y_POS = 0;
     /**
      * Coordinates of the end zone.
      */
-    private static final Coordinates END_COORDINATES = Grid.findGridCenter(END_GRID_X_POS, END_GRID_Y_POS);
+    static final Coordinates END_COORDINATES = Grid.findGridCenter(END_GRID_X_POS, END_GRID_Y_POS);
 
     /**
      * The number of frames between each wave of Monsters.
      * @see #spawnWave()
      */
-    private static final int WAVE_INTERVAL = 50;
+    static final int WAVE_INTERVAL = 50;
 
     /**
      * The duration of laser being displayed.
      */
-    private static final int LASER_DURATION = 2;
+    static final int LASER_DURATION = 2;
 
     /**
      * The current frame number of the arena since the game began.
@@ -122,6 +122,13 @@ public final class Arena {
      * Stores grid information of the arena.
      */
     private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
+    {
+        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
+            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+                grids[i][j] = new Grid(i, j);
+            }
+        }
+    }
 
     /**
      * Accesses the grid that contains the specified pixel.
@@ -159,98 +166,9 @@ public final class Arena {
     }
 
     /**
-     * Stores the shortest distance from each pixel to reach the end zone.
-     * This is essentially a potential field per unit speed for determining Monster movement.
-     * @see Monster
-     * @see Coordinates
-     * @see #updateCosts()
-     * @see #findNextTowardsEnd(Coordinates, boolean)
+     * The scalar fields stored in this arena.
      */
-    private int[][] distanceToEndZone = new int[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
-
-    /**
-     * Stores the cost for a monster in each pixel to reach the end-zone due to movement and being attacked. Indices correspond to the x- and y- coordinates.
-     * This is essentially a potential field per unit speed for determining Monster movement.
-     * @see Monster
-     * @see Coordinates
-     * @see #updateCosts()
-     * @see #findNextTowardsEnd(Coordinates, boolean)
-     */
-    private double[][] totalCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
-
-    /**
-     * Updates the costs to reach the end-zone from each pixel.
-     * @see #distanceToEndZone
-     * @see #totalCostToEnd
-     */
-    private void updateCosts() {
-    	class IntTuple {
-    		private int x;
-    		private int y;
-
-    		IntTuple(int x, int y) {
-    			this.x = x;
-    			this.y = y;
-            }
-
-            IntTuple(@NonNull Coordinates coordinates) {
-                this.x = coordinates.getX();
-                this.y = coordinates.getY();
-            }
-        }
-
-    	// Reset values
-    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
-    			distanceToEndZone[i][j] = Integer.MAX_VALUE;
-    	    	totalCostToEnd[i][j] = Double.POSITIVE_INFINITY;
-    		}
-        }
-
-        // Calculate movement costs
-    	LinkedList<IntTuple> openSet = new LinkedList<>();
-        openSet.add(new IntTuple(END_COORDINATES));
-        distanceToEndZone[END_COORDINATES.getX()][END_COORDINATES.getY()] = 0;
-    	while (!openSet.isEmpty()) {
-    		IntTuple current = openSet.poll();
-    		// Monsters can only travel horizontally or vertically
-    		LinkedList<Coordinates> neighbours = findTaxicabNeighbours(new Coordinates(current.x, current.y));
-    		for (Coordinates c : neighbours) {
-    			// Monsters can only go to grids that do not contain a Tower
-    			if (findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-        			int newCost = distanceToEndZone[current.x][current.y] + 1;
-        			if (distanceToEndZone[c.getX()][c.getY()] > newCost ) {
-        				distanceToEndZone[c.getX()][c.getY()] = newCost;
-        				openSet.add(new IntTuple(c.getX(), c.getY()));
-        			}
-    			}
-    		}
-        }
-
-        // Calculate total costs
-        final int MOVEMENT_TO_ATTACKED_COST_RATIO = 100000; // The ratio between the cost of moving one pixel and the cost of getting attacked once.
-
-        openSet.add(new IntTuple(END_COORDINATES));
-
-    	totalCostToEnd[END_COORDINATES.getX()][END_COORDINATES.getY()] = 0;
-    	while (!openSet.isEmpty()) {
-    		IntTuple current = openSet.poll();
-
-    		// Monsters can only travel horizontally or vertically
-    		LinkedList<Coordinates> neighbours = findTaxicabNeighbours(new Coordinates(current.x, current.y));
-    		for (Coordinates c : neighbours) {
-    			// Monsters can only go to grids that do not contain a Tower
-    			if (findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-                    double newCost = totalCostToEnd[current.x][current.y] + 1
-                        + countInRangeOfTowers(c) * MOVEMENT_TO_ATTACKED_COST_RATIO;
-        			if (totalCostToEnd[c.getX()][c.getY()] > newCost ) {
-        				totalCostToEnd[c.getX()][c.getY()] = newCost;
-        				openSet.add(new IntTuple(c.getX(), c.getY()));
-        			}
-    			}
-    		}
-        }
-    }
+    private ArenaScalarFields arenaScalarFields = new ArenaScalarFields(this);
 
     /**
      * The Arena during the previous frame. Only used for saving the game.
@@ -293,7 +211,7 @@ public final class Arena {
         getGrid(c).addObject(obj);
 
         if (obj instanceof Tower) {
-            updateCosts();
+            arenaScalarFields.processAddTower((Tower)obj);
         }
     }
 
@@ -317,7 +235,7 @@ public final class Arena {
         getGrid(c).removeObject(obj);
 
         if (obj instanceof Tower) {
-            updateCosts();
+            arenaScalarFields.processRemoveTower((Tower)obj);
         }
     }
 
@@ -372,16 +290,6 @@ public final class Arena {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
 
-        // Set up grids
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                grids[i][j] = new Grid(i, j);
-            }
-        }
-
-        // Set up potential fields
-        updateCosts();
-
         shadowArena = new Arena(this);
     }
 
@@ -396,12 +304,26 @@ public final class Arena {
 
         this.towers = new LinkedList<>();
         for (Tower t : other.towers) {
-            this.towers.add(t.deepCopy());
+            Tower new_t = t.deepCopy();
+            this.towers.add(new_t);
+            Coordinates c = new Coordinates(new_t.getX(), new_t.getY());
+            getGrid(c).addObject(new_t);
         }
 
         this.projectiles = new LinkedList<>();
         for (Projectile p : other.projectiles) {
-            this.projectiles.add(p.deepCopy());
+            Projectile new_p = p.deepCopy();
+            this.projectiles.add(new_p);
+            Coordinates c = new Coordinates(new_p.getX(), new_p.getY());
+            getGrid(c).addObject(new_p);
+        }
+
+        this.monsters = new PriorityQueue<>();
+        for (Monster m : other.monsters) {
+            Monster new_m = m.deepCopy();
+            this.monsters.add(new_m);
+            Coordinates c = new Coordinates(new_m.getX(), new_m.getY());
+            getGrid(c).addObject(new_m);
         }
 
         this.lasers = new HashMap<>();
@@ -414,25 +336,7 @@ public final class Arena {
             this.explosions.put(entry.getKey(), entry.getValue());
         }
 
-        this.monsters = new PriorityQueue<>();
-        for (Monster m : other.monsters) {
-            this.monsters.add(m.deepCopy());
-        }
-
-        // Set up grids
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                grids[i][j] = new Grid(i, j);
-            }
-        }
-
-        // Set up potential fields
-        for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-            for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
-                this.distanceToEndZone[i][j] = other.distanceToEndZone[i][j];
-                this.totalCostToEnd[i][j] = other.totalCostToEnd[i][j];
-            }
-        }
+        this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
 
         this.shadowArena = null;
     }
@@ -458,10 +362,10 @@ public final class Arena {
     /**
      * Finds the taxicab distance from the specified pixel to the end-zone.
      * @param coordinates The coordinates of the pixel.
-     * @return The taxicab distance from the specified pixel to the end-zone, in number of pixels.
+     * @return The taxicab distance from the specified pixel to the end-zone, in number of grids.
      */
-    public int getTaxicabDistanceToEnd(@NonNull Coordinates coordinates) {
-        return distanceToEndZone[coordinates.getX()][coordinates.getY()];
+    public int getTaxicabGridsToEnd(@NonNull Coordinates coordinates) {
+        return arenaScalarFields.getDistanceToEndZone(coordinates);
     }
 
     /**
@@ -535,17 +439,18 @@ public final class Arena {
     }
 
     /**
-     * Finds all objects that are located inside the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel
+     * Finds all objects that are located inside the  specified grid.
+     * @param xPos The x-position of the grid.
+     * @param yPos The y-position of the grid.
      * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
         
-        LinkedList<ExistsInArena> list = getGrid(coordinates).getAllObjects();
+        LinkedList<ExistsInArena> list = grids[xPos][yPos].getAllObjects();
         for (ExistsInArena obj : list)
         {
             if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
@@ -560,34 +465,15 @@ public final class Arena {
     }
 
     /**
-     * Finds the pixels within a taxicab distance of one from the grid where a specified pixel is located.
+     * Finds all objects that are located inside the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
-     * @return A linked list containing a reference to the coordinates of the center of each taxicab neighbour.
+     * @param filter Only the types that are specified will be included in the result.
+     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @see TypeFilter
      */
-    public LinkedList<Coordinates> findTaxicabNeighbours(@NonNull Coordinates coordinates)
+    public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<Coordinates> result = new LinkedList<>();
-
-        int x = coordinates.getX();
-        int y = coordinates.getY();
-
-        // Left neighbour
-        if (x > 0)
-            result.add(new Coordinates(x - 1, y));
-        
-        // Right neighbour
-        if (x < UIController.ARENA_WIDTH)
-            result.add(new Coordinates(x + 1, y));
-        
-        // Top neighbour
-        if (y > 0)
-            result.add(new Coordinates(x, y - 1));
-
-        // Bottom neighbour
-        if (y < UIController.ARENA_HEIGHT)
-            result.add(new Coordinates(x, y + 1));
-
-        return result;
+        return findObjectsInGrid(Grid.findGridXPos(coordinates), Grid.findGridYPos(coordinates), filter);
     }
 
     /**
@@ -890,30 +776,128 @@ public final class Arena {
     }
 
     /**
-     * Finds the next location for an object to move in order to reach the end-zone at the lowest cost.
+     * Finds the next location for an object to move in order to reach the end-zone by moving as few pixels as possible.
      * @param coordinates The coordinates of the object.
-     * @param movementOnly Whether the method should only consider movement cost. Otherwise, it also considers the cost of being attacked by Towers.
      * @return The coordinates of the next pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
      */
-    public Coordinates findNextTowardsEnd(@NonNull Coordinates coordinates, boolean movementOnly) {
-        if (Double.isInfinite(distanceToEndZone[coordinates.getX()][coordinates.getY()])) return null;
+    public Coordinates findNextTowardsEnd_prioritizeMovement(@NonNull Coordinates coordinates) {
+        if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
         if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
 
-        LinkedList<Coordinates> neighbours = findTaxicabNeighbours(coordinates);
+        LinkedList<int[]> neighbours = Grid.findTaxicabNeighbours(coordinates);
+        int lowestCost = Integer.MAX_VALUE;
+        int[] lowestCostNeighbour = null;
+        for (int[] pos : neighbours) {
+            int cost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
+
+            if (cost < lowestCost) {
+                lowestCost = cost;
+                lowestCostNeighbour = pos;
+            }
+        }
+
+        int current_xPos = Grid.findGridXPos(coordinates);
+        int current_yPos = Grid.findGridYPos(coordinates);
+        int neighbour_xPos = lowestCostNeighbour[0];
+        int neighbour_yPos = lowestCostNeighbour[1];
+
+        // Move left
+        if (neighbour_xPos < current_xPos && neighbour_yPos == current_yPos) {
+            return new Coordinates(coordinates.getX() - 1, coordinates.getY());
+        }
+
+        // Move right
+        if (neighbour_xPos > current_xPos && neighbour_yPos == current_yPos) {
+            return new Coordinates(coordinates.getX() + 1, coordinates.getY());
+        }
+
+        // Move up
+        if (neighbour_xPos == current_xPos && neighbour_yPos < current_yPos) {
+            return new Coordinates(coordinates.getX(), coordinates.getY() - 1);
+        }
+
+        // Move down
+        if (neighbour_xPos == current_xPos && neighbour_yPos > current_yPos) {
+            return new Coordinates(coordinates.getX(), coordinates.getY() + 1);
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds the next location for an object to move in order to reach the end-zone with the least attacks received.
+     * @param coordinates The coordinates of the object.
+     * @return The coordinates of the next pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
+     */
+    public Coordinates findNextTowardsEnd_prioritizeAttack(@NonNull Coordinates coordinates) {
+        if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
+        if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
+
+        LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
 
         double lowestCost = Double.POSITIVE_INFINITY;
         Coordinates lowestCostNeighbour = null;
         for (Coordinates neighbour : neighbours) {
-            double cost;
-            if (movementOnly) {
-                cost = distanceToEndZone[neighbour.getX()][neighbour.getY()];
-            } else {
-                cost = totalCostToEnd[neighbour.getX()][neighbour.getY()];
-            }
+            double cost = arenaScalarFields.getAttacksToEndZone(neighbour);
 
             if (cost < lowestCost) {
                 lowestCost = cost;
                 lowestCostNeighbour = neighbour;
+            } else if (cost == lowestCost) {
+                LinkedList<int[]> grids = Grid.findTaxicabNeighbours(coordinates);
+                int lowestCostNeighbourMovementCost = Integer.MAX_VALUE;
+                int neighbourMovementCost = Integer.MAX_VALUE;
+                for (int[] pos : grids) {
+                    int gridCost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
+                    int grid_xPos = pos[0];
+                    int grid_yPos = pos[1];
+                    int current_xPos = Grid.findGridXPos(coordinates);
+                    int current_yPos = Grid.findGridYPos(coordinates);
+            
+                    // Left
+                    if (grid_xPos < current_xPos && grid_yPos == current_yPos) {
+                        if (lowestCostNeighbour.getX() < coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() < coordinates.getX() && neighbour.getY() == coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+            
+                    // Right
+                    if (grid_xPos > current_xPos && grid_yPos == current_yPos) {
+                        if (lowestCostNeighbour.getX() > coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() > coordinates.getX() && neighbour.getY() == coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+            
+                    // Up
+                    if (grid_xPos == current_xPos && grid_yPos < current_yPos) {
+                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() < coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() < coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+            
+                    // Down
+                    if (grid_xPos == current_xPos && grid_yPos > current_yPos) {
+                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() > coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() > coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+                }
+
+                if (neighbourMovementCost < lowestCostNeighbourMovementCost) {
+                    lowestCostNeighbour = neighbour;
+                }
             }
         }
 
