@@ -132,7 +132,7 @@ public final class Geometry {
         Ray2D ray = new Ray2D(x0, y0, x, y);
 
         double distance = ray.distance(testX, testY);
-        return distance < error || Math.abs(distance - error) < EQUALITY_THRESHOLD;
+        return distance < error || distance - error < EQUALITY_THRESHOLD;
     }
 
     /**
@@ -149,7 +149,7 @@ public final class Geometry {
         if (r < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
         
         double distance = findEuclideanDistance(xTest, yTest, x, y);
-        return distance < r || Math.abs(distance - r) < EQUALITY_THRESHOLD;
+        return distance < r || distance - r < EQUALITY_THRESHOLD;
     }
 
     /**
