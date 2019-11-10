@@ -5,16 +5,12 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -197,15 +193,15 @@ public class UIController {
                 newLabel.setStyle("-fx-border-color: black;");
                 grids[i][j] = newLabel;
                 paneArena.getChildren().addAll(newLabel);
-
-                newLabel.setOnMouseClicked(e -> {
-                    if (e.getButton() == MouseButton.SECONDARY) {
-                        if(paneArena.getChildren().contains(vb)) {
-                            paneArena.getChildren().remove(vb);
-                        }
-                    }
-                });
             }
+
+        paneArena.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.SECONDARY) {
+                if(paneArena.getChildren().contains(vb)) {
+                    paneArena.getChildren().remove(vb);
+                }
+            }
+        });
 
         arena = new Arena(remainingResources, paneArena);
         setDragLabel();
@@ -416,14 +412,6 @@ public class UIController {
                     paneArena.getChildren().remove(vb);
                     arena.destroyTower(t);
                 });
-                Node[] ns = {vb, upgradeBtn, destroyBtn};
-                for (Node n: ns) {
-                    n.setOnMouseClicked(en -> {
-                        if (en.getButton() == MouseButton.SECONDARY) {
-                            paneArena.getChildren().remove(vb);
-                        }
-                    });
-                }
 
                 paneArena.getChildren().add(vb);
             }
