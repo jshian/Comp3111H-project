@@ -88,12 +88,14 @@ public class Catapult extends Tower {
     @Override
     public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
+            System.out.println("Catapult is being upgraded.");
             player.spendResources(upgradeCost);
             if(this.reload <= minReloadTime){
                 this.reload = minReloadTime;
             }else this.reload-=1;
             return true;
         }
+        System.out.println("not enough resource to upgrade Catapult.");
         return false;
     }
 

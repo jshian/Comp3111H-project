@@ -227,6 +227,18 @@ public final class Arena {
     public PriorityQueue<Monster> getMonsters() { return arenaObjectStorage.getMonsters(); }
 
     /**
+     * Find the player who are playing now.
+     * @return The player who are playing.
+     */
+    public Player getPlayer() { return player; }
+
+    /**
+     * Find the pane of the arena
+     * @return the pane of the arena
+     */
+    public AnchorPane getPane() { return paneArena; }
+
+    /**
      * @see ArenaScalarFields#getDistanceToEndZone(Coordinates)
      */
     public int getDistanceToEndZone(@NonNull Coordinates coordinates) {
@@ -245,6 +257,11 @@ public final class Arena {
      * An enum for generate monster in the Arena according to type.
      */
     public static enum MonsterType { Fox, Penguin, Unicorn }
+
+    /**
+     * An enum for building tower in the Arena according to type.
+     */
+    public static enum TowerType { BasicTower, Catapult, IceTower, LaserTower }
 
     /**
      * Finds all objects that are located at a specified pixel.
@@ -311,15 +328,15 @@ public final class Arena {
      * @param type type of the tower.
      * @return true if the player has enough resources or false otherwise.
      */
-    public boolean hasResources(@NonNull String type)
+    public boolean hasResources(@NonNull TowerType type)
     {
         int cost = 500;
         Coordinates c = new Coordinates(0,0);
         switch(type) {
-            case "Basic Tower": cost = new BasicTower(this, c).getBuildingCost(); break;
-            case "Ice Tower": cost = new IceTower(this, c).getBuildingCost(); break;
-            case "Catapult": cost = new Catapult(this, c).getBuildingCost(); break;
-            case "Laser Tower": cost = new LaserTower(this, c).getBuildingCost(); break;
+            case BasicTower: cost = new BasicTower(this, c).getBuildingCost(); break;
+            case IceTower: cost = new IceTower(this, c).getBuildingCost(); break;
+            case Catapult: cost = new Catapult(this, c).getBuildingCost(); break;
+            case LaserTower: cost = new LaserTower(this, c).getBuildingCost(); break;
         }
         return player.hasResources(cost);
     }
@@ -330,7 +347,7 @@ public final class Arena {
      * @param type type of the tower.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
-    public boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull String type)
+    public boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
     {
         boolean empty = findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
         if (!empty)
@@ -406,16 +423,16 @@ public final class Arena {
      * @param type specify the class of tower.
      * @return the tower being built, or null if not enough resources
      */
-    public Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull String type)
+    public Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull TowerType type)
     {
         Tower t = null;
         int cost = 0;
         Coordinates center = Grid.findGridCenter(coordinates);
         switch(type) {
-            case "Basic Tower": t = new BasicTower(this, center, iv); break;
-            case "Ice Tower": t = new IceTower(this, center, iv); break;
-            case "Catapult": t = new Catapult(this, center, iv); break;
-            case "Laser Tower": t = new LaserTower(this, center, iv); break;
+            case BasicTower: t = new BasicTower(this, center, iv); break;
+            case IceTower: t = new IceTower(this, center, iv); break;
+            case Catapult: t = new Catapult(this, center, iv); break;
+            case LaserTower: t = new LaserTower(this, center, iv); break;
             default: return null;
         }
         cost = t.getBuildingCost();
@@ -681,4 +698,6 @@ public final class Arena {
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
     }
+
+
 }

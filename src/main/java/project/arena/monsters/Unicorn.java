@@ -20,7 +20,7 @@ public class Unicorn extends Monster {
         super(arena, start, destination, imageView, difficulty);
         this.maxHealth = 10 * difficulty;
         this.maxSpeed = 2 + 0.2 * difficulty;
-        this.health = this.maxHealth;
+        this.health.set(this.maxHealth);
         this.speed = this.maxSpeed;
         this.resources = (int) (difficulty * 1);
     }

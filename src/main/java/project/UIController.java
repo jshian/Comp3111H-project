@@ -105,6 +105,7 @@ public class UIController {
             } else if (this.mode == modes.play) {
                 buttonPlay.setDisable(false);
             }
+            buttonNextFrame.setDisable(false);
             this.mode = modes.paused;
             timeline.pause();
         }
@@ -177,13 +178,16 @@ public class UIController {
                     BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));
                 } else if (j == 0 && i == 0) {
-                	Image image1 = new Image("/show-up.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                    BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+                    Image image1 = new Image("/show-up.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                    BackgroundImage backgroundImage1 = new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));
-                } else if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
+//                } else if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
+//                    newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+//                else
+//                    newLabel.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+                } else {
                     newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-                else
-                    newLabel.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
                 newLabel.setLayoutX(j * GRID_WIDTH);
                 newLabel.setLayoutY(i * GRID_HEIGHT);
                 newLabel.setMinWidth(GRID_WIDTH);
@@ -219,7 +223,6 @@ public class UIController {
                 enableGameButton();
                 showAlert("Gameover","Gameover");
                 if (timeline != null) {
-                    System.out.println("fk");
                     timeline.stop();
                 }
             }
@@ -254,24 +257,24 @@ public class UIController {
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
-                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
+                    if(mode != modes.simulate && mode != modes.end) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                     }
                     e.consume();
                 });
 
             	target.setOnDragEntered(e -> { // grids[y][x]
-                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
+                    if(mode != modes.simulate && mode != modes.end) {
                         Object source = e.getGestureSource();
-                        String type = null;
+                        Arena.TowerType type = null;
                         if (source.equals(labelBasicTower)) {
-                            type = "Basic Tower";
+                            type = Arena.TowerType.BasicTower;
                         } else if (source.equals(labelIceTower)) {
-                            type = "Ice Tower";
+                            type = Arena.TowerType.IceTower;
                         } else if (source.equals(labelCatapult)) {
-                            type = "Catapult";
+                            type = Arena.TowerType.Catapult;
                         } else if (source.equals(labelLaserTower)) {
-                            type = "Laser Tower";
+                            type = Arena.TowerType.LaserTower;
                         }
                         if (arena.canBuildTower(c, type)) {
                             target.setStyle("-fx-border-color: blue;");
@@ -288,22 +291,22 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    if (mode != modes.simulate && mode != modes.paused && mode != modes.end) {
+            	    if (mode != modes.simulate && mode != modes.end) {
                         Image img = null;
-                        String type = null;
+                        Arena.TowerType type = null;
                         Object source = e.getGestureSource();
                         if (source.equals(labelBasicTower)) {
                             img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Basic Tower";
+                            type = Arena.TowerType.BasicTower;
                         } else if (source.equals(labelIceTower)) {
                             img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Ice Tower";
+                            type = Arena.TowerType.IceTower;
                         } else if (source.equals(labelCatapult)) {
                             img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Catapult";
+                            type = Arena.TowerType.Catapult;
                         } else if (source.equals(labelLaserTower)) {
                             img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Laser Tower";
+                            type = Arena.TowerType.LaserTower;
                         }
 
                         if (!arena.hasResources(type)) {
@@ -420,21 +423,7 @@ public class UIController {
         vb.getChildren().addAll(upgradeBtn, destroyBtn);
 
         upgradeBtn.setOnAction(e2 -> {
-            String type;
-            if (t instanceof BasicTower) {
-                type = "Basic Tower";
-            } else if (t instanceof IceTower) {
-                type = "Ice Tower";
-            } else if(t instanceof Catapult) {
-                type = "Catapult";
-            } else {
-                type = "Laser Tower";
-            }
-            if(arena.upgradeTower(t)) {
-                System.out.println(String.format("%s is being upgraded.", type));
-            } else {
-                System.out.println(String.format("not enough resource to upgrade %s.", type));
-            }
+            arena.upgradeTower(t);
             paneArena.getChildren().remove(vb);
         });
         destroyBtn.setOnAction(e2 -> {
