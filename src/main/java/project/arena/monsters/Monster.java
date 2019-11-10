@@ -83,6 +83,13 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected Coordinates destination;
 
     /**
+     * The non-integral portion of the movement during each frame is accumulated here.
+     * When it reaches one, it is consumed to allow the monster to move an extra pixel.
+     */
+    @NotNull
+    protected double unusedMovement = 0;
+
+    /**
      * A linked list of references to each status effect that is active against the monster.
      */
     @ElementCollection
@@ -136,9 +143,16 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public double getSpeed() { return speed; }
     public void nextFrame() {
-        Coordinates nextCoordinates = arena.findNextTowardsEnd_prioritizeMovement(coordinates);
-        if (nextCoordinates != null) coordinates.update(nextCoordinates);
+        // Move monster
+        unusedMovement += speed;
+        while (unusedMovement >= 1) {
+            Coordinates nextCoordinates = findNextCoordinates();
+            if (nextCoordinates != null) coordinates.update(nextCoordinates);
 
+            unusedMovement--;
+        }
+
+        // Update speed
         boolean isSlowed = false;
         for (StatusEffect se : statusEffects) {
             if (se.getEffectType() == StatusEffect.EffectType.Slow) {
@@ -146,7 +160,8 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
             }
             se.countDown();
         }
-        if (isSlowed) speed = maxSpeed / 5;
+        if (isSlowed) speed = maxSpeed * StatusEffect.SLOW_MULTIPLIER;
+        else speed = maxSpeed;
     }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
@@ -187,6 +202,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @return Whether the monster has died.
      */
     public boolean hasDied() { return health <= 0; }
+
+    /**
+     * Finds the next coordinates to move to.
+     * @return The next coordinates to move to.
+     */
+    public Coordinates findNextCoordinates() { return arena.findNextTowardsEnd_prioritizeMovement(coordinates); }
 
     /**
      * Finds the number of pixels the monster has to travel to reach its destination.
