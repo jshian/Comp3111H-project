@@ -85,12 +85,14 @@ public class LaserTower extends Tower{
     @Override
     public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
+            System.out.println("Laser Tower is being upgraded.");
             player.spendResources(upgradeCost);
             if(this.attackPower+5 >= maxAttackPower)
                 this.attackPower = maxAttackPower;
             else this.attackPower += 5;
             return true;
         }
+        System.out.println("not enough resource to upgrade Laser Tower.");
         return false;
     }
 

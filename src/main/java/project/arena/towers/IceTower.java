@@ -78,12 +78,14 @@ public class IceTower extends Tower {
     @Override
     public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
+            System.out.println("Ice Tower is being upgraded.");
             player.spendResources(upgradeCost);
             if(this.slowDownTime+5 >= maxSlowDownTime){
                 this.slowDownTime = maxSlowDownTime;
             }else this.slowDownTime+=5;
             return true;
         }
+        System.out.println("not enough resource to upgrade Ice Tower.");
         return false;
     }
 

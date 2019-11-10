@@ -263,15 +263,15 @@ public class UIController {
             	target.setOnDragEntered(e -> { // grids[y][x]
                     if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         Object source = e.getGestureSource();
-                        String type = null;
+                        Arena.TowerType type = null;
                         if (source.equals(labelBasicTower)) {
-                            type = "Basic Tower";
+                            type = Arena.TowerType.BasicTower;
                         } else if (source.equals(labelIceTower)) {
-                            type = "Ice Tower";
+                            type = Arena.TowerType.IceTower;
                         } else if (source.equals(labelCatapult)) {
-                            type = "Catapult";
+                            type = Arena.TowerType.Catapult;
                         } else if (source.equals(labelLaserTower)) {
-                            type = "Laser Tower";
+                            type = Arena.TowerType.LaserTower;
                         }
                         if (arena.canBuildTower(c, type)) {
                             target.setStyle("-fx-border-color: blue;");
@@ -290,20 +290,20 @@ public class UIController {
             	target.setOnDragDropped(e -> {
             	    if (mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         Image img = null;
-                        String type = null;
+                        Arena.TowerType type = null;
                         Object source = e.getGestureSource();
                         if (source.equals(labelBasicTower)) {
                             img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Basic Tower";
+                            type = Arena.TowerType.BasicTower;
                         } else if (source.equals(labelIceTower)) {
                             img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Ice Tower";
+                            type = Arena.TowerType.IceTower;
                         } else if (source.equals(labelCatapult)) {
                             img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Catapult";
+                            type = Arena.TowerType.Catapult;
                         } else if (source.equals(labelLaserTower)) {
                             img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = "Laser Tower";
+                            type = Arena.TowerType.LaserTower;
                         }
 
                         if (!arena.hasResources(type)) {
@@ -420,21 +420,7 @@ public class UIController {
         vb.getChildren().addAll(upgradeBtn, destroyBtn);
 
         upgradeBtn.setOnAction(e2 -> {
-            String type;
-            if (t instanceof BasicTower) {
-                type = "Basic Tower";
-            } else if (t instanceof IceTower) {
-                type = "Ice Tower";
-            } else if(t instanceof Catapult) {
-                type = "Catapult";
-            } else {
-                type = "Laser Tower";
-            }
-            if(arena.upgradeTower(t)) {
-                System.out.println(String.format("%s is being upgraded.", type));
-            } else {
-                System.out.println(String.format("not enough resource to upgrade %s.", type));
-            }
+            arena.upgradeTower(t);
             paneArena.getChildren().remove(vb);
         });
         destroyBtn.setOnAction(e2 -> {
