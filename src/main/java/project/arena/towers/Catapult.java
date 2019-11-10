@@ -162,10 +162,10 @@ public class Catapult extends Tower {
                     if (i < 0 || i > UIController.ARENA_WIDTH) continue;
                     if (j < 0 || j > UIController.ARENA_HEIGHT) continue;
                     Coordinates c = new Coordinates(i,j);//tested coordinate
-                    if (canShoot(c) && Math.pow(radius,2)>=Math.pow(i-m.getX(),2)+Math.pow(j-m.getY(),2)){//damage range in current point
+                    if (canShoot(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//damage range in current point
                         LinkedList<ExistsInArena> monInCircle = new LinkedList<>();//arena.findObjectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
                         for (Monster testMon:arena.getMonsters()){
-                            if(Math.pow(radius,2)>=Math.pow(i-testMon.getX(),2)+Math.pow(j-testMon.getY(),2)){//Geometry.isInCircle(testMon.getX(),testMon.getY(),i,j,radius)){
+                            if(Geometry.isInCircle(testMon.getX(),testMon.getY(),i,j,radius)){
                                 monInCircle.add(testMon);
                             }
                         }
