@@ -1,7 +1,8 @@
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import project.*;
+import project.arena.Coordinates;
 
 public class CoordinatesTester {
 	@Rule

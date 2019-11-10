@@ -150,17 +150,7 @@ public final class Arena {
      * @param obj
      */
     private void objectNextFrame(@NonNull ExistsInArena obj) {
-        arenaObjectStorage.processObjectNextFrame(obj);
-
-        if (obj instanceof Tower) {
-
-        } else if (obj instanceof Projectile) {
-
-        } else if (obj instanceof Monster) {
-            if (((Monster)obj).hasDied()) {
-                throw new NotImplementedException("TODO");
-            }
-        }
+        LinkedList<ExistsInArena> toRemove = arenaObjectStorage.processObjectNextFrame(obj);
     }
     /**
      * The scalar fields stored in this arena.
@@ -315,6 +305,15 @@ public final class Arena {
     }
 
     /**
+     * Finds the number of towers that can shoot at the specified pixel.
+     * @param coordinates The coordinates of the specified pixel.
+     * @return The number of towers that can shoot at the specified pixel.
+     */
+    public int countInRangeOfTowers(@NonNull Coordinates coordinates) {
+        return arenaObjectStorage.countInRangeOfTowers(coordinates);
+    }
+
+    /**
      * check if the player has enough resources to build the tower.
      * @param type type of the tower.
      * @return true if the player has enough resources or false otherwise.
@@ -330,33 +329,6 @@ public final class Arena {
             case "Laser Tower": cost = new LaserTower(this, c).getBuildingCost(); break;
         }
         return player.hasResources(cost);
-    }
-
-
-    /**
-     * Finds the number of towers that can shoot at the specified pixel.
-     * @param coordinates The coordinates of the specified pixel.
-     * @return The number of towers that can shoot at the specified pixel.
-     */
-    public int countInRangeOfTowers(@NonNull Coordinates coordinates) {
-        int x = coordinates.getX();
-        int y = coordinates.getY();
-
-        int count = 0;
-        for (Tower t : getTowers()) {
-            int towerX = t.getX();
-            int towerY = t.getY();
-            int minRange = t.getMinShootingRange();
-            int maxRange = t.getMaxShootingRange();
-
-            if (!Geometry.isInCircle(x, y, towerX, towerY, minRange)
-                && Geometry.isInCircle(x, y, towerX, towerY, maxRange))
-                {
-                    count++;
-                }
-        }
-
-        return count;
     }
 
     /**
@@ -597,44 +569,20 @@ public final class Arena {
         if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
         if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
 
-        LinkedList<int[]> neighbours = Grid.findTaxicabNeighbours(coordinates);
-        int lowestCost = Integer.MAX_VALUE;
-        int[] lowestCostNeighbour = null;
-        for (int[] pos : neighbours) {
-            int cost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
+        LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
+
+        double lowestCost = Double.POSITIVE_INFINITY;
+        Coordinates lowestCostNeighbour = null;
+        for (Coordinates neighbour : neighbours) {
+            double cost = arenaScalarFields.getDistanceToEndZone(neighbour);
 
             if (cost < lowestCost) {
                 lowestCost = cost;
-                lowestCostNeighbour = pos;
+                lowestCostNeighbour = neighbour;
             }
         }
 
-        int current_xPos = Grid.findGridXPos(coordinates);
-        int current_yPos = Grid.findGridYPos(coordinates);
-        int neighbour_xPos = lowestCostNeighbour[0];
-        int neighbour_yPos = lowestCostNeighbour[1];
-
-        // Move left
-        if (neighbour_xPos < current_xPos && neighbour_yPos == current_yPos) {
-            return new Coordinates(coordinates.getX() - 1, coordinates.getY());
-        }
-
-        // Move right
-        if (neighbour_xPos > current_xPos && neighbour_yPos == current_yPos) {
-            return new Coordinates(coordinates.getX() + 1, coordinates.getY());
-        }
-
-        // Move up
-        if (neighbour_xPos == current_xPos && neighbour_yPos < current_yPos) {
-            return new Coordinates(coordinates.getX(), coordinates.getY() - 1);
-        }
-
-        // Move down
-        if (neighbour_xPos == current_xPos && neighbour_yPos > current_yPos) {
-            return new Coordinates(coordinates.getX(), coordinates.getY() + 1);
-        }
-
-        return null;
+        return lowestCostNeighbour;
     }
 
     /**
@@ -657,56 +605,9 @@ public final class Arena {
                 lowestCost = cost;
                 lowestCostNeighbour = neighbour;
             } else if (cost == lowestCost) {
-                LinkedList<int[]> grids = Grid.findTaxicabNeighbours(coordinates);
-                int lowestCostNeighbourMovementCost = Integer.MAX_VALUE;
-                int neighbourMovementCost = Integer.MAX_VALUE;
-                for (int[] pos : grids) {
-                    int gridCost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
-                    int grid_xPos = pos[0];
-                    int grid_yPos = pos[1];
-                    int current_xPos = Grid.findGridXPos(coordinates);
-                    int current_yPos = Grid.findGridYPos(coordinates);
-            
-                    // Left
-                    if (grid_xPos < current_xPos && grid_yPos == current_yPos) {
-                        if (lowestCostNeighbour.getX() < coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() < coordinates.getX() && neighbour.getY() == coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-            
-                    // Right
-                    if (grid_xPos > current_xPos && grid_yPos == current_yPos) {
-                        if (lowestCostNeighbour.getX() > coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() > coordinates.getX() && neighbour.getY() == coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-            
-                    // Up
-                    if (grid_xPos == current_xPos && grid_yPos < current_yPos) {
-                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() < coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() < coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-            
-                    // Down
-                    if (grid_xPos == current_xPos && grid_yPos > current_yPos) {
-                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() > coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() > coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-                }
+                // Tie-breaking: check movement cost.
+                int lowestCostNeighbourMovementCost = arenaScalarFields.getDistanceToEndZone(lowestCostNeighbour);
+                int neighbourMovementCost = arenaScalarFields.getDistanceToEndZone(neighbour);
 
                 if (neighbourMovementCost < lowestCostNeighbourMovementCost) {
                     lowestCostNeighbour = neighbour;

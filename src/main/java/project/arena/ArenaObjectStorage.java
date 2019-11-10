@@ -149,7 +149,7 @@ class ArenaObjectStorage {
                 int gridX = Grid.findGridCenterX(i, j);
                 int gridY = Grid.findGridCenterY(i, j);
 
-                if (Geometry.findEuclideanDistance(x, y, gridX, gridY)
+                if (Geometry.findEuclideanDistanceToPoint(x, y, gridX, gridY)
                     <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
                     {
                         result.add(grids[i][j]);
@@ -248,6 +248,30 @@ class ArenaObjectStorage {
         result.addAll(findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
         
         return result;
+    }
+
+    /**
+     * @see Arena#countInRangeOfTowers(Coordinates)
+     */
+    public int countInRangeOfTowers(@NonNull Coordinates coordinates) {
+        int x = coordinates.getX();
+        int y = coordinates.getY();
+
+        int count = 0;
+        for (Tower t : towers) {
+            int towerX = t.getX();
+            int towerY = t.getY();
+            int minRange = t.getMinShootingRange();
+            int maxRange = t.getMaxShootingRange();
+
+            if (!Geometry.isInCircle(x, y, towerX, towerY, minRange)
+                && Geometry.isInCircle(x, y, towerX, towerY, maxRange))
+                {
+                    count++;
+                }
+        }
+
+        return count;
     }
 
     /**

@@ -1,19 +1,20 @@
-import org.junit.Assert;
-import org.junit.Test;
-
-import project.*;
-import project.monsters.*;
-import project.towers.Catapult;
-
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import javafx.scene.control.Label;
-import javafx.scene.image.*;
-import javafx.scene.layout.AnchorPane;
+import org.junit.Assert;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import project.Geometry;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.monsters.Monster;
+import project.arena.monsters.Unicorn;
+import project.arena.towers.Catapult;
 
 public class CatapultTest {
 
@@ -24,7 +25,7 @@ public class CatapultTest {
         ImageView iv = new ImageView(img);
         Coordinates destination = new Coordinates(440,0);
         PriorityQueue<Monster> testList = new PriorityQueue<>();
-        LinkedList<Arena.ExistsInArena> selectList = new LinkedList<>();
+        LinkedList<ExistsInArena> selectList = new LinkedList<>();
         LinkedList<Monster> answerList = new LinkedList<>();
         Coordinates target;
 
@@ -36,7 +37,7 @@ public class CatapultTest {
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m3);
         Assert.assertEquals(selectList,answerList);
-        for (Arena.ExistsInArena m :selectList) {
+        for (ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();
@@ -46,7 +47,7 @@ public class CatapultTest {
         Monster m5 = new Unicorn(arena, new Coordinates(200, 200), destination, iv, 1);testList.add(m5);
         target=catapult.selectMonster(testList,selectList);
         Assert.assertEquals(selectList,answerList);
-        for (Arena.ExistsInArena m :selectList) {
+        for (ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();
@@ -57,7 +58,7 @@ public class CatapultTest {
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m6);
         Assert.assertEquals(selectList,answerList);
-        for (Arena.ExistsInArena m :selectList) {
+        for (ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(target.getX(), target.getY(), m.getX(), m.getY(), 25));
         }
         selectList.clear();

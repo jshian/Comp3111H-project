@@ -35,12 +35,12 @@ class ArenaScalarFields {
     }
 
     /**
-     * Stores the shortest distance to reach the end-zone in terms of number of grids from each grid.
-     * Indices correspond to the x- and y- positions.
+     * Stores the shortest distance to reach the end-zone in terms of number of pixels from each pixel.
+     * Indices correspond to the x- and y- coordinates.
      * @see Monster
-     * @see Grid
+     * @see Coordinates
      */
-    private int[][] distanceToEndZone = new int[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
+    private int[][] distanceToEndZone = new int[UIController.ARENA_WIDTH + 1][UIController.ARENA_WIDTH + 1];
 
     /**
      * Refreshes {@link #distanceToEndZone}.
@@ -48,8 +48,8 @@ class ArenaScalarFields {
     private void refreshDistanceToEndZone() {
         
     	// Reset values
-    	for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-    		for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
+    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
     			distanceToEndZone[i][j] = Integer.MAX_VALUE;
     		}
         }
@@ -145,8 +145,8 @@ class ArenaScalarFields {
         for (int i = Math.max(x - maxRange, 0); i <= x + maxRange && i <= UIController.ARENA_WIDTH; i++) {
 
             for (int j = Math.max(y - maxRange, 0); j <= y + maxRange && j <= UIController.ARENA_HEIGHT; j++) {
-                double distance = Geometry.findEuclideanDistance(x, y, i, j);
-                
+                double distance = Geometry.findEuclideanDistanceToPoint(x, y, i, j);
+
                 if (minRange < distance && distance <= maxRange) result.add(new Coordinates(i, j));
             }
         }
@@ -188,8 +188,8 @@ class ArenaScalarFields {
         this.arena = arena;
 
         // Copy distanceToEndZone
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-    		for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
+    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
     			distanceToEndZone[i][j] = other.distanceToEndZone[i][j];
     		}
         }
@@ -204,22 +204,12 @@ class ArenaScalarFields {
     }
 
     /**
-     * Accesses the distance to reach the end-zone from the grid containing a specified pixel.
+     * Accesses the distance to reach the end-zone from the specified pixel.
      * @param coordinates The coordinates of the pixel.
-     * @return The distance to reach the end-zone from the grid, in number of grids traversed.
+     * @return The distance to reach the end-zone from the pixel, in number of pixels traversed.
      */
     int getDistanceToEndZone(@NonNull Coordinates coordinates) {
         return distanceToEndZone[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
-    }
-
-    /**
-     * Accesses the distance to reach the end-zone from a specified grid.
-     * @param xPos The x-position of the grid.
-     * @param yPos The y-position of the grid.
-     * @return The distance to reach the end-zone from the grid, in number of grids traversed.
-     */
-    int getDistanceToEndZone(int xPos, int yPos) {
-        return distanceToEndZone[xPos][yPos];
     }
 
     /**
