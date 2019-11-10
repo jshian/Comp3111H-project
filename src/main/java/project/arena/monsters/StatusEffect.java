@@ -1,5 +1,7 @@
 package project.arena.monsters;
 
+import java.beans.Transient;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +22,11 @@ public class StatusEffect {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
+
+    /**
+     * The multiplier by which the speed is multiplied when a monster is slowed.
+     */
+    public static double SLOW_MULTIPLIER = 0.2;
     
     /**
      * An enum to categorize different types of status effects.

@@ -149,7 +149,7 @@ class ArenaObjectStorage {
                 int gridX = Grid.findGridCenterX(i, j);
                 int gridY = Grid.findGridCenterY(i, j);
 
-                if (Geometry.findEuclideanDistance(x, y, gridX, gridY)
+                if (Geometry.findEuclideanDistanceToPoint(x, y, gridX, gridY)
                     <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
                     {
                         result.add(grids[i][j]);
@@ -314,7 +314,7 @@ class ArenaObjectStorage {
     /**
      * Updates the object storage with respect to the updating of an object to the next frame.
      * @param obj The object to update.
-     * @return the object that has been marked as pending removal.
+     * @return The object that has been marked as pending removal, or <code>null</code> if none.
      */
     ExistsInArena processObjectNextFrame(@NonNull ExistsInArena obj) {
         Coordinates originalCoordinates = new Coordinates(obj.getX(), obj.getY());

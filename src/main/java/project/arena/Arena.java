@@ -114,6 +114,7 @@ public final class Arena {
      * @param obj The object to add.
      */
     public void addObject(@NonNull ExistsInArena obj) {
+        paneArena.getChildren().add(obj.getImageView());
         arenaObjectStorage.processAddObject(obj);
 
         if (obj instanceof Tower) {
@@ -126,6 +127,7 @@ public final class Arena {
      * @param obj The object to remove.
      */
     public void removeObject(@NonNull ExistsInArena obj) {
+        paneArena.getChildren().remove(obj.getImageView());
         arenaObjectStorage.processRemoveObject(obj);
 
         if (obj instanceof Tower) {
@@ -322,33 +324,6 @@ public final class Arena {
         return player.hasResources(cost);
     }
 
-
-    /**
-     * Finds the number of towers that can shoot at the specified pixel.
-     * @param coordinates The coordinates of the specified pixel.
-     * @return The number of towers that can shoot at the specified pixel.
-     */
-    public int countInRangeOfTowers(@NonNull Coordinates coordinates) {
-        int x = coordinates.getX();
-        int y = coordinates.getY();
-
-        int count = 0;
-        for (Tower t : getTowers()) {
-            int towerX = t.getX();
-            int towerY = t.getY();
-            int minRange = t.getMinShootingRange();
-            int maxRange = t.getMaxShootingRange();
-
-            if (!Geometry.isInCircle(x, y, towerX, towerY, minRange)
-                && Geometry.isInCircle(x, y, towerX, towerY, maxRange))
-                {
-                    count++;
-                }
-        }
-
-        return count;
-    }
-
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
@@ -464,47 +439,14 @@ public final class Arena {
     }
 
     /**
-     * Destroys the specified Tower.
-     * @param tower The Tower to be destroyed.
-     */
-    public void destroyTower(@NonNull Tower tower)
-    {
-        paneArena.getChildren().remove(tower.getImageView());
-        removeObject(tower);
-    }
-
-    /**
      * Creates a Projectile at a specified pixel.
      * @param t the tower which attack the monster by creating projectile.
      */
     public void createProjectile(@NonNull Tower t)
     {
         Projectile p = t.generateProjectile();
-        if (p != null) {
-            paneArena.getChildren().add(p.getImageView());
-            addObject(p);
-            arenaObjectStorage.getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
-        }
-    }
 
-    /**
-     * Removes the specified Projectile from the arena.
-     * @param projectile The Projectile to be removed.
-     */
-    public void removeProjectile(@NonNull Projectile projectile)
-    {
-        paneArena.getChildren().remove(projectile.getImageView());
-        removeObject(projectile);
-    }
-
-    /**
-     * Moves the specified Projectile to the specified location.
-     * Note: Please instead use {@link #objectNextFrame(ExistsInArena)} to update it to the next frame.
-     * @param projectile The Projectile to be moved.
-     * @param coordinates The coordinates of the new location.
-     */
-    public void moveProjectile(@NonNull Projectile projectile, @NonNull Coordinates coordinates) {
-        moveObject(projectile, coordinates);
+        if (p != null) addObject(p);
     }
 
     /**
@@ -549,31 +491,10 @@ public final class Arena {
         if (m == null)
             return null;
             
-        paneArena.getChildren().add(iv);
         addObject(m);
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
 
         return m;
-    }
-
-    /**
-     * Removes the specified Monster from the arena.
-     * @param monster The Monster to be removed.
-     */
-    public void removeMonster(@NonNull Monster monster)
-    {
-        paneArena.getChildren().remove(monster.getImageView());
-        removeObject(monster);
-    }
-
-    /**
-     * Moves the specified Monster to the specified location.
-     * Note: Please instead use {@link #objectNextFrame(ExistsInArena)} to update it to the next frame.
-     * @param monster The Monster to be moved.
-     * @param coordinates The coordinates of the new location.
-     */
-    public void moveMonster(@NonNull Monster monster, @NonNull Coordinates coordinates) {
-        moveObject(monster, coordinates);
     }
 
     /**
@@ -585,44 +506,20 @@ public final class Arena {
         if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
         if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
 
-        LinkedList<int[]> neighbours = Grid.findTaxicabNeighbours(coordinates);
+        LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
+
         int lowestCost = Integer.MAX_VALUE;
-        int[] lowestCostNeighbour = null;
-        for (int[] pos : neighbours) {
-            int cost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
+        Coordinates lowestCostNeighbour = null;
+        for (Coordinates neighbour : neighbours) {
+            int cost = arenaScalarFields.getDistanceToEndZone(neighbour);
 
             if (cost < lowestCost) {
                 lowestCost = cost;
-                lowestCostNeighbour = pos;
+                lowestCostNeighbour = neighbour;
             }
         }
 
-        int current_xPos = Grid.findGridXPos(coordinates);
-        int current_yPos = Grid.findGridYPos(coordinates);
-        int neighbour_xPos = lowestCostNeighbour[0];
-        int neighbour_yPos = lowestCostNeighbour[1];
-
-        // Move left
-        if (neighbour_xPos < current_xPos && neighbour_yPos == current_yPos) {
-            return new Coordinates(coordinates.getX() - 1, coordinates.getY());
-        }
-
-        // Move right
-        if (neighbour_xPos > current_xPos && neighbour_yPos == current_yPos) {
-            return new Coordinates(coordinates.getX() + 1, coordinates.getY());
-        }
-
-        // Move up
-        if (neighbour_xPos == current_xPos && neighbour_yPos < current_yPos) {
-            return new Coordinates(coordinates.getX(), coordinates.getY() - 1);
-        }
-
-        // Move down
-        if (neighbour_xPos == current_xPos && neighbour_yPos > current_yPos) {
-            return new Coordinates(coordinates.getX(), coordinates.getY() + 1);
-        }
-
-        return null;
+        return lowestCostNeighbour;
     }
 
     /**
@@ -645,56 +542,9 @@ public final class Arena {
                 lowestCost = cost;
                 lowestCostNeighbour = neighbour;
             } else if (cost == lowestCost) {
-                LinkedList<int[]> grids = Grid.findTaxicabNeighbours(coordinates);
-                int lowestCostNeighbourMovementCost = Integer.MAX_VALUE;
-                int neighbourMovementCost = Integer.MAX_VALUE;
-                for (int[] pos : grids) {
-                    int gridCost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
-                    int grid_xPos = pos[0];
-                    int grid_yPos = pos[1];
-                    int current_xPos = Grid.findGridXPos(coordinates);
-                    int current_yPos = Grid.findGridYPos(coordinates);
-            
-                    // Left
-                    if (grid_xPos < current_xPos && grid_yPos == current_yPos) {
-                        if (lowestCostNeighbour.getX() < coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() < coordinates.getX() && neighbour.getY() == coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-            
-                    // Right
-                    if (grid_xPos > current_xPos && grid_yPos == current_yPos) {
-                        if (lowestCostNeighbour.getX() > coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() > coordinates.getX() && neighbour.getY() == coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-            
-                    // Up
-                    if (grid_xPos == current_xPos && grid_yPos < current_yPos) {
-                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() < coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() < coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-            
-                    // Down
-                    if (grid_xPos == current_xPos && grid_yPos > current_yPos) {
-                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() > coordinates.getY()) {
-                            lowestCostNeighbourMovementCost = gridCost;
-                        }
-                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() > coordinates.getY()) {
-                            neighbourMovementCost = gridCost;
-                        }
-                    }
-                }
+                // Tie-breaking: check movement cost.
+                int lowestCostNeighbourMovementCost = arenaScalarFields.getDistanceToEndZone(lowestCostNeighbour);
+                int neighbourMovementCost = arenaScalarFields.getDistanceToEndZone(neighbour);
 
                 if (neighbourMovementCost < lowestCostNeighbourMovementCost) {
                     lowestCostNeighbour = neighbour;
@@ -754,9 +604,9 @@ public final class Arena {
         // remove objects
         for (ExistsInArena e : objectsToBeRemoved) {
             if (e instanceof Projectile) {
-                removeProjectile((Projectile) e);
+                removeObject(e);
             } else if (e instanceof Monster) { // turn dead monster to explosion
-                removeMonster((Monster) e);
+                removeObject(e);
                 Coordinates c = new Coordinates(e.getX(), e.getY());
                 ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
                         , UIController.GRID_WIDTH, true, true));
