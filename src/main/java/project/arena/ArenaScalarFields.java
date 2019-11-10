@@ -86,6 +86,7 @@ class ArenaScalarFields {
     /**
      * Stores the number of attacks a lone monster would take per frame at each pixel.
      * Indices correspond to the x- and y- coordinates.
+     * Note: To prevent being stuck, a very small movement cost is added.
      * @see Monster
      * @see Coordinates
      */
@@ -115,7 +116,7 @@ class ArenaScalarFields {
     		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
     			if (arena.findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[current.x][current.y];
+                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[current.x][current.y] + 0.001;
         			if (attacksToEndZone[c.getX()][c.getY()] > newCost ) {
         				attacksToEndZone[c.getX()][c.getY()] = newCost;
         				openSet.add(new IntTuple(c.getX(), c.getY()));
@@ -230,7 +231,7 @@ class ArenaScalarFields {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
-        double shotsPerFrame = 1 / tower.getReload();
+        double shotsPerFrame = 1.0 / tower.getReload();
         for (Coordinates c : pixelsInRange) {
             attacksPerFrame[c.getX()][c.getY()] += shotsPerFrame;
         }

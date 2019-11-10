@@ -22,6 +22,7 @@ public class Unicorn extends Monster {
         this.maxSpeed = 2 + 0.2 * difficulty;
         this.health = this.maxHealth;
         this.speed = this.maxSpeed;
+        this.resources = (int) (difficulty * 1);
     }
 
     /**
