@@ -314,9 +314,9 @@ class ArenaObjectStorage {
     /**
      * Updates the object storage with respect to the updating of an object to the next frame.
      * @param obj The object to update.
-     * @return The object that has been marked as pending removal, or <code>null</code> if none.
+     * @return The objects that has been marked as pending { add, remove }.
      */
-    ExistsInArena processObjectNextFrame(@NonNull ExistsInArena obj) {
+    ExistsInArena[] processObjectNextFrame(@NonNull ExistsInArena obj) {
         Coordinates originalCoordinates = new Coordinates(obj.getX(), obj.getY());
         obj.nextFrame();
         Coordinates newCoordinates = new Coordinates(obj.getX(), obj.getY());
@@ -326,19 +326,20 @@ class ArenaObjectStorage {
             getGrid(newCoordinates).addObject(obj);
         }
         
+        ExistsInArena[] result = new ExistsInArena[2];
 
         if (obj instanceof Tower) {
-            arena.createProjectile((Tower)obj);
+            result[0] = ((Tower)obj).generateProjectile();
         } else if (obj instanceof Projectile) {
             if (((Projectile)obj).hasReachedTarget()) {
-                return obj;
+                result[1] = obj;
             }
         } else if (obj instanceof Monster) {
             if (((Monster)obj).hasDied()) {
-                return obj;
+                result[1] = obj;
             }
         }
 
-        return null;
+        return result;
     }
 }
