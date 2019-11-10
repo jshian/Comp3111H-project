@@ -316,7 +316,6 @@ public class UIController {
 
                             if (t != null) {
                                 setTowerEvent(t);
-                                paneArena.getChildren().add(iv);
                                 e.setDropCompleted(true);
                             }
                         }
