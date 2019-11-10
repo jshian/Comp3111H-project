@@ -245,10 +245,11 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     private void hoverMonsterEvent(Arena arena) {
         hpLabel.textProperty().bind(Bindings.format("hp: %.2f", health));
         hpLabel.setAlignment(Pos.CENTER);
+        //seems like layout can only bindBidirectional, error otherwise.
+        hpLabel.layoutXProperty().bindBidirectional(imageView.xProperty());
+        hpLabel.layoutYProperty().bindBidirectional(imageView.yProperty());
 
         this.imageView.setOnMouseEntered(e -> {
-            hpLabel.setLayoutX(imageView.getX());
-            hpLabel.setLayoutY(imageView.getY());
             arena.getPane().getChildren().add(hpLabel);
         });
 
