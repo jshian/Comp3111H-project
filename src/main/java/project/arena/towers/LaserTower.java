@@ -1,13 +1,17 @@
-package project.towers;
+package project.arena.towers;
+
+import java.util.PriorityQueue;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
-import project.projectiles.Projectile;
-
-import java.util.PriorityQueue;
+import project.Geometry;
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.Projectile;
 
 
 /**

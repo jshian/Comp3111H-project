@@ -1,10 +1,11 @@
-package project;
+package project.arena;
 
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import project.towers.*;
-import project.Arena.ExistsInArena;
+
+import project.UIController;
+import project.arena.towers.Tower;
 
 /**
  * Grids are arranged in a tabular manner in the Arena and limit the positioning of Towers.

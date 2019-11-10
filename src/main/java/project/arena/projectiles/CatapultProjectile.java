@@ -1,14 +1,16 @@
-package project.projectiles;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
-import project.towers.Catapult;
+package project.arena.projectiles;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-public class CatapultProjectile extends Projectile{
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.monsters.Monster;
+
+public class CatapultProjectile extends Projectile {
 
     /**
      * The damage range of projectile.
@@ -49,8 +51,8 @@ public class CatapultProjectile extends Projectile{
             arena.drawCircle(target,damageRange);
 
             //give damage
-            LinkedList<Arena.ExistsInArena> monsters = arena.findObjectsInRange(target, damageRange, EnumSet.of(Arena.TypeFilter.Monster));
-            for (Arena.ExistsInArena monster : monsters) {
+            LinkedList<ExistsInArena> monsters = arena.findObjectsInRange(target, damageRange, EnumSet.of(Arena.TypeFilter.Monster));
+            for (ExistsInArena monster : monsters) {
                 if (monster instanceof Monster) {
                     ((Monster) monster).takeDamage(attackPower);
                     System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()

@@ -1,11 +1,12 @@
-package project.monsters;
+package project.arena.monsters;
 
 import javax.persistence.Entity;
 
-import javafx.scene.image.ImageView;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import project.*;
+import javafx.scene.image.ImageView;
+import project.arena.Arena;
+import project.arena.Coordinates;
 
 /**
  * Unicorn is the Monster with the most health.

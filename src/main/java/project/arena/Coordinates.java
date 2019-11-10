@@ -1,14 +1,15 @@
-package project;
-
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.image.ImageView;
+package project.arena;
 
 import java.io.Serializable;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.image.ImageView;
+import project.UIController;
 
 /**
  * Custom class to store 2D Cartesian coordinates of objects in the Arena

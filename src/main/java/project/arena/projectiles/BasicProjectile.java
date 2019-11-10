@@ -1,12 +1,14 @@
-package project.projectiles;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.Arena;
-import project.Coordinates;
-import project.monsters.Monster;
+package project.arena.projectiles;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.monsters.Monster;
 
 public class BasicProjectile extends Projectile {
 
@@ -38,7 +40,7 @@ public class BasicProjectile extends Projectile {
     public void nextFrame() {
         super.nextFrame();
         if (hasReachedTarget()){
-            LinkedList<Arena.ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
+            LinkedList<ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
             if(targets.size()>0){
                 Monster target = (Monster)targets.get(0);
                 if (target != null) {

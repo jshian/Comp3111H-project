@@ -1,21 +1,29 @@
-package project.projectiles;
+package project.arena.projectiles;
 
-import javafx.scene.image.Image;
-import project.*;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import project.Geometry;
+import project.UIController;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.Grid;
+import project.arena.MovesInArena;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Projectile implements Arena.MovesInArena {
+public abstract class Projectile implements MovesInArena {
     /**
      * ID for storage using Java Persistence API
      */

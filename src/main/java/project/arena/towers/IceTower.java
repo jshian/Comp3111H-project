@@ -1,18 +1,21 @@
-package project.towers;
-
-import javafx.scene.image.ImageView;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
-import project.projectiles.IceProjectile;
-import project.projectiles.Projectile;
+package project.arena.towers;
 
 import java.util.PriorityQueue;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javafx.scene.image.ImageView;
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.IceProjectile;
+import project.arena.projectiles.Projectile;
 
 /**
  * IceTower slow down the speed of monster without damage.
  */
-public class IceTower extends Tower{
+public class IceTower extends Tower {
 
     /**
      * The maximum slow down duration of the tower.

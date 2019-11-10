@@ -1,13 +1,16 @@
-package project.towers;
-
-import javafx.scene.image.ImageView;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
-import project.projectiles.BasicProjectile;
-import project.projectiles.Projectile;
+package project.arena.towers;
 
 import java.util.PriorityQueue;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javafx.scene.image.ImageView;
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.BasicProjectile;
+import project.arena.projectiles.Projectile;
 
 /**
  * Basic tower has no any special ability.
