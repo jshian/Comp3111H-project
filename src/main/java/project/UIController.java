@@ -132,7 +132,7 @@ public class UIController {
 
         this.mode = mode;
         disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.02), e -> {
             nextFrame();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -145,6 +145,7 @@ public class UIController {
     private void resetGame() {
         paneArena = new AnchorPane();
         createArena();
+        arena = new Arena(remainingResources, paneArena);
     }
 
     /**
@@ -215,13 +216,17 @@ public class UIController {
      */
     @FXML
     private void nextFrame() {
-        boolean gameOver = arena.nextFrame();
-        if (gameOver) {
-            mode = modes.end;
-            enableGameButton();
-            showAlert("Gameover","Gameover");
-            if (timeline != null)
-                timeline.stop();
+        if (this.mode != modes.end) {
+            boolean gameOver = arena.nextFrame();
+            if (gameOver) {
+                mode = modes.end;
+                enableGameButton();
+                showAlert("Gameover","Gameover");
+                if (timeline != null) {
+                    System.out.println("fk");
+                    timeline.stop();
+                }
+            }
         }
     }
 
