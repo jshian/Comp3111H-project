@@ -54,7 +54,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * The maximum health of the monster.
      */
     @NotNull
-    protected double maxHealth;
+    protected double maxHealth = 1;
 
     /**
      * The current health of the monster. It cannot go beyond {@link #maxHealth}.
@@ -62,19 +62,19 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @see #hasDied()
      */
     @NotNull
-    protected double health;
+    protected double health = 1;
 
     /**
      * The maximum number of pixels the monster can travel per frame.
      */
     @NotNull
-    protected double maxSpeed;
+    protected double maxSpeed = 1;
 
     /**
      * The current speed of the monster. It cannot go beyond {@link #maxSpeed}.
      */
     @NotNull
-    protected double speed;
+    protected double speed = 1;
 
     /**
      * The location which the monster tries to reach.
@@ -88,6 +88,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      */
     @NotNull
     protected double unusedMovement = 0;
+
+    /**
+     * The amount of resources granted to the player on kill.
+     */
+    @NotNull
+    protected int resources = 0;
 
     /**
      * A linked list of references to each status effect that is active against the monster.
@@ -176,6 +182,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @return The health of the monster.
      */
     public double getHealth() { return health; }
+
+    /**
+     * Accesses the amount of resources granted to the player by the monster on death.
+     * @return The amount of resources granted to the player by the monster on death.
+     */
+    public int getResources() { return resources; }
 
     /**
      * Accesses the status effects of the monster.

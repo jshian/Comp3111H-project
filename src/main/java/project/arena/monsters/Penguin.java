@@ -22,6 +22,7 @@ public class Penguin extends Monster {
         this.maxSpeed = 3 + 0.3 * difficulty;
         this.health = this.maxHealth;
         this.speed = this.maxSpeed;
+        this.resources = (int) (difficulty * 1.25);
     }
 
     /**

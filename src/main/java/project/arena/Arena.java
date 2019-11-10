@@ -535,14 +535,6 @@ public final class Arena {
             if (cost < lowestCost) {
                 lowestCost = cost;
                 lowestCostNeighbour = neighbour;
-            } else if (cost == lowestCost) {
-                // Tie-breaking: check movement cost.
-                int lowestCostNeighbourMovementCost = arenaScalarFields.getDistanceToEndZone(lowestCostNeighbour);
-                int neighbourMovementCost = arenaScalarFields.getDistanceToEndZone(neighbour);
-
-                if (neighbourMovementCost < lowestCostNeighbourMovementCost) {
-                    lowestCostNeighbour = neighbour;
-                }
             }
         }
 
