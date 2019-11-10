@@ -7,10 +7,12 @@ import org.junit.Test;
 
 import org.testfx.framework.junit.ApplicationTest;
 import project.*;
-import project.monsters.*;
-import project.towers.Catapult;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.towers.Catapult;
+import project.arena.monsters.*;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -44,7 +46,7 @@ public class CatapultTest extends ApplicationTest {
         ImageView iv = new ImageView(img);
         Coordinates destination = new Coordinates(440,0);
         PriorityQueue<Monster> testList = new PriorityQueue<>();
-        LinkedList<Arena.ExistsInArena> selectList = new LinkedList<>();
+        LinkedList<ExistsInArena> selectList = new LinkedList<>();
         LinkedList<Monster> answerList = new LinkedList<>();
         Coordinates target;
 
@@ -54,11 +56,9 @@ public class CatapultTest extends ApplicationTest {
         Monster m2 = new Unicorn(arena, new Coordinates(101, 101), destination, iv, 1);testList.add(m2);arena.addObject(m2);
         Monster m3 = new Unicorn(arena, new Coordinates(400, 0), destination, iv, 1);testList.add(m3);arena.addObject(m3);
         target=catapult.selectMonster(testList,selectList);
-        if(selectList.size()==0) System.out.println("wtf");
-       // selectList = arena.findObjectsInRange(target, 25, EnumSet.of(Arena.TypeFilter.Monster));
         answerList.add(m3);
         Assert.assertEquals(selectList,answerList);
-        for (Arena.ExistsInArena m :selectList) {
+        for (ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), target.getX(), target.getY(),25));
         }
         selectList.clear();
@@ -67,9 +67,8 @@ public class CatapultTest extends ApplicationTest {
         Monster m4 = new Unicorn(arena, new Coordinates(201, 100), destination, iv, 1);testList.add(m4);arena.addObject(m4);
         Monster m5 = new Unicorn(arena, new Coordinates(200, 100), destination, iv, 1);testList.add(m5);arena.addObject(m5);
         target=catapult.selectMonster(testList,selectList);
-        //selectList = arena.findObjectsInRange(target, 25, EnumSet.of(Arena.TypeFilter.Monster));
         Assert.assertEquals(selectList,answerList);
-        for (Arena.ExistsInArena m :selectList) {
+        for (ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), target.getX(), target.getY(),25));
         }
         selectList.clear();
@@ -78,10 +77,9 @@ public class CatapultTest extends ApplicationTest {
         Monster m6 = new Unicorn(arena, new Coordinates(401, 0), destination, iv, 1);testList.add(m6);arena.addObject(m6);
         Monster m7 = new Unicorn(arena, new Coordinates(440, 40), destination, iv, 1);testList.add(m7);arena.addObject(m7);
         target=catapult.selectMonster(testList,selectList);
-       // selectList = arena.findObjectsInRange(target, 25, EnumSet.of(Arena.TypeFilter.Monster));
         answerList.add(m6);
         Assert.assertEquals(selectList,answerList);
-        for (Arena.ExistsInArena m :selectList) {
+        for (ExistsInArena m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(m.getX(), m.getY(), target.getX(), target.getY(), 25));
         }
         selectList.clear();
