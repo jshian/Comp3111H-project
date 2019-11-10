@@ -1,24 +1,39 @@
-package project;
+package project.arena;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import project.monsters.*;
-import project.projectiles.Projectile;
-import project.towers.*;
-
-import java.util.*;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
+import project.Geometry;
+import project.Player;
+import project.UIController;
+import project.arena.monsters.Fox;
+import project.arena.monsters.Monster;
+import project.arena.monsters.Penguin;
+import project.arena.monsters.Unicorn;
+import project.arena.projectiles.Projectile;
+import project.arena.towers.BasicTower;
+import project.arena.towers.Catapult;
+import project.arena.towers.IceTower;
+import project.arena.towers.LaserTower;
+import project.arena.towers.Tower;
 
 /**
  * The area where most of the action takes place in the game.
@@ -34,45 +49,45 @@ public final class Arena {
      * x-coordinate of the starting position.
      * @see Coordinates
      */
-    private static final int STARTING_GRID_X_POS = 0;
+    static final int STARTING_GRID_X_POS = 0;
 
     /**
      * y-coordinate of the starting position.
      * @see Coordinates
      */
-    private static final int STARTING_GRID_Y_POS = 0;
+    static final int STARTING_GRID_Y_POS = 0;
 
     /**
      * Coordinates of the starting position.
      */
-    private static final Coordinates STARTING_COORDINATES = Grid.findGridCenter(STARTING_GRID_X_POS, STARTING_GRID_Y_POS);
+    static final Coordinates STARTING_COORDINATES = Grid.findGridCenter(STARTING_GRID_X_POS, STARTING_GRID_Y_POS);
 
     /**
      * x-coordinate of the end zone.
      * @see Coordinates
      */
-    private static final int END_GRID_X_POS = 11;
+    static final int END_GRID_X_POS = 11;
 
     /**
      * y-coordinate of the end zone.
      * @see Coordinates
      */
-    private static final int END_GRID_Y_POS = 0;
+    static final int END_GRID_Y_POS = 0;
     /**
      * Coordinates of the end zone.
      */
-    private static final Coordinates END_COORDINATES = Grid.findGridCenter(END_GRID_X_POS, END_GRID_Y_POS);
+    static final Coordinates END_COORDINATES = Grid.findGridCenter(END_GRID_X_POS, END_GRID_Y_POS);
 
     /**
      * The number of frames between each wave of Monsters.
      * @see #spawnWave()
      */
-    private static final int WAVE_INTERVAL = 50;
+    static final int WAVE_INTERVAL = 50;
 
     /**
      * The duration of laser being displayed.
      */
-    private static final int LASER_DURATION = 2;
+    static final int LASER_DURATION = 2;
 
     /**
      * The current frame number of the arena since the game began.
@@ -84,17 +99,6 @@ public final class Arena {
      */
     private double difficulty = 1;
 
-    /**
-     * Contains a reference to each Tower on the arena.
-     * @see Tower
-     */
-    private LinkedList<Tower> towers = new LinkedList<>();
-
-    /**
-     * Contains a reference to each Projectile on the arena.
-     * @see Projectile
-     */
-    private LinkedList<Projectile> projectiles = new LinkedList<>();
 
     /**
      * Contains a reference to line, circle, and image view on the arena.
@@ -102,146 +106,66 @@ public final class Arena {
     private HashMap<Node, Integer> toRemove = new HashMap<>();
 
     /**
-     * Contains a reference to each Monster on the arena.
-     * In addition, the monsters are sorted according to how close they are from reaching the end zone.
-     * The first element is closest to the end zone while the last element is furthest.
-     * @see Monster
+     * The objects stored in this arena.
      */
-    private PriorityQueue<Monster> monsters = new PriorityQueue<>();
+    private ArenaObjectStorage arenaObjectStorage = new ArenaObjectStorage(this);
 
     /**
-     * Stores grid information of the arena.
+     * Adds an object to the arena.
+     * @param obj The object to add.
      */
-    private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
+    public void addObject(@NonNull ExistsInArena obj) {
+        arenaObjectStorage.processAddObject(obj);
+
+        if (obj instanceof Tower) {
+            arenaScalarFields.processAddTower((Tower)obj);
+        }
+    }
 
     /**
-     * Accesses the grid that contains the specified pixel.
-     * @param coordinates The coordinates of the pixel.
+     * Removes an object from the arena.
+     * @param obj The object to remove.
      */
-    private Grid getGrid(@NonNull Coordinates coordinates) {
-        return grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
+    public void removeObject(@NonNull ExistsInArena obj) {
+        arenaObjectStorage.processRemoveObject(obj);
+
+        if (obj instanceof Tower) {
+            arenaScalarFields.processRemoveTower((Tower)obj);
+        }
     }
 
     /**
-     * Finds the grids that may be within a specified distance of a specified pixel.
-     * @param coordinates The coordinates of the pixel.
-     * @param range The maximum allowable distance.
-     * @return A linked list containing references to the conservative estimate of the grids that are within a specified distance of the specified pixel.
+     * Moves an object to another location in the arena.
+     * @param obj The object to move.
+     * @param newCoordinates The coordinates of the new location.
+     * @throws IllegalArgumentException The object type is not recognized.
      */
-    private LinkedList<Grid> getPotentialGridsInRange(@NonNull Coordinates coordinates, double range) {
-        LinkedList<Grid> result = new LinkedList<>();
-
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                int x = coordinates.getX();
-                int y = coordinates.getY();
-                int gridX = Grid.findGridCenterX(i, j);
-                int gridY = Grid.findGridCenterY(i, j);
-
-                if (Geometry.findEuclideanDistance(x, y, gridX, gridY)
-                    <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
-                    {
-                        result.add(grids[i][j]);
-                    }
-            }
-        }
-
-        return result;
+    private void moveObject(@NonNull ExistsInArena obj, @NonNull Coordinates newCoordinates)
+    {
+        arenaObjectStorage.processMoveObject(obj, newCoordinates);
     }
 
     /**
-     * Stores the shortest distance from each pixel to reach the end zone.
-     * This is essentially a potential field per unit speed for determining Monster movement.
-     * @see Monster
-     * @see Coordinates
-     * @see #updateCosts()
-     * @see #findNextTowardsEnd(Coordinates, boolean)
+     * Updates the object to the next frame and updates the Arena accordingly.
+     * @param obj
      */
-    private int[][] distanceToEndZone = new int[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
+    private void objectNextFrame(@NonNull ExistsInArena obj) {
+        arenaObjectStorage.processObjectNextFrame(obj);
 
-    /**
-     * Stores the cost for a monster in each pixel to reach the end-zone due to movement and being attacked. Indices correspond to the x- and y- coordinates.
-     * This is essentially a potential field per unit speed for determining Monster movement.
-     * @see Monster
-     * @see Coordinates
-     * @see #updateCosts()
-     * @see #findNextTowardsEnd(Coordinates, boolean)
-     */
-    private double[][] totalCostToEnd = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
+        if (obj instanceof Tower) {
 
-    /**
-     * Updates the costs to reach the end-zone from each pixel.
-     * @see #distanceToEndZone
-     * @see #totalCostToEnd
-     */
-    private void updateCosts() {
-    	class IntTuple {
-    		private int x;
-    		private int y;
+        } else if (obj instanceof Projectile) {
 
-    		IntTuple(int x, int y) {
-    			this.x = x;
-    			this.y = y;
+        } else if (obj instanceof Monster) {
+            if (((Monster)obj).hasDied()) {
+                throw new NotImplementedException("TODO");
             }
-
-            IntTuple(@NonNull Coordinates coordinates) {
-                this.x = coordinates.getX();
-                this.y = coordinates.getY();
-            }
-        }
-
-    	// Reset values
-    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
-    			distanceToEndZone[i][j] = Integer.MAX_VALUE;
-    	    	totalCostToEnd[i][j] = Double.POSITIVE_INFINITY;
-    		}
-        }
-
-        // Calculate movement costs
-    	LinkedList<IntTuple> openSet = new LinkedList<>();
-        openSet.add(new IntTuple(END_COORDINATES));
-        distanceToEndZone[END_COORDINATES.getX()][END_COORDINATES.getY()] = 0;
-    	while (!openSet.isEmpty()) {
-    		IntTuple current = openSet.poll();
-    		// Monsters can only travel horizontally or vertically
-    		LinkedList<Coordinates> neighbours = findTaxicabNeighbours(new Coordinates(current.x, current.y));
-    		for (Coordinates c : neighbours) {
-    			// Monsters can only go to grids that do not contain a Tower
-    			if (findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-        			int newCost = distanceToEndZone[current.x][current.y] + 1;
-        			if (distanceToEndZone[c.getX()][c.getY()] > newCost ) {
-        				distanceToEndZone[c.getX()][c.getY()] = newCost;
-        				openSet.add(new IntTuple(c.getX(), c.getY()));
-        			}
-    			}
-    		}
-        }
-
-        // Calculate total costs
-        final int MOVEMENT_TO_ATTACKED_COST_RATIO = 100000; // The ratio between the cost of moving one pixel and the cost of getting attacked once.
-
-        openSet.add(new IntTuple(END_COORDINATES));
-
-    	totalCostToEnd[END_COORDINATES.getX()][END_COORDINATES.getY()] = 0;
-    	while (!openSet.isEmpty()) {
-    		IntTuple current = openSet.poll();
-
-    		// Monsters can only travel horizontally or vertically
-    		LinkedList<Coordinates> neighbours = findTaxicabNeighbours(new Coordinates(current.x, current.y));
-    		for (Coordinates c : neighbours) {
-    			// Monsters can only go to grids that do not contain a Tower
-    			if (findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-                    double newCost = totalCostToEnd[current.x][current.y] + 1
-                        + countInRangeOfTowers(c) * MOVEMENT_TO_ATTACKED_COST_RATIO;
-        			if (totalCostToEnd[c.getX()][c.getY()] > newCost ) {
-        				totalCostToEnd[c.getX()][c.getY()] = newCost;
-        				openSet.add(new IntTuple(c.getX(), c.getY()));
-        			}
-    			}
-    		}
         }
     }
+    /**
+     * The scalar fields stored in this arena.
+     */
+    private ArenaScalarFields arenaScalarFields = new ArenaScalarFields(this);
 
     /**
      * The Arena during the previous frame. Only used for saving the game.
@@ -259,101 +183,6 @@ public final class Arena {
     private AnchorPane paneArena;
 
     /**
-     * Adds an object to the current arena state.
-     * @param obj The object to add.
-     * @throws IllegalArgumentException The object type is not recognized.
-     */
-    private void addObject(@NonNull ExistsInArena obj) {
-        if (obj instanceof Tower) {
-            if (!towers.contains(obj)) {
-                towers.add((Tower)obj);
-            }
-        } else if (obj instanceof Projectile) {
-            if (!projectiles.contains(obj)) {
-                projectiles.add((Projectile)obj);
-            }
-        } else if (obj instanceof Monster) {
-            if (!monsters.contains(obj)) {
-                monsters.add((Monster)obj);
-            }
-        } else {
-            throw new IllegalArgumentException("The object type is not recognized");
-        }
-
-        Coordinates c = new Coordinates(obj.getX(), obj.getY());
-        getGrid(c).addObject(obj);
-
-        if (obj instanceof Tower) {
-            updateCosts();
-        }
-    }
-
-    /**
-     * Removes an object from the arena.
-     * @param obj The object to remove.
-     * @throws IllegalArgumentException The object type is not recognized.
-     */
-    private void removeObject(@NonNull ExistsInArena obj) {
-        if (obj instanceof Tower) {
-            towers.remove((Tower)obj);
-        } else if (obj instanceof Projectile) {
-            projectiles.remove((Projectile)obj);
-        } else if (obj instanceof Monster) {
-            monsters.remove((Monster)obj);
-        } else {
-            throw new IllegalArgumentException("The object type is not recognized");
-        }
-
-        Coordinates c = new Coordinates(obj.getX(), obj.getY());
-        getGrid(c).removeObject(obj);
-
-        if (obj instanceof Tower) {
-            updateCosts();
-        }
-    }
-
-    /**
-     * Moves an object to another location in the arena.
-     * @param obj The object to move.
-     * @param newCoordinates The coordinates of the new location.
-     * @throws IllegalArgumentException The object type is not recognized.
-     */
-    private void moveObject(@NonNull ExistsInArena obj, @NonNull Coordinates newCoordinates)
-    {
-        Coordinates c = new Coordinates(obj.getX(), obj.getY());
-        getGrid(c).removeObject(obj);
-
-        obj.setLocation(newCoordinates);
-
-        getGrid(newCoordinates).addObject(obj);
-    }
-
-    /**
-     * Updates the object to the next frame and updates the Arena accordingly.
-     * @param obj
-     */
-    private void objectNextFrame(@NonNull ExistsInArena obj) {
-        Coordinates originalCoordinates = new Coordinates(obj.getX(), obj.getY());
-        obj.nextFrame();
-        Coordinates newCoordinates = new Coordinates(obj.getX(), obj.getY());
-
-        if (!Geometry.isAt(newCoordinates.getX(), newCoordinates.getY(), originalCoordinates.getX(), originalCoordinates.getY())) {
-            getGrid(originalCoordinates).removeObject(obj);
-            getGrid(newCoordinates).addObject(obj);
-        }
-
-        if (obj instanceof Tower) {
-
-        } else if (obj instanceof Projectile) {
-
-        } else if (obj instanceof Monster) {
-            if (((Monster)obj).hasDied()) {
-                throw new NotImplementedException("TODO");
-            }
-        }
-    }
-
-    /**
      * Constructor of the Arena class. Bind the label to resources.
      * @param resourceLabel the label to show remaining resources of player.
      * @param paneArena the arena pane of the game.
@@ -362,16 +191,6 @@ public final class Arena {
         player = new Player("name", 200);
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
-
-        // Set up grids
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                grids[i][j] = new Grid(i, j);
-            }
-        }
-
-        // Set up potential fields
-        updateCosts();
 
         shadowArena = new Arena(this);
     }
@@ -385,69 +204,41 @@ public final class Arena {
         this.currentFrame = other.currentFrame;
         this.difficulty = other.difficulty;
 
-        this.towers = new LinkedList<>();
-        for (Tower t : other.towers) {
-            this.towers.add(t.deepCopy());
-        }
-
-        this.projectiles = new LinkedList<>();
-        for (Projectile p : other.projectiles) {
-            this.projectiles.add(p.deepCopy());
-        }
-
         this.toRemove = new HashMap<>();
         for (HashMap.Entry<Node, Integer> entry : other.toRemove.entrySet()) {
             this.toRemove.put(entry.getKey(), entry.getValue());
         }
 
-        this.monsters = new PriorityQueue<>();
-        for (Monster m : other.monsters) {
-            this.monsters.add(m.deepCopy());
-        }
+        this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
 
-        // Set up grids
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                grids[i][j] = new Grid(i, j);
-            }
-        }
-
-        // Set up potential fields
-        for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-            for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
-                this.distanceToEndZone[i][j] = other.distanceToEndZone[i][j];
-                this.totalCostToEnd[i][j] = other.totalCostToEnd[i][j];
-            }
-        }
+        this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
 
         this.shadowArena = null;
     }
 
     /**
      * Finds all Towers that are in the arena.
-     * @return A linked list containing a reference to each Tower in the Arena.
+     * @return A linked list containing a reference to each Tower in the arena.
      */
-    public LinkedList<Tower> getTowers() { return towers; }
+    public LinkedList<Tower> getTowers() { return arenaObjectStorage.getTowers(); }
+
+    /**
+     * Finds all Projectiles that are in the arena.
+     * @return A linked list containing a reference to each Projectile in the arena.
+     */
+    public LinkedList<Projectile> getProjectiles() { return arenaObjectStorage.getProjectiles(); }
 
     /**
      * Finds all Monsters that are in the arena.
-     * @return A priority queue containing a reference to each Monster in the Arena. The first element is closest to the end zone while the last element is furthest.
+     * @return A priority queue containing a reference to each Monster in the arena. The first element is closest to the end zone while the last element is furthest.
      */
-    public PriorityQueue<Monster> getMonsters() { return monsters; }
+    public PriorityQueue<Monster> getMonsters() { return arenaObjectStorage.getMonsters(); }
 
     /**
-     * Finds all Projectile that are in the arena.
-     * @return A linked list containing a reference to each Projectile in the Arena.
+     * @see ArenaScalarFields#getDistanceToEndZone(Coordinates)
      */
-    public LinkedList<Projectile> getProjectiles() { return projectiles; }
-
-    /**
-     * Finds the taxicab distance from the specified pixel to the end-zone.
-     * @param coordinates The coordinates of the pixel.
-     * @return The taxicab distance from the specified pixel to the end-zone, in number of pixels.
-     */
-    public int getTaxicabDistanceToEnd(@NonNull Coordinates coordinates) {
-        return distanceToEndZone[coordinates.getX()][coordinates.getY()];
+    public int getDistanceToEndZone(@NonNull Coordinates coordinates) {
+        return arenaScalarFields.getDistanceToEndZone(coordinates);
     }
 
     /**
@@ -472,21 +263,7 @@ public final class Arena {
      */
     public LinkedList<ExistsInArena> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<ExistsInArena> result = new LinkedList<>();
-        
-        LinkedList<ExistsInArena> list = getGrid(coordinates).getAllObjects();
-
-        for (ExistsInArena obj : list)
-        {
-            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                {
-                    result.add(obj);
-                }
-        }
-
-        return result;
+        return arenaObjectStorage.findObjectsAtPixel(coordinates, filter);
     }
 
     /**
@@ -499,96 +276,42 @@ public final class Arena {
      */
     public LinkedList<ExistsInArena> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<ExistsInArena> result = new LinkedList<>();
+        return arenaObjectStorage.findObjectsInRange(coordinates, range, filter);
+    }
 
-        LinkedList<Grid> grids = getPotentialGridsInRange(coordinates, range);
-
-        for (Grid grid : grids) {
-            LinkedList<ExistsInArena> list = grid.getAllObjects();
-
-            for (ExistsInArena obj : list)
-            {
-                if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                    || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                    || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                    {
-                        result.add(obj);
-                    }
-            }
-        }
-
-        return result;
+    /**
+     * Finds all objects that are located inside a specified grid.
+     * @param xPos The x-position of the grid.
+     * @param yPos The y-position of the grid.
+     * @param filter Only the types that are specified will be included in the result.
+     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @see TypeFilter
+     */
+    public LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
+    {
+        return arenaObjectStorage.findObjectsInGrid(xPos, yPos, filter);
     }
 
     /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel
+     * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
     public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<ExistsInArena> result = new LinkedList<>();
-        
-        LinkedList<ExistsInArena> list = getGrid(coordinates).getAllObjects();
-        for (ExistsInArena obj : list)
-        {
-            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                {
-                    result.add(obj);
-                }
-        }
-
-        return result;
+        return arenaObjectStorage.findObjectsInGrid(coordinates, filter);
     }
 
     /**
-     * Finds the pixels within a taxicab distance of one from the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
-     * @return A linked list containing a reference to the coordinates of the center of each taxicab neighbour.
-     */
-    public LinkedList<Coordinates> findTaxicabNeighbours(@NonNull Coordinates coordinates)
-    {
-        LinkedList<Coordinates> result = new LinkedList<>();
-
-        int x = coordinates.getX();
-        int y = coordinates.getY();
-
-        // Left neighbour
-        if (x > 0)
-            result.add(new Coordinates(x - 1, y));
-        
-        // Right neighbour
-        if (x < UIController.ARENA_WIDTH)
-            result.add(new Coordinates(x + 1, y));
-        
-        // Top neighbour
-        if (y > 0)
-            result.add(new Coordinates(x, y - 1));
-
-        // Bottom neighbour
-        if (y < UIController.ARENA_HEIGHT)
-            result.add(new Coordinates(x, y + 1));
-
-        return result;
-    }
-
-    /**
-     * Finds all objects that occupy the specified coordinate in the arena.
+     * Finds all objects that occupy a specified coordinate in the arena.
      * @param coordinates The specified coordinates.
      * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
      */
     public LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
     {
-        LinkedList<Object> result = new LinkedList<>();
-
-        result.addAll(findObjectsAtPixel(coordinates, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
-        result.addAll(findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
-        
-        return result;
+        return arenaObjectStorage.findObjectsOccupying(coordinates);
     }
 
     /**
@@ -620,7 +343,7 @@ public final class Arena {
         int y = coordinates.getY();
 
         int count = 0;
-        for (Tower t : towers) {
+        for (Tower t : getTowers()) {
             int towerX = t.getX();
             int towerY = t.getY();
             int minRange = t.getMinShootingRange();
@@ -663,7 +386,7 @@ public final class Arena {
      * @return true if all monster can go to end-zone after building a tower, false otherwise.
      */
     private boolean hasRoute(@NonNull Coordinates coordinates) {
-        Grid gridToBeBuilt = getGrid(coordinates);
+        Grid gridToBeBuilt = arenaObjectStorage.getGrid(coordinates);
 
         boolean[][] noTower = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
         boolean[][] visited = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
@@ -678,9 +401,9 @@ public final class Arena {
 
         ArrayList<Grid> hasMonster = new ArrayList<>();
         hasMonster.add(new Grid(0,0));
-        for (Monster m : monsters) {
+        for (Monster m : getMonsters()) {
             Coordinates c = new Coordinates(m.getX(), m.getY());
-            hasMonster.add(getGrid(c));
+            hasMonster.add(arenaObjectStorage.getGrid(c));
         }
 
         for (Grid g : hasMonster) {
@@ -770,8 +493,8 @@ public final class Arena {
             Projectile p = t.generateProjectile();
             if (p != null) {
                 paneArena.getChildren().add(p.getImageView());
-                projectiles.add(p);
-                getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
+                addObject(p);
+                arenaObjectStorage.getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
             }
 //        }
     }
@@ -866,30 +589,128 @@ public final class Arena {
     }
 
     /**
-     * Finds the next location for an object to move in order to reach the end-zone at the lowest cost.
+     * Finds the next location for an object to move in order to reach the end-zone by moving as few pixels as possible.
      * @param coordinates The coordinates of the object.
-     * @param movementOnly Whether the method should only consider movement cost. Otherwise, it also considers the cost of being attacked by Towers.
      * @return The coordinates of the next pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
      */
-    public Coordinates findNextTowardsEnd(@NonNull Coordinates coordinates, boolean movementOnly) {
-        if (Double.isInfinite(distanceToEndZone[coordinates.getX()][coordinates.getY()])) return null;
+    public Coordinates findNextTowardsEnd_prioritizeMovement(@NonNull Coordinates coordinates) {
+        if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
         if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
 
-        LinkedList<Coordinates> neighbours = findTaxicabNeighbours(coordinates);
+        LinkedList<int[]> neighbours = Grid.findTaxicabNeighbours(coordinates);
+        int lowestCost = Integer.MAX_VALUE;
+        int[] lowestCostNeighbour = null;
+        for (int[] pos : neighbours) {
+            int cost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
+
+            if (cost < lowestCost) {
+                lowestCost = cost;
+                lowestCostNeighbour = pos;
+            }
+        }
+
+        int current_xPos = Grid.findGridXPos(coordinates);
+        int current_yPos = Grid.findGridYPos(coordinates);
+        int neighbour_xPos = lowestCostNeighbour[0];
+        int neighbour_yPos = lowestCostNeighbour[1];
+
+        // Move left
+        if (neighbour_xPos < current_xPos && neighbour_yPos == current_yPos) {
+            return new Coordinates(coordinates.getX() - 1, coordinates.getY());
+        }
+
+        // Move right
+        if (neighbour_xPos > current_xPos && neighbour_yPos == current_yPos) {
+            return new Coordinates(coordinates.getX() + 1, coordinates.getY());
+        }
+
+        // Move up
+        if (neighbour_xPos == current_xPos && neighbour_yPos < current_yPos) {
+            return new Coordinates(coordinates.getX(), coordinates.getY() - 1);
+        }
+
+        // Move down
+        if (neighbour_xPos == current_xPos && neighbour_yPos > current_yPos) {
+            return new Coordinates(coordinates.getX(), coordinates.getY() + 1);
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds the next location for an object to move in order to reach the end-zone with the least attacks received.
+     * @param coordinates The coordinates of the object.
+     * @return The coordinates of the next pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
+     */
+    public Coordinates findNextTowardsEnd_prioritizeAttack(@NonNull Coordinates coordinates) {
+        if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
+        if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
+
+        LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
 
         double lowestCost = Double.POSITIVE_INFINITY;
         Coordinates lowestCostNeighbour = null;
         for (Coordinates neighbour : neighbours) {
-            double cost;
-            if (movementOnly) {
-                cost = distanceToEndZone[neighbour.getX()][neighbour.getY()];
-            } else {
-                cost = totalCostToEnd[neighbour.getX()][neighbour.getY()];
-            }
+            double cost = arenaScalarFields.getAttacksToEndZone(neighbour);
 
             if (cost < lowestCost) {
                 lowestCost = cost;
                 lowestCostNeighbour = neighbour;
+            } else if (cost == lowestCost) {
+                LinkedList<int[]> grids = Grid.findTaxicabNeighbours(coordinates);
+                int lowestCostNeighbourMovementCost = Integer.MAX_VALUE;
+                int neighbourMovementCost = Integer.MAX_VALUE;
+                for (int[] pos : grids) {
+                    int gridCost = arenaScalarFields.getDistanceToEndZone(pos[0], pos[1]);
+                    int grid_xPos = pos[0];
+                    int grid_yPos = pos[1];
+                    int current_xPos = Grid.findGridXPos(coordinates);
+                    int current_yPos = Grid.findGridYPos(coordinates);
+            
+                    // Left
+                    if (grid_xPos < current_xPos && grid_yPos == current_yPos) {
+                        if (lowestCostNeighbour.getX() < coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() < coordinates.getX() && neighbour.getY() == coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+            
+                    // Right
+                    if (grid_xPos > current_xPos && grid_yPos == current_yPos) {
+                        if (lowestCostNeighbour.getX() > coordinates.getX() && lowestCostNeighbour.getY() == coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() > coordinates.getX() && neighbour.getY() == coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+            
+                    // Up
+                    if (grid_xPos == current_xPos && grid_yPos < current_yPos) {
+                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() < coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() < coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+            
+                    // Down
+                    if (grid_xPos == current_xPos && grid_yPos > current_yPos) {
+                        if (lowestCostNeighbour.getX() == coordinates.getX() && lowestCostNeighbour.getY() > coordinates.getY()) {
+                            lowestCostNeighbourMovementCost = gridCost;
+                        }
+                        if (neighbour.getX() == coordinates.getX() && neighbour.getY() > coordinates.getY()) {
+                            neighbourMovementCost = gridCost;
+                        }
+                    }
+                }
+
+                if (neighbourMovementCost < lowestCostNeighbourMovementCost) {
+                    lowestCostNeighbour = neighbour;
+                }
             }
         }
 
@@ -922,8 +743,8 @@ public final class Arena {
     private void attackMonster() {
         // update projectile
         List<Projectile> remove = new ArrayList<>();
-        for (Projectile p : projectiles) {
-            objectNextFrame(p);
+        for (Projectile p : getProjectiles()) {
+            arenaObjectStorage.processObjectNextFrame(p);
             if (p.hasReachedTarget()) {
                 remove.add(p);
             }
@@ -935,7 +756,7 @@ public final class Arena {
         }
 
         // towers attack monsters
-        for (Tower t : towers) {
+        for (Tower t : getTowers()) {
             createProjectile(t);
             objectNextFrame(t);
         }
@@ -977,8 +798,8 @@ public final class Arena {
         if (currentFrame % WAVE_INTERVAL == 0)
             spawnWave();
         else // this is for testing only
-            if (monsters.peek() != null)
-                moveMonster(monsters.peek(), Grid.findGridCenter(10, 10));
+            if (getMonsters().peek() != null)
+                moveMonster(getMonsters().peek(), Grid.findGridCenter(10, 10));
 
         currentFrame++;
 
@@ -1030,60 +851,5 @@ public final class Arena {
         circle.setFill(Color.rgb(255, 255, 0));
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
-    }
-
-    /**
-     * Interface for objects that exist inside the arena.
-     */
-    public interface ExistsInArena {
-        /**
-         * Access the ImageView associated with the object.
-         * @return The ImageView associated with the object.
-         */
-        public ImageView getImageView();
-    
-        /**
-         * Accesses the x-coordinate of the object.
-         * @return The x-coordinate of the object.
-         * @see Coordinates
-         */
-        public int getX();
-
-        /**
-         * Accesses the y-coordinate of the object.
-         * @return The y-coordinate of the object.
-         * @see Coordinates
-         */
-        public int getY();
-
-        /**
-         * Updates the coordinates of the object.
-         * @param x The new x-coordinate.
-         * @param y The new y-coordinate.
-         * @see Coordinates
-         */
-        public void setLocation(int x, int y);
-
-        /**
-         * Updates the coordinates of the object.
-         * @param coordinates The new coordinates.
-         */
-        public void setLocation(@NonNull Coordinates coordinates);
-
-        /**
-         * Updates the object by one frame.
-         */
-        public void nextFrame();
-    }
-    
-    /**
-     * Interface for objects that can move inside the Arena.
-     */
-    public interface MovesInArena extends ExistsInArena {
-        /**
-         * Accesses the current speed of the object.
-         * @return The current speed of the object.
-         */
-        public double getSpeed();
     }
 }

@@ -1,12 +1,14 @@
-package project.towers;
+package project.arena.towers;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
-import project.projectiles.LaserProjectile;
-import project.projectiles.Projectile;
-
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.LaserProjectile;
+import project.arena.projectiles.Projectile;
 
 /**
  * LaserTower consume resources to attack monster.
@@ -24,7 +26,7 @@ public class LaserTower extends Tower{
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of laser tower.
      */
-    public LaserTower(Arena arena, Coordinates coordinates){
+    public LaserTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 30;
         this.buildingCost = 20;
@@ -40,7 +42,7 @@ public class LaserTower extends Tower{
      * @param coordinates The coordinates of laser tower.
      * @param imageView The image view of laser tower.
      */
-    public LaserTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public LaserTower(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;

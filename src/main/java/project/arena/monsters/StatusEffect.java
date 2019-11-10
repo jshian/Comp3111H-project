@@ -1,6 +1,9 @@
-package project.monsters;
+package project.arena.monsters;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -49,7 +52,7 @@ public class StatusEffect {
      * Copy constructor for StatusEffect class.
      * @param other The other object to copy from.
      */
-    public StatusEffect(StatusEffect other) {
+    public StatusEffect(@NonNull StatusEffect other) {
         this.effectType = other.effectType;
         this.duration = other.duration;
     }
