@@ -1,12 +1,14 @@
-package project.towers;
+package project.arena.towers;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
-import project.projectiles.BasicProjectile;
-import project.projectiles.Projectile;
-
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.BasicProjectile;
+import project.arena.projectiles.Projectile;
 
 /**
  * Basic tower has no any special ability.
@@ -18,7 +20,7 @@ public class BasicTower extends Tower {
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinate of basic tower.
      */
-    public BasicTower(Arena arena,@NonNull Coordinates coordinates){
+    public BasicTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 10;
         this.buildingCost = 10;
@@ -33,7 +35,7 @@ public class BasicTower extends Tower {
      * @param coordinates The coordinates of the tower.
      * @param imageView The image view of the tower.
      */
-    public BasicTower(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
+    public BasicTower(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 10;
         this.buildingCost = 10;
@@ -45,7 +47,7 @@ public class BasicTower extends Tower {
     /**
      * @see Tower#Tower(Tower)
      */
-    public BasicTower(BasicTower other){
+    public BasicTower(@NonNull BasicTower other){
         super(other);
     }
 

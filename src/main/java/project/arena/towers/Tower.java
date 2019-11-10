@@ -1,19 +1,21 @@
-package project.towers;
-
-import project.Arena.ExistsInArena;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
-import project.*;
-import project.monsters.Monster;
-import project.projectiles.Projectile;
+package project.arena.towers;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javafx.scene.image.ImageView;
+import project.Geometry;
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.Projectile;
 
 /**
  * Towers is added by player to stop monster moving to the end zone.
@@ -116,7 +118,7 @@ public abstract class Tower implements ExistsInArena {
      * @param coordinates The coordinates of the tower.
      * @param imageView The image view of the tower.
      */
-    public Tower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public Tower(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull ImageView imageView) {
         this.arena = arena;
         this.coordinates = coordinates;
         this.imageView = imageView;
@@ -127,7 +129,7 @@ public abstract class Tower implements ExistsInArena {
      * Copy constructor for the Tower class. Performs deep copy.
      * @param other The other object to copy form.
      */
-    public Tower(Tower other) {
+    public Tower(@NonNull Tower other) {
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
         this.coordinates = new Coordinates(other.coordinates);

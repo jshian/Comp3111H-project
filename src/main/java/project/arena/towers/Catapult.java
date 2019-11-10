@@ -1,15 +1,19 @@
-package project.towers;
-
-import javafx.scene.image.ImageView;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.Arena.ExistsInArena;
-import project.monsters.Monster;
-import project.projectiles.CatapultProjectile;
+package project.arena.towers;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import javafx.scene.image.ImageView;
+import project.Geometry;
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.CatapultProjectile;
 
 /**
  * Catapult can attack many monsters at the same time and has high shooting range.
@@ -32,7 +36,7 @@ public class Catapult extends Tower {
      * @param arena The arena to attach the catapult to.
      * @param coordinates The coordinate of catapult.
      */
-    public Catapult(Arena arena,@NonNull Coordinates coordinates){
+    public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 25;
         this.buildingCost = 20;
@@ -50,7 +54,7 @@ public class Catapult extends Tower {
      * @param coordinates The coordinate of catapult.
      * @param imageView The image view of catapult.
      */
-    public Catapult(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
+    public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 25;
         this.buildingCost = 20;
@@ -65,7 +69,7 @@ public class Catapult extends Tower {
     /**
      * @see Tower#Tower(Tower)
      */
-    public Catapult(Catapult other){
+    public Catapult(@NonNull Catapult other){
         super(other);
     }
 
@@ -110,7 +114,7 @@ public class Catapult extends Tower {
     @Override
     public CatapultProjectile generateProjectile(){
         if(!isReload()) {
-            LinkedList<Arena.ExistsInArena> selectList = new LinkedList<>();
+            LinkedList<ExistsInArena> selectList = new LinkedList<>();
             Coordinates coordinate = selectMonster(arena.getMonsters(),selectList);
             if (coordinate != null) {
                 hasAttack = true;
@@ -128,7 +132,7 @@ public class Catapult extends Tower {
      * @param selectList The list of attacked monster in current position (used for testing).
      * @return The coordinate that will be attacked by Catapult.
      */
-    public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<Arena.ExistsInArena> selectList){
+    public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<ExistsInArena> selectList){
         LinkedList<Monster> nearestMon=new LinkedList<>();
         double nearest=0;
         //find nearest to destination monster in shooting range

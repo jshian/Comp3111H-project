@@ -1,13 +1,16 @@
-package project.projectiles;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
+package project.arena.projectiles;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-public class CatapultProjectile extends Projectile{
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.monsters.Monster;
+
+public class CatapultProjectile extends Projectile {
 
     /**
      * The damage range of projectile.
@@ -22,7 +25,7 @@ public class CatapultProjectile extends Projectile{
      * @param speed The speed of the catapult projectile.
      * @param attackPower The attack power of the catapult projectile.
      */
-    public CatapultProjectile(Arena arena, @NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int attackPower, int damageRange){
+    public CatapultProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower, int damageRange){
         super(arena,coordinates,target,speed,attackPower);
         this.damageRange=damageRange;
     }
@@ -30,7 +33,7 @@ public class CatapultProjectile extends Projectile{
     /**
      * @see Projectile#Projectile(Projectile)
      */
-    public CatapultProjectile(CatapultProjectile other){
+    public CatapultProjectile(@NonNull CatapultProjectile other){
         super(other);
         this.damageRange = other.damageRange;
     }
@@ -48,8 +51,8 @@ public class CatapultProjectile extends Projectile{
             arena.drawCircle(target,damageRange);
 
             //give damage
-            LinkedList<Arena.ExistsInArena> monsters = arena.findObjectsInRange(target, damageRange, EnumSet.of(Arena.TypeFilter.Monster));
-            for (Arena.ExistsInArena monster : monsters) {
+            LinkedList<ExistsInArena> monsters = arena.findObjectsInRange(target, damageRange, EnumSet.of(Arena.TypeFilter.Monster));
+            for (ExistsInArena monster : monsters) {
                 if (monster instanceof Monster) {
                     ((Monster) monster).takeDamage(attackPower);
                     System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()

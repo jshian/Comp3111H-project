@@ -1,21 +1,29 @@
-package project.projectiles;
+package project.arena.projectiles;
 
-import javafx.scene.image.Image;
-import project.*;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import project.Geometry;
+import project.UIController;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.Grid;
+import project.arena.MovesInArena;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Projectile implements Arena.MovesInArena {
+public abstract class Projectile implements MovesInArena {
     /**
      * ID for storage using Java Persistence API
      */
@@ -74,7 +82,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public Projectile(Arena arena,@NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int attackPower) {
+    public Projectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower) {
         this.arena = arena;
         this.coordinates = Grid.findGridCenter(coordinates);
         this.tower = Grid.findGridCenter(coordinates);
@@ -90,7 +98,7 @@ public abstract class Projectile implements Arena.MovesInArena {
      * Copy constructor for the Projectile class. Performs deep copy.
      * @param other The other object to copy form.
      */
-    public Projectile(Projectile other){
+    public Projectile(@NonNull Projectile other){
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
         this.coordinates = new Coordinates(other.coordinates);

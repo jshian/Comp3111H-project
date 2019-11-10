@@ -1,21 +1,23 @@
-package project;
+package project.arena;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import project.towers.Tower;
+import project.Geometry;
+import project.UIController;
+import project.arena.monsters.Monster;
+import project.arena.towers.Tower;
 
 /**
  * Manages the scalar fields of the arena.
- * 
  * @see Arena
  */
 class ArenaScalarFields {
 
     /**
-     * The arena that the class is linke dto.
+     * The arena that the class is linked to.
      */
     private Arena arena;
 
@@ -127,7 +129,7 @@ class ArenaScalarFields {
     }
 
     /**
-     * Finds the pixels that are within range of the specified pixel.
+     * Finds the pixels that are within range of a specified pixel.
      * @param coordinates The coordinates of the pixel.
      * @param minRange The minimum range.
      * @param maxRange The maximum range.
@@ -152,10 +154,10 @@ class ArenaScalarFields {
     }
 
     /**
-     * Constructor for ArenaScalerFields class.
+     * Constructor for ArenaScalarFields class.
      * @param arena The arena to link this object to.
      */
-    public ArenaScalarFields(Arena arena) {
+    ArenaScalarFields(Arena arena) {
         this.arena = arena;
 
         LinkedList<Tower> towers = arena.getTowers();
@@ -177,11 +179,11 @@ class ArenaScalarFields {
     }
 
     /**
-     * Constructor for making a copy of ArenaScalerFields class that is linked to another arena.
+     * Constructor for making a copy of ArenaScalarFields class that is linked to another arena.
      * @param arena The arena to link this object to.
      * @param other The object to copy from.
      */
-    public ArenaScalarFields(Arena arena, ArenaScalarFields other) {
+    ArenaScalarFields(Arena arena, ArenaScalarFields other) {
         this.arena = arena;
 
         // Copy distanceToEndZone
@@ -201,40 +203,40 @@ class ArenaScalarFields {
     }
 
     /**
-     * Accesses the distance to reach the end-zone from the grid containing the specified pixel.
+     * Accesses the distance to reach the end-zone from the grid containing a specified pixel.
      * @param coordinates The coordinates of the pixel.
      * @return The distance to reach the end-zone from the grid, in number of grids traversed.
      */
-    public int getDistanceToEndZone(@NonNull Coordinates coordinates) {
+    int getDistanceToEndZone(@NonNull Coordinates coordinates) {
         return distanceToEndZone[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
     }
 
     /**
-     * Accesses the distance to reach the end-zone from the specified grid.
+     * Accesses the distance to reach the end-zone from a specified grid.
      * @param xPos The x-position of the grid.
      * @param yPos The y-position of the grid.
      * @return The distance to reach the end-zone from the grid, in number of grids traversed.
      */
-    public int getDistanceToEndZone(int xPos, int yPos) {
+    int getDistanceToEndZone(int xPos, int yPos) {
         return distanceToEndZone[xPos][yPos];
     }
 
     /**
-     * Accesses the number of attacks a lone monster would take to reach the end-zone from the specified pixel. 
+     * Accesses the number of attacks a lone monster would take to reach the end-zone from a specified pixel. 
      * @param coordinates The coordinates of the pixel.
      * @return The number of attacks a lone monster that moves at 1 pixel per frame would get to reach the end-zone from the specified pixel. 
      */
-    public double getAttacksToEndZone(@NonNull Coordinates coordinates) {
+    double getAttacksToEndZone(@NonNull Coordinates coordinates) {
         return attacksToEndZone[coordinates.getX()][coordinates.getY()];
     }
 
     /**
-     * Accesses the number of attacks a lone monster would take to reach the end-zone from the specified pixel. 
+     * Accesses the number of attacks a lone monster would take to reach the end-zone from a specified pixel. 
      * @param x The x-coordinate of the pixel.
      * @param y The y-coordinate of the pixel.
      * @return The number of attacks a lone monster that moves at 1 pixel per frame would get to reach the end-zone from the specified pixel. 
      */
-    public double getAttacksToEndZone(int x, int y) {
+    double getAttacksToEndZone(int x, int y) {
         return attacksToEndZone[x][y];
     }
     
@@ -242,7 +244,7 @@ class ArenaScalarFields {
      * Updates the scalar fields with respect to the addition of a tower.
      * @param tower The tower that was added.
      */
-    public void processAddTower(@NonNull Tower tower) {
+    void processAddTower(@NonNull Tower tower) {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
@@ -259,7 +261,7 @@ class ArenaScalarFields {
      * Updates the scalar fields with respect to the removal of a tower.
      * @param tower The tower that was removed.
      */
-    public void processRemoveTower(@NonNull Tower tower) {
+    void processRemoveTower(@NonNull Tower tower) {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame

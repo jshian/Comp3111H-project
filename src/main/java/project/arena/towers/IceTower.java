@@ -1,17 +1,19 @@
-package project.towers;
+package project.arena.towers;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.*;
-import project.monsters.Monster;
-import project.projectiles.IceProjectile;
-import project.projectiles.Projectile;
-
+import project.Player;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.IceProjectile;
+import project.arena.projectiles.Projectile;
 
 /**
  * IceTower slow down the speed of monster without damage.
  */
-public class IceTower extends Tower{
+public class IceTower extends Tower {
 
     /**
      * The maximum slow down duration of the tower.
@@ -29,7 +31,7 @@ public class IceTower extends Tower{
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of ice tower.
      */
-    public IceTower(Arena arena,@NonNull Coordinates coordinates){
+    public IceTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 0;
         this.buildingCost = 15;
@@ -45,7 +47,7 @@ public class IceTower extends Tower{
      * @param coordinates The coordinates of ice tower.
      * @param imageView The image view of ice tower.
      */
-    public IceTower(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
+    public IceTower(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 0;
         this.buildingCost = 15;
@@ -58,7 +60,7 @@ public class IceTower extends Tower{
     /**
      * @see Tower#Tower(Tower)
      */
-    public IceTower(IceTower other){
+    public IceTower(@NonNull IceTower other){
         super(other);
         this.slowDownTime = other.slowDownTime;
     }

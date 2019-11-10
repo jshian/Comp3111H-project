@@ -2,6 +2,8 @@ package project;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -9,17 +11,29 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
-import javafx.fxml.FXML;
-import javafx.scene.layout.*;
-import javafx.geometry.Insets;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-import project.towers.BasicTower;
-import project.towers.Catapult;
-import project.towers.IceTower;
-import project.towers.Tower;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.Grid;
+import project.arena.towers.BasicTower;
+import project.arena.towers.Catapult;
+import project.arena.towers.IceTower;
+import project.arena.towers.Tower;
 
 
 public class UIController {
