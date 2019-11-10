@@ -149,9 +149,9 @@ public final class Arena {
     /**
      * Updates the object to the next frame and updates the Arena accordingly.
      * @param obj The object to update.
-     * @return the object that has been marked as pending removal.
+     * @return the object that has been marked as pending { add, removal }.
      */
-    private ExistsInArena objectNextFrame(@NonNull ExistsInArena obj) {
+    private ExistsInArena[] objectNextFrame(@NonNull ExistsInArena obj) {
         return arenaObjectStorage.processObjectNextFrame(obj);
     }
     /**
@@ -439,17 +439,6 @@ public final class Arena {
     }
 
     /**
-     * Creates a Projectile at a specified pixel.
-     * @param t the tower which attack the monster by creating projectile.
-     */
-    public void createProjectile(@NonNull Tower t)
-    {
-        Projectile p = t.generateProjectile();
-
-        if (p != null) addObject(p);
-    }
-
-    /**
      * Spawns a wave of Monsters at the starting position of the arena.
      */
     public void spawnWave()
@@ -579,25 +568,30 @@ public final class Arena {
      * process next frame for all objects in the arena.
      */
     private void nextFrameForAllObjects() {
+        ArrayList<ExistsInArena> objectsToBeAdded = new ArrayList<>();
         ArrayList<ExistsInArena> objectsToBeRemoved = new ArrayList<>();
+
         // update projectile
         for (Projectile p : getProjectiles()) {
-            ExistsInArena temp = objectNextFrame(p);
-            if (temp != null) {
-                objectsToBeRemoved.add(temp);
+            ExistsInArena toRemove = objectNextFrame(p)[1];
+            if (toRemove != null) {
+                objectsToBeRemoved.add(toRemove);
             }
         }
 
         // towers attack monsters
         for (Tower t : getTowers()) {
-            objectNextFrame(t);
+            ExistsInArena toAdd = objectNextFrame(t)[0];
+            if (toAdd != null) {
+                objectsToBeAdded.add(toAdd);
+            }
         }
 
         // update monsters
         for (Monster m : getMonsters()) {
-            ExistsInArena temp = objectNextFrame(m);
-            if (temp != null) {
-                objectsToBeRemoved.add(temp);
+            ExistsInArena toRemove = objectNextFrame(m)[1];
+            if (toRemove != null) {
+                objectsToBeRemoved.add(toRemove);
             }
         }
 
@@ -613,6 +607,13 @@ public final class Arena {
                 c.bindByImage(explosion);
                 paneArena.getChildren().add(explosion);
                 toRemove.put(explosion, LASER_DURATION);
+            }
+        }
+
+        // add objects
+        for (ExistsInArena e : objectsToBeAdded) {
+            if (e instanceof Projectile) {
+                addObject(e);
             }
         }
     }
