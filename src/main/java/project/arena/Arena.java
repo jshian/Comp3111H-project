@@ -99,7 +99,6 @@ public final class Arena {
      */
     private double difficulty = 1;
 
-
     /**
      * Contains a reference to line, circle, and image view on the arena.
      */
@@ -147,20 +146,11 @@ public final class Arena {
 
     /**
      * Updates the object to the next frame and updates the Arena accordingly.
-     * @param obj
+     * @param obj The object to update.
+     * @return the object that has been marked as pending removal.
      */
-    private void objectNextFrame(@NonNull ExistsInArena obj) {
-        arenaObjectStorage.processObjectNextFrame(obj);
-
-        if (obj instanceof Tower) {
-
-        } else if (obj instanceof Projectile) {
-
-        } else if (obj instanceof Monster) {
-            if (((Monster)obj).hasDied()) {
-                throw new NotImplementedException("TODO");
-            }
-        }
+    private ExistsInArena objectNextFrame(@NonNull ExistsInArena obj) {
+        return arenaObjectStorage.processObjectNextFrame(obj);
     }
     /**
      * The scalar fields stored in this arena.
@@ -462,7 +452,6 @@ public final class Arena {
         } else {
             return null;
         }
-        // TODO: recalculate monster path.
     }
 
     /**
@@ -490,13 +479,12 @@ public final class Arena {
      */
     public void createProjectile(@NonNull Tower t)
     {
-            Projectile p = t.generateProjectile();
-            if (p != null) {
-                paneArena.getChildren().add(p.getImageView());
-                addObject(p);
-                arenaObjectStorage.getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
-            }
-//        }
+        Projectile p = t.generateProjectile();
+        if (p != null) {
+            paneArena.getChildren().add(p.getImageView());
+            addObject(p);
+            arenaObjectStorage.getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
+        }
     }
 
     /**
@@ -738,46 +726,45 @@ public final class Arena {
     }
 
     /**
-     * tower attack monsters.
+     * process next frame for all objects in the arena.
      */
-    private void attackMonster() {
+    private void nextFrameForAllObjects() {
+        ArrayList<ExistsInArena> objectsToBeRemoved = new ArrayList<>();
         // update projectile
-        List<Projectile> remove = new ArrayList<>();
         for (Projectile p : getProjectiles()) {
-            arenaObjectStorage.processObjectNextFrame(p);
-            if (p.hasReachedTarget()) {
-                remove.add(p);
+            ExistsInArena temp = objectNextFrame(p);
+            if (temp != null) {
+                objectsToBeRemoved.add(temp);
             }
-        }
-
-        // remove projectiles that reach its destination.
-        for (Projectile p : remove) {
-            removeProjectile(p);
         }
 
         // towers attack monsters
         for (Tower t : getTowers()) {
-            createProjectile(t);
             objectNextFrame(t);
         }
 
-        // turn monster with 0hp to explosion.png
-        ArrayList<Monster> monsters = new ArrayList<>();
+        // update monsters
         for (Monster m : getMonsters()) {
-            if (m.getHealth() <= 0) {
-                monsters.add(m);
+            ExistsInArena temp = objectNextFrame(m);
+            if (temp != null) {
+                objectsToBeRemoved.add(temp);
             }
         }
-        for (Monster m : monsters) {
-            removeMonster(m);
-            Coordinates c = new Coordinates(m.getX(), m.getY());
-            ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
-                    , UIController.GRID_WIDTH, true, true));
-            c.bindByImage(explosion);
-            paneArena.getChildren().add(explosion);
-            toRemove.put(explosion, LASER_DURATION);
-        }
 
+        // remove objects
+        for (ExistsInArena e : objectsToBeRemoved) {
+            if (e instanceof Projectile) {
+                removeProjectile((Projectile) e);
+            } else if (e instanceof Monster) { // turn dead monster to explosion
+                removeMonster((Monster) e);
+                Coordinates c = new Coordinates(e.getX(), e.getY());
+                ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
+                        , UIController.GRID_WIDTH, true, true));
+                c.bindByImage(explosion);
+                paneArena.getChildren().add(explosion);
+                toRemove.put(explosion, LASER_DURATION);
+            }
+        }
     }
 
     /**
@@ -787,25 +774,24 @@ public final class Arena {
     public boolean nextFrame() {
         shadowArena = new Arena(this);
 
-        // Now update currentState
-        // TODO:
-        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
+        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0) {
+            System.out.println("Gameover");
             return true;
+        }
 
+
+        // Now update currentState
         remove();
-        attackMonster();
-
+        nextFrameForAllObjects();
         if (currentFrame % WAVE_INTERVAL == 0)
             spawnWave();
-        else // this is for testing only
-            if (getMonsters().peek() != null)
-                moveMonster(getMonsters().peek(), Grid.findGridCenter(10, 10));
-
         currentFrame++;
 
-        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
-            return true;
 
+        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0) {
+            System.out.println("Gameover");
+            return true;
+        }
         return false;
     }
 
