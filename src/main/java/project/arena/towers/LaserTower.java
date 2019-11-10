@@ -7,8 +7,8 @@ import project.Player;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
+import project.arena.projectiles.LaserProjectile;
 import project.arena.projectiles.Projectile;
-import project.projectiles.LaserProjectile;
 
 /**
  * LaserTower consume resources to attack monster.

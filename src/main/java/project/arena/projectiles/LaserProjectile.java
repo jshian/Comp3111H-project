@@ -1,13 +1,13 @@
-package project.projectiles;
-
-import javafx.scene.shape.Line;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import project.Arena;
-import project.Coordinates;
-import project.Geometry;
-import project.monsters.Monster;
+package project.arena.projectiles;
 
 import java.util.PriorityQueue;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import project.Geometry;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.monsters.Monster;
 
 public class LaserProjectile extends Projectile{
 
