@@ -22,6 +22,7 @@ public class Fox extends Monster {
         this.maxSpeed = 5 + 0.5 * difficulty;
         this.health = this.maxHealth;
         this.speed = this.maxSpeed;
+        this.resources = (int) (difficulty * 1.5);
     }
 
     /**
