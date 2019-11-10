@@ -508,10 +508,10 @@ public final class Arena {
 
         LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
 
-        double lowestCost = Double.POSITIVE_INFINITY;
+        int lowestCost = Integer.MAX_VALUE;
         Coordinates lowestCostNeighbour = null;
         for (Coordinates neighbour : neighbours) {
-            double cost = arenaScalarFields.getDistanceToEndZone(neighbour);
+            int cost = arenaScalarFields.getDistanceToEndZone(neighbour);
 
             if (cost < lowestCost) {
                 lowestCost = cost;

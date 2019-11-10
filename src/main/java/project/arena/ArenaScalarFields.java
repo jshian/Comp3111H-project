@@ -46,7 +46,6 @@ class ArenaScalarFields {
      * Refreshes {@link #distanceToEndZone}.
      */
     private void refreshDistanceToEndZone() {
-        
     	// Reset values
     	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
     		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
@@ -56,22 +55,20 @@ class ArenaScalarFields {
 
         // Calculate distance
     	LinkedList<IntTuple> openSet = new LinkedList<>();
-        openSet.add(new IntTuple(Arena.END_GRID_X_POS, Arena.END_GRID_Y_POS));
-        distanceToEndZone[Arena.END_GRID_X_POS][Arena.END_GRID_Y_POS] = 0;
+        openSet.add(new IntTuple(Arena.END_COORDINATES.getX(), Arena.END_COORDINATES.getY()));
+
+    	distanceToEndZone[Arena.END_COORDINATES.getX()][Arena.END_COORDINATES.getY()] = 0;
     	while (!openSet.isEmpty()) {
     		IntTuple current = openSet.poll();
     		// Monsters can only travel horizontally or vertically
-    		LinkedList<int[]> neighbours = Grid.findTaxicabNeighbours(current.x, current.y);
-    		for (int[] pos : neighbours) {
-                int xPos = pos[0];
-                int yPos = pos[1];
-
+    		LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(current.x, current.y);
+    		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
-    			if (arena.findObjectsInGrid(xPos, yPos, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
+    			if (arena.findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
         			int newCost = distanceToEndZone[current.x][current.y] + 1;
-        			if (distanceToEndZone[xPos][yPos] > newCost ) {
-        				distanceToEndZone[xPos][yPos] = newCost;
-        				openSet.add(new IntTuple(xPos, yPos));
+        			if (distanceToEndZone[c.getX()][c.getY()] > newCost ) {
+        				distanceToEndZone[c.getX()][c.getY()] = newCost;
+        				openSet.add(new IntTuple(c.getX(), c.getY()));
         			}
     			}
     		}
@@ -187,16 +184,10 @@ class ArenaScalarFields {
     ArenaScalarFields(Arena arena, ArenaScalarFields other) {
         this.arena = arena;
 
-        // Copy distanceToEndZone
+        // Copy arrays
     	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
     		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
     			distanceToEndZone[i][j] = other.distanceToEndZone[i][j];
-    		}
-        }
-
-        // Copy attacksToEndZone and attacksPerFrame
-    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
                 attacksToEndZone[i][j] = other.attacksToEndZone[i][j];
                 attacksPerFrame[i][j] = other.attacksPerFrame[i][j];
     		}
