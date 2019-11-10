@@ -142,10 +142,13 @@ class ArenaScalarFields {
         int x = coordinates.getX();
         int y = coordinates.getY();
 
-        for (int i = x - maxRange; i <= x + maxRange; i++) {
-            for (int j = y - maxRange; j <= y + maxRange; j++) {
-                double distance = Geometry.findEuclideanDistance(x, y, i, j);
+        for (int i = x - maxRange; i <= x + maxRange && i <= UIController.ARENA_WIDTH; i++) {
+            if (i < 0) continue;
 
+            for (int j = y - maxRange; j <= y + maxRange && j <= UIController.ARENA_HEIGHT; j++) {
+                if (j < 0) continue;
+
+                double distance = Geometry.findEuclideanDistance(x, y, i, j);
                 if (minRange < distance && distance <= maxRange) result.add(new Coordinates(i, j));
             }
         }
