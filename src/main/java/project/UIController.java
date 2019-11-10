@@ -71,7 +71,7 @@ public class UIController {
     public static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
     public static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
-    static enum modes {normal, simulate, play};
+    static enum modes {normal, simulate, play, paused, end};
     static modes mode = modes.normal;
 
     private Arena arena;
@@ -87,7 +87,50 @@ public class UIController {
      */
     @FXML
     private void play() {
-        mode = modes.play;
+        run(modes.play);
+    }
+
+    /**
+     * Simulate the game. Build towers are not allowed.
+     */
+    @FXML
+    private void simulate() {
+        run(modes.simulate);
+    }
+
+    /**
+     * Pause the game.
+     */
+    @FXML
+    private void pause() {
+        if (timeline != null) {
+            if (this.mode == modes.simulate) {
+                buttonSimulate.setDisable(false);
+            } else if (this.mode == modes.play) {
+                buttonPlay.setDisable(false);
+            }
+            this.mode = modes.paused;
+            timeline.pause();
+        }
+    }
+
+    /**
+     * Save the game
+     */
+    @FXML
+    private void save() {
+
+    }
+
+    /**
+     * Run the game.
+     * @param mode specify the mode of the game.
+     */
+    private void run(modes mode) {
+        if (this.mode == modes.end)
+            resetGame();
+
+        this.mode = mode;
         disableGameButton();
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> {
             nextFrame();
@@ -97,17 +140,11 @@ public class UIController {
     }
 
     /**
-     * Simulate the game. Build towers are not allowed.
+     * Reset the game.
      */
-    @FXML
-    private void simulate() {
-        mode = modes.simulate;
-        disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> {
-            nextFrame();
-        }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+    private void resetGame() {
+        paneArena = new AnchorPane();
+        createArena();
     }
 
     /**
@@ -216,14 +253,14 @@ public class UIController {
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
-                    if(mode != modes.simulate) {
+                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                     }
                     e.consume();
                 });
 
             	target.setOnDragEntered(e -> { // grids[y][x]
-                    if(mode != modes.simulate) {
+                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         Object source = e.getGestureSource();
                         String type = null;
                         if (source.equals(labelBasicTower)) {
@@ -250,7 +287,7 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    if (mode != modes.simulate) {
+            	    if (mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         Image img = null;
                         String type = null;
                         Object source = e.getGestureSource();

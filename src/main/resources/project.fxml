@@ -62,6 +62,8 @@
                      </padding>
                   </Label>
                   <Label fx:id="remainingResources" layoutX="17.0" layoutY="381.0" text="Money: " />
+                  <Button fx:id="buttonPause" layoutX="6.0" layoutY="151.0" mnemonicParsing="false" onAction="#pause" text="Pause" />
+                  <Button fx:id="buttonSave" layoutX="6.0" layoutY="194.0" mnemonicParsing="false" onAction="#save" text="Save" />
                </children>
                <padding>
                   <Insets left="10.0" />
