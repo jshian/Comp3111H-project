@@ -114,6 +114,7 @@ public final class Arena {
      * @param obj The object to add.
      */
     public void addObject(@NonNull ExistsInArena obj) {
+        paneArena.getChildren().add(obj.getImageView());
         arenaObjectStorage.processAddObject(obj);
 
         if (obj instanceof Tower) {
@@ -444,11 +445,8 @@ public final class Arena {
     public void createProjectile(@NonNull Tower t)
     {
         Projectile p = t.generateProjectile();
-        if (p != null) {
-            paneArena.getChildren().add(p.getImageView());
-            addObject(p);
-            arenaObjectStorage.getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
-        }
+
+        if (p != null) addObject(p);
     }
 
     /**
@@ -493,7 +491,6 @@ public final class Arena {
         if (m == null)
             return null;
             
-        paneArena.getChildren().add(iv);
         addObject(m);
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
 
