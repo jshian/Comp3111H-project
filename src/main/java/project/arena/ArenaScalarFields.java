@@ -200,7 +200,7 @@ class ArenaScalarFields {
      * @return The distance to reach the end-zone from the pixel, in number of pixels traversed.
      */
     int getDistanceToEndZone(@NonNull Coordinates coordinates) {
-        return distanceToEndZone[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
+        return distanceToEndZone[coordinates.getX()][coordinates.getY()];
     }
 
     /**
