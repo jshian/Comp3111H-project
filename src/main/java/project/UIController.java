@@ -413,7 +413,6 @@ public class UIController {
                     paneArena.getChildren().remove(vb);
                 });
                 destroyBtn.setOnAction(e2 -> {
-                    paneArena.getChildren().remove(vb);
                     arena.removeObject(t);
                 });
                 Node[] ns = {vb, upgradeBtn, destroyBtn};
