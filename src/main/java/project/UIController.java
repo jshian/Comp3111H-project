@@ -128,7 +128,7 @@ public class UIController {
 
         this.mode = mode;
         disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.02), e -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
             nextFrame();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -334,87 +334,114 @@ public class UIController {
      */
     private void setTowerEvent(Tower t) {
         Coordinates center = Grid.findGridCenter(new Coordinates(t.getX(), t.getY()));
-        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
 
         ImageView iv = t.getImageView();
 
         iv.setOnMouseEntered(e -> {
-            // display shooting range
-            towerCircle = new Circle();
-            towerCircle.setCenterX(center.getX());
-            towerCircle.setCenterY(center.getY());
-            // set StrokeWidth to simulate a ring (for catapult).
-            double avgOfRangeAndLimit = (t.getMaxShootingRange() + t.getMinShootingRange()) / 2;
-            towerCircle.setRadius(avgOfRangeAndLimit);
-            towerCircle.setFill(Color.TRANSPARENT);
-            towerCircle.setStrokeWidth(t.getMaxShootingRange() - t.getMinShootingRange());
-            towerCircle.setStroke(Color.rgb(0,101,255,0.4));
-            paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), towerCircle);
-
-            // display tower information
-            towerLabel = new Label(t.getInformation());
-            towerLabel.setAlignment(Pos.CENTER);
-            towerLabel.setMinWidth(GRID_WIDTH * 3);
-            towerLabel.setMinHeight(GRID_HEIGHT * 2);
-            double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
-            double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
-            towerLabel.setLayoutX(positionX);
-            towerLabel.setLayoutY(positionY);
-            towerLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
-            towerLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
-            paneArena.getChildren().add(towerLabel);
+            drawTowerCircle(center, t);
+            displayTowerInfo(center, t);
         });
         iv.setOnMouseExited(e -> {
-            // remove info & shooting range
             paneArena.getChildren().removeAll(towerCircle, towerLabel);
         });
 
         iv.setOnMouseClicked(e -> {
-            if (paneArena.getChildren().contains(vb)) {
-                paneArena.getChildren().remove(vb);
-            }
-
             if (e.getButton() == MouseButton.PRIMARY) {
-                vb = new VBox(15);
-                vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
-                vb.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
-                vb.setAlignment(Pos.CENTER);
-                vb.setMinWidth(GRID_WIDTH * 2);
-                vb.setMinHeight(GRID_HEIGHT * 2);
-                double positionX = (coor.getX() > paneArena.getWidth()/2) ? towerLabel.getLayoutX()-GRID_WIDTH*2 : towerLabel.getLayoutX()+towerLabel.getWidth();
-                double positionY = (coor.getY() > paneArena.getWidth()/2) ? coor.getY()-GRID_HEIGHT*2 : coor.getY()+GRID_HEIGHT;
-                vb.setLayoutX(positionX);
-                vb.setLayoutY(positionY);
-                Button upgradeBtn = new Button("upgrade");
-                Button destroyBtn = new Button("destroy");
-                vb.getChildren().addAll(upgradeBtn, destroyBtn);
-
-                upgradeBtn.setOnAction(e2 -> {
-                    String type;
-                    if (t instanceof BasicTower) {
-                        type = "Basic Tower";
-                    } else if (t instanceof IceTower) {
-                        type = "Ice Tower";
-                    } else if(t instanceof Catapult) {
-                        type = "Catapult";
-                    } else {
-                        type = "Laser Tower";
-                    }
-                    if(arena.upgradeTower(t)) {
-                        System.out.println(String.format("%s is being upgraded.", type));
-                    } else {
-                        System.out.println(String.format("not enough resource to upgrade %s.", type));
-                    }
-                    paneArena.getChildren().remove(vb);
-                });
-                destroyBtn.setOnAction(e2 -> {
-                    arena.removeObject(t);
-                });
-
-                paneArena.getChildren().add(vb);
+                showTowerVBox(center, t);
             }
         });
 
+    }
+
+    /**
+     * Draw circle to show the shooting range of tower.
+     * @param center center coordinate of tower.
+     * @param t the tower that need to show shooting range.
+     */
+    private void drawTowerCircle(Coordinates center, Tower t) {
+        ImageView iv = t.getImageView();
+        // display shooting range
+        towerCircle = new Circle();
+        towerCircle.setCenterX(center.getX());
+        towerCircle.setCenterY(center.getY());
+        // set StrokeWidth to simulate a ring (for catapult).
+        double avgOfRangeAndLimit = (t.getMaxShootingRange() + t.getMinShootingRange()) / 2;
+        towerCircle.setRadius(avgOfRangeAndLimit);
+        towerCircle.setFill(Color.TRANSPARENT);
+        towerCircle.setStrokeWidth(t.getMaxShootingRange() - t.getMinShootingRange());
+        towerCircle.setStroke(Color.rgb(0,101,255,0.4));
+        paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), towerCircle);
+    }
+
+    /**
+     * Display tower information.
+     * @param center center coordinate of tower.
+     * @param t the tower that need to display information.
+     */
+    private void displayTowerInfo(Coordinates center, Tower t) {
+        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
+
+        towerLabel = new Label(t.getInformation());
+        towerLabel.setAlignment(Pos.CENTER);
+        towerLabel.setMinWidth(GRID_WIDTH * 3);
+        towerLabel.setMinHeight(GRID_HEIGHT * 2);
+        double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
+        double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
+        towerLabel.setLayoutX(positionX);
+        towerLabel.setLayoutY(positionY);
+        towerLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
+        towerLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+        paneArena.getChildren().add(towerLabel);
+    }
+
+    /**
+     * Display the VBox that perform upgrade/destroy of a tower.
+     * @param center center coordinate of tower.
+     * @param t the tower that need to upgrade/destroy.
+     */
+    private void showTowerVBox(Coordinates center, Tower t) {
+        if (paneArena.getChildren().contains(vb)) {
+            paneArena.getChildren().remove(vb);
+        }
+        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
+
+        vb = new VBox(15);
+        vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
+        vb.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+        vb.setAlignment(Pos.CENTER);
+        vb.setMinWidth(GRID_WIDTH * 2);
+        vb.setMinHeight(GRID_HEIGHT * 2);
+        double positionX = (coor.getX() > paneArena.getWidth()/2) ? towerLabel.getLayoutX()-GRID_WIDTH*2 : towerLabel.getLayoutX()+towerLabel.getWidth();
+        double positionY = (coor.getY() > paneArena.getWidth()/2) ? coor.getY()-GRID_HEIGHT*2 : coor.getY()+GRID_HEIGHT;
+        vb.setLayoutX(positionX);
+        vb.setLayoutY(positionY);
+        Button upgradeBtn = new Button("upgrade");
+        Button destroyBtn = new Button("destroy");
+        vb.getChildren().addAll(upgradeBtn, destroyBtn);
+
+        upgradeBtn.setOnAction(e2 -> {
+            String type;
+            if (t instanceof BasicTower) {
+                type = "Basic Tower";
+            } else if (t instanceof IceTower) {
+                type = "Ice Tower";
+            } else if(t instanceof Catapult) {
+                type = "Catapult";
+            } else {
+                type = "Laser Tower";
+            }
+            if(arena.upgradeTower(t)) {
+                System.out.println(String.format("%s is being upgraded.", type));
+            } else {
+                System.out.println(String.format("not enough resource to upgrade %s.", type));
+            }
+            paneArena.getChildren().remove(vb);
+        });
+        destroyBtn.setOnAction(e2 -> {
+            arena.removeObject(t);
+        });
+
+        paneArena.getChildren().add(vb);
     }
 
     /**
