@@ -19,7 +19,7 @@ public class Penguin extends Monster {
     public Penguin(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
         this.health = 7.5 * difficulty;
-        this.speed = 0.75 + 0.0075 * difficulty;
+        this.speed = 3 + 0.3 * difficulty;
     }
 
     /**

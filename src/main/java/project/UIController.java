@@ -71,7 +71,7 @@ public class UIController {
     public static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
     public static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
-    static enum modes {normal, simulate, play};
+    static enum modes {normal, simulate, play, paused, end};
     static modes mode = modes.normal;
 
     private Arena arena;
@@ -87,13 +87,7 @@ public class UIController {
      */
     @FXML
     private void play() {
-        mode = modes.play;
-        disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> {
-            nextFrame();
-        }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        run(modes.play);
     }
 
     /**
@@ -101,13 +95,57 @@ public class UIController {
      */
     @FXML
     private void simulate() {
-        mode = modes.simulate;
+        run(modes.simulate);
+    }
+
+    /**
+     * Pause the game.
+     */
+    @FXML
+    private void pause() {
+        if (timeline != null) {
+            if (this.mode == modes.simulate) {
+                buttonSimulate.setDisable(false);
+            } else if (this.mode == modes.play) {
+                buttonPlay.setDisable(false);
+            }
+            this.mode = modes.paused;
+            timeline.pause();
+        }
+    }
+
+    /**
+     * Save the game
+     */
+    @FXML
+    private void save() {
+
+    }
+
+    /**
+     * Run the game.
+     * @param mode specify the mode of the game.
+     */
+    private void run(modes mode) {
+        if (this.mode == modes.end)
+            resetGame();
+
+        this.mode = mode;
         disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.25), e -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.02), e -> {
             nextFrame();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+    }
+
+    /**
+     * Reset the game.
+     */
+    private void resetGame() {
+        paneArena = new AnchorPane();
+        createArena();
+        arena = new Arena(remainingResources, paneArena);
     }
 
     /**
@@ -178,11 +216,17 @@ public class UIController {
      */
     @FXML
     private void nextFrame() {
-        boolean gameOver = arena.nextFrame();
-        if (gameOver && timeline != null) {
-            mode = modes.normal;
-            enableGameButton();
-            timeline.stop();
+        if (this.mode != modes.end) {
+            boolean gameOver = arena.nextFrame();
+            if (gameOver) {
+                mode = modes.end;
+                enableGameButton();
+                showAlert("Gameover","Gameover");
+                if (timeline != null) {
+                    System.out.println("fk");
+                    timeline.stop();
+                }
+            }
         }
     }
 
@@ -214,14 +258,14 @@ public class UIController {
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
-                    if(mode != modes.simulate) {
+                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                     }
                     e.consume();
                 });
 
             	target.setOnDragEntered(e -> { // grids[y][x]
-                    if(mode != modes.simulate) {
+                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         Object source = e.getGestureSource();
                         String type = null;
                         if (source.equals(labelBasicTower)) {
@@ -248,7 +292,7 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    if (mode != modes.simulate) {
+            	    if (mode != modes.simulate && mode != modes.paused && mode != modes.end) {
                         Image img = null;
                         String type = null;
                         Object source = e.getGestureSource();
@@ -397,7 +441,7 @@ public class UIController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
-        alert.showAndWait();
+        alert.show();
     }
 }
 
