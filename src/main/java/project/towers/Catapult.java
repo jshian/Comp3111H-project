@@ -154,6 +154,7 @@ public class Catapult extends Tower {
                     if (canShoot(c) && Math.pow(radius,2)>=Math.pow(i-m.getX(),2)+Math.pow(j-m.getY(),2)){//damage range in current point
                         LinkedList<ExistsInArena> monInCircle = arena.findObjectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
                         if(count < monInCircle.size()){
+                            selectList.clear();
                             count=monInCircle.size();
                             target = c;
                             selectList.addAll(monInCircle);
