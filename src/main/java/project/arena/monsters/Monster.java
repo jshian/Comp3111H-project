@@ -86,7 +86,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * A linked list of references to each status effect that is active against the monster.
      */
     @ElementCollection
-    protected LinkedList<StatusEffect> statusEffects;
+    protected LinkedList<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
      * Constructor for the Monster class.
@@ -102,8 +102,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.coordinates = new Coordinates(start);
         this.destination = new Coordinates(destination);
         this.coordinates.bindByImage(this.imageView);
-
-        this.statusEffects = new LinkedList<>();
     }
 
     /**
@@ -121,7 +119,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.destination = new Coordinates(other.destination);
         this.coordinates.bindByImage(this.imageView);
 
-        this.statusEffects = new LinkedList<>();
         for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
 
