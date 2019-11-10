@@ -217,7 +217,7 @@ public class UIController {
     private void nextFrame() {
         boolean gameOver = arena.nextFrame();
         if (gameOver) {
-            mode = modes.normal;
+            mode = modes.end;
             enableGameButton();
             showAlert("Gameover","Gameover");
             if (timeline != null)
