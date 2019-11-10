@@ -726,7 +726,7 @@ public final class Arena {
     }
 
     /**
-     * tower attack monsters.
+     * process next frame for all objects in the arena.
      */
     private void nextFrameForAllObjects() {
         ArrayList<ExistsInArena> objectsToBeRemoved = new ArrayList<>();
@@ -774,26 +774,24 @@ public final class Arena {
     public boolean nextFrame() {
         shadowArena = new Arena(this);
 
-        // Now update currentState
-        // TODO:
-        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
+        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0) {
+            System.out.println("Gameover");
             return true;
+        }
 
+
+        // Now update currentState
         remove();
         nextFrameForAllObjects();
-
-
         if (currentFrame % WAVE_INTERVAL == 0)
             spawnWave();
-        else // this is for testing only
-            if (getMonsters().peek() != null)
-                moveMonster(getMonsters().peek(), Grid.findGridCenter(10, 10));
-
         currentFrame++;
 
-        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0)
-            return true;
 
+        if (findObjectsInGrid(END_COORDINATES, EnumSet.of(TypeFilter.Monster)).size() > 0) {
+            System.out.println("Gameover");
+            return true;
+        }
         return false;
     }
 

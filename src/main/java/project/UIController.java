@@ -179,10 +179,12 @@ public class UIController {
     @FXML
     private void nextFrame() {
         boolean gameOver = arena.nextFrame();
-        if (gameOver && timeline != null) {
+        if (gameOver) {
             mode = modes.normal;
             enableGameButton();
-            timeline.stop();
+            showAlert("Gameover", "Gameover");
+            if (timeline != null)
+                timeline.stop();
         }
     }
 
