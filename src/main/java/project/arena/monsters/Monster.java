@@ -101,6 +101,11 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected int resources = 0;
 
     /**
+     *
+     */
+    protected Label hpLabel = new Label();
+
+    /**
      * A linked list of references to each status effect that is active against the monster.
      */
     @ElementCollection
@@ -238,7 +243,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * show monster hp when mouse is hover over the monster.
      */
     private void hoverMonsterEvent(Arena arena) {
-        Label hpLabel = new Label();
         hpLabel.textProperty().bind(Bindings.format("hp: %.2f", health));
         hpLabel.setAlignment(Pos.CENTER);
 
@@ -249,7 +253,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         });
 
         this.imageView.setOnMouseExited(e -> {
-            arena.getPane().getChildren().remove(hpLabel);
+            if (arena.getPane().getChildren().contains(hpLabel))
+                arena.getPane().getChildren().remove(hpLabel);
         });
     }
+
+    public Label getHpLabel() { return hpLabel; }
 }
