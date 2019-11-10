@@ -4,11 +4,13 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import org.apache.bcel.verifier.statics.DOUBLE_Upper;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.Geometry;
 import project.Player;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.ExistsInArena;
@@ -102,7 +104,7 @@ public class Catapult extends Tower {
      */
     @Override
     public boolean canShoot(Monster monster){
-        double dis = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
+        double dis = Geometry.findEuclideanDistanceToPoint(getX(), getY(), monster.getX(), monster.getY());
         return dis <= maxShootingRange && dis >= minShootingRange;
     }
 
@@ -134,16 +136,19 @@ public class Catapult extends Tower {
      */
     public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<ExistsInArena> selectList){
         LinkedList<Monster> nearestMon=new LinkedList<>();
-        double nearest=0;
+        double nearest= Double.MAX_VALUE;
         //find nearest to destination monster in shooting range
         for (Monster m:monsters) {
-            if(canShoot(m)){
-                nearest=m.distanceToDestination();
+            double distance = Math.sqrt(Math.pow((getX()-m.getX()),2)+Math.pow((getY()-m.getY()),2));
+            if(canShoot(m)&&nearest>distance){
+                nearest = distance;
+                //nearest=m.distanceToDestination();
             }
         }
         //find all monster have the nearest distance and can be shoot
         for (Monster m :monsters) {
-            if(m.distanceToDestination()==nearest && canShoot(m))
+            double distance = Math.sqrt(Math.pow((getX()-m.getX()),2)+Math.pow((getY()-m.getY()),2));
+            if(distance==nearest && canShoot(m))
                 nearestMon.add(m);
         }
         //find the target coordinate to attack
@@ -154,10 +159,18 @@ public class Catapult extends Tower {
 
             for (int i = m.getX()-radius; i < m.getX()+radius; i++) {//square width
                 for (int j = m.getY()-radius; j < m.getY()+radius; j++) {//square length
+                    if (i < 0 || i > UIController.ARENA_WIDTH) continue;
+                    if (j < 0 || j > UIController.ARENA_HEIGHT) continue;
                     Coordinates c = new Coordinates(i,j);//tested coordinate
-                    if (canShoot(c) && Math.pow(radius,2)>=Math.pow(i-m.getX(),2)+Math.pow(j-m.getY(),2)){//damage range in current point
-                        LinkedList<ExistsInArena> monInCircle = arena.findObjectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
+                    if (canShoot(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//damage range in current point
+                        LinkedList<ExistsInArena> monInCircle = new LinkedList<>();//arena.findObjectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
+                        for (Monster testMon:arena.getMonsters()){
+                            if(Geometry.isInCircle(testMon.getX(),testMon.getY(),i,j,radius)){
+                                monInCircle.add(testMon);
+                            }
+                        }
                         if(count < monInCircle.size()){
+                            selectList.clear();
                             count=monInCircle.size();
                             target = c;
                             selectList.addAll(monInCircle);

@@ -176,6 +176,67 @@ public class Grid {
     }
 
     /**
+     * Finds the x-coordinate of the left edge of the grid which encloses the specified set of coordinates.
+     * @param coordinates The set of coordinates.
+     * @return The x-coordinate of the left edge of the grid which encloses the specified set of coordinates.
+     */
+    static int findGridLeftX(@NonNull Coordinates coordinates) {
+        return findGridLeftX(findGridXPos(coordinates), findGridYPos(coordinates));
+    }
+
+    /**
+     * Finds the x-coordinate of the left edge of the specified grid.
+     * @param xPos The x-position of the grid, where 0 is left-most, increasing towards the right.
+     * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
+     * @return The x-coordinate of the left edge of the specified grid.
+     */
+    static int findGridLeftX(int xPos, int yPos) {
+        checkGrid(xPos, yPos);
+
+        return xPos * UIController.GRID_WIDTH;
+    }
+
+    /**
+     * Finds the y-coordinate of the top edge of the grid which encloses the specified set of coordinates.
+     * @param coordinates The set of coordinates.
+     * @return The y-coordinate of the top edge of the grid which encloses the specified set of coordinates.
+     */
+    static int findGridTopY(@NonNull Coordinates coordinates) {
+        return findGridTopY(findGridXPos(coordinates), findGridYPos(coordinates));
+    }
+
+    /**
+     * Finds the y-coordinate of the top edge of the specified grid.
+     * @param xPos The x-position of the grid, where 0 is left-most, increasing towards the right.
+     * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
+     * @return The y-coordinate of the top edge of the specified grid.
+     */
+    static int findGridTopY(int xPos, int yPos) {
+        checkGrid(xPos, yPos);
+
+        return yPos * UIController.GRID_HEIGHT;
+    }
+
+    /**
+     * Finds the coordinates of the top-left corner of the grid which encloses the specified set of coordinates.
+     * @param coordinates The set of coordinates.
+     * @return The coordinates of the top-left corner of the grid which encloses the specified set of coordinates.
+     */
+    public static Coordinates findGridTopLeft(@NonNull Coordinates coordinates) {
+        return findGridTopLeft(findGridXPos(coordinates), findGridYPos(coordinates));
+    }
+
+    /**
+     * Finds the coordinates of the top-left corner of the specified grid.
+     * @param xPos The x-position of the grid, where 0 is left-most, increasing towards the right.
+     * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
+     * @return The coordinates of the top-left corner of the specified grid.
+     */
+    public static Coordinates findGridTopLeft(int xPos, int yPos) {
+        return new Coordinates(findGridLeftX(xPos, yPos), findGridTopY(xPos, yPos));
+    }
+
+    /**
      * Finds the grids within a taxicab distance of one from the grid from the grid containing the specified pixel.
      * @param coordinates The coordinates of the pixel.
      * @return A linked list containing a reference to the {x, y} position of each taxicab neighbour.

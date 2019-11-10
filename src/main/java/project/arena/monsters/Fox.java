@@ -34,15 +34,9 @@ public class Fox extends Monster {
         return new Fox(this);
     }
 
-    // Inferface implementation
-    @Override
-    public void nextFrame() {
-        Coordinates nextCoordinates = arena.findNextTowardsEnd_prioritizeAttack(coordinates);
-        if (nextCoordinates != null) coordinates.update(nextCoordinates);
-    }
-
     @Override
     public String getClassName() { return "Fox"; }
 
-
+    @Override
+    public Coordinates findNextCoordinates() { return arena.findNextTowardsEnd_prioritizeAttack(coordinates); }
 }

@@ -123,7 +123,7 @@ public abstract class Projectile implements MovesInArena {
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public double getSpeed() { return speed; }
     public void nextFrame() {
-        double distance = Geometry.findEuclideanDistance(getX(), getY(), target.getX(), target.getY());
+        double distance = Geometry.findEuclideanDistanceToPoint(getX(), getY(), target.getX(), target.getY());
 
         if (distance <= speed)
             coordinates.update(target.getX(), target.getY());
