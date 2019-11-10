@@ -19,7 +19,7 @@ public class Unicorn extends Monster {
     public Unicorn(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
         this.health = 10 * difficulty;
-        this.speed = 0.5 + 0.005 * difficulty;
+        this.speed = 2 + 0.2 * difficulty;
     }
 
     /**
