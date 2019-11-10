@@ -69,7 +69,7 @@ public class LaserTower extends Tower{
      * @param player The player who build the tower.
      * @return true if player has enough resources to attack, false otherwise.
      */
-    public boolean consumeResource(@NonNull Player player){
+    private boolean consumeResource(@NonNull Player player){
         if (player.hasResources(consume)) {
             player.spendResources(consume);
             return true;
@@ -85,12 +85,14 @@ public class LaserTower extends Tower{
     @Override
     public boolean upgrade(@NonNull Player player){
         if(player.hasResources(upgradeCost)){
+            System.out.println("Laser Tower is being upgraded.");
             player.spendResources(upgradeCost);
             if(this.attackPower+5 >= maxAttackPower)
                 this.attackPower = maxAttackPower;
             else this.attackPower += 5;
             return true;
         }
+        System.out.println("not enough resource to upgrade Laser Tower.");
         return false;
     }
 
@@ -103,6 +105,7 @@ public class LaserTower extends Tower{
         if(!isReload()) {
             for (Monster m : arena.getMonsters()) {
                 if (canShoot(m)) {
+                    if (!consumeResource(arena.getPlayer())) return null;
                     hasAttack = true;
                     this.counter = this.reload;
                     return new LaserProjectile(arena, this.coordinates, new Coordinates(m.getX(), m.getY()), attackPower);

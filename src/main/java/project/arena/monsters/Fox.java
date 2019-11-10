@@ -20,7 +20,7 @@ public class Fox extends Monster {
         super(arena, start, destination, imageView, difficulty);
         this.maxHealth = 5 * difficulty;
         this.maxSpeed = 5 + 0.5 * difficulty;
-        this.health = this.maxHealth;
+        this.health.set(this.maxHealth);
         this.speed = this.maxSpeed;
         this.resources = (int) (difficulty * 1.5);
     }

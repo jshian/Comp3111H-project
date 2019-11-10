@@ -20,7 +20,7 @@ public class Penguin extends Monster {
         super(arena, start, destination, imageView, difficulty);
         this.maxHealth = 7.5 * difficulty;
         this.maxSpeed = 3 + 0.3 * difficulty;
-        this.health = this.maxHealth;
+        this.health.set(this.maxHealth);
         this.speed = this.maxSpeed;
         this.resources = (int) (difficulty * 1.25);
     }
@@ -41,7 +41,7 @@ public class Penguin extends Monster {
     @Override
     public void nextFrame() {
         super.nextFrame();
-        this.health += 0.1;
+        this.health.set(getHealth() + 0.1);
     }
     
     @Override
