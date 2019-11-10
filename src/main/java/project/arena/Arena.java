@@ -126,6 +126,7 @@ public final class Arena {
      * @param obj The object to remove.
      */
     public void removeObject(@NonNull ExistsInArena obj) {
+        paneArena.getChildren().remove(obj.getImageView());
         arenaObjectStorage.processRemoveObject(obj);
 
         if (obj instanceof Tower) {
@@ -437,16 +438,6 @@ public final class Arena {
     }
 
     /**
-     * Destroys the specified Tower.
-     * @param tower The Tower to be destroyed.
-     */
-    public void destroyTower(@NonNull Tower tower)
-    {
-        paneArena.getChildren().remove(tower.getImageView());
-        removeObject(tower);
-    }
-
-    /**
      * Creates a Projectile at a specified pixel.
      * @param t the tower which attack the monster by creating projectile.
      */
@@ -458,26 +449,6 @@ public final class Arena {
             addObject(p);
             arenaObjectStorage.getGrid(new Coordinates(p.getX(), p.getY())).addObject(p);
         }
-    }
-
-    /**
-     * Removes the specified Projectile from the arena.
-     * @param projectile The Projectile to be removed.
-     */
-    public void removeProjectile(@NonNull Projectile projectile)
-    {
-        paneArena.getChildren().remove(projectile.getImageView());
-        removeObject(projectile);
-    }
-
-    /**
-     * Moves the specified Projectile to the specified location.
-     * Note: Please instead use {@link #objectNextFrame(ExistsInArena)} to update it to the next frame.
-     * @param projectile The Projectile to be moved.
-     * @param coordinates The coordinates of the new location.
-     */
-    public void moveProjectile(@NonNull Projectile projectile, @NonNull Coordinates coordinates) {
-        moveObject(projectile, coordinates);
     }
 
     /**
@@ -527,26 +498,6 @@ public final class Arena {
         System.out.println(String.format("%s:%f generated", type, m.getHealth()));
 
         return m;
-    }
-
-    /**
-     * Removes the specified Monster from the arena.
-     * @param monster The Monster to be removed.
-     */
-    public void removeMonster(@NonNull Monster monster)
-    {
-        paneArena.getChildren().remove(monster.getImageView());
-        removeObject(monster);
-    }
-
-    /**
-     * Moves the specified Monster to the specified location.
-     * Note: Please instead use {@link #objectNextFrame(ExistsInArena)} to update it to the next frame.
-     * @param monster The Monster to be moved.
-     * @param coordinates The coordinates of the new location.
-     */
-    public void moveMonster(@NonNull Monster monster, @NonNull Coordinates coordinates) {
-        moveObject(monster, coordinates);
     }
 
     /**
@@ -656,9 +607,9 @@ public final class Arena {
         // remove objects
         for (ExistsInArena e : objectsToBeRemoved) {
             if (e instanceof Projectile) {
-                removeProjectile((Projectile) e);
+                removeObject(e);
             } else if (e instanceof Monster) { // turn dead monster to explosion
-                removeMonster((Monster) e);
+                removeObject(e);
                 Coordinates c = new Coordinates(e.getX(), e.getY());
                 ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
                         , UIController.GRID_WIDTH, true, true));
