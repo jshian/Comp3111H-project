@@ -96,7 +96,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param imageView The ImageView that displays the monster.
      * @param difficulty The difficulty of the monster.
      */
-    public Monster(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+    public Monster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         this.imageView = imageView;
         this.arena = arena;
         this.coordinates = new Coordinates(start);
@@ -110,7 +110,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Copy constructor for the Monster class. Performs deep copy.
      * @param other The other object to copy form.
      */
-    public Monster(Monster other) {
+    public Monster(@NonNull Monster other) {
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
         this.coordinates = new Coordinates(other.coordinates);

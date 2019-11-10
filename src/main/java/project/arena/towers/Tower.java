@@ -1,6 +1,5 @@
 package project.arena.towers;
 
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -119,7 +118,7 @@ public abstract class Tower implements ExistsInArena {
      * @param coordinates The coordinates of the tower.
      * @param imageView The image view of the tower.
      */
-    public Tower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public Tower(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull ImageView imageView) {
         this.arena = arena;
         this.coordinates = coordinates;
         this.imageView = imageView;
@@ -130,7 +129,7 @@ public abstract class Tower implements ExistsInArena {
      * Copy constructor for the Tower class. Performs deep copy.
      * @param other The other object to copy form.
      */
-    public Tower(Tower other) {
+    public Tower(@NonNull Tower other) {
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
         this.coordinates = new Coordinates(other.coordinates);
@@ -161,7 +160,6 @@ public abstract class Tower implements ExistsInArena {
     public void nextFrame() {
         if (hasAttack) {
             if (this.counter == 0) {
-                this.counter = this.reload;
                 this.hasAttack = false;
             } else {
                 this.counter--;

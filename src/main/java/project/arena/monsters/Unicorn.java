@@ -16,7 +16,7 @@ public class Unicorn extends Monster {
     /**
      * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
      */
-    public Unicorn(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+    public Unicorn(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
         this.health = 10 * difficulty;
         this.speed = 0.5 + 0.005 * difficulty;
@@ -25,7 +25,7 @@ public class Unicorn extends Monster {
     /**
      * @see Monster#Monster(Monster)
      */
-    public Unicorn(Unicorn other) {
+    public Unicorn(@NonNull Unicorn other) {
         super(other);
     }
     

@@ -1,18 +1,14 @@
 package project.arena.towers;
 
-import java.util.PriorityQueue;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Line;
-import project.Geometry;
 import project.Player;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;
-
+import project.projectiles.LaserProjectile;
 
 /**
  * LaserTower consume resources to attack monster.
@@ -24,20 +20,13 @@ public class LaserTower extends Tower{
      */
     private int consume;
 
-
-    /**
-     * The laser display on the arena.
-     */
-    private Line laserLine;
-
-
     /**
      * Constructor of laser tower.
      * The max shooting range of laser tower refers to the range that will start attack but not the damage range.
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of laser tower.
      */
-    public LaserTower(Arena arena, Coordinates coordinates){
+    public LaserTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 30;
         this.buildingCost = 20;
@@ -53,7 +42,7 @@ public class LaserTower extends Tower{
      * @param coordinates The coordinates of laser tower.
      * @param imageView The image view of laser tower.
      */
-    public LaserTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public LaserTower(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 30;
         this.buildingCost = 20;
@@ -68,8 +57,6 @@ public class LaserTower extends Tower{
     public LaserTower(@NonNull LaserTower other){
         super(other);
         this.consume = other.consume;
-        this.laserLine = new Line(other.laserLine.getStartX(),other.laserLine.getStartY(),
-                other.laserLine.getEndX(),other.laserLine.getEndY());
     }
 
     @Override
@@ -114,38 +101,16 @@ public class LaserTower extends Tower{
     @Override
     public Projectile generateProjectile(){
         if(!isReload()) {
-            Monster monster = null;
             for (Monster m : arena.getMonsters()) {
-                if (canShoot(m))
-                    monster = m;
-            }
-            if (monster == null) {
-                this.laserLine = null;
-                return null;
-            }
-            hasAttack = true;
-            laserLine = arena.drawRay(this, monster);
-
-            PriorityQueue<Monster> monsters = arena.getMonsters();
-            for (Monster m : monsters) {
-                if (Geometry.isInRay(m.getX(),m.getY(), getX(),getY(),monster.getX(),monster.getY(), 3)) {
-                    m.takeDamage(attackPower);
-                    System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
-                            , m.getClassName(), m.getX(), m.getY()));
+                if (canShoot(m)) {
+                    hasAttack = true;
+                    this.counter = this.reload;
+                    return new LaserProjectile(arena, this.coordinates, new Coordinates(m.getX(), m.getY()), attackPower);
                 }
             }
-        } else {
-            this.laserLine = null;
         }
         return null;
     }
-
-    /**
-     * Get the laserLine.
-     * @return get the laserLine
-     */
-    public Line getLaserLine() { return this.laserLine;}
-
 
     /**
      * Accesses the information of tower.

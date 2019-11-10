@@ -82,7 +82,7 @@ public abstract class Projectile implements MovesInArena {
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public Projectile(Arena arena,@NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int attackPower) {
+    public Projectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower) {
         this.arena = arena;
         this.coordinates = Grid.findGridCenter(coordinates);
         this.tower = Grid.findGridCenter(coordinates);
@@ -98,7 +98,7 @@ public abstract class Projectile implements MovesInArena {
      * Copy constructor for the Projectile class. Performs deep copy.
      * @param other The other object to copy form.
      */
-    public Projectile(Projectile other){
+    public Projectile(@NonNull Projectile other){
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = other.arena;
         this.coordinates = new Coordinates(other.coordinates);

@@ -20,14 +20,14 @@ public class BasicProjectile extends Projectile {
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public BasicProjectile(Arena arena, @NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int attackPower) {
+    public BasicProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower) {
         super(arena,coordinates,target,speed,attackPower);
     }
 
     /**
      * @see Projectile#Projectile(Projectile)
      */
-    public BasicProjectile(BasicProjectile other){
+    public BasicProjectile(@NonNull BasicProjectile other){
         super(other);
     }
 
@@ -49,6 +49,7 @@ public class BasicProjectile extends Projectile {
                             , target.getClassName(), target.getX(), target.getY()));
                 }
             }
+
         }
     }
 }

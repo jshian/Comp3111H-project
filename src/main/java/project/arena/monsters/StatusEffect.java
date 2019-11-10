@@ -52,7 +52,7 @@ public class StatusEffect {
      * Copy constructor for StatusEffect class.
      * @param other The other object to copy from.
      */
-    public StatusEffect(StatusEffect other) {
+    public StatusEffect(@NonNull StatusEffect other) {
         this.effectType = other.effectType;
         this.duration = other.duration;
     }

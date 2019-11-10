@@ -36,7 +36,7 @@ public class Catapult extends Tower {
      * @param arena The arena to attach the catapult to.
      * @param coordinates The coordinate of catapult.
      */
-    public Catapult(Arena arena,@NonNull Coordinates coordinates){
+    public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 25;
         this.buildingCost = 20;
@@ -54,7 +54,7 @@ public class Catapult extends Tower {
      * @param coordinates The coordinate of catapult.
      * @param imageView The image view of catapult.
      */
-    public Catapult(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
+    public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 25;
         this.buildingCost = 20;
@@ -69,7 +69,7 @@ public class Catapult extends Tower {
     /**
      * @see Tower#Tower(Tower)
      */
-    public Catapult(Catapult other){
+    public Catapult(@NonNull Catapult other){
         super(other);
     }
 
@@ -118,6 +118,7 @@ public class Catapult extends Tower {
             Coordinates coordinate = selectMonster(arena.getMonsters(),selectList);
             if (coordinate != null) {
                 hasAttack = true;
+                this.counter = this.reload;
                 return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower,damageRange);
             }
         }

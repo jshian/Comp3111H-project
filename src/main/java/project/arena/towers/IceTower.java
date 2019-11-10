@@ -1,7 +1,5 @@
 package project.arena.towers;
 
-import java.util.PriorityQueue;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -33,7 +31,7 @@ public class IceTower extends Tower {
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of ice tower.
      */
-    public IceTower(Arena arena,@NonNull Coordinates coordinates){
+    public IceTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 0;
         this.buildingCost = 15;
@@ -49,7 +47,7 @@ public class IceTower extends Tower {
      * @param coordinates The coordinates of ice tower.
      * @param imageView The image view of ice tower.
      */
-    public IceTower(Arena arena,@NonNull Coordinates coordinates, ImageView imageView) {
+    public IceTower(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 0;
         this.buildingCost = 15;
@@ -62,7 +60,7 @@ public class IceTower extends Tower {
     /**
      * @see Tower#Tower(Tower)
      */
-    public IceTower(IceTower other){
+    public IceTower(@NonNull IceTower other){
         super(other);
         this.slowDownTime = other.slowDownTime;
     }
@@ -92,10 +90,10 @@ public class IceTower extends Tower {
     @Override
     public Projectile generateProjectile(){
         if(!isReload()) {
-            PriorityQueue<Monster> monsters = arena.getMonsters();
-            for (Monster m : monsters) {
+            for (Monster m : arena.getMonsters()) {
                 if (canShoot(m)) {
                     this.hasAttack = true;
+                    this.counter = this.reload;
                     return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDownTime);
                 }
             }

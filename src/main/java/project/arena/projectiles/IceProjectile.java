@@ -30,7 +30,7 @@ public class IceProjectile extends Projectile {
      * @param speed The speed of the ice projectile.
      * @param slowDown The cold down time of the ice projectile.
      */
-    public IceProjectile(Arena arena, @NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int slowDown){
+    public IceProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int slowDown){
         super(arena,coordinates,target,speed,0);
         this.slowDownTime=slowDown;
     }
@@ -38,7 +38,7 @@ public class IceProjectile extends Projectile {
     /**
      * @see Projectile#Projectile(Projectile)
      */
-    public IceProjectile(IceProjectile other){
+    public IceProjectile(@NonNull IceProjectile other){
         super(other);
         this.slowDownTime = other.slowDownTime;
     }

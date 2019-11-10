@@ -25,7 +25,7 @@ public class CatapultProjectile extends Projectile {
      * @param speed The speed of the catapult projectile.
      * @param attackPower The attack power of the catapult projectile.
      */
-    public CatapultProjectile(Arena arena, @NonNull Coordinates coordinates,@NonNull Coordinates target, double speed, int attackPower, int damageRange){
+    public CatapultProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower, int damageRange){
         super(arena,coordinates,target,speed,attackPower);
         this.damageRange=damageRange;
     }
@@ -33,7 +33,7 @@ public class CatapultProjectile extends Projectile {
     /**
      * @see Projectile#Projectile(Projectile)
      */
-    public CatapultProjectile(CatapultProjectile other){
+    public CatapultProjectile(@NonNull CatapultProjectile other){
         super(other);
         this.damageRange = other.damageRange;
     }

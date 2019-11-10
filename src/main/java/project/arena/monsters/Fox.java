@@ -16,7 +16,7 @@ public class Fox extends Monster {
     /**
      * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
      */
-    public Fox(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+    public Fox(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
         this.health = 5 * difficulty;
         this.speed = 1 + 0.01 * difficulty;
@@ -25,7 +25,7 @@ public class Fox extends Monster {
     /**
      * @see Monster#Monster(Monster)
      */
-    public Fox(Fox other) {
+    public Fox(@NonNull Fox other) {
         super(other);
     }
     

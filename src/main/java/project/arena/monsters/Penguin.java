@@ -16,7 +16,7 @@ public class Penguin extends Monster {
     /**
      * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
      */
-    public Penguin(Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+    public Penguin(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
         this.health = 7.5 * difficulty;
         this.speed = 0.75 + 0.0075 * difficulty;
@@ -25,7 +25,7 @@ public class Penguin extends Monster {
     /**
      * @see Monster#Monster(Monster)
      */
-    public Penguin(Penguin other) {
+    public Penguin(@NonNull Penguin other) {
         super(other);
     }
     
