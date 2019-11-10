@@ -41,7 +41,7 @@ public class LaserProjectile extends Projectile{
         PriorityQueue<Monster> monsters = arena.getMonsters();
         for (Monster m : monsters) {
             if (Geometry.isInRay(m.getX(),m.getY(), tower.getX(),tower.getY(),target.getX(),target.getY(), 3)) {
-                m.takeDamage(m.getHealth() - this.attackPower);
+                m.takeDamage(this.attackPower);
                 System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
                         , m.getClassName(), m.getX(), m.getY()));
             }

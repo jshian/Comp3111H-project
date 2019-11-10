@@ -314,9 +314,9 @@ class ArenaObjectStorage {
     /**
      * Updates the object storage with respect to the updating of an object to the next frame.
      * @param obj The object to update.
-     * A linked list containing the objects that have been marked as pending removal.
+     * @return the object that has been marked as pending removal.
      */
-    LinkedList<ExistsInArena> processObjectNextFrame(@NonNull ExistsInArena obj) {
+    ExistsInArena processObjectNextFrame(@NonNull ExistsInArena obj) {
         Coordinates originalCoordinates = new Coordinates(obj.getX(), obj.getY());
         obj.nextFrame();
         Coordinates newCoordinates = new Coordinates(obj.getX(), obj.getY());
@@ -327,17 +327,18 @@ class ArenaObjectStorage {
         }
         
 
-        LinkedList<ExistsInArena> toRemove = new LinkedList<>();
         if (obj instanceof Tower) {
-            
+            arena.createProjectile((Tower)obj);
         } else if (obj instanceof Projectile) {
-
+            if (((Projectile)obj).hasReachedTarget()) {
+                return obj;
+            }
         } else if (obj instanceof Monster) {
             if (((Monster)obj).hasDied()) {
-                toRemove.add(obj);
+                return obj;
             }
         }
 
-        return toRemove;
+        return null;
     }
 }
