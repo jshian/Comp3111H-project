@@ -182,7 +182,7 @@ public class UIController {
         if (gameOver) {
             mode = modes.normal;
             enableGameButton();
-            showAlert("Gameover", "Gameover");
+            showAlert("Gameover","Gameover");
             if (timeline != null)
                 timeline.stop();
         }
@@ -399,7 +399,7 @@ public class UIController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
-        alert.showAndWait();
+        alert.show();
     }
 }
 
