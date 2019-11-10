@@ -10,9 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.MovesInArena;
@@ -62,7 +67,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @see #hasDied()
      */
     @NotNull
-    protected double health = 1;
+    protected SimpleDoubleProperty health = new SimpleDoubleProperty(1);
 
     /**
      * The maximum number of pixels the monster can travel per frame.
@@ -115,6 +120,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.coordinates = new Coordinates(start);
         this.destination = new Coordinates(destination);
         this.coordinates.bindByImage(this.imageView);
+        hoverMonsterEvent(this.arena);
     }
 
     /**
@@ -126,11 +132,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.arena = other.arena;
         this.coordinates = new Coordinates(other.coordinates);
         this.maxHealth = other.maxHealth;
-        this.health = other.health;
+        this.health = new SimpleDoubleProperty(other.getHealth());
         this.maxSpeed = other.maxSpeed;
         this.speed = other.speed;
         this.destination = new Coordinates(other.destination);
         this.coordinates.bindByImage(this.imageView);
+        hoverMonsterEvent(this.arena);
 
         for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
@@ -141,7 +148,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      */
     public abstract Monster deepCopy();
     
-    // Inferface implementation
+    // Interface implementation
     public ImageView getImageView() { return imageView; }
     public int getX() { return coordinates.getX(); }
     public int getY() { return coordinates.getY(); }
@@ -181,7 +188,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Accesses the health of the monster.
      * @return The health of the monster.
      */
-    public double getHealth() { return health; }
+    public double getHealth() { return health.get(); }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.
@@ -200,7 +207,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param amount The amount by which to reduce.
      */
     public void takeDamage(double amount) {
-        this.health -= amount;
+        this.health.set(getHealth() - amount);
     }
 
     /**
@@ -213,7 +220,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Determines whether the monster has died.
      * @return Whether the monster has died.
      */
-    public boolean hasDied() { return health <= 0; }
+    public boolean hasDied() { return getHealth() <= 0; }
 
     /**
      * Finds the next coordinates to move to.
@@ -226,4 +233,23 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @return The number of pixels the monster has to travel to reach its destination.
      */
     public int distanceToDestination() { return arena.getDistanceToEndZone(coordinates); }
+
+    /**
+     * show monster hp when mouse is hover over the monster.
+     */
+    private void hoverMonsterEvent(Arena arena) {
+        Label hpLabel = new Label();
+        hpLabel.textProperty().bind(Bindings.format("hp: %.2f", health));
+        hpLabel.setAlignment(Pos.CENTER);
+
+        this.imageView.setOnMouseEntered(e -> {
+            hpLabel.setLayoutX(imageView.getX());
+            hpLabel.setLayoutY(imageView.getY());
+            arena.getPane().getChildren().add(hpLabel);
+        });
+
+        this.imageView.setOnMouseExited(e -> {
+            arena.getPane().getChildren().remove(hpLabel);
+        });
+    }
 }

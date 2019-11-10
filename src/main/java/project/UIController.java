@@ -105,6 +105,7 @@ public class UIController {
             } else if (this.mode == modes.play) {
                 buttonPlay.setDisable(false);
             }
+            buttonNextFrame.setDisable(false);
             this.mode = modes.paused;
             timeline.pause();
         }
@@ -177,13 +178,16 @@ public class UIController {
                     BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));
                 } else if (j == 0 && i == 0) {
-                	Image image1 = new Image("/show-up.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                    BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+                    Image image1 = new Image("/show-up.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                    BackgroundImage backgroundImage1 = new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));
-                } else if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
+//                } else if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
+//                    newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+//                else
+//                    newLabel.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+                } else {
                     newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-                else
-                    newLabel.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+                }
                 newLabel.setLayoutX(j * GRID_WIDTH);
                 newLabel.setLayoutY(i * GRID_HEIGHT);
                 newLabel.setMinWidth(GRID_WIDTH);
@@ -219,7 +223,6 @@ public class UIController {
                 enableGameButton();
                 showAlert("Gameover","Gameover");
                 if (timeline != null) {
-                    System.out.println("fk");
                     timeline.stop();
                 }
             }
@@ -254,14 +257,14 @@ public class UIController {
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
-                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
+                    if(mode != modes.simulate && mode != modes.end) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                     }
                     e.consume();
                 });
 
             	target.setOnDragEntered(e -> { // grids[y][x]
-                    if(mode != modes.simulate && mode != modes.paused && mode != modes.end) {
+                    if(mode != modes.simulate && mode != modes.end) {
                         Object source = e.getGestureSource();
                         Arena.TowerType type = null;
                         if (source.equals(labelBasicTower)) {
@@ -288,7 +291,7 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    if (mode != modes.simulate && mode != modes.paused && mode != modes.end) {
+            	    if (mode != modes.simulate && mode != modes.end) {
                         Image img = null;
                         Arena.TowerType type = null;
                         Object source = e.getGestureSource();

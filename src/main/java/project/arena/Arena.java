@@ -227,6 +227,18 @@ public final class Arena {
     public PriorityQueue<Monster> getMonsters() { return arenaObjectStorage.getMonsters(); }
 
     /**
+     * Find the player who are playing now.
+     * @return The player who are playing.
+     */
+    public Player getPlayer() { return player; }
+
+    /**
+     * Find the pane of the arena
+     * @return the pane of the arena
+     */
+    public AnchorPane getPane() { return paneArena; }
+
+    /**
      * @see ArenaScalarFields#getDistanceToEndZone(Coordinates)
      */
     public int getDistanceToEndZone(@NonNull Coordinates coordinates) {
@@ -686,4 +698,6 @@ public final class Arena {
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
     }
+
+
 }
