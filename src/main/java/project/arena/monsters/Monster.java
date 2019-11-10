@@ -258,5 +258,9 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         });
     }
 
+    /**
+     * get the Label displaying hp of monster.
+     * @return the Label displaying hp of monster.
+     */
     public Label getHpLabel() { return hpLabel; }
 }
