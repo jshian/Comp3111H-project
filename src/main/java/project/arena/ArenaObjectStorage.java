@@ -251,30 +251,6 @@ class ArenaObjectStorage {
     }
 
     /**
-     * @see Arena#countInRangeOfTowers(Coordinates)
-     */
-    public int countInRangeOfTowers(@NonNull Coordinates coordinates) {
-        int x = coordinates.getX();
-        int y = coordinates.getY();
-
-        int count = 0;
-        for (Tower t : towers) {
-            int towerX = t.getX();
-            int towerY = t.getY();
-            int minRange = t.getMinShootingRange();
-            int maxRange = t.getMaxShootingRange();
-
-            if (!Geometry.isInCircle(x, y, towerX, towerY, minRange)
-                && Geometry.isInCircle(x, y, towerX, towerY, maxRange))
-                {
-                    count++;
-                }
-        }
-
-        return count;
-    }
-
-    /**
      * Updates the object storage with respect to the addition of an object.
      * @param obj The object to add.
      * @throws IllegalArgumentException If the object type is not recognized.

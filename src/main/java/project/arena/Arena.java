@@ -305,15 +305,6 @@ public final class Arena {
     }
 
     /**
-     * Finds the number of towers that can shoot at the specified pixel.
-     * @param coordinates The coordinates of the specified pixel.
-     * @return The number of towers that can shoot at the specified pixel.
-     */
-    public int countInRangeOfTowers(@NonNull Coordinates coordinates) {
-        return arenaObjectStorage.countInRangeOfTowers(coordinates);
-    }
-
-    /**
      * check if the player has enough resources to build the tower.
      * @param type type of the tower.
      * @return true if the player has enough resources or false otherwise.
