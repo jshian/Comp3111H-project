@@ -101,7 +101,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected int resources = 0;
 
     /**
-     *
+     * Label that display the hp of the monster.
      */
     protected Label hpLabel = new Label();
 
