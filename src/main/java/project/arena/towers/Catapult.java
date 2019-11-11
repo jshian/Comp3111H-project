@@ -138,19 +138,18 @@ public class Catapult extends Tower {
      */
     public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<ExistsInArena> selectList){
         LinkedList<Monster> nearestMon=new LinkedList<>();
-        double nearest= Double.MAX_VALUE;
+        int nearest = 0;
         //find nearest to destination monster in shooting range
         for (Monster m:monsters) {
-            double distance = Math.sqrt(Math.pow((getX()-m.getX()),2)+Math.pow((getY()-m.getY()),2));
-            if(canShoot(m)&&nearest>distance){
-                nearest = distance;
-                //nearest=m.distanceToDestination();
+            if(canShoot(m)){
+                nearest = arena.getDistanceToEndZone(new Coordinates(m.getX(),m.getY()));//distance;
+                break;
             }
         }
         //find all monster have the nearest distance and can be shoot
         for (Monster m :monsters) {
-            double distance = Math.sqrt(Math.pow((getX()-m.getX()),2)+Math.pow((getY()-m.getY()),2));
-            if(distance==nearest && canShoot(m))
+            Coordinates c = new Coordinates(m.getX(),m.getY());
+            if(arena.getDistanceToEndZone(c)==nearest && canShoot(m))
                 nearestMon.add(m);
         }
         //find the target coordinate to attack
@@ -164,9 +163,11 @@ public class Catapult extends Tower {
                     if (i < 0 || i > UIController.ARENA_WIDTH) continue;
                     if (j < 0 || j > UIController.ARENA_HEIGHT) continue;
                     Coordinates c = new Coordinates(i,j);//tested coordinate
+
                     if (canShoot(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//damage range in current point
-                        LinkedList<ExistsInArena> monInCircle = new LinkedList<>();//arena.findObjectsInRange(c, radius, EnumSet.of(Arena.TypeFilter.Monster));
-                        for (Monster testMon:arena.getMonsters()){
+                        LinkedList<ExistsInArena> monInCircle = new LinkedList<>();
+
+                        for (Monster testMon:arena.getMonsters()){//find the monsters in the range
                             if(Geometry.isInCircle(testMon.getX(),testMon.getY(),i,j,radius)){
                                 monInCircle.add(testMon);
                             }

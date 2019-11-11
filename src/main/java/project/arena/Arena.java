@@ -629,7 +629,7 @@ public final class Arena {
 
     /**
      * Updates the arena by one frame.
-     * @return true if gameover, false otherwise.
+     * @return true if game over, false otherwise.
      */
     public boolean nextFrame() {
         shadowArena = new Arena(this);
@@ -659,7 +659,6 @@ public final class Arena {
      * Draws a ray from one object to another object, extending towards the edge of the arena.
      * @param source The origin of the ray.
      * @param target The target of the ray.
-     * @return The instance of the ray.
      */
     public void drawRay(@NonNull ExistsInArena source, @NonNull ExistsInArena target) {
         Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
@@ -676,7 +675,6 @@ public final class Arena {
      * Draws a ray from one point to another point, extending towards the edge of the arena.
      * @param source The origin of the ray.
      * @param target The target of the ray.
-     * @return The instance of the ray.
      */
     public void drawRay(@NonNull Coordinates source, @NonNull Coordinates target) {
         Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
@@ -689,6 +687,11 @@ public final class Arena {
         paneArena.getChildren().add(ray);
     }
 
+    /**
+     * Draw a circle in a specific center and radius.
+     * @param source The center coordinates og the circle.
+     * @param damageRange The radius of the circle.
+     */
     public void drawCircle(@NonNull Coordinates source, @NonNull int damageRange){
         Circle circle = new Circle();
         circle.setCenterX(source.getX());
