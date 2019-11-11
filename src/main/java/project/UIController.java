@@ -263,7 +263,7 @@ public class UIController {
                     e.consume();
                 });
 
-            	target.setOnDragEntered(e -> { // grids[y][x]
+            	target.setOnDragOver(e -> { // grids[y][x]
                     if(mode != modes.simulate && mode != modes.end) {
                         Object source = e.getGestureSource();
                         Arena.TowerType type = null;
