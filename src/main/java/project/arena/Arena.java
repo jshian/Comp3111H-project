@@ -133,6 +133,9 @@ public final class Arena {
         if (obj instanceof Tower) {
             arenaScalarFields.processRemoveTower((Tower)obj);
         }
+        if (obj instanceof Monster) {
+            player.receiveResources(((Monster)obj).getResources());
+        }
     }
 
     /**
@@ -609,6 +612,8 @@ public final class Arena {
             if (e instanceof Projectile) {
                 removeObject(e);
             } else if (e instanceof Monster) { // turn dead monster to explosion
+                if (paneArena.getChildren().contains(((Monster) e).getHpLabel()))
+                    paneArena.getChildren().remove(((Monster) e).getHpLabel());
                 removeObject(e);
                 Coordinates c = new Coordinates(e.getX(), e.getY());
                 ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH

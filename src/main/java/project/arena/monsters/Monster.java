@@ -101,6 +101,11 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected int resources = 0;
 
     /**
+     * Label that display the hp of the monster.
+     */
+    protected Label hpLabel = new Label();
+
+    /**
      * A linked list of references to each status effect that is active against the monster.
      */
     @ElementCollection
@@ -238,18 +243,25 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * show monster hp when mouse is hover over the monster.
      */
     private void hoverMonsterEvent(Arena arena) {
-        Label hpLabel = new Label();
         hpLabel.textProperty().bind(Bindings.format("hp: %.2f", health));
         hpLabel.setAlignment(Pos.CENTER);
+        //seems like layout can only bindBidirectional, error otherwise.
+        hpLabel.layoutXProperty().bindBidirectional(imageView.xProperty());
+        hpLabel.layoutYProperty().bindBidirectional(imageView.yProperty());
 
         this.imageView.setOnMouseEntered(e -> {
-            hpLabel.setLayoutX(imageView.getX());
-            hpLabel.setLayoutY(imageView.getY());
             arena.getPane().getChildren().add(hpLabel);
         });
 
         this.imageView.setOnMouseExited(e -> {
-            arena.getPane().getChildren().remove(hpLabel);
+            if (arena.getPane().getChildren().contains(hpLabel))
+                arena.getPane().getChildren().remove(hpLabel);
         });
     }
+
+    /**
+     * get the Label displaying hp of monster.
+     * @return the Label displaying hp of monster.
+     */
+    public Label getHpLabel() { return hpLabel; }
 }
