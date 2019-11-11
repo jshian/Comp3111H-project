@@ -1,31 +1,21 @@
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.image.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.testfx.framework.junit.ApplicationTest;
-import project.*;
-import project.arena.Arena;
-import project.arena.Coordinates;
-import project.arena.ExistsInArena;
-import project.arena.towers.Catapult;
+import project.Geometry;
+import project.arena.*;
 import project.arena.monsters.*;
+import project.arena.towers.*;
+import sample.MyController;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import sample.MyController;
-
-import static org.junit.Assert.*;
 
 public class CatapultTest extends ApplicationTest {
 
@@ -56,9 +46,9 @@ public class CatapultTest extends ApplicationTest {
 
         //test shooting range valid
         Catapult catapult = new Catapult(arena, new Coordinates(300,0));
-        Monster m1 = new Unicorn(arena, new Coordinates(100, 100), destination, iv, 1);testList.add(m1);arena.addObject(m1);
-        Monster m2 = new Unicorn(arena, new Coordinates(101, 101), destination, iv, 1);testList.add(m2);arena.addObject(m2);
-        Monster m3 = new Unicorn(arena, new Coordinates(400, 0), destination, iv, 1);testList.add(m3);arena.addObject(m3);
+        Monster m1 = new Unicorn(arena, new Coordinates(100, 100), destination, new ImageView(img), 1);testList.add(m1);arena.addObject(m1);
+        Monster m2 = new Unicorn(arena, new Coordinates(101, 101), destination, new ImageView(img), 1);testList.add(m2);arena.addObject(m2);
+        Monster m3 = new Unicorn(arena, new Coordinates(400, 0), destination, new ImageView(img), 1);testList.add(m3);arena.addObject(m3);
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m3);
         Assert.assertEquals(selectList,answerList);
@@ -68,8 +58,8 @@ public class CatapultTest extends ApplicationTest {
         selectList.clear();
 
         //test shoot monster with nearest but not most monsters
-        Monster m4 = new Unicorn(arena, new Coordinates(201, 100), destination, iv, 1);testList.add(m4);arena.addObject(m4);
-        Monster m5 = new Unicorn(arena, new Coordinates(200, 100), destination, iv, 1);testList.add(m5);arena.addObject(m5);
+        Monster m4 = new Unicorn(arena, new Coordinates(201, 100), destination, new ImageView(img), 1);testList.add(m4);arena.addObject(m4);
+        Monster m5 = new Unicorn(arena, new Coordinates(200, 100), destination, new ImageView(img), 1);testList.add(m5);arena.addObject(m5);
         target=catapult.selectMonster(testList,selectList);
         Assert.assertEquals(selectList,answerList);
         for (ExistsInArena m :selectList) {
@@ -78,8 +68,8 @@ public class CatapultTest extends ApplicationTest {
         selectList.clear();
 
         //test shoot monster with same nearest but most monster
-        Monster m6 = new Unicorn(arena, new Coordinates(401, 0), destination, iv, 1);testList.add(m6);arena.addObject(m6);
-        Monster m7 = new Unicorn(arena, new Coordinates(440, 40), destination, iv, 1);testList.add(m7);arena.addObject(m7);
+        Monster m6 = new Unicorn(arena, new Coordinates(401, 0), destination, new ImageView(img), 1);testList.add(m6);arena.addObject(m6);
+        Monster m7 = new Unicorn(arena, new Coordinates(440, 40), destination, new ImageView(img), 1);testList.add(m7);arena.addObject(m7);
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m6);
         Assert.assertEquals(selectList,answerList);
