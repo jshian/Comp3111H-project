@@ -9,6 +9,7 @@ import project.Geometry;
 import project.UIController;
 import project.arena.monsters.Monster;
 import project.arena.towers.Tower;
+import project.debug.FieldVisualizer;
 
 /**
  * Manages the scalar fields of the arena.
@@ -167,7 +168,7 @@ class ArenaScalarFields {
                 LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(t.getX(), t.getY()), t.getMinShootingRange(), t.getMaxShootingRange());
 
                 // Update attacksPerFrame
-                double shotsPerFrame = 1 / t.getReload();
+                double shotsPerFrame = 1.0 / t.getReload();
                 for (Coordinates c : pixelsInRange) {
                     attacksPerFrame[c.getX()][c.getY()] += shotsPerFrame;
                 }

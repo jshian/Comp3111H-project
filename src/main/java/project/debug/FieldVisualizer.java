@@ -1,7 +1,10 @@
 package project.debug;
 
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -12,63 +15,58 @@ import javax.swing.JLabel;
  * For debugging only.
  */
 public final class FieldVisualizer {
+    private static double[][] openArray;
+
     private static JFrame openFrame;
 
     private FieldVisualizer() { }
+
+    private static void display(BufferedImage img) {
+        if (openFrame != null) openFrame.dispose();
+
+        JFrame frame = new JFrame("Heat Map");
+        JLabel label = new JLabel(new ImageIcon(img));
+        for (int i = 0; i < img.getWidth(); i += 40) {
+            for (int j = 0; j < img.getHeight(); j += 40) {
+                JLabel temp = new JLabel(String.format("*%.2f", openArray[i][j]));
+                temp.setSize(40, 20);
+                temp.setFont(temp.getFont().deriveFont(8.0f));
+                label.add(temp);
+                temp.setLocation(i, j);
+            }
+        }
+        frame.add(label);
+        frame.pack();
+        frame.setVisible(true);
+
+        openFrame = frame;
+    }
 
     /**
      * Visualizes an array of integers as a heat map. Colors range from blue (smallest value) to red (largest value).
      * @param arr The array to visualize.
      */
     public static void visualizeIntArray(int[][] arr) {
-        int maxValue = 0;
-        int minValue = 0;
         int width = arr.length;
-        int height = 0;
+        double[][] doubles = new double[width][];
 
         // Get max and min values
         for (int i = 0; i < width; i++) {
-            if (arr[i].length > height) height = arr[i].length;
+            int height = arr[i].length;
+            doubles[i] = new double[height];
 
             for (int j = 0; j < height; j++) {
-                int value = arr[i][j];
-
-                if (value != Integer.MAX_VALUE && value != Integer.MIN_VALUE) {
-                    if (value < minValue) minValue = value;
-                    if (value > maxValue) maxValue = value;
-                }
-            }
-        }
-
-        // Create the heat map
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                Color color;
-                int value = arr[i][j];
-
-                if (value == Integer.MAX_VALUE) {
-                    color = Color.WHITE;
-                } else if (value == Integer.MIN_VALUE) {
-                    color = Color.BLACK;
+                if (arr[i][j] == Integer.MAX_VALUE) {
+                    doubles[i][j] = Double.POSITIVE_INFINITY;
+                } else if (arr[i][j] == Integer.MIN_VALUE) {
+                    doubles[i][j] = Double.NEGATIVE_INFINITY;
                 } else {
-                    // The +1 is to avoid division by zero
-                    color = Color.getHSBColor(2f / 3f - (float)(value - minValue) / (float)(maxValue - minValue + 1) * 2 / 3, 1, 1);
+                    doubles[i][j] = arr[i][j];
                 }
-
-                img.setRGB(i, j, color.getRGB());
             }
         }
-
-        if (openFrame != null) openFrame.dispose();
-
-        // Display the heat map
-        JFrame f = new JFrame("Heat Map");
-        f.add(new JLabel(new ImageIcon(img)));
-        f.pack();
-        f.setVisible(true);
-
-        openFrame = f;
+        
+        visualizeDoubleArray(doubles);
     }
 
     /**
@@ -76,6 +74,8 @@ public final class FieldVisualizer {
      * @param arr The array to visualize.
      */
     public static void visualizeDoubleArray(double[][] arr) {
+        openArray = arr;
+
         double maxValue = 0;
         double minValue = 0;
         int width = arr.length;
@@ -88,7 +88,7 @@ public final class FieldVisualizer {
             for (int j = 0; j < height; j++) {
                 double value = arr[i][j];
 
-                if (value != Integer.MAX_VALUE && value != Integer.MIN_VALUE) {
+                if (value != Double.POSITIVE_INFINITY && value != Double.NEGATIVE_INFINITY) {
                     if (value < minValue) minValue = value;
                     if (value > maxValue) maxValue = value;
                 }
@@ -102,9 +102,9 @@ public final class FieldVisualizer {
                 Color color;
                 double value = arr[i][j];
 
-                if (value == Integer.MAX_VALUE) {
+                if (value == Double.POSITIVE_INFINITY) {
                     color = Color.WHITE;
-                } else if (value == Integer.MIN_VALUE) {
+                } else if (value == Double.NEGATIVE_INFINITY) {
                     color = Color.BLACK;
                 } else {
                     // The +0.001 is to avoid division by zero
@@ -115,14 +115,7 @@ public final class FieldVisualizer {
             }
         }
 
-        if (openFrame != null) openFrame.dispose();
-
         // Display the heat map
-        JFrame f = new JFrame("Heat Map");
-        f.add(new JLabel(new ImageIcon(img)));
-        f.pack();
-        f.setVisible(true);
-
-        openFrame = f;
+        display(img);
     }
 }
