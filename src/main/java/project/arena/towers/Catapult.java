@@ -165,7 +165,7 @@ public class Catapult extends Tower {
                     Coordinates c = new Coordinates(i,j);//tested coordinate
 
                     if (canShoot(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//damage range in current point
-                        LinkedList<ExistsInArena> monInCircle = new LinkedList<>();
+                        LinkedList<Monster> monInCircle = new LinkedList<>();
 
                         for (Monster testMon:arena.getMonsters()){//find the monsters in the range
                             if(Geometry.isInCircle(testMon.getX(),testMon.getY(),i,j,radius)){
