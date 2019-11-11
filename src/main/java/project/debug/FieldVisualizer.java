@@ -17,7 +17,7 @@ public final class FieldVisualizer {
     private FieldVisualizer() { }
 
     /**
-     * Visualizes an array of integers as a heat map.
+     * Visualizes an array of integers as a heat map. Colors range from blue (smallest value) to red (largest value).
      * @param arr The array to visualize.
      */
     public static void visualizeIntArray(int[][] arr) {
@@ -72,7 +72,7 @@ public final class FieldVisualizer {
     }
 
     /**
-     * Visualizes an array of doubles as a heat map.
+     * Visualizes an array of doubles as a heat map. Colors range from blue (smallest value) to red (largest value).
      * @param arr The array to visualize.
      */
     public static void visualizeDoubleArray(double[][] arr) {
