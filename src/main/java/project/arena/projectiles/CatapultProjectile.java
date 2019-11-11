@@ -2,9 +2,11 @@ package project.arena.projectiles;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import project.Geometry;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.ExistsInArena;
@@ -51,12 +53,11 @@ public class CatapultProjectile extends Projectile {
             arena.drawCircle(target,damageRange);
 
             //give damage
-            LinkedList<ExistsInArena> monsters = arena.findObjectsInRange(target, damageRange, EnumSet.of(Arena.TypeFilter.Monster));
-            for (ExistsInArena monster : monsters) {
-                if (monster instanceof Monster) {
-                    ((Monster) monster).takeDamage(attackPower);
+            for (Monster m : arena.getMonsters()) {
+                if (Geometry.isInCircle(m.getX(),m.getY(),target.getX(),target.getY(),damageRange)){
+                    m.takeDamage(attackPower);
                     System.out.println(String.format("Catapult@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
-                            , ((Monster) monster).getClassName(), monster.getX(), monster.getY()));
+                            , m.getClassName(), m.getX(), m.getY()));
                 }
             }
         }

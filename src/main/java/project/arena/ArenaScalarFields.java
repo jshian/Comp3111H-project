@@ -169,7 +169,7 @@ class ArenaScalarFields {
                 // Update attacksPerFrame
                 double shotsPerFrame = 1 / t.getReload();
                 for (Coordinates c : pixelsInRange) {
-                    attacksPerFrame[c.getX()][c.getY()] -= shotsPerFrame;
+                    attacksPerFrame[c.getX()][c.getY()] += shotsPerFrame;
                 }
             }
 
