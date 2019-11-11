@@ -259,12 +259,6 @@ public class UIController {
                 target.setOnDragOver(e -> {
                     if(mode != modes.simulate && mode != modes.end) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                    }
-                    e.consume();
-                });
-
-            	target.setOnDragEntered(e -> { // grids[y][x]
-                    if(mode != modes.simulate && mode != modes.end) {
                         Object source = e.getGestureSource();
                         Arena.TowerType type = null;
                         if (source.equals(labelBasicTower)) {
