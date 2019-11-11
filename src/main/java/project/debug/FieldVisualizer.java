@@ -30,6 +30,7 @@ public final class FieldVisualizer {
             for (int j = 0; j < img.getHeight(); j += 40) {
                 JLabel temp = new JLabel(String.format("*%.2f", openArray[i][j]));
                 temp.setSize(40, 20);
+                temp.setFont(temp.getFont().deriveFont(8.0f));
                 label.add(temp);
                 temp.setLocation(i, j);
             }
