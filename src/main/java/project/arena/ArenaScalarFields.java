@@ -96,6 +96,8 @@ class ArenaScalarFields {
      * Refreshes {@link #attacksToEndZone}.
      */
     private void refreshAttacksToEndZone() {
+        final double MOVEMENT_COST = 0.001;
+
     	// Reset values
     	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
     		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
@@ -116,7 +118,7 @@ class ArenaScalarFields {
     		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
     			if (arena.findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[current.x][current.y] + 0.001;
+                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[current.x][current.y] + MOVEMENT_COST;
         			if (attacksToEndZone[c.getX()][c.getY()] > newCost ) {
         				attacksToEndZone[c.getX()][c.getY()] = newCost;
         				openSet.add(new IntTuple(c.getX(), c.getY()));

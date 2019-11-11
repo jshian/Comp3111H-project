@@ -60,4 +60,8 @@ public class Player {
         resources.set(Math.max(0,  resources.get() - amount));
     }
 
+    public void receiveResources(int amount) {
+        resources.set(resources.get() + amount);
+    }
+
 }

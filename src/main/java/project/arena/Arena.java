@@ -133,6 +133,9 @@ public final class Arena {
         if (obj instanceof Tower) {
             arenaScalarFields.processRemoveTower((Tower)obj);
         }
+        if (obj instanceof Monster) {
+            player.receiveResources(((Monster)obj).getResources());
+        }
     }
 
     /**
