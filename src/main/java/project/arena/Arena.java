@@ -139,6 +139,7 @@ public final class Arena {
 
         if (obj instanceof Tower) {
             arenaScalarFields.processRemoveTower((Tower)obj, false);
+            player.receiveResources(((Tower)obj).getBuildingCost() / 2);
         }
         if (obj instanceof Monster) {
             player.receiveResources(((Monster)obj).getResources());
@@ -447,15 +448,10 @@ public final class Arena {
      * @return true if upgrade is successful, false if player don't have enough resources.
      */
     public boolean upgradeTower(@NonNull Tower t) {
-        short original_minShootingRange = t.getMinShootingRange();
-        short original_maxShootingRange = t.getMaxShootingRange();
-
-        if (t.upgrade(player)) {
-            // If the range has changed, need to update pathfinding.
-            if (t.getMinShootingRange() != original_minShootingRange || t.getMaxShootingRange() != original_maxShootingRange) {
-                arenaScalarFields.processRemoveTower(t, true);
-                arenaScalarFields.processAddTower(t, false);
-            }
+        if (t.canUpgrade(player)) {
+            arenaScalarFields.processRemoveTower(t, true);
+            t.tryUpgrade(player);
+            arenaScalarFields.processAddTower(t, false);
 
             return true;
         }

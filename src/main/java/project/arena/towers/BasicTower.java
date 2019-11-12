@@ -59,23 +59,17 @@ public class BasicTower extends Tower {
         return new BasicTower(arena, this);
     }
 
-    /**
-     * Basic tower increases its attack power when it upgraded.
-     * @param player The player who build the tower.
-     * @return True if upgrade is successful, otherwise false.
-     */
     @Override
-    public boolean upgrade(@NonNull Player player){
-        if(player.hasResources(upgradeCost)){
-            System.out.println("Basic Tower is being upgraded.");
-            player.spendResources(upgradeCost);
-            if(this.attackPower+5>=maxAttackPower)
-                this.attackPower = maxAttackPower;
-            else this.attackPower += 5;
-            return true;
+    protected String getClassName() { return "Basic Tower"; }
+
+    @Override
+    protected void upgrade() {
+        super.upgrade();
+        if (this.attackPower + 5 >= maxAttackPower) {
+            this.attackPower = maxAttackPower;
+        } else {
+            this.attackPower += 5;
         }
-        System.out.println("not enough resource to upgrade Basic Tower.");
-        return false;
     }
 
     @Override

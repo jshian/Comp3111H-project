@@ -251,7 +251,7 @@ class ArenaScalarFields {
             attacksPerFrame[c.getX()][c.getY()] += shotsPerFrame;
         }
 
-        refreshPathfinding();
+        if (!deferRefresh) refreshPathfinding();
     }
     
     /**
@@ -268,6 +268,6 @@ class ArenaScalarFields {
             attacksPerFrame[c.getX()][c.getY()] -= shotsPerFrame;
         }
 
-        refreshPathfinding();
+        if (!deferRefresh) refreshPathfinding();
     }
 }
