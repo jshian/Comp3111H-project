@@ -80,23 +80,17 @@ public class Catapult extends Tower {
         return new Catapult(arena, this);
     }
 
-    /**
-     * Catapult decreases its reload time when it upgraded.
-     * @param player The player who build the tower.
-     * @return True if upgrade is successful, otherwise false.
-     */
     @Override
-    public boolean upgrade(@NonNull Player player){
-        if(player.hasResources(upgradeCost)){
-            System.out.println("Catapult is being upgraded.");
-            player.spendResources(upgradeCost);
-            if(this.reload <= minReloadTime){
-                this.reload = minReloadTime;
-            }else this.reload-=1;
-            return true;
+    protected String getClassName() { return "Catapult"; }
+
+    @Override
+    protected void upgrade() {
+        super.upgrade();
+        if (this.reload <= minReloadTime) {
+            this.reload = minReloadTime;
+        } else {
+            this.reload -= 1;
         }
-        System.out.println("not enough resource to upgrade Catapult.");
-        return false;
     }
 
     /**

@@ -63,7 +63,7 @@ public abstract class Tower implements ExistsInArena {
     protected int attackPower = 1;
 
     /**
-     * The current building cost of the tower.
+     * The cumulative building cost of the tower, which increases as the tower is upgraded.
      */
     protected int buildingCost = 1;
 
@@ -170,11 +170,42 @@ public abstract class Tower implements ExistsInArena {
     }
 
     /**
-     * Upgrade the tower by adding the power, slow duration, reload time etc.
-     * @param player The player who build the tower.
-     * @return True if upgrade is successful, otherwise false.
+     * Gets the class name of the tower.
+     * @return The class name of the tower.
      */
-    public abstract boolean upgrade(@NonNull Player player);
+    protected abstract String getClassName();
+
+    /**
+     * Determines whether the tower can be upgraded.
+     * @param player The player who upgrades the tower.
+     * @return Whether the tower can be upgraded.
+     */
+    public boolean canUpgrade(@NonNull Player player) {
+        return player.hasResources(upgradeCost);
+    }
+
+    /**
+     * Attempts to upgrade the tower.
+     * @param player The player who upgrades the tower.
+     * @return Whether the upgrade is successful.
+     */
+    public boolean tryUpgrade(@NonNull Player player) {
+        if (canUpgrade(player)) {
+            System.out.println(String.format("%s is being upgraded.", getClassName()));
+            player.spendResources(upgradeCost);
+            upgrade();
+            return true;
+        }
+        System.out.println(String.format("not enough resource to upgrade %s.", getClassName()));
+        return false;
+    }
+
+    /**
+     * Upgrades the tower.
+     */
+    protected void upgrade() {
+        buildingCost += upgradeCost;
+    }
 
     /**
      * Generates a projectile that attacks the target of the tower.
@@ -211,8 +242,8 @@ public abstract class Tower implements ExistsInArena {
     }
 
     /**
-     * Accesses the building cost of the tower.
-     * @return The building cost of the tower.
+     * Accesses the cumulative building cost of the tower.
+     * @return The cumulative building cost of the tower.
      */
     public int getBuildingCost() {
         return buildingCost;

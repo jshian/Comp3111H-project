@@ -67,6 +67,9 @@ public class LaserTower extends Tower{
         return new LaserTower(arena, this);
     }
 
+    @Override
+    protected String getClassName() { return "Laser Tower"; }
+
     /**
      * Laser tower consume player's resource to attack monster.
      * @param player The player who build the tower.
@@ -80,23 +83,14 @@ public class LaserTower extends Tower{
         return false;
     }
 
-    /**
-     * Laser tower increases its attack power when it upgraded.
-     * @param player The player who build the tower.
-     * @return True if upgrade is successful, otherwise false.
-     */
     @Override
-    public boolean upgrade(@NonNull Player player){
-        if(player.hasResources(upgradeCost)){
-            System.out.println("Laser Tower is being upgraded.");
-            player.spendResources(upgradeCost);
-            if(this.attackPower+5 >= maxAttackPower)
-                this.attackPower = maxAttackPower;
-            else this.attackPower += 5;
-            return true;
+    protected void upgrade() {
+        super.upgrade();
+        if (this.attackPower + 5 >= maxAttackPower) {
+            this.attackPower = maxAttackPower;
+        } else {
+            this.attackPower += 5;
         }
-        System.out.println("not enough resource to upgrade Laser Tower.");
-        return false;
     }
 
     /**

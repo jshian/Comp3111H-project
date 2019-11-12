@@ -125,7 +125,7 @@ public final class Arena {
         arenaObjectStorage.processAddObject(obj);
 
         if (obj instanceof Tower) {
-            arenaScalarFields.processAddTower((Tower)obj);
+            arenaScalarFields.processAddTower((Tower)obj, false);
         }
     }
 
@@ -138,7 +138,8 @@ public final class Arena {
         arenaObjectStorage.processRemoveObject(obj);
 
         if (obj instanceof Tower) {
-            arenaScalarFields.processRemoveTower((Tower)obj);
+            arenaScalarFields.processRemoveTower((Tower)obj, false);
+            player.receiveResources(((Tower)obj).getBuildingCost() / 2);
         }
         if (obj instanceof Monster) {
             player.receiveResources(((Monster)obj).getResources());
@@ -447,7 +448,15 @@ public final class Arena {
      * @return true if upgrade is successful, false if player don't have enough resources.
      */
     public boolean upgradeTower(@NonNull Tower t) {
-        return t.upgrade(player);
+        if (t.canUpgrade(player)) {
+            arenaScalarFields.processRemoveTower(t, true);
+            t.tryUpgrade(player);
+            arenaScalarFields.processAddTower(t, false);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
