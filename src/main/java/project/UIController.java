@@ -413,16 +413,16 @@ public class UIController {
         Tooltip tp = new Tooltip();
         Tower temp;
         if (l.equals(labelBasicTower)) {
-            temp = new BasicTower(arena, new Coordinates(0,0));
+            temp = new BasicTower(arena, new Coordinates((short)0,(short)0));
             tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
         } else if (l.equals(labelIceTower)) {
-            temp = new IceTower(arena, new Coordinates(0,0));
+            temp = new IceTower(arena, new Coordinates((short)0,(short)0));
             tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
         } else if (l.equals(labelCatapult)) {
-            temp = new Catapult(arena, new Coordinates(0,0));
+            temp = new Catapult(arena, new Coordinates((short)0,(short)0));
             tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
         } else if (l.equals(labelLaserTower)) {
-            temp = new LaserTower(arena, new Coordinates(0,0));
+            temp = new LaserTower(arena, new Coordinates((short)0,(short)0));
             tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
         }
         tp.setShowDelay(Duration.ZERO);
