@@ -86,7 +86,7 @@ public class UIController {
     /**
      * An enum to show game state.
      */
-    static enum modes {normal, simulate, play, paused, end};
+    static enum modes {normal, simulate, play, end};
     /**
      * the game state.
      */
@@ -149,7 +149,6 @@ public class UIController {
                 buttonPlay.setDisable(false);
             }
             buttonNextFrame.setDisable(false);
-            this.mode = modes.paused;
             timeline.pause();
         }
     }
