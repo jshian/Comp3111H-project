@@ -107,7 +107,7 @@ public final class Arena {
     /**
      * The objects stored in this arena.
      */
-    private ArenaObjectStorage arenaObjectStorage = new ArenaObjectStorage(this);
+    private ArenaObjectStorage arenaObjectStorage;
 
     /**
      * Adds an object to the arena.
@@ -160,7 +160,7 @@ public final class Arena {
     /**
      * The scalar fields stored in this arena.
      */
-    private ArenaScalarFields arenaScalarFields = new ArenaScalarFields(this);
+    private ArenaScalarFields arenaScalarFields;
 
     /**
      * The Arena during the previous frame. Only used for saving the game.
@@ -187,6 +187,9 @@ public final class Arena {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
 
+        arenaObjectStorage = new ArenaObjectStorage(this);
+        arenaScalarFields = new ArenaScalarFields(this);
+
         shadowArena = new Arena(this);
     }
 
@@ -205,7 +208,6 @@ public final class Arena {
         }
 
         this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
-
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
 
         this.shadowArena = null;

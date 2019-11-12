@@ -1,10 +1,7 @@
 package project.debug;
 
 import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -26,9 +23,10 @@ public final class FieldVisualizer {
 
         JFrame frame = new JFrame("Heat Map");
         JLabel label = new JLabel(new ImageIcon(img));
-        for (int i = 0; i < img.getWidth(); i += 40) {
-            for (int j = 0; j < img.getHeight(); j += 40) {
-                JLabel temp = new JLabel(String.format("*%.2f", openArray[i][j]));
+        for (int i = 0; i < openArray.length; i += 40) {
+            for (int j = 0; j < openArray[i].length; j += 40) {
+                img.setRGB(i, j, Color.BLACK.getRGB());
+                JLabel temp = new JLabel(String.format("%.2f", openArray[i][j]));
                 temp.setSize(40, 20);
                 temp.setFont(temp.getFont().deriveFont(8.0f));
                 label.add(temp);
@@ -74,8 +72,6 @@ public final class FieldVisualizer {
      * @param arr The array to visualize.
      */
     public static void visualizeDoubleArray(double[][] arr) {
-        openArray = arr;
-
         double maxValue = 0;
         double minValue = 0;
         int width = arr.length;
@@ -95,12 +91,21 @@ public final class FieldVisualizer {
             }
         }
 
+        // Initialize the display array
+        openArray = new double[width][height];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                openArray[i][j] = Double.NEGATIVE_INFINITY;
+            }
+        }
+
         // Create the heat map
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
         for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < arr[i].length; j++) {
                 Color color;
                 double value = arr[i][j];
+                openArray[i][j] = value;
 
                 if (value == Double.POSITIVE_INFINITY) {
                     color = Color.WHITE;

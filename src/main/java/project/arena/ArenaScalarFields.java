@@ -165,7 +165,7 @@ class ArenaScalarFields {
         LinkedList<Tower> towers = arena.getTowers();
         if (towers.size() > 0) {
             for (Tower t : towers) {
-                LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(t.getX(), t.getY()), t.getMinShootingRange(), t.getMaxShootingRange());
+                LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(t.getX(), t.getY()), t.getMinShootingRange() - 1, t.getMaxShootingRange() + 1);
 
                 // Update attacksPerFrame
                 double shotsPerFrame = 1.0 / t.getReload();
@@ -173,11 +173,10 @@ class ArenaScalarFields {
                     attacksPerFrame[c.getX()][c.getY()] += shotsPerFrame;
                 }
             }
-
-            refreshAttacksToEndZone();
         }
 
         refreshDistanceToEndZone();
+        refreshAttacksToEndZone();
     }
 
     /**
@@ -231,7 +230,7 @@ class ArenaScalarFields {
      * @param tower The tower that was added.
      */
     void processAddTower(@NonNull Tower tower) {
-        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
+        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange() - 1, tower.getMaxShootingRange() + 1);
 
         // Update attacksPerFrame
         double shotsPerFrame = 1.0 / tower.getReload();
@@ -248,10 +247,10 @@ class ArenaScalarFields {
      * @param tower The tower that was removed.
      */
     void processRemoveTower(@NonNull Tower tower) {
-        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
+        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange() - 1, tower.getMaxShootingRange() + 1);
 
         // Update attacksPerFrame
-        double shotsPerFrame = 1 / tower.getReload();
+        double shotsPerFrame = 1.0 / tower.getReload();
         for (Coordinates c : pixelsInRange) {
             attacksPerFrame[c.getX()][c.getY()] -= shotsPerFrame;
         }
