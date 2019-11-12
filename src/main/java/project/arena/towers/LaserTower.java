@@ -1,5 +1,7 @@
 package project.arena.towers;
 
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -13,12 +15,13 @@ import project.arena.projectiles.Projectile;
 /**
  * LaserTower consume resources to attack monster.
  */
+@Entity
 public class LaserTower extends Tower{
 
     /**
      * The consumption of resources by laser tower each time.
      */
-    private int consume;
+    private int consume = 1;
 
     /**
      * Constructor of laser tower.
@@ -52,16 +55,16 @@ public class LaserTower extends Tower{
     }
 
     /**
-     * @see Tower#Tower(Tower)
+     * @see Tower#Tower(Arena, Tower)
      */
-    public LaserTower(@NonNull LaserTower other){
-        super(other);
+    public LaserTower(@NonNull Arena arena, @NonNull LaserTower other) {
+        super(arena, other);
         this.consume = other.consume;
     }
 
     @Override
-    public LaserTower deepCopy() {
-        return new LaserTower(this);
+    public LaserTower deepCopy(@NonNull Arena arena) {
+        return new LaserTower(arena, this);
     }
 
     /**
@@ -108,7 +111,7 @@ public class LaserTower extends Tower{
                     if (!consumeResource(arena.getPlayer())) return null;
                     hasAttack = true;
                     this.counter = this.reload;
-                    return new LaserProjectile(arena, this.coordinates, new Coordinates(m.getX(), m.getY()), attackPower);
+                    return new LaserProjectile(arena, coordinates, m, attackPower);
                 }
             }
         }

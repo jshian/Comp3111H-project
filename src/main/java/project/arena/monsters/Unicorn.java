@@ -26,15 +26,15 @@ public class Unicorn extends Monster {
     }
 
     /**
-     * @see Monster#Monster(Monster)
+     * @see Monster#Monster(Arena, Monster)
      */
-    public Unicorn(@NonNull Unicorn other) {
-        super(other);
+    public Unicorn(@NonNull Arena arena, @NonNull Unicorn other) {
+        super(arena, other);
     }
     
     @Override
-    public Unicorn deepCopy() {
-        return new Unicorn(this);
+    public Unicorn deepCopy(@NonNull Arena arena) {
+        return new Unicorn(arena, this);
     }
 
     @Override
