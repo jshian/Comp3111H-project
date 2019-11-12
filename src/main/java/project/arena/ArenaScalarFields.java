@@ -180,8 +180,7 @@ class ArenaScalarFields {
             }
         }
 
-        refreshDistanceToEndZone();
-        refreshAttacksToEndZone();
+        refreshPathfinding();
     }
 
     /**
@@ -229,12 +228,21 @@ class ArenaScalarFields {
     double getAttacksToEndZone(short x, short y) {
         return attacksToEndZone[x][y];
     }
+
+    /**
+     * Refreshes the scalar fields that directly influence pathfinding.
+     */
+    void refreshPathfinding() {
+        refreshDistanceToEndZone();
+        refreshAttacksToEndZone();
+    }
     
     /**
      * Updates the scalar fields with respect to the addition of a tower.
      * @param tower The tower that was added.
+     * @param deferRefresh Whether to defer the refreshing of scalar fields that directly influence pathfinding.
      */
-    void processAddTower(@NonNull Tower tower) {
+    void processAddTower(@NonNull Tower tower, boolean deferRefresh) {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
@@ -243,15 +251,15 @@ class ArenaScalarFields {
             attacksPerFrame[c.getX()][c.getY()] += shotsPerFrame;
         }
 
-        refreshDistanceToEndZone();
-        refreshAttacksToEndZone();
+        if (!deferRefresh) refreshPathfinding();
     }
     
     /**
      * Updates the scalar fields with respect to the removal of a tower.
      * @param tower The tower that was removed.
+     * @param deferRefresh Whether to defer the refreshing of scalar fields that directly influence pathfinding.
      */
-    void processRemoveTower(@NonNull Tower tower) {
+    void processRemoveTower(@NonNull Tower tower, boolean deferRefresh) {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
@@ -260,7 +268,6 @@ class ArenaScalarFields {
             attacksPerFrame[c.getX()][c.getY()] -= shotsPerFrame;
         }
 
-        refreshDistanceToEndZone();
-        refreshAttacksToEndZone();
+        if (!deferRefresh) refreshPathfinding();
     }
 }

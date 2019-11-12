@@ -72,23 +72,17 @@ public class IceTower extends Tower {
         return new IceTower(arena, this);
     }
 
-    /**
-     * Ice tower increases its slow down duration when it upgraded.
-     * @param player The player who build the tower.
-     * @return True if upgrade is successful, otherwise false.
-     */
     @Override
-    public boolean upgrade(@NonNull Player player){
-        if(player.hasResources(upgradeCost)){
-            System.out.println("Ice Tower is being upgraded.");
-            player.spendResources(upgradeCost);
-            if(this.slowDownTime+5 >= maxSlowDownTime){
-                this.slowDownTime = maxSlowDownTime;
-            }else this.slowDownTime+=5;
-            return true;
+    protected String getClassName() { return "Ice Tower"; }
+
+    @Override
+    protected void upgrade() {
+        super.upgrade();
+        if (this.slowDownTime + 5 >= maxSlowDownTime) {
+            this.slowDownTime = maxSlowDownTime;
+        } else {
+            this.slowDownTime += 5;
         }
-        System.out.println("not enough resource to upgrade Ice Tower.");
-        return false;
     }
 
     @Override
