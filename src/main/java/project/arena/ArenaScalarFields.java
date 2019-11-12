@@ -3,6 +3,8 @@ package project.arena;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.Geometry;
@@ -15,6 +17,7 @@ import project.debug.FieldVisualizer;
  * Manages the scalar fields of the arena.
  * @see Arena
  */
+@Entity
 class ArenaScalarFields {
 
     /**

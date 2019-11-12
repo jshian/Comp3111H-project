@@ -1,8 +1,11 @@
 package project.arena.towers;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +23,7 @@ import project.arena.projectiles.Projectile;
 /**
  * Towers is added by player to stop monster moving to the end zone.
  */
+@Entity
 public abstract class Tower implements ExistsInArena {
     /**
      * ID for storage using Java Persistence API
@@ -37,43 +41,40 @@ public abstract class Tower implements ExistsInArena {
     /**
      * The Arena that this tower is attached to.
      */
-    @Transient
+    @NotNull
+    @ManyToOne
     protected final Arena arena;
 
     /**
      * Represents the position of the tower.
      */
     @NotNull
+    @OneToOne
     protected Coordinates coordinates;
 
     /**
      * The maximum attack power of the tower.
      */
-    @NotNull
     protected final int maxAttackPower = 100;
 
     /**
      * The current attack power of the tower. It cannot go beyond {@link #maxAttackPower}.
      */
-    @NotNull
-    protected int attackPower;
+    protected int attackPower = 1;
 
     /**
      * The current building cost of the tower.
      */
-    @NotNull
-    protected int buildingCost;
+    protected int buildingCost = 1;
 
     /**
      * The maximum shooting range of the tower.
      */
-    @NotNull
-    protected short maxShootingRange;
+    protected short maxShootingRange = 1;
 
     /**
      * The current shooting limit of the tower. It cannot go beyond {@link #maxShootingRange}.
      */
-    @NotNull
     protected short minShootingRange = 0;
 
     /**
@@ -95,7 +96,6 @@ public abstract class Tower implements ExistsInArena {
     /**
      * The resources needed to upgrade the tower
      */
-    @NotNull
     protected int upgradeCost = 10;
 
     /**
@@ -120,18 +120,19 @@ public abstract class Tower implements ExistsInArena {
      */
     public Tower(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull ImageView imageView) {
         this.arena = arena;
-        this.coordinates = coordinates;
+        this.coordinates = new Coordinates(coordinates);
         this.imageView = imageView;
         this.coordinates.bindByImage(this.imageView);
     }
 
     /**
-     * Copy constructor for the Tower class. Performs deep copy.
-     * @param other The other object to copy form.
+     * Constructor for making a copy of Tower class that is linked to another arena.
+     * @param arena The arena to link this object to.
+     * @param other The object to copy from.
      */
-    public Tower(@NonNull Tower other) {
+    public Tower(@NonNull Arena arena, @NonNull Tower other) {
         this.imageView = new ImageView(other.imageView.getImage());
-        this.arena = other.arena;
+        this.arena = arena;
         this.coordinates = new Coordinates(other.coordinates);
         this.attackPower = other.attackPower;
         this.buildingCost = other.buildingCost;
@@ -146,10 +147,11 @@ public abstract class Tower implements ExistsInArena {
     }
 
     /**
-     * Creates a deep copy of the tower.
+     * Creates a deep copy of the tower that is linked to another arena.
+     * @param arena The arena to link this object to.
      * @return A deep copy of the tower.
      */
-    public abstract Tower deepCopy();
+    public abstract Tower deepCopy(@NonNull Arena arena);
 
     // Interface implementation
     public ImageView getImageView() { return imageView; }

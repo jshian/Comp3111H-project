@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.beans.binding.Bindings;
@@ -42,6 +47,7 @@ import project.arena.towers.Tower;
  * @see Tower
  * @see Projectile
  */
+@Entity
 public final class Arena {
 
     /**
@@ -106,6 +112,8 @@ public final class Arena {
     /**
      * The objects stored in this arena.
      */
+    @NotNull
+    @OneToOne
     private ArenaObjectStorage arenaObjectStorage;
 
     /**
@@ -156,24 +164,30 @@ public final class Arena {
     private ExistsInArena[] objectNextFrame(@NonNull ExistsInArena obj) {
         return arenaObjectStorage.processObjectNextFrame(obj);
     }
+
     /**
      * The scalar fields stored in this arena.
      */
+    @Transient
     private ArenaScalarFields arenaScalarFields;
 
     /**
      * The Arena during the previous frame. Only used for saving the game.
      */
+    @OneToOne
     private Arena shadowArena;
 
     /**
      * The player of the game.
      */
+    @NotNull
+    @OneToOne
     private Player player;
 
     /**
      * The arena of the game.
      */
+    @Transient
     private AnchorPane paneArena;
 
     /**
@@ -206,8 +220,9 @@ public final class Arena {
             this.toRemove.put(entry.getKey(), entry.getValue());
         }
 
-        this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
+        // arenaScalarFields must be set up before arenaObjectStorage because Monster ordering depends on it
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
+        this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
 
         this.shadowArena = null;
     }

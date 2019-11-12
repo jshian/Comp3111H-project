@@ -42,7 +42,6 @@ public class StatusEffect {
     /**
      * The remaining duration of the status effects in number of frames.
      */
-    @NotNull
     private int duration;
 
     /**

@@ -3,6 +3,8 @@ package project.arena.projectiles;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.arena.Arena;
@@ -10,46 +12,33 @@ import project.arena.Coordinates;
 import project.arena.ExistsInArena;
 import project.arena.monsters.Monster;
 
+@Entity
 public class BasicProjectile extends Projectile {
 
     /**
      * Constructor for the Projectile class.
      * @param arena The arena the projectile is attached to.
      * @param coordinates The coordinates of the pixel where the projectile is initially located.
-     * @param target The Monster that the projectile will pursue, which should not be <code>null</code>.
+     * @param target The monster that the projectile will pursue.
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public BasicProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower) {
+    public BasicProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, double speed, int attackPower) {
         super(arena,coordinates,target,speed,attackPower);
     }
 
     /**
-     * @see Projectile#Projectile(Projectile)
+     * @see Projectile#Projectile(Arena, Monster, Projectile)
      */
-    public BasicProjectile(@NonNull BasicProjectile other){
-        super(other);
+    public BasicProjectile(@NonNull Arena arena, @NonNull Monster target, @NonNull BasicProjectile other){
+        super(arena, target, other);
     }
 
     @Override
-    public BasicProjectile deepCopy() {
-        return new BasicProjectile(this);
+    public BasicProjectile deepCopy(@NonNull Arena arena, @NonNull Monster target) {
+        return new BasicProjectile(arena, target, this);
     }
 
     @Override
-    public void nextFrame() {
-        super.nextFrame();
-        if (hasReachedTarget()){
-            LinkedList<ExistsInArena> targets = arena.findObjectsInGrid(target, EnumSet.of(Arena.TypeFilter.Monster));
-            if(targets.size()>0){
-                Monster target = (Monster)targets.get(0);
-                if (target != null) {
-                    target.takeDamage(attackPower);
-                    System.out.println(String.format("Basic Tower@(%d,%d) -> %s@(%d,%d)", tower.getX(), tower.getY()
-                            , target.getClassName(), target.getX(), target.getY()));
-                }
-            }
-
-        }
-    }
+    protected String getTowerClassName() { return "Basic Tower"; }
 }

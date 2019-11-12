@@ -14,6 +14,11 @@ import project.arena.Coordinates;
 @Entity
 public class Penguin extends Monster {
     /**
+     * The regeneration rate of the Penguin in terms of health per frame.
+     */
+    private static double REGENERATION_RATE = 0.1;
+    
+    /**
      * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
      */
     public Penguin(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
@@ -26,22 +31,22 @@ public class Penguin extends Monster {
     }
 
     /**
-     * @see Monster#Monster(Monster)
+     * @see Monster#Monster(Arena, Monster)
      */
-    public Penguin(@NonNull Penguin other) {
-        super(other);
+    public Penguin(@NonNull Arena arena, @NonNull Penguin other) {
+        super(arena, other);
     }
     
     @Override
-    public Penguin deepCopy() {
-        return new Penguin(this);
+    public Penguin deepCopy(@NonNull Arena arena) {
+        return new Penguin(arena, this);
     }
 
     // Interface implementation
     @Override
     public void nextFrame() {
         super.nextFrame();
-        this.health.set(getHealth() + 0.1);
+        this.health.set(getHealth() + REGENERATION_RATE);
     }
     
     @Override

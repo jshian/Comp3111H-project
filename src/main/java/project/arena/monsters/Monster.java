@@ -2,11 +2,13 @@ package project.arena.monsters;
 
 import java.util.LinkedList;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -26,6 +28,7 @@ import project.arena.MovesInArena;
  * They can only move horizontally or vertically towards an adjacent grid that does not contain a Tower.
  * If they succeed, the game is lost.
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
+ * TODO: Allow Towers to shoot monsters that are fast.
  */
 @Entity
 public abstract class Monster implements MovesInArena, Comparable<Monster> {
@@ -45,19 +48,20 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     /**
      * The Arena that this monster is attached to.
      */
-    @Transient
+    @NotNull
+    @ManyToOne
     protected final Arena arena;
 
     /**
      * Represents the position of the monster.
      */
     @NotNull
+    @OneToOne
     protected Coordinates coordinates;
 
     /**
      * The maximum health of the monster.
      */
-    @NotNull
     protected double maxHealth = 1;
 
     /**
@@ -65,49 +69,45 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * When this is not greater than zero, the monster is considered dead.
      * @see #hasDied()
      */
-    @NotNull
     protected SimpleDoubleProperty health = new SimpleDoubleProperty(1);
 
     /**
      * The maximum number of pixels the monster can travel per frame.
      */
-    @NotNull
     protected double maxSpeed = 1;
 
     /**
      * The current speed of the monster. It cannot go beyond {@link #maxSpeed}.
      */
-    @NotNull
     protected double speed = 1;
 
     /**
      * The location which the monster tries to reach.
      */
-    @NotNull
+    @OneToOne
     protected Coordinates destination;
 
     /**
      * The non-integral portion of the movement during each frame is accumulated here.
      * When it reaches one, it is consumed to allow the monster to move an extra pixel.
      */
-    @NotNull
     protected double unusedMovement = 0;
 
     /**
      * The amount of resources granted to the player on kill.
      */
-    @NotNull
     protected int resources = 0;
 
     /**
      * Label that display the hp of the monster.
      */
+    @Transient
     protected Label hpLabel = new Label();
 
     /**
      * A linked list of references to each status effect that is active against the monster.
      */
-    @ElementCollection
+    @OneToMany
     protected LinkedList<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
@@ -128,12 +128,13 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     }
 
     /**
-     * Copy constructor for the Monster class. Performs deep copy.
-     * @param other The other object to copy form.
+     * Constructor for making a copy of Monster class that is linked to another arena.
+     * @param arena The arena to link this object to.
+     * @param other The object to copy from.
      */
-    public Monster(@NonNull Monster other) {
+    public Monster(@NonNull Arena arena, @NonNull Monster other) {
         this.imageView = new ImageView(other.imageView.getImage());
-        this.arena = other.arena;
+        this.arena = arena;
         this.coordinates = new Coordinates(other.coordinates);
         this.maxHealth = other.maxHealth;
         this.health = new SimpleDoubleProperty(other.getHealth());
@@ -141,16 +142,17 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.speed = other.speed;
         this.destination = new Coordinates(other.destination);
         this.coordinates.bindByImage(this.imageView);
-        hoverMonsterEvent(this.arena);
+        hoverMonsterEvent(arena);
 
         for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
 
     /**
-     * Creates a deep copy of the monster.
+     * Creates a deep copy of the monster that is linked to another arena.
+     * @param arena The arena to link this object to.
      * @return A deep copy of the monster.
      */
-    public abstract Monster deepCopy();
+    public abstract Monster deepCopy(@NonNull Arena arena);
     
     // Interface implementation
     public ImageView getImageView() { return imageView; }
@@ -193,6 +195,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @return The health of the monster.
      */
     public double getHealth() { return health.get(); }
+
+    /**
+     * Sets the health of the monster.
+     * @param value The new health of the monster.
+     */
+    protected void setHealth(double value) { this.health.set(value); }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.

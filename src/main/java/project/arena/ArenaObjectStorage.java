@@ -1,8 +1,14 @@
 package project.arena;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -18,23 +24,27 @@ import project.arena.towers.Tower;
  * 
  * @see Arena
  */
+@Entity
 class ArenaObjectStorage {
 
     /**
      * The arena that the class is linked to.
      */
+    @OneToOne(mappedBy = "arena")
     private Arena arena;
 
     /**
      * Contains a reference to each Tower on the arena.
      * @see Tower
      */
+    @OneToMany
     private LinkedList<Tower> towers = new LinkedList<>();
 
     /**
      * Contains a reference to each Projectile on the arena.
      * @see Projectile
      */
+    @OneToMany
     private LinkedList<Projectile> projectiles = new LinkedList<>();
 
     /**
@@ -43,12 +53,14 @@ class ArenaObjectStorage {
      * The first element is closest to the end zone while the last element is furthest.
      * @see Monster
      */
+    @OneToMany
     private PriorityQueue<Monster> monsters = new PriorityQueue<>();
 
     /**
      * Stores grid information of the arena.
      * @see Grid
      */
+    @NotNull
     private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
     {
         for (short i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
@@ -75,22 +87,43 @@ class ArenaObjectStorage {
         this.arena = arena;
 
         for (Tower t : other.towers) {
-            Tower new_t = t.deepCopy();
+            Tower new_t = t.deepCopy(arena);
             this.towers.add(new_t);
             Coordinates c = new Coordinates(new_t.getX(), new_t.getY());
             getGrid(c).addObject(new_t);
         }
         
+        // Make sure projectiles are bound to the copied target monster
+        HashMap<Monster, Monster> targetMap = new HashMap<>(); // Original -> Copy
+
         for (Projectile p : other.projectiles) {
-            Projectile new_p = p.deepCopy();
+            Monster originalTarget = p.getTarget();
+
+            Projectile new_p;
+            if (targetMap.containsKey(originalTarget)) {
+                new_p = p.deepCopy(arena, targetMap.get(originalTarget));
+            } else {
+                Monster copiedTarget = originalTarget.deepCopy(arena);
+                targetMap.put(originalTarget, copiedTarget);
+                new_p = p.deepCopy(arena, copiedTarget);
+            }
+
             this.projectiles.add(new_p);
+
             Coordinates c = new Coordinates(new_p.getX(), new_p.getY());
             getGrid(c).addObject(new_p);
         }
 
         for (Monster m : other.monsters) {
-            Monster new_m = m.deepCopy();
+            Monster new_m;
+            if (targetMap.containsKey(m)) {
+                new_m = targetMap.get(m);
+            } else {
+                new_m = m.deepCopy(arena);
+            }
+
             this.monsters.add(new_m);
+
             Coordinates c = new Coordinates(new_m.getX(), new_m.getY());
             getGrid(c).addObject(new_m);
         }

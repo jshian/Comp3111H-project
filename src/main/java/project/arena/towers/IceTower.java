@@ -1,5 +1,8 @@
 package project.arena.towers;
 
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -13,6 +16,7 @@ import project.arena.projectiles.Projectile;
 /**
  * IceTower slow down the speed of monster without damage.
  */
+@Entity
 public class IceTower extends Tower {
 
     /**
@@ -23,8 +27,7 @@ public class IceTower extends Tower {
     /**
      * The current slow down duration of ice tower. It cannot go beyond {@link #maxSlowDownTime}.
      */
-    private int slowDownTime;
-
+    private int slowDownTime = 1;
 
     /**
      * Constructor of ice tower.
@@ -58,16 +61,16 @@ public class IceTower extends Tower {
     }
 
     /**
-     * @see Tower#Tower(Tower)
+     * @see Tower#Tower(Arena, Tower)
      */
-    public IceTower(@NonNull IceTower other){
-        super(other);
+    public IceTower(@NonNull Arena arena, @NonNull IceTower other) {
+        super(arena, other);
         this.slowDownTime = other.slowDownTime;
     }
 
     @Override
-    public IceTower deepCopy() {
-        return new IceTower(this);
+    public IceTower deepCopy(@NonNull Arena arena) {
+        return new IceTower(arena, this);
     }
 
     /**
@@ -96,7 +99,7 @@ public class IceTower extends Tower {
                 if (canShoot(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new IceProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, slowDownTime);
+                    return new IceProjectile(arena, coordinates, m, attackSpeed, slowDownTime);
                 }
             }
         }
