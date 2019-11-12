@@ -37,17 +37,17 @@ public class CatapultTest extends ApplicationTest {
     public void selectMonster() {
         Arena arena = new Arena(new Label(), new AnchorPane());
         Image img = new Image("/unicorn.png");
-        Coordinates destination = new Coordinates(470,10);
+        Coordinates destination = new Coordinates((short) 470, (short) 10);
         PriorityQueue<Monster> testList = new PriorityQueue<>();
         LinkedList<ExistsInArena> selectList = new LinkedList<>();
         LinkedList<Monster> answerList = new LinkedList<>();
         Coordinates target;
 
         //test shooting range valid
-        Catapult catapult = new Catapult(arena, new Coordinates(370,10));
-        Monster m1 = new Unicorn(arena, new Coordinates(110, 110), destination, new ImageView(img), 1);testList.add(m1);arena.addObject(m1);
-        Monster m2 = new Unicorn(arena, new Coordinates(130, 110), destination, new ImageView(img), 1);testList.add(m2);arena.addObject(m2);
-        Monster m3 = new Unicorn(arena, new Coordinates(450, 10), destination, new ImageView(img), 1);testList.add(m3);arena.addObject(m3);
+        Catapult catapult = new Catapult(arena, new Coordinates((short) 370,(short) 10));
+        Monster m1 = new Unicorn(arena, new Coordinates((short) 110, (short) 110), destination, new ImageView(img), 1);testList.add(m1);arena.addObject(m1);
+        Monster m2 = new Unicorn(arena, new Coordinates((short) 130, (short) 110), destination, new ImageView(img), 1);testList.add(m2);arena.addObject(m2);
+        Monster m3 = new Unicorn(arena, new Coordinates((short) 450, (short) 10), destination, new ImageView(img), 1);testList.add(m3);arena.addObject(m3);
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m3);
         Assert.assertEquals(selectList,answerList);

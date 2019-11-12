@@ -11,23 +11,23 @@ public class CoordinatesTester {
 	@Test
 	public void testCoordinateConstructor() {
 		// Boundary Cases
-		Coordinates c_b1 = new Coordinates(0, 0);
-		Coordinates c_b2 = new Coordinates(0, 480);
-		Coordinates c_b3 = new Coordinates(480, 0);
-		Coordinates c_b4 = new Coordinates(480, 480);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_b5 = new Coordinates(-1, 0);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_b6 = new Coordinates(0, -1);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_b7 = new Coordinates(481, 0);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_b8 = new Coordinates(0, 481);
+		Coordinates c_b1 = new Coordinates((short) 0, (short) 0);
+		Coordinates c_b2 = new Coordinates((short) 0, (short) 480);
+		Coordinates c_b3 = new Coordinates((short) 480, (short) 0);
+		Coordinates c_b4 = new Coordinates((short) 480, (short) 480);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_b5 = new Coordinates((short) -1, (short) 0);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_b6 = new Coordinates((short) 0, (short) -1);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_b7 = new Coordinates((short) 481, (short) 0);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_b8 = new Coordinates((short) 0, (short) 481);
 
 		// Typical Cases
-		Coordinates c_t1 = new Coordinates(123, 407);
-		Coordinates c_t2 = new Coordinates(274, 190);
-		Coordinates c_t3 = new Coordinates(6, 256);
-		Coordinates c_t4 = new Coordinates(445, 77);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_t5 = new Coordinates(-215, 0);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_t6 = new Coordinates(0, -159);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_t7 = new Coordinates(1203, 0);
-		expectedException.expect(IllegalArgumentException.class); Coordinates c_t8 = new Coordinates(0, 800);
+		Coordinates c_t1 = new Coordinates((short) 123, (short) 407);
+		Coordinates c_t2 = new Coordinates((short) 274, (short) 190);
+		Coordinates c_t3 = new Coordinates((short) 6, (short) 256);
+		Coordinates c_t4 = new Coordinates((short) 445, (short) 77);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_t5 = new Coordinates((short) -215, (short) 0);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_t6 = new Coordinates((short) 0, (short) -159);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_t7 = new Coordinates((short) 1203, (short) 0);
+		expectedException.expect(IllegalArgumentException.class); Coordinates c_t8 = new Coordinates((short) 0, (short) 800);
 	}
 } 
