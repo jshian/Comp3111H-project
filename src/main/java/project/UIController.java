@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -26,10 +27,7 @@ import javafx.util.Duration;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.Grid;
-import project.arena.towers.BasicTower;
-import project.arena.towers.Catapult;
-import project.arena.towers.IceTower;
-import project.arena.towers.Tower;
+import project.arena.towers.*;
 
 
 public class UIController {
@@ -60,23 +58,69 @@ public class UIController {
     @FXML
     private Label remainingResources;
 
-    public static final short ARENA_WIDTH = 480;
-    public static final short ARENA_HEIGHT = 480;
-    public static final short GRID_WIDTH = 40;
-    public static final short GRID_HEIGHT = 40;
-    public static final short MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
-    public static final short MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
+    /**
+     * width of arena.
+     */
+    public static final int ARENA_WIDTH = 480;
+    /**
+     * height of arena.
+     */
+    public static final int ARENA_HEIGHT = 480;
+    /**
+     * width of a grid.
+     */
+    public static final int GRID_WIDTH = 40;
+    /**
+     * height of a grid.
+     */
+    public static final int GRID_HEIGHT = 40;
+    /**
+     * maximum number of grids in one row.
+     */
+    public static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
+    /**
+     * maximum number of grids in one column.
+     */
+    public static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
-    static enum modes {normal, simulate, play, paused, end};
+    /**
+     * An enum to show game state.
+     */
+    static enum modes {normal, simulate, play, end};
+    /**
+     * the game state.
+     */
     static modes mode = modes.normal;
 
+    /**
+     * the arena of the game.
+     */
     private Arena arena;
-    private Circle towerCircle; // circle that shows shooting range of tower
-    private Label towerLabel; // Label that shows the information of tower
-    private VBox vb; // the vbox that use to upgrade/destory tower
+
+    /**
+     * circle that shows shooting range of tower.
+     */
+    private Circle towerCircle;
+
+    /**
+     * Tooltip that shows the information of tower.
+     */
+    private Tooltip tp;
+
+    /**
+     * the VBox that use to upgrade/destroy tower.
+     */
+    private VBox vb;
+
+    /**
+     * the timeline for running the game.
+     */
     private Timeline timeline;
 
-    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
+    /**
+     * the grids on arena.
+     */
+    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID];
     /**
      * Play the game. Build towers are allowed.
      */
@@ -105,7 +149,6 @@ public class UIController {
                 buttonPlay.setDisable(false);
             }
             buttonNextFrame.setDisable(false);
-            this.mode = modes.paused;
             timeline.pause();
         }
     }
@@ -139,7 +182,12 @@ public class UIController {
      * Reset the game.
      */
     private void resetGame() {
-        paneArena = new AnchorPane();
+        paneArena.getChildren().removeAll(paneArena.getChildren());
+        for (int j = 0; j < grids.length; j++) {
+            for (int i = 0; i < grids[0].length; i++) {
+                grids[i][j] = null;
+            }
+        }
         createArena();
         arena = new Arena(remainingResources, paneArena);
     }
@@ -234,17 +282,7 @@ public class UIController {
     private void setDragLabel() {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
-    		l.setOnDragDetected(e -> {
-    	        if (mode != modes.simulate) {
-                    Dragboard db = l.startDragAndDrop(TransferMode.ANY);
-
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(l.getText());
-                    db.setContent(content);
-                }
-
-    	        e.consume();
-    	    });
+    	    dragLabelEvent(l);
     	}
 
     	for (short i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -335,10 +373,12 @@ public class UIController {
 
         iv.setOnMouseEntered(e -> {
             drawTowerCircle(center, t);
-            displayTowerInfo(center, t);
+            tp = new Tooltip(t.getInformation());
+            tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7);
         });
         iv.setOnMouseExited(e -> {
-            paneArena.getChildren().removeAll(towerCircle, towerLabel);
+            paneArena.getChildren().remove(towerCircle);
+            tp.hide();
         });
 
         iv.setOnMouseClicked(e -> {
@@ -370,25 +410,64 @@ public class UIController {
     }
 
     /**
-     * Display tower information.
-     * @param center center coordinate of tower.
-     * @param t the tower that need to display information.
+     * set the event on label that used to build tower by drag/drop.
+     * @param l the label that used to build tower by drag/drop.
      */
-    private void displayTowerInfo(Coordinates center, Tower t) {
-        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
+    private void dragLabelEvent(Label l) {
+        Tooltip tp = new Tooltip();
+        Tower temp;
+        if (l.equals(labelBasicTower)) {
+            temp = new BasicTower(arena, new Coordinates((short)0,(short)0));
+            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        } else if (l.equals(labelIceTower)) {
+            temp = new IceTower(arena, new Coordinates((short)0,(short)0));
+            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        } else if (l.equals(labelCatapult)) {
+            temp = new Catapult(arena, new Coordinates((short)0,(short)0));
+            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        } else if (l.equals(labelLaserTower)) {
+            temp = new LaserTower(arena, new Coordinates((short)0,(short)0));
+            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        }
+        tp.setShowDelay(Duration.ZERO);
+        tp.setHideDelay(Duration.ZERO);
 
-        towerLabel = new Label(t.getInformation());
-        towerLabel.setAlignment(Pos.CENTER);
-        towerLabel.setMinWidth(GRID_WIDTH * 3);
-        towerLabel.setMinHeight(GRID_HEIGHT * 2);
-        double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
-        double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
-        towerLabel.setLayoutX(positionX);
-        towerLabel.setLayoutY(positionY);
-        towerLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
-        towerLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
-        paneArena.getChildren().add(towerLabel);
+        l.setOnMouseEntered(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
+        l.setOnMouseExited(e -> tp.hide());
+
+        l.setOnDragDetected(e -> {
+            if (mode != modes.simulate) {
+                Dragboard db = l.startDragAndDrop(TransferMode.ANY);
+
+                ClipboardContent content = new ClipboardContent();
+                content.putString(l.getText());
+                db.setContent(content);
+            }
+
+            e.consume();
+        });
     }
+
+//    /**
+//     * Display tower information.
+//     * @param center center coordinate of tower.
+//     * @param t the tower that need to display information.
+//     */
+//    private void displayTowerInfo(Coordinates center, Tower t) {
+//        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
+//
+//        towerLabel = new Label(t.getInformation());
+//        towerLabel.setAlignment(Pos.CENTER);
+//        towerLabel.setMinWidth(GRID_WIDTH * 3);
+//        towerLabel.setMinHeight(GRID_HEIGHT * 2);
+//        double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
+//        double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
+//        towerLabel.setLayoutX(positionX);
+//        towerLabel.setLayoutY(positionY);
+//        towerLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
+//        towerLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
+//        paneArena.getChildren().add(towerLabel);
+//    }
 
     /**
      * Display the VBox that perform upgrade/destroy of a tower.
@@ -407,8 +486,8 @@ public class UIController {
         vb.setAlignment(Pos.CENTER);
         vb.setMinWidth(GRID_WIDTH * 2);
         vb.setMinHeight(GRID_HEIGHT * 2);
-        double positionX = (coor.getX() > paneArena.getWidth()/2) ? towerLabel.getLayoutX()-GRID_WIDTH*2 : towerLabel.getLayoutX()+towerLabel.getWidth();
-        double positionY = (coor.getY() > paneArena.getWidth()/2) ? coor.getY()-GRID_HEIGHT*2 : coor.getY()+GRID_HEIGHT;
+        double positionX = (coor.getX() > paneArena.getWidth()/2) ? coor.getX()-GRID_HEIGHT*2 : coor.getX()+GRID_HEIGHT;
+        double positionY = (coor.getY() >= paneArena.getWidth()-GRID_HEIGHT) ? coor.getY()-GRID_HEIGHT : coor.getY();
         vb.setLayoutX(positionX);
         vb.setLayoutY(positionY);
         Button upgradeBtn = new Button("upgrade");
