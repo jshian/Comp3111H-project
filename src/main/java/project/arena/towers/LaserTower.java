@@ -128,3 +128,4 @@ public class LaserTower extends Tower{
                 this.upgradeCost, this.minShootingRange, this.maxAttackPower, this.consume);
     }
 }
+
