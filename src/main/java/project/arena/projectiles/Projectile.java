@@ -154,11 +154,17 @@ public abstract class Projectile implements MovesInArena {
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public double getSpeed() { return speed; }
     public void nextFrame() {
-        short targetX = (short) (target.getX() + deltaX);
-        short targetY = (short) (target.getY() + deltaY);
-        double potentialDistanceTravelled = speed + unusedMovement;
+        short targetX, targetY;
+        targetX = (short) (target.getX() + deltaX);
+        if (targetX < 0) targetX = 0;
+        else if (targetX > UIController.ARENA_WIDTH) targetX = UIController.ARENA_WIDTH;
+        
+        targetY = (short) (target.getY() + deltaY);
+        if (targetY < 0) targetY = 0;
+        else if (targetY > UIController.ARENA_HEIGHT) targetY = UIController.ARENA_HEIGHT;
 
         double distanceFromTarget = Geometry.findEuclideanDistance(getX(), getY(), targetX, targetY);
+        double potentialDistanceTravelled = speed + unusedMovement;
 
         if (distanceFromTarget <= potentialDistanceTravelled) {
             coordinates.update(targetX, targetY);
@@ -166,12 +172,12 @@ public abstract class Projectile implements MovesInArena {
             damageTarget();
         } else {
             double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), targetX, targetY);
-            short newX = (short) (coordinates.getX() + (potentialDistanceTravelled * Math.cos(angleFromTarget)));
-            short newY = (short) (coordinates.getY() + (potentialDistanceTravelled * Math.sin(angleFromTarget)));
+            short newX = (short) (getX() + (short) (potentialDistanceTravelled * Math.cos(angleFromTarget)));
+            short newY = (short) (getY() + (short) (potentialDistanceTravelled * Math.sin(angleFromTarget)));
 
             double actualDistanceTravelled = Geometry.findEuclideanDistance(getX(), getY(), newX, newY);
             coordinates.update(newX, newY);
-            potentialDistanceTravelled += distanceFromTarget - actualDistanceTravelled;
+            unusedMovement += speed - actualDistanceTravelled;
         }
     }
 
@@ -191,9 +197,11 @@ public abstract class Projectile implements MovesInArena {
      * Damages the target of the projectile.
      */
     protected void damageTarget() {
-        target.takeDamage(attackPower);
-        System.out.println(String.format("%s@(%d, %d) -> %s@(%d, %d)", getTowerClassName(), origin.getX(), origin.getY()
-                            , target.getClassName(), target.getX(), target.getY()));
+        if (!target.hasDied()) {
+            target.takeDamage(attackPower);
+            System.out.println(String.format("%s@(%d, %d) -> %s@(%d, %d)", getTowerClassName(), origin.getX(), origin.getY()
+                                , target.getClassName(), target.getX(), target.getY()));
+        }
     }
 
     /**

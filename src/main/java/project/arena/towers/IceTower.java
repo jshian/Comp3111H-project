@@ -1,7 +1,6 @@
 package project.arena.towers;
 
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -112,7 +111,7 @@ public class IceTower extends Tower {
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]\n"
+        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d, %d]\n"
                 + "slow down time: %d", this.attackPower, this.buildingCost, this.minShootingRange,
                 this.maxShootingRange,this.slowDownTime);
     }

@@ -493,7 +493,7 @@ public final class Arena {
             return null;
             
         addObject(m);
-        System.out.println(String.format("%s:%f generated", type, m.getHealth()));
+        System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
 
         return m;
     }

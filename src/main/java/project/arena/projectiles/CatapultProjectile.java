@@ -1,7 +1,6 @@
 package project.arena.projectiles;
 
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -55,15 +54,16 @@ public class CatapultProjectile extends Projectile {
     public void damageTarget() {
         super.damageTarget();
 
-        short targetX = (short) (target.getX() + deltaX);
-        short targetY = (short) (target.getY() + deltaY);
-
-        arena.drawCircle(new Coordinates(targetX, targetY), damageRange);
+        arena.drawCircle(coordinates, damageRange);
         for (Monster m : arena.getMonsters()) {
-            if (Geometry.isInCircle(m.getX(), m.getY(), targetX, targetY, damageRange)) {
-                m.takeDamage(attackPower);
-                System.out.println(String.format("%s@(%d, %d) -> %s@(%d, %d)", getTowerClassName(), origin.getX(), origin.getY()
-                , m.getClassName(), m.getX(), m.getY()));
+            if (m == target) continue; // Don't double-hit
+
+            if (Geometry.isInCircle(m.getX(), m.getY(), getX(), getY(), damageRange)) {
+                if (!m.hasDied()) {
+                    m.takeDamage(attackPower);
+                    System.out.println(String.format("%s@(%d, %d) -> %s@(%d, %d)", getTowerClassName(), origin.getX(), origin.getY()
+                    , m.getClassName(), m.getX(), m.getY()));
+                }
             }
         }
     }

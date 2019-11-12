@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -212,7 +211,7 @@ public class Catapult extends Tower {
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d ,  %d]\n"
+        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d, %d]\n"
                 + "reload time: %d\ndamage range: %d", this.attackPower,
                 this.buildingCost, this.minShootingRange, this.maxShootingRange, this.reload, this.damageRange);
     }

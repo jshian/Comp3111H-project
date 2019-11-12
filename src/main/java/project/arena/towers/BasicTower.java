@@ -99,7 +99,7 @@ public class BasicTower extends Tower {
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]", this.attackPower,
+        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d, %d]", this.attackPower,
                 this.buildingCost, this.minShootingRange,this.maxShootingRange);
     }
 }

@@ -1,15 +1,11 @@
 package project.arena.projectiles;
 
-import java.util.EnumSet;
-import java.util.LinkedList;
-
 import javax.persistence.Entity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.ExistsInArena;
 import project.arena.monsters.Monster;
 
 @Entity

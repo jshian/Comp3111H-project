@@ -1,16 +1,11 @@
 package project.arena.projectiles;
 
-import java.util.EnumSet;
-import java.util.LinkedList;
-
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.ExistsInArena;
 import project.arena.monsters.Monster;
 import project.arena.monsters.StatusEffect;
 
@@ -20,11 +15,6 @@ public class IceProjectile extends Projectile {
      * The slow down duration to monsters of projectile.
      */
     private int slowDownTime;
-
-    /**
-     * The slow down speed to monsters of projectile.
-     */
-    private final int slowDownSpeed = 5;
 
     /**
      * Constructor for the Projectile class.
@@ -64,6 +54,9 @@ public class IceProjectile extends Projectile {
     @Override
     protected void damageTarget() {
         super.damageTarget();
-        target.addStatusEffect(new StatusEffect(StatusEffect.EffectType.Slow, slowDownTime));
+
+        if (!target.hasDied()) {
+            target.addStatusEffect(new StatusEffect(StatusEffect.EffectType.Slow, slowDownTime));
+        }
     }
 }
