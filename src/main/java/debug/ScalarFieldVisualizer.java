@@ -1,4 +1,4 @@
-package project.debug;
+package debug;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -11,12 +11,12 @@ import javax.swing.JLabel;
  * Helper class to visualize numerical arrays.
  * For debugging only.
  */
-public final class FieldVisualizer {
+public final class ScalarFieldVisualizer {
     private static double[][] openArray;
 
     private static JFrame openFrame;
 
-    private FieldVisualizer() { }
+    private ScalarFieldVisualizer() { }
 
     private static void display(BufferedImage img) {
         if (openFrame != null) openFrame.dispose();

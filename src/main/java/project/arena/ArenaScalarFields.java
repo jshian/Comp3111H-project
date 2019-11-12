@@ -11,7 +11,8 @@ import project.Geometry;
 import project.UIController;
 import project.arena.monsters.Monster;
 import project.arena.towers.Tower;
-import project.debug.FieldVisualizer;
+
+import debug.ScalarFieldVisualizer;
 
 /**
  * Manages the scalar fields of the arena.
@@ -131,7 +132,7 @@ class ArenaScalarFields {
     		}
         }
 
-        FieldVisualizer.visualizeDoubleArray(attacksToEndZone);
+        ScalarFieldVisualizer.visualizeDoubleArray(attacksToEndZone);
     }
 
     /**
