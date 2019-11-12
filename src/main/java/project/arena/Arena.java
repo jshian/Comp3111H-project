@@ -91,7 +91,7 @@ public final class Arena {
     /**
      * The current frame number of the arena since the game began.
      */
-    private int currentFrame;
+    private int currentFrame = 0;
 
     /**
      * The current difficulty of the arena.
