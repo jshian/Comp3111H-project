@@ -2,12 +2,9 @@ package project;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,8 +28,6 @@ import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.Grid;
 import project.arena.towers.*;
-
-import javax.tools.Tool;
 
 
 public class UIController {
