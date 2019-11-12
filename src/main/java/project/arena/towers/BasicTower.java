@@ -1,5 +1,7 @@
 package project.arena.towers;
 
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -13,6 +15,7 @@ import project.arena.projectiles.Projectile;
 /**
  * Basic tower has no any special ability.
  */
+@Entity
 public class BasicTower extends Tower {
 
     /**
@@ -45,15 +48,15 @@ public class BasicTower extends Tower {
     }
 
     /**
-     * @see Tower#Tower(Tower)
+     * @see Tower#Tower(Arena, Tower)
      */
-    public BasicTower(@NonNull BasicTower other){
-        super(other);
+    public BasicTower(@NonNull Arena arena, @NonNull BasicTower other) {
+        super(arena, other);
     }
 
     @Override
-    public BasicTower deepCopy() {
-        return new BasicTower(this);
+    public BasicTower deepCopy(@NonNull Arena arena) {
+        return new BasicTower(arena, this);
     }
 
     /**
@@ -83,7 +86,7 @@ public class BasicTower extends Tower {
                 if (canShoot(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new BasicProjectile(arena, coordinates, new Coordinates(m.getX(), m.getY()), attackSpeed, attackPower);
+                    return new BasicProjectile(arena, coordinates, m, attackSpeed, attackPower);
                 }
             }
         }
@@ -96,7 +99,7 @@ public class BasicTower extends Tower {
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]", this.attackPower,
+        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d, %d]", this.attackPower,
                 this.buildingCost, this.minShootingRange,this.maxShootingRange);
     }
 }

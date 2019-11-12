@@ -3,6 +3,8 @@ package project.arena;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.Geometry;
@@ -15,6 +17,7 @@ import project.debug.FieldVisualizer;
  * Manages the scalar fields of the arena.
  * @see Arena
  */
+@Entity
 class ArenaScalarFields {
 
     /**
@@ -25,11 +28,11 @@ class ArenaScalarFields {
     /**
      * Helper class to store a pair of x- and y- values.
      */
-    private class IntTuple {
-        private int x;
-        private int y;
+    private class ShortTuple {
+        private short x;
+        private short y;
 
-        IntTuple(int x, int y) {
+        ShortTuple(short x, short y) {
             this.x = x;
             this.y = y;
         }
@@ -41,35 +44,35 @@ class ArenaScalarFields {
      * @see Monster
      * @see Coordinates
      */
-    private int[][] distanceToEndZone = new int[UIController.ARENA_WIDTH + 1][UIController.ARENA_WIDTH + 1];
+    private short[][] distanceToEndZone = new short[UIController.ARENA_WIDTH + 1][UIController.ARENA_WIDTH + 1];
 
     /**
      * Refreshes {@link #distanceToEndZone}.
      */
     private void refreshDistanceToEndZone() {
     	// Reset values
-    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
-    			distanceToEndZone[i][j] = Integer.MAX_VALUE;
+    	for (short i = 0; i <= UIController.ARENA_WIDTH; i++) {
+    		for (short j = 0; j <= UIController.ARENA_HEIGHT; j++) {
+    			distanceToEndZone[i][j] = Short.MAX_VALUE;
     		}
         }
 
         // Calculate distance
-    	LinkedList<IntTuple> openSet = new LinkedList<>();
-        openSet.add(new IntTuple(Arena.END_COORDINATES.getX(), Arena.END_COORDINATES.getY()));
+    	LinkedList<ShortTuple> openSet = new LinkedList<>();
+        openSet.add(new ShortTuple(Arena.END_COORDINATES.getX(), Arena.END_COORDINATES.getY()));
 
     	distanceToEndZone[Arena.END_COORDINATES.getX()][Arena.END_COORDINATES.getY()] = 0;
     	while (!openSet.isEmpty()) {
-    		IntTuple current = openSet.poll();
+    		ShortTuple current = openSet.poll();
     		// Monsters can only travel horizontally or vertically
     		LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(current.x, current.y);
     		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
     			if (arena.findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-        			int newCost = distanceToEndZone[current.x][current.y] + 1;
+        			short newCost = (short) (distanceToEndZone[current.x][current.y] + 1);
         			if (distanceToEndZone[c.getX()][c.getY()] > newCost ) {
         				distanceToEndZone[c.getX()][c.getY()] = newCost;
-        				openSet.add(new IntTuple(c.getX(), c.getY()));
+        				openSet.add(new ShortTuple(c.getX(), c.getY()));
         			}
     			}
     		}
@@ -100,33 +103,35 @@ class ArenaScalarFields {
         final double MOVEMENT_COST = 0.001;
 
     	// Reset values
-    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
+    	for (short i = 0; i <= UIController.ARENA_WIDTH; i++) {
+    		for (short j = 0; j <= UIController.ARENA_HEIGHT; j++) {
     			attacksToEndZone[i][j] = Double.POSITIVE_INFINITY;
     		}
         }
 
         // Calculate attacks
-    	LinkedList<IntTuple> openSet = new LinkedList<>();
-        openSet.add(new IntTuple(Arena.END_COORDINATES.getX(), Arena.END_COORDINATES.getY()));
+    	LinkedList<ShortTuple> openSet = new LinkedList<>();
+        openSet.add(new ShortTuple(Arena.END_COORDINATES.getX(), Arena.END_COORDINATES.getY()));
 
     	attacksToEndZone[Arena.END_COORDINATES.getX()][Arena.END_COORDINATES.getY()] = 0;
     	while (!openSet.isEmpty()) {
-    		IntTuple current = openSet.poll();
+    		ShortTuple current = openSet.poll();
 
     		// Monsters can only travel horizontally or vertically
     		LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(current.x, current.y);
     		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
     			if (arena.findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[current.x][current.y] + MOVEMENT_COST;
+                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[c.getX()][c.getY()] + MOVEMENT_COST;
         			if (attacksToEndZone[c.getX()][c.getY()] > newCost ) {
         				attacksToEndZone[c.getX()][c.getY()] = newCost;
-        				openSet.add(new IntTuple(c.getX(), c.getY()));
+        				openSet.add(new ShortTuple(c.getX(), c.getY()));
         			}
     			}
     		}
         }
+
+        FieldVisualizer.visualizeDoubleArray(attacksToEndZone);
     }
 
     /**
@@ -136,17 +141,17 @@ class ArenaScalarFields {
      * @param maxRange The maximum range.
      * @return A linked list containing the coordinates of each pixel that satisfies the criteria
      */
-    private LinkedList<Coordinates> getPixelsInRange(Coordinates coordinates, int minRange, int maxRange) {
+    private LinkedList<Coordinates> getPixelsInRange(Coordinates coordinates, short minRange, short maxRange) {
 
         LinkedList<Coordinates> result = new LinkedList<>();
 
-        int x = coordinates.getX();
-        int y = coordinates.getY();
+        short x = coordinates.getX();
+        short y = coordinates.getY();
 
-        for (int i = Math.max(x - maxRange, 0); i <= x + maxRange && i <= UIController.ARENA_WIDTH; i++) {
+        for (short i = (short) Math.max(x - maxRange, 0); i <= x + maxRange && i <= UIController.ARENA_WIDTH; i++) {
 
-            for (int j = Math.max(y - maxRange, 0); j <= y + maxRange && j <= UIController.ARENA_HEIGHT; j++) {
-                double distance = Geometry.findEuclideanDistanceToPoint(x, y, i, j);
+            for (short j = (short) Math.max(y - maxRange, 0); j <= y + maxRange && j <= UIController.ARENA_HEIGHT; j++) {
+                double distance = Geometry.findEuclideanDistance(x, y, i, j);
 
                 if (minRange < distance && distance <= maxRange) result.add(new Coordinates(i, j));
             }
@@ -173,11 +178,10 @@ class ArenaScalarFields {
                     attacksPerFrame[c.getX()][c.getY()] += shotsPerFrame;
                 }
             }
-
-            refreshAttacksToEndZone();
         }
 
         refreshDistanceToEndZone();
+        refreshAttacksToEndZone();
     }
 
     /**
@@ -189,8 +193,8 @@ class ArenaScalarFields {
         this.arena = arena;
 
         // Copy arrays
-    	for (int i = 0; i <= UIController.ARENA_WIDTH; i++) {
-    		for (int j = 0; j <= UIController.ARENA_HEIGHT; j++) {
+    	for (short i = 0; i <= UIController.ARENA_WIDTH; i++) {
+    		for (short j = 0; j <= UIController.ARENA_HEIGHT; j++) {
     			distanceToEndZone[i][j] = other.distanceToEndZone[i][j];
                 attacksToEndZone[i][j] = other.attacksToEndZone[i][j];
                 attacksPerFrame[i][j] = other.attacksPerFrame[i][j];
@@ -203,7 +207,7 @@ class ArenaScalarFields {
      * @param coordinates The coordinates of the pixel.
      * @return The distance to reach the end-zone from the pixel, in number of pixels traversed.
      */
-    int getDistanceToEndZone(@NonNull Coordinates coordinates) {
+    short getDistanceToEndZone(@NonNull Coordinates coordinates) {
         return distanceToEndZone[coordinates.getX()][coordinates.getY()];
     }
 
@@ -222,7 +226,7 @@ class ArenaScalarFields {
      * @param y The y-coordinate of the pixel.
      * @return The number of attacks a lone monster that moves at 1 pixel per frame would get to reach the end-zone from the specified pixel. 
      */
-    double getAttacksToEndZone(int x, int y) {
+    double getAttacksToEndZone(short x, short y) {
         return attacksToEndZone[x][y];
     }
     
@@ -251,7 +255,7 @@ class ArenaScalarFields {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
-        double shotsPerFrame = 1 / tower.getReload();
+        double shotsPerFrame = 1.0 / tower.getReload();
         for (Coordinates c : pixelsInRange) {
             attacksPerFrame[c.getX()][c.getY()] -= shotsPerFrame;
         }

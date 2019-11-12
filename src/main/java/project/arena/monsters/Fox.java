@@ -26,15 +26,15 @@ public class Fox extends Monster {
     }
 
     /**
-     * @see Monster#Monster(Monster)
+     * @see Monster#Monster(Arena, Monster)
      */
-    public Fox(@NonNull Fox other) {
-        super(other);
+    public Fox(@NonNull Arena arena, @NonNull Fox other) {
+        super(arena, other);
     }
     
     @Override
-    public Fox deepCopy() {
-        return new Fox(this);
+    public Fox deepCopy(@NonNull Arena arena) {
+        return new Fox(arena, this);
     }
 
     @Override

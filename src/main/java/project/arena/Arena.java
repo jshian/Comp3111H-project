@@ -8,7 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import org.apache.commons.lang3.NotImplementedException;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.beans.binding.Bindings;
@@ -43,19 +47,20 @@ import project.arena.towers.Tower;
  * @see Tower
  * @see Projectile
  */
+@Entity
 public final class Arena {
 
     /**
      * x-coordinate of the starting position.
      * @see Coordinates
      */
-    static final int STARTING_GRID_X_POS = 0;
+    static final short STARTING_GRID_X_POS = 0;
 
     /**
      * y-coordinate of the starting position.
      * @see Coordinates
      */
-    static final int STARTING_GRID_Y_POS = 0;
+    static final short STARTING_GRID_Y_POS = 0;
 
     /**
      * Coordinates of the starting position.
@@ -66,13 +71,13 @@ public final class Arena {
      * x-coordinate of the end zone.
      * @see Coordinates
      */
-    static final int END_GRID_X_POS = 11;
+    static final short END_GRID_X_POS = 11;
 
     /**
      * y-coordinate of the end zone.
      * @see Coordinates
      */
-    static final int END_GRID_Y_POS = 0;
+    static final short END_GRID_Y_POS = 0;
     /**
      * Coordinates of the end zone.
      */
@@ -92,7 +97,7 @@ public final class Arena {
     /**
      * The current frame number of the arena since the game began.
      */
-    private int currentFrame;
+    private int currentFrame = 0;
 
     /**
      * The current difficulty of the arena.
@@ -107,7 +112,9 @@ public final class Arena {
     /**
      * The objects stored in this arena.
      */
-    private ArenaObjectStorage arenaObjectStorage = new ArenaObjectStorage(this);
+    @NotNull
+    @OneToOne
+    private ArenaObjectStorage arenaObjectStorage;
 
     /**
      * Adds an object to the arena.
@@ -157,24 +164,30 @@ public final class Arena {
     private ExistsInArena[] objectNextFrame(@NonNull ExistsInArena obj) {
         return arenaObjectStorage.processObjectNextFrame(obj);
     }
+
     /**
      * The scalar fields stored in this arena.
      */
-    private ArenaScalarFields arenaScalarFields = new ArenaScalarFields(this);
+    @Transient
+    private ArenaScalarFields arenaScalarFields;
 
     /**
      * The Arena during the previous frame. Only used for saving the game.
      */
+    @OneToOne
     private Arena shadowArena;
 
     /**
      * The player of the game.
      */
+    @NotNull
+    @OneToOne
     private Player player;
 
     /**
      * The arena of the game.
      */
+    @Transient
     private AnchorPane paneArena;
 
     /**
@@ -186,6 +199,9 @@ public final class Arena {
         player = new Player("name", 200);
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
+
+        arenaObjectStorage = new ArenaObjectStorage(this);
+        arenaScalarFields = new ArenaScalarFields(this);
 
         shadowArena = new Arena(this);
     }
@@ -204,9 +220,9 @@ public final class Arena {
             this.toRemove.put(entry.getKey(), entry.getValue());
         }
 
-        this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
-
+        // arenaScalarFields must be set up before arenaObjectStorage because Monster ordering depends on it
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
+        this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
 
         this.shadowArena = null;
     }
@@ -244,7 +260,7 @@ public final class Arena {
     /**
      * @see ArenaScalarFields#getDistanceToEndZone(Coordinates)
      */
-    public int getDistanceToEndZone(@NonNull Coordinates coordinates) {
+    public short getDistanceToEndZone(@NonNull Coordinates coordinates) {
         return arenaScalarFields.getDistanceToEndZone(coordinates);
     }
 
@@ -283,7 +299,7 @@ public final class Arena {
      * @param coordinates The coordinates of the pixel.
      * @param range The maximum distance from this pixel for the object to be within range.
      * @param filter Only the types that are specified will be included in the result.
-     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
     public LinkedList<ExistsInArena> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
@@ -292,38 +308,15 @@ public final class Arena {
     }
 
     /**
-     * Finds all objects that are located inside a specified grid.
-     * @param xPos The x-position of the grid.
-     * @param yPos The y-position of the grid.
-     * @param filter Only the types that are specified will be included in the result.
-     * @return A linked list containing a reference to each object that satisfies the above criteria.
-     * @see TypeFilter
-     */
-    public LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
-    {
-        return arenaObjectStorage.findObjectsInGrid(xPos, yPos, filter);
-    }
-
-    /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
-     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
     public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInGrid(coordinates, filter);
-    }
-
-    /**
-     * Finds all objects that occupy a specified coordinate in the arena.
-     * @param coordinates The specified coordinates.
-     * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
-     */
-    public LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
-    {
-        return arenaObjectStorage.findObjectsOccupying(coordinates);
     }
 
     /**
@@ -334,7 +327,7 @@ public final class Arena {
     public boolean hasResources(@NonNull TowerType type)
     {
         int cost = 500;
-        Coordinates c = new Coordinates(0,0);
+        Coordinates c = new Coordinates((short) 0, (short) 0);
         switch(type) {
             case BasicTower: cost = new BasicTower(this, c).getBuildingCost(); break;
             case IceTower: cost = new IceTower(this, c).getBuildingCost(); break;
@@ -353,11 +346,10 @@ public final class Arena {
     public boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
     {
         boolean empty = findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
-        if (!empty)
-            return false;
+        if (!empty) return false;
 
-        int gridX = Grid.findGridCenterX(coordinates);
-        int gridY = Grid.findGridCenterY(coordinates);
+        short gridX = Grid.findGridCenterX(coordinates);
+        short gridY = Grid.findGridCenterY(coordinates);
         if (Geometry.isAt(gridX, gridY, STARTING_COORDINATES.getX(), STARTING_COORDINATES.getY())
             || Geometry.isAt(gridX, gridY, END_COORDINATES.getX(), END_COORDINATES.getY())
             || !hasResources(type) || !hasRoute(coordinates))
@@ -375,8 +367,8 @@ public final class Arena {
 
         boolean[][] noTower = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
         boolean[][] visited = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
-        for (int i = 0; i < noTower.length; i++) {
-            for (int j = 0; j < noTower[0].length; j++) {
+        for (short i = 0; i < noTower.length; i++) {
+            for (short j = 0; j < noTower[0].length; j++) {
                 noTower[i][j] = findObjectsInGrid(Grid.findGridCenter(i,j), EnumSet.of(TypeFilter.Tower)).isEmpty();
                 visited[i][j] = false;
             }
@@ -385,7 +377,7 @@ public final class Arena {
         gridDFS(noTower, visited, Grid.findGridXPos(END_COORDINATES), Grid.findGridYPos(END_COORDINATES));
 
         ArrayList<Grid> hasMonster = new ArrayList<>();
-        hasMonster.add(new Grid(0,0));
+        hasMonster.add(new Grid((short) 0,(short) 0));
         for (Monster m : getMonsters()) {
             Coordinates c = new Coordinates(m.getX(), m.getY());
             hasMonster.add(arenaObjectStorage.getGrid(c));
@@ -405,7 +397,7 @@ public final class Arena {
      * @param x x-position of the destination.
      * @param y y-position of the destination.
      */
-    private void gridDFS(@NonNull boolean[][] noTower, @NonNull boolean[][] visited, int x, int y)
+    private void gridDFS(@NonNull boolean[][] noTower, @NonNull boolean[][] visited, short x, short y)
     {
         if (x < 0 || y < 0 || x >= noTower.length || y >= noTower[0].length)
             return;
@@ -413,10 +405,10 @@ public final class Arena {
             return;
         visited[x][y] = true;
 
-        gridDFS(noTower, visited, x+1, y);
-        gridDFS(noTower, visited, x-1, y);
-        gridDFS(noTower, visited, x, y+1);
-        gridDFS(noTower, visited, x, y-1);
+        gridDFS(noTower, visited, (short) (x+1), y);
+        gridDFS(noTower, visited, (short) (x-1), y);
+        gridDFS(noTower, visited, x, (short) (y+1));
+        gridDFS(noTower, visited, x, (short) (y-1));
     }
 
     /**
@@ -501,7 +493,7 @@ public final class Arena {
             return null;
             
         addObject(m);
-        System.out.println(String.format("%s:%f generated", type, m.getHealth()));
+        System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
 
         return m;
     }
@@ -517,10 +509,10 @@ public final class Arena {
 
         LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
 
-        int lowestCost = Integer.MAX_VALUE;
+        short lowestCost = Short.MAX_VALUE;
         Coordinates lowestCostNeighbour = null;
         for (Coordinates neighbour : neighbours) {
-            int cost = arenaScalarFields.getDistanceToEndZone(neighbour);
+            short cost = arenaScalarFields.getDistanceToEndZone(neighbour);
 
             if (cost < lowestCost) {
                 lowestCost = cost;
@@ -697,7 +689,7 @@ public final class Arena {
      * @param source The center coordinates og the circle.
      * @param damageRange The radius of the circle.
      */
-    public void drawCircle(@NonNull Coordinates source, @NonNull int damageRange){
+    public void drawCircle(@NonNull Coordinates source, @NonNull short damageRange){
         Circle circle = new Circle();
         circle.setCenterX(source.getX());
         circle.setCenterY(source.getY());

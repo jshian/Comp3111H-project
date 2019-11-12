@@ -1,7 +1,5 @@
 package project.arena.monsters;
 
-import java.beans.Transient;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,7 +40,6 @@ public class StatusEffect {
     /**
      * The remaining duration of the status effects in number of frames.
      */
-    @NotNull
     private int duration;
 
     /**
