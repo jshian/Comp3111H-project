@@ -14,7 +14,7 @@ public class JUnitTester extends ApplicationTest {
 	public final ExpectedException expectedException = ExpectedException.none();
 
 	private Scene s;
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
@@ -24,6 +24,6 @@ public class JUnitTester extends ApplicationTest {
 		primaryStage.setScene(s);
 		primaryStage.show();
 		UIController appController = (UIController)loader.getController();
-		appController.createArena();   		
+		appController.createArena();
 	}
-} 
+}

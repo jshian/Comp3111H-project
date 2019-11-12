@@ -2,12 +2,16 @@ package project;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -26,10 +30,9 @@ import javafx.util.Duration;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.Grid;
-import project.arena.towers.BasicTower;
-import project.arena.towers.Catapult;
-import project.arena.towers.IceTower;
-import project.arena.towers.Tower;
+import project.arena.towers.*;
+
+import javax.tools.Tool;
 
 
 public class UIController {
@@ -235,17 +238,7 @@ public class UIController {
     private void setDragLabel() {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
-    		l.setOnDragDetected(e -> {
-    	        if (mode != modes.simulate) {
-                    Dragboard db = l.startDragAndDrop(TransferMode.ANY);
-
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(l.getText());
-                    db.setContent(content);
-                }
-
-    	        e.consume();
-    	    });
+    	    dragLabelEvent(l);
     	}
 
     	for (int i = 0; i < MAX_V_NUM_GRID; i++) {
@@ -371,12 +364,48 @@ public class UIController {
     }
 
     /**
+     * set the event on label that used to build tower by drag/drop.
+     * @param l the label that used to build tower by drag/drop.
+     */
+    private void dragLabelEvent(Label l) {
+        Tooltip t = new Tooltip();
+        Tower temp;
+        if (l.equals(labelBasicTower)) {
+            temp = new BasicTower(arena, new Coordinates(0,0));
+            t.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        } else if (l.equals(labelIceTower)) {
+            temp = new IceTower(arena, new Coordinates(0,0));
+            t.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        } else if (l.equals(labelCatapult)) {
+            temp = new Catapult(arena, new Coordinates(0,0));
+            t.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        } else if (l.equals(labelLaserTower)) {
+            temp = new LaserTower(arena, new Coordinates(0,0));
+            t.setText(String.format("building cost: %d", temp.getBuildingCost()));
+        }
+        t.setShowDelay(Duration.ZERO);
+        Tooltip.install(l, t);
+
+        l.setOnDragDetected(e -> {
+            if (mode != modes.simulate) {
+                Dragboard db = l.startDragAndDrop(TransferMode.ANY);
+
+                ClipboardContent content = new ClipboardContent();
+                content.putString(l.getText());
+                db.setContent(content);
+            }
+
+            e.consume();
+        });
+    }
+
+    /**
      * Display tower information.
      * @param center center coordinate of tower.
      * @param t the tower that need to display information.
      */
     private void displayTowerInfo(Coordinates center, Tower t) {
-        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
+        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
 
         towerLabel = new Label(t.getInformation());
         towerLabel.setAlignment(Pos.CENTER);
@@ -408,8 +437,8 @@ public class UIController {
         vb.setAlignment(Pos.CENTER);
         vb.setMinWidth(GRID_WIDTH * 2);
         vb.setMinHeight(GRID_HEIGHT * 2);
-        double positionX = (coor.getX() > paneArena.getWidth()/2) ? towerLabel.getLayoutX()-GRID_WIDTH*2 : towerLabel.getLayoutX()+towerLabel.getWidth();
-        double positionY = (coor.getY() > paneArena.getWidth()/2) ? coor.getY()-GRID_HEIGHT*2 : coor.getY()+GRID_HEIGHT;
+        double positionX = (coor.getX() > paneArena.getWidth()/2) ? coor.getX()-GRID_HEIGHT*2 : coor.getX()+GRID_HEIGHT;
+        double positionY = (coor.getY() >= paneArena.getWidth()-GRID_HEIGHT) ? coor.getY()-GRID_HEIGHT : coor.getY();
         vb.setLayoutX(positionX);
         vb.setLayoutY(positionY);
         Button upgradeBtn = new Button("upgrade");

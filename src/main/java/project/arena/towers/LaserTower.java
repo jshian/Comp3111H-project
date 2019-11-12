@@ -121,7 +121,7 @@ public class LaserTower extends Tower{
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d , %d]\nconsume: %d", this.attackPower,
-                this.buildingCost, this.minShootingRange, this.maxAttackPower, this.consume);
+        return String.format("attack power: %d\nupgrade cost: %d\nshooting range: [%d , %d]\nconsume: %d", this.attackPower,
+                this.upgradeCost, this.minShootingRange, this.maxAttackPower, this.consume);
     }
 }
