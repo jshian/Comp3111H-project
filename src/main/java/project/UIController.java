@@ -183,7 +183,12 @@ public class UIController {
      * Reset the game.
      */
     private void resetGame() {
-        paneArena = new AnchorPane();
+        paneArena.getChildren().removeAll(paneArena.getChildren());
+        for (int j = 0; j < grids.length; j++) {
+            for (int i = 0; i < grids[0].length; i++) {
+                grids[i][j] = null;
+            }
+        }
         createArena();
         arena = new Arena(remainingResources, paneArena);
     }
