@@ -122,7 +122,7 @@ public class Catapult extends Tower {
                     Coordinates c = new Coordinates(m.getX(), m.getY());
                     if (canShoot(m) && closestDistance == Short.MAX_VALUE) {
                         closestDistance = arena.getDistanceToEndZone(c);
-                        
+
                         double delta = Geometry.findEuclideanDistance(m.getX(), m.getY(), targetCoordinates.getX(), targetCoordinates.getY());
                         if (delta < leastDelta) {
                             leastDelta = delta;
@@ -134,7 +134,7 @@ public class Catapult extends Tower {
 
                 hasAttack = true;
                 this.counter = this.reload;
-                
+
                 short deltaX = (short) (targetCoordinates.getX() - targetMonster.getX());
                 short deltaY = (short) (targetCoordinates.getY() - targetMonster.getY());
                 return new CatapultProjectile(arena, coordinates, targetMonster, deltaX, deltaY, attackSpeed, attackPower, damageRange);
@@ -205,9 +205,9 @@ public class Catapult extends Tower {
      */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nbuilding cost: %d\nshooting range: [%d, %d]\n"
+        return String.format("attack power: %d\nupgrade cost: %d\nshooting range: [%d ,  %d]\n"
                 + "reload time: %d\ndamage range: %d", this.attackPower,
-                this.buildingCost, this.minShootingRange, this.maxShootingRange, this.reload, this.damageRange);
+                this.upgradeCost, this.minShootingRange, this.maxShootingRange, this.reload, this.damageRange);
     }
 
     /**
