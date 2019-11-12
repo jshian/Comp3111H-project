@@ -117,9 +117,9 @@ public abstract class Projectile implements MovesInArena {
 
     // Interface implementation
     public ImageView getImageView() { return imageView; }
-    public int getX() { return coordinates.getX(); }
-    public int getY() { return coordinates.getY(); }
-    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public short getX() { return coordinates.getX(); }
+    public short getY() { return coordinates.getY(); }
+    public void setLocation(short x, short y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public double getSpeed() { return speed; }
     public void nextFrame() {
@@ -129,8 +129,8 @@ public abstract class Projectile implements MovesInArena {
             coordinates.update(target.getX(), target.getY());
         else {
             double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), target.getX(), target.getY());
-            int newX = coordinates.getX() + (int) (speed * Math.cos(angleFromTarget));
-            int newY = coordinates.getY() + (int) (speed * Math.sin(angleFromTarget));
+            short newX = (short) (coordinates.getX() + (speed * Math.cos(angleFromTarget)));
+            short newY = (short) (coordinates.getY() + (speed * Math.sin(angleFromTarget)));
             coordinates.update(newX, newY);
         }
     }

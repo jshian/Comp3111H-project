@@ -17,7 +17,6 @@ import javafx.scene.control.Label;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.MovesInArena;
@@ -155,9 +154,9 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     
     // Interface implementation
     public ImageView getImageView() { return imageView; }
-    public int getX() { return coordinates.getX(); }
-    public int getY() { return coordinates.getY(); }
-    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public short getX() { return coordinates.getX(); }
+    public short getY() { return coordinates.getY(); }
+    public void setLocation(short x, short y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public double getSpeed() { return speed; }
     public void nextFrame() {
@@ -237,7 +236,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Finds the number of pixels the monster has to travel to reach its destination.
      * @return The number of pixels the monster has to travel to reach its destination.
      */
-    public int distanceToDestination() { return arena.getDistanceToEndZone(coordinates); }
+    public short distanceToDestination() { return arena.getDistanceToEndZone(coordinates); }
 
     /**
      * show monster hp when mouse is hover over the monster.

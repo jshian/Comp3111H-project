@@ -19,14 +19,14 @@ public interface ExistsInArena {
      * @return The x-coordinate of the object.
      * @see Coordinates
      */
-    public int getX();
+    public short getX();
 
     /**
      * Accesses the y-coordinate of the object.
      * @return The y-coordinate of the object.
      * @see Coordinates
      */
-    public int getY();
+    public short getY();
 
     /**
      * Updates the coordinates of the object.
@@ -34,7 +34,7 @@ public interface ExistsInArena {
      * @param y The new y-coordinate.
      * @see Coordinates
      */
-    public void setLocation(int x, int y);
+    public void setLocation(short x, short y);
 
     /**
      * Updates the coordinates of the object.

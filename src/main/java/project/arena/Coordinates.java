@@ -36,7 +36,7 @@ public class Coordinates implements Serializable {
      * @param y The y-coordinate.
      * @throws IllegalArgumentException If the coordinates is outside the arena.
      */
-    private static void checkCoordinates(int x, int y) throws IllegalArgumentException {
+    private static void checkCoordinates(short x, short y) throws IllegalArgumentException {
         if (x < 0 || x > UIController.ARENA_WIDTH) {
             throw new IllegalArgumentException(String.format("The parameter 'x' is out of bounds."));
         }
@@ -56,7 +56,7 @@ public class Coordinates implements Serializable {
      * @param x The horizontal coordinate, increasing towards the right.
      * @param y The vertical coordinate, increasing towards the bottom.
      */
-    public Coordinates(int x, int y) { update(x, y); }
+    public Coordinates(short x, short y) { update(x, y); }
 
     /**
      * Copy constructor of Coordinates. Performs deep copy.
@@ -68,13 +68,13 @@ public class Coordinates implements Serializable {
      * Accesses the x-coordinate.
      * @return The horizontal coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
-    public int getX() { return x.get(); }
+    public short getX() { return (short)x.get(); }
 
     /**
      * Accesses the y-coordinate.
      * @return The vertical coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
-    public int getY() { return y.get(); }
+    public short getY() { return (short)y.get(); }
 
     /**
      * Binds the coordinates to an ImageView so that updating the coordinates will automatically update the UI as well.
@@ -91,7 +91,7 @@ public class Coordinates implements Serializable {
      * @param x The x-coordinate, as defined in {@link Coordinates#Coordinates()}.
      * @param y The y-coordinate, as defined in {@link Coordinates#Coordinates()}.
      */
-    public void update(int x, int y) {
+    public void update(short x, short y) {
         checkCoordinates(x, y);
 
         this.x.set(x);
@@ -122,26 +122,26 @@ public class Coordinates implements Serializable {
      * @param y The y-coordinate.
      * @return A linked list containing a reference to the coordinates of each taxicab neighbour.
      */
-    public static LinkedList<Coordinates> findTaxicabNeighbours(int x, int y) {
+    public static LinkedList<Coordinates> findTaxicabNeighbours(short x, short y) {
         checkCoordinates(x, y);
 
         LinkedList<Coordinates> result = new LinkedList<>();
 
         // Left neighbour
         if (x > 0)
-            result.add(new Coordinates(x - 1, y));
+            result.add(new Coordinates((short) (x - 1), y));
         
         // Right neighbour
         if (x < UIController.ARENA_WIDTH)
-            result.add(new Coordinates(x + 1, y));
+            result.add(new Coordinates((short) (x + 1), y));
         
         // Top neighbour
         if (y > 0)
-            result.add(new Coordinates(x, y - 1));
+            result.add(new Coordinates(x, (short) (y - 1)));
 
         // Bottom neighbour
         if (y < UIController.ARENA_HEIGHT)
-            result.add(new Coordinates(x, y + 1));
+            result.add(new Coordinates(x, (short) (y + 1)));
 
         return result;
     }

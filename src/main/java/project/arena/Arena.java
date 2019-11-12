@@ -48,13 +48,13 @@ public final class Arena {
      * x-coordinate of the starting position.
      * @see Coordinates
      */
-    static final int STARTING_GRID_X_POS = 0;
+    static final short STARTING_GRID_X_POS = 0;
 
     /**
      * y-coordinate of the starting position.
      * @see Coordinates
      */
-    static final int STARTING_GRID_Y_POS = 0;
+    static final short STARTING_GRID_Y_POS = 0;
 
     /**
      * Coordinates of the starting position.
@@ -65,13 +65,13 @@ public final class Arena {
      * x-coordinate of the end zone.
      * @see Coordinates
      */
-    static final int END_GRID_X_POS = 11;
+    static final short END_GRID_X_POS = 11;
 
     /**
      * y-coordinate of the end zone.
      * @see Coordinates
      */
-    static final int END_GRID_Y_POS = 0;
+    static final short END_GRID_Y_POS = 0;
     /**
      * Coordinates of the end zone.
      */
@@ -245,7 +245,7 @@ public final class Arena {
     /**
      * @see ArenaScalarFields#getDistanceToEndZone(Coordinates)
      */
-    public int getDistanceToEndZone(@NonNull Coordinates coordinates) {
+    public short getDistanceToEndZone(@NonNull Coordinates coordinates) {
         return arenaScalarFields.getDistanceToEndZone(coordinates);
     }
 
@@ -312,7 +312,7 @@ public final class Arena {
     public boolean hasResources(@NonNull TowerType type)
     {
         int cost = 500;
-        Coordinates c = new Coordinates(0,0);
+        Coordinates c = new Coordinates((short) 0, (short) 0);
         switch(type) {
             case BasicTower: cost = new BasicTower(this, c).getBuildingCost(); break;
             case IceTower: cost = new IceTower(this, c).getBuildingCost(); break;
@@ -331,11 +331,10 @@ public final class Arena {
     public boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
     {
         boolean empty = findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
-        if (!empty)
-            return false;
+        if (!empty) return false;
 
-        int gridX = Grid.findGridCenterX(coordinates);
-        int gridY = Grid.findGridCenterY(coordinates);
+        short gridX = Grid.findGridCenterX(coordinates);
+        short gridY = Grid.findGridCenterY(coordinates);
         if (Geometry.isAt(gridX, gridY, STARTING_COORDINATES.getX(), STARTING_COORDINATES.getY())
             || Geometry.isAt(gridX, gridY, END_COORDINATES.getX(), END_COORDINATES.getY())
             || !hasResources(type) || !hasRoute(coordinates))
@@ -353,8 +352,8 @@ public final class Arena {
 
         boolean[][] noTower = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
         boolean[][] visited = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
-        for (int i = 0; i < noTower.length; i++) {
-            for (int j = 0; j < noTower[0].length; j++) {
+        for (short i = 0; i < noTower.length; i++) {
+            for (short j = 0; j < noTower[0].length; j++) {
                 noTower[i][j] = findObjectsInGrid(Grid.findGridCenter(i,j), EnumSet.of(TypeFilter.Tower)).isEmpty();
                 visited[i][j] = false;
             }
@@ -363,7 +362,7 @@ public final class Arena {
         gridDFS(noTower, visited, Grid.findGridXPos(END_COORDINATES), Grid.findGridYPos(END_COORDINATES));
 
         ArrayList<Grid> hasMonster = new ArrayList<>();
-        hasMonster.add(new Grid(0,0));
+        hasMonster.add(new Grid((short) 0,(short) 0));
         for (Monster m : getMonsters()) {
             Coordinates c = new Coordinates(m.getX(), m.getY());
             hasMonster.add(arenaObjectStorage.getGrid(c));
@@ -383,7 +382,7 @@ public final class Arena {
      * @param x x-position of the destination.
      * @param y y-position of the destination.
      */
-    private void gridDFS(@NonNull boolean[][] noTower, @NonNull boolean[][] visited, int x, int y)
+    private void gridDFS(@NonNull boolean[][] noTower, @NonNull boolean[][] visited, short x, short y)
     {
         if (x < 0 || y < 0 || x >= noTower.length || y >= noTower[0].length)
             return;
@@ -391,10 +390,10 @@ public final class Arena {
             return;
         visited[x][y] = true;
 
-        gridDFS(noTower, visited, x+1, y);
-        gridDFS(noTower, visited, x-1, y);
-        gridDFS(noTower, visited, x, y+1);
-        gridDFS(noTower, visited, x, y-1);
+        gridDFS(noTower, visited, (short) (x+1), y);
+        gridDFS(noTower, visited, (short) (x-1), y);
+        gridDFS(noTower, visited, x, (short) (y+1));
+        gridDFS(noTower, visited, x, (short) (y-1));
     }
 
     /**
@@ -495,10 +494,10 @@ public final class Arena {
 
         LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
 
-        int lowestCost = Integer.MAX_VALUE;
+        short lowestCost = Short.MAX_VALUE;
         Coordinates lowestCostNeighbour = null;
         for (Coordinates neighbour : neighbours) {
-            int cost = arenaScalarFields.getDistanceToEndZone(neighbour);
+            short cost = arenaScalarFields.getDistanceToEndZone(neighbour);
 
             if (cost < lowestCost) {
                 lowestCost = cost;
@@ -675,7 +674,7 @@ public final class Arena {
      * @param source The center coordinates og the circle.
      * @param damageRange The radius of the circle.
      */
-    public void drawCircle(@NonNull Coordinates source, @NonNull int damageRange){
+    public void drawCircle(@NonNull Coordinates source, @NonNull short damageRange){
         Circle circle = new Circle();
         circle.setCenterX(source.getX());
         circle.setCenterY(source.getY());

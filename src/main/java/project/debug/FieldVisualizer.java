@@ -41,6 +41,33 @@ public final class FieldVisualizer {
     }
 
     /**
+     * Visualizes an array of shorts as a heat map. Colors range from blue (smallest value) to red (largest value).
+     * @param arr The array to visualize.
+     */
+    public static void visualizeShortArray(short[][] arr) {
+        int width = arr.length;
+        double[][] doubles = new double[width][];
+
+        // Get max and min values
+        for (int i = 0; i < width; i++) {
+            int height = arr[i].length;
+            doubles[i] = new double[height];
+
+            for (int j = 0; j < height; j++) {
+                if (arr[i][j] == Short.MAX_VALUE) {
+                    doubles[i][j] = Double.POSITIVE_INFINITY;
+                } else if (arr[i][j] == Short.MIN_VALUE) {
+                    doubles[i][j] = Double.NEGATIVE_INFINITY;
+                } else {
+                    doubles[i][j] = arr[i][j];
+                }
+            }
+        }
+        
+        visualizeDoubleArray(doubles);
+    }
+
+    /**
      * Visualizes an array of integers as a heat map. Colors range from blue (smallest value) to red (largest value).
      * @param arr The array to visualize.
      */

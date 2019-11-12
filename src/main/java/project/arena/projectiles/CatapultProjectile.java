@@ -1,15 +1,10 @@
 package project.arena.projectiles;
 
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.Geometry;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.ExistsInArena;
 import project.arena.monsters.Monster;
 
 public class CatapultProjectile extends Projectile {
@@ -17,7 +12,7 @@ public class CatapultProjectile extends Projectile {
     /**
      * The damage range of projectile.
      */
-    private int damageRange;
+    private short damageRange;
 
     /**
      * Constructor for the Projectile class.
@@ -27,7 +22,7 @@ public class CatapultProjectile extends Projectile {
      * @param speed The speed of the catapult projectile.
      * @param attackPower The attack power of the catapult projectile.
      */
-    public CatapultProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower, int damageRange){
+    public CatapultProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower, short damageRange){
         super(arena,coordinates,target,speed,attackPower);
         this.damageRange=damageRange;
     }

@@ -60,12 +60,12 @@ public class UIController {
     @FXML
     private Label remainingResources;
 
-    public static final int ARENA_WIDTH = 480;
-    public static final int ARENA_HEIGHT = 480;
-    public static final int GRID_WIDTH = 40;
-    public static final int GRID_HEIGHT = 40;
-    public static final int MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
-    public static final int MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
+    public static final short ARENA_WIDTH = 480;
+    public static final short ARENA_HEIGHT = 480;
+    public static final short GRID_WIDTH = 40;
+    public static final short GRID_HEIGHT = 40;
+    public static final short MAX_H_NUM_GRID = ARENA_WIDTH / GRID_WIDTH;
+    public static final short MAX_V_NUM_GRID = ARENA_HEIGHT / GRID_HEIGHT;
 
     static enum modes {normal, simulate, play, paused, end};
     static modes mode = modes.normal;
@@ -77,7 +77,6 @@ public class UIController {
     private Timeline timeline;
 
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID]; //the grids on arena. grids[y][x]
-    private int x = -1, y = 0; //where is my monster
     /**
      * Play the game. Build towers are allowed.
      */
@@ -170,8 +169,8 @@ public class UIController {
     public void createArena() {
         if (grids[0][0] != null)
             return; //created already
-        for (int i = 0; i < MAX_V_NUM_GRID; i++)
-            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+        for (short i = 0; i < MAX_V_NUM_GRID; i++)
+            for (short j = 0; j < MAX_H_NUM_GRID; j++) {
                 Label newLabel = new Label();
                 if (j == MAX_H_NUM_GRID - 1 && i == 0) {
                     Image image1 = new Image("/end-zone.png", GRID_WIDTH, GRID_HEIGHT, true, true);
@@ -248,12 +247,12 @@ public class UIController {
     	    });
     	}
 
-    	for (int i = 0; i < MAX_V_NUM_GRID; i++) {
-            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+    	for (short i = 0; i < MAX_V_NUM_GRID; i++) {
+            for (short j = 0; j < MAX_H_NUM_GRID; j++) {
             	Label target = grids[i][j];
 
-            	int x = j * GRID_WIDTH;
-            	int y = i * GRID_HEIGHT;
+            	short x = (short) (j * GRID_WIDTH);
+            	short y = (short) (i * GRID_HEIGHT);
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
@@ -376,7 +375,7 @@ public class UIController {
      * @param t the tower that need to display information.
      */
     private void displayTowerInfo(Coordinates center, Tower t) {
-        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
+        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
 
         towerLabel = new Label(t.getInformation());
         towerLabel.setAlignment(Pos.CENTER);
@@ -400,7 +399,7 @@ public class UIController {
         if (paneArena.getChildren().contains(vb)) {
             paneArena.getChildren().remove(vb);
         }
-        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
+        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
 
         vb = new VBox(15);
         vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");

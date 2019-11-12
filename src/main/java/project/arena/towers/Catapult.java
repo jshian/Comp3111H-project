@@ -23,7 +23,7 @@ public class Catapult extends Tower {
     /**
      * The damaging range of Catapult which default is 25.
      */
-    private final int damageRange = 25;
+    private final short damageRange = 25;
 
 
     /**
@@ -151,13 +151,13 @@ public class Catapult extends Tower {
                 nearestMon.add(m);
         }
         //find the target coordinate to attack
-        int radius = damageRange;
+        short radius = damageRange;
         Coordinates target = null;
         for (Monster m :nearestMon) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
 
-            for (int i = m.getX()-radius; i < m.getX()+radius; i++) {//square width
-                for (int j = m.getY()-radius; j < m.getY()+radius; j++) {//square length
+            for (short i = (short) (m.getX()-radius); i < m.getX()+radius; i++) {//square width
+                for (short j = (short) (m.getY()-radius); j < m.getY()+radius; j++) {//square length
                     if (i < 0 || i > UIController.ARENA_WIDTH) continue;
                     if (j < 0 || j > UIController.ARENA_HEIGHT) continue;
                     Coordinates c = new Coordinates(i,j);//tested coordinate
@@ -198,7 +198,7 @@ public class Catapult extends Tower {
      * Accesses the damage range of catapult.
      * @return The damage range of catapult.
      */
-    public int getDamageRange() {
+    public short getDamageRange() {
         return damageRange;
     }
 }

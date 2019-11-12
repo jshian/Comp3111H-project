@@ -68,13 +68,13 @@ public abstract class Tower implements ExistsInArena {
      * The maximum shooting range of the tower.
      */
     @NotNull
-    protected int maxShootingRange;
+    protected short maxShootingRange;
 
     /**
      * The current shooting limit of the tower. It cannot go beyond {@link #maxShootingRange}.
      */
     @NotNull
-    protected int minShootingRange = 0;
+    protected short minShootingRange = 0;
 
     /**
      * The attack speed of tower for how many px per frame
@@ -153,9 +153,9 @@ public abstract class Tower implements ExistsInArena {
 
     // Interface implementation
     public ImageView getImageView() { return imageView; }
-    public int getX() { return coordinates.getX(); }
-    public int getY() { return coordinates.getY(); }
-    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public short getX() { return coordinates.getX(); }
+    public short getY() { return coordinates.getY(); }
+    public void setLocation(short x, short y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public void nextFrame() {
         if (hasAttack) {
@@ -220,7 +220,7 @@ public abstract class Tower implements ExistsInArena {
      * Accesses the maximum shooting range of the tower.
      * @return The maximum shooting range of the tower.
      */
-    public int getMaxShootingRange() {
+    public short getMaxShootingRange() {
         return maxShootingRange;
     }
 
@@ -228,7 +228,7 @@ public abstract class Tower implements ExistsInArena {
      * Accesses the minimum shooting range of the tower.
      * @return The minimum shooting range of the tower.
      */
-    public int getMinShootingRange() {
+    public short getMinShootingRange() {
         return minShootingRange;
     }
 

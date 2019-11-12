@@ -51,8 +51,8 @@ class ArenaObjectStorage {
      */
     private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
     {
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+        for (short i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
+            for (short j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
                 grids[i][j] = new Grid(i, j);
             }
         }
@@ -111,7 +111,7 @@ class ArenaObjectStorage {
      * @param yPos The y-position of the grid.
      * @return The grid at the specified location.
      */
-    Grid getGrid(int xPos, int yPos) {
+    Grid getGrid(short xPos, short yPos) {
         return grids[xPos][yPos];
     }
     
@@ -142,12 +142,12 @@ class ArenaObjectStorage {
     LinkedList<Grid> getPotentialGridsInRange(@NonNull Coordinates coordinates, double range) {
         LinkedList<Grid> result = new LinkedList<>();
 
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                int x = coordinates.getX();
-                int y = coordinates.getY();
-                int gridX = Grid.findGridCenterX(i, j);
-                int gridY = Grid.findGridCenterY(i, j);
+        for (short i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
+            for (short j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+                short x = coordinates.getX();
+                short y = coordinates.getY();
+                short gridX = Grid.findGridCenterX(i, j);
+                short gridY = Grid.findGridCenterY(i, j);
 
                 if (Geometry.findEuclideanDistance(x, y, gridX, gridY)
                     <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
