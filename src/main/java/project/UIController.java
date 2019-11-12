@@ -421,6 +421,7 @@ public class UIController {
         });
         destroyBtn.setOnAction(e2 -> {
             arena.removeObject(t);
+            paneArena.getChildren().remove(vb);
         });
 
         paneArena.getChildren().add(vb);
