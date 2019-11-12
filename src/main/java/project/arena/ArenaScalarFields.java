@@ -119,7 +119,7 @@ class ArenaScalarFields {
     		for (Coordinates c : neighbours) {
     			// Monsters can only go to grids that do not contain a Tower
     			if (arena.findObjectsInGrid(c, EnumSet.of(Arena.TypeFilter.Tower)).isEmpty()) {
-                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[current.x][current.y] + MOVEMENT_COST;
+                    double newCost = attacksToEndZone[current.x][current.y] + attacksPerFrame[c.getX()][c.getY()] + MOVEMENT_COST;
         			if (attacksToEndZone[c.getX()][c.getY()] > newCost ) {
         				attacksToEndZone[c.getX()][c.getY()] = newCost;
         				openSet.add(new IntTuple(c.getX(), c.getY()));
@@ -146,7 +146,7 @@ class ArenaScalarFields {
         for (int i = Math.max(x - maxRange, 0); i <= x + maxRange && i <= UIController.ARENA_WIDTH; i++) {
 
             for (int j = Math.max(y - maxRange, 0); j <= y + maxRange && j <= UIController.ARENA_HEIGHT; j++) {
-                double distance = Geometry.findEuclideanDistanceToPoint(x, y, i, j);
+                double distance = Geometry.findEuclideanDistance(x, y, i, j);
 
                 if (minRange < distance && distance <= maxRange) result.add(new Coordinates(i, j));
             }
@@ -165,7 +165,7 @@ class ArenaScalarFields {
         LinkedList<Tower> towers = arena.getTowers();
         if (towers.size() > 0) {
             for (Tower t : towers) {
-                LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(t.getX(), t.getY()), t.getMinShootingRange() - 1, t.getMaxShootingRange() + 1);
+                LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(t.getX(), t.getY()), t.getMinShootingRange(), t.getMaxShootingRange());
 
                 // Update attacksPerFrame
                 double shotsPerFrame = 1.0 / t.getReload();
@@ -230,7 +230,7 @@ class ArenaScalarFields {
      * @param tower The tower that was added.
      */
     void processAddTower(@NonNull Tower tower) {
-        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange() - 1, tower.getMaxShootingRange() + 1);
+        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
         double shotsPerFrame = 1.0 / tower.getReload();
@@ -247,7 +247,7 @@ class ArenaScalarFields {
      * @param tower The tower that was removed.
      */
     void processRemoveTower(@NonNull Tower tower) {
-        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange() - 1, tower.getMaxShootingRange() + 1);
+        LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
         double shotsPerFrame = 1.0 / tower.getReload();

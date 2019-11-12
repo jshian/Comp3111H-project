@@ -149,7 +149,7 @@ class ArenaObjectStorage {
                 int gridX = Grid.findGridCenterX(i, j);
                 int gridY = Grid.findGridCenterY(i, j);
 
-                if (Geometry.findEuclideanDistanceToPoint(x, y, gridX, gridY)
+                if (Geometry.findEuclideanDistance(x, y, gridX, gridY)
                     <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
                     {
                         result.add(grids[i][j]);
@@ -166,17 +166,31 @@ class ArenaObjectStorage {
     LinkedList<ExistsInArena> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
-        
-        LinkedList<ExistsInArena> list = getGrid(coordinates).getAllObjects();
 
-        for (ExistsInArena obj : list)
-        {
-            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                {
-                    result.add(obj);
+        Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
+
+        if (filter.contains(TypeFilter.Tower)) {
+            for (Tower t : grid.getTowers()) {
+                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), t.getX(), t.getY()) == 0) {
+                    result.add(t);
                 }
+            }
+        }
+
+        if (filter.contains(TypeFilter.Projectile)) {
+            for (Projectile p : grid.getProjectiles()) {
+                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), p.getX(), p.getY()) == 0) {
+                    result.add(p);
+                }
+            }
+        }
+
+        if (filter.contains(TypeFilter.Monster)) {
+            for (Monster m : grid.getMonsters()) {
+                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), m.getX(), m.getY()) == 0) {
+                    result.add(m);
+                }
+            }
         }
 
         return result;
@@ -192,16 +206,28 @@ class ArenaObjectStorage {
         LinkedList<Grid> grids = getPotentialGridsInRange(coordinates, range);
 
         for (Grid grid : grids) {
-            LinkedList<ExistsInArena> list = grid.getAllObjects();
-
-            for (ExistsInArena obj : list)
-            {
-                if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                    || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                    || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                    {
-                        result.add(obj);
+            if (filter.contains(TypeFilter.Tower)) {
+                for (Tower t : grid.getTowers()) {
+                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), t.getX(), t.getY()) <= range) {
+                        result.add(t);
                     }
+                }
+            }
+    
+            if (filter.contains(TypeFilter.Projectile)) {
+                for (Projectile p : grid.getProjectiles()) {
+                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), p.getX(), p.getY()) <= range) {
+                        result.add(p);
+                    }
+                }
+            }
+    
+            if (filter.contains(TypeFilter.Monster)) {
+                for (Monster m : grid.getMonsters()) {
+                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), m.getX(), m.getY()) <= range) {
+                        result.add(m);
+                    }
+                }
             }
         }
 
@@ -214,16 +240,19 @@ class ArenaObjectStorage {
     LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
-        
-        LinkedList<ExistsInArena> list = grids[xPos][yPos].getAllObjects();
-        for (ExistsInArena obj : list)
-        {
-            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                {
-                    result.add(obj);
-                }
+
+        Grid grid = grids[xPos][yPos];
+
+        if (filter.contains(TypeFilter.Tower)) {
+            result.addAll(grid.getTowers());
+        }
+
+        if (filter.contains(TypeFilter.Projectile)) {
+            result.addAll(grid.getProjectiles());
+        }
+
+        if (filter.contains(TypeFilter.Monster)) {
+            result.addAll(grid.getMonsters());
         }
 
         return result;

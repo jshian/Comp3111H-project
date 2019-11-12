@@ -186,7 +186,7 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Monster monster){
-        double euclideanDistance = Geometry.findEuclideanDistanceToPoint(getX(), getY(), monster.getX(), monster.getY());
+        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
         return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
     }
 
@@ -196,7 +196,7 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(@NonNull Coordinates coordinate){
-        double euclideanDistance = Geometry.findEuclideanDistanceToPoint(getX(), getY(), coordinate.getX(), coordinate.getY());
+        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinate.getX(), coordinate.getY());
         return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
     }
 

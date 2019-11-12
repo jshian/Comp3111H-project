@@ -1,10 +1,13 @@
 package project.arena;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.UIController;
+import project.arena.monsters.Monster;
+import project.arena.projectiles.Projectile;
 import project.arena.towers.Tower;
 
 /**
@@ -41,9 +44,24 @@ public class Grid {
     }
 
     /**
-     * A linked list containing a reference to each object within the grid.
+     * Contains a reference to each Tower on the arena.
+     * @see Tower
      */
-    private LinkedList<ExistsInArena> objects = new LinkedList<>();
+    private LinkedList<Tower> towers = new LinkedList<>();
+
+    /**
+     * Contains a reference to each Projectile on the arena.
+     * @see Projectile
+     */
+    private LinkedList<Projectile> projectiles = new LinkedList<>();
+
+    /**
+     * Contains a reference to each Monster on the arena.
+     * In addition, the monsters are sorted according to how close they are from reaching the end zone.
+     * The first element is closest to the end zone while the last element is furthest.
+     * @see Monster
+     */
+    private PriorityQueue<Monster> monsters = new PriorityQueue<>();
 
     /**
      * Constructor for the Grid class.
@@ -78,23 +96,62 @@ public class Grid {
     }
     
     /**
-     * Accesses all objects contained within the grid.
-     * @return A linked list containing a reference to each object in the grid.
+     * Accessor for the Towers contained in the object.
+     * @return A linked list containing a reference to each Tower in the arena.
      */
-    LinkedList<ExistsInArena> getAllObjects() { return objects; }
+    LinkedList<Tower> getTowers() { return towers; }
+
+    /**
+     * Accessor for the Projectiles contained in the object.
+     * @return A linked list containing a reference to each Projectile in the arena.
+     */
+    LinkedList<Projectile> getProjectiles() { return projectiles; }
+
+    /**
+     * Accessor for the Monsters contained in the object.
+     * @return A priority queue containing a reference to each Monster in the arena. The first element is closest to the end zone while the last element is furthest.
+     */
+    PriorityQueue<Monster> getMonsters() { return monsters; }
 
     /**
      * Adds an object to the grid.
+     * @param obj The object to add.
+     * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void addObject(@NonNull ExistsInArena obj) {
-        if (!objects.contains(obj)) objects.add(obj);
+    void addObject(@NonNull ExistsInArena obj) throws IllegalArgumentException {
+        if (obj instanceof Tower) {
+            if (!towers.contains(obj)) {
+                towers.add((Tower)obj);
+            }
+        } else if (obj instanceof Projectile) {
+            if (!projectiles.contains(obj)) {
+                projectiles.add((Projectile)obj);
+            }
+        } else if (obj instanceof Monster) {
+            if (!monsters.contains(obj)) {
+                monsters.add((Monster)obj);
+            }
+        } else {
+            throw new IllegalArgumentException("The object type is not recognized");
+        }
     }
 
     /**
      * Removes an object from the grid.
      * @param obj The object to be removed.
+     * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void removeObject(@NonNull ExistsInArena obj) { objects.removeFirstOccurrence(obj); }
+    void removeObject(@NonNull ExistsInArena obj) throws IllegalArgumentException {
+        if (obj instanceof Tower) {
+            towers.remove((Tower)obj);
+        } else if (obj instanceof Projectile) {
+            projectiles.remove((Projectile)obj);
+        } else if (obj instanceof Monster) {
+            monsters.remove((Monster)obj);
+        } else {
+            throw new IllegalArgumentException("The object type is not recognized");
+        }
+    }
 
     /**
      * Finds the x-position of the grid which encloses the specified set of coordinates.

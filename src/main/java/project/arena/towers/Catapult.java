@@ -1,10 +1,8 @@
 package project.arena.towers;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import org.apache.bcel.verifier.statics.DOUBLE_Upper;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -106,7 +104,7 @@ public class Catapult extends Tower {
      */
     @Override
     public boolean canShoot(Monster monster){
-        double dis = Geometry.findEuclideanDistanceToPoint(getX(), getY(), monster.getX(), monster.getY());
+        double dis = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
         return dis <= maxShootingRange && dis >= minShootingRange;
     }
 

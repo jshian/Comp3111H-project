@@ -285,7 +285,7 @@ public final class Arena {
      * @param coordinates The coordinates of the pixel.
      * @param range The maximum distance from this pixel for the object to be within range.
      * @param filter Only the types that are specified will be included in the result.
-     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
     public LinkedList<ExistsInArena> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
@@ -298,7 +298,7 @@ public final class Arena {
      * @param xPos The x-position of the grid.
      * @param yPos The y-position of the grid.
      * @param filter Only the types that are specified will be included in the result.
-     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
     public LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
@@ -310,7 +310,7 @@ public final class Arena {
      * Finds all objects that are located inside the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
-     * @return A linked list containing a reference to each object that satisfies the above criteria.
+     * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
     public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
