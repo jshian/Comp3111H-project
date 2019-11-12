@@ -1,8 +1,14 @@
 package project.arena;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -18,23 +24,27 @@ import project.arena.towers.Tower;
  * 
  * @see Arena
  */
+@Entity
 class ArenaObjectStorage {
 
     /**
      * The arena that the class is linked to.
      */
+    @OneToOne(mappedBy = "arena")
     private Arena arena;
 
     /**
      * Contains a reference to each Tower on the arena.
      * @see Tower
      */
+    @OneToMany
     private LinkedList<Tower> towers = new LinkedList<>();
 
     /**
      * Contains a reference to each Projectile on the arena.
      * @see Projectile
      */
+    @OneToMany
     private LinkedList<Projectile> projectiles = new LinkedList<>();
 
     /**
@@ -43,16 +53,18 @@ class ArenaObjectStorage {
      * The first element is closest to the end zone while the last element is furthest.
      * @see Monster
      */
+    @OneToMany
     private PriorityQueue<Monster> monsters = new PriorityQueue<>();
 
     /**
      * Stores grid information of the arena.
      * @see Grid
      */
+    @NotNull
     private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
     {
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+        for (short i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
+            for (short j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
                 grids[i][j] = new Grid(i, j);
             }
         }
@@ -75,22 +87,43 @@ class ArenaObjectStorage {
         this.arena = arena;
 
         for (Tower t : other.towers) {
-            Tower new_t = t.deepCopy();
+            Tower new_t = t.deepCopy(arena);
             this.towers.add(new_t);
             Coordinates c = new Coordinates(new_t.getX(), new_t.getY());
             getGrid(c).addObject(new_t);
         }
         
+        // Make sure projectiles are bound to the copied target monster
+        HashMap<Monster, Monster> targetMap = new HashMap<>(); // Original -> Copy
+
         for (Projectile p : other.projectiles) {
-            Projectile new_p = p.deepCopy();
+            Monster originalTarget = p.getTarget();
+
+            Projectile new_p;
+            if (targetMap.containsKey(originalTarget)) {
+                new_p = p.deepCopy(arena, targetMap.get(originalTarget));
+            } else {
+                Monster copiedTarget = originalTarget.deepCopy(arena);
+                targetMap.put(originalTarget, copiedTarget);
+                new_p = p.deepCopy(arena, copiedTarget);
+            }
+
             this.projectiles.add(new_p);
+
             Coordinates c = new Coordinates(new_p.getX(), new_p.getY());
             getGrid(c).addObject(new_p);
         }
 
         for (Monster m : other.monsters) {
-            Monster new_m = m.deepCopy();
+            Monster new_m;
+            if (targetMap.containsKey(m)) {
+                new_m = targetMap.get(m);
+            } else {
+                new_m = m.deepCopy(arena);
+            }
+
             this.monsters.add(new_m);
+
             Coordinates c = new Coordinates(new_m.getX(), new_m.getY());
             getGrid(c).addObject(new_m);
         }
@@ -111,7 +144,7 @@ class ArenaObjectStorage {
      * @param yPos The y-position of the grid.
      * @return The grid at the specified location.
      */
-    Grid getGrid(int xPos, int yPos) {
+    Grid getGrid(short xPos, short yPos) {
         return grids[xPos][yPos];
     }
     
@@ -142,14 +175,14 @@ class ArenaObjectStorage {
     LinkedList<Grid> getPotentialGridsInRange(@NonNull Coordinates coordinates, double range) {
         LinkedList<Grid> result = new LinkedList<>();
 
-        for (int i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
-            for (int j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
-                int x = coordinates.getX();
-                int y = coordinates.getY();
-                int gridX = Grid.findGridCenterX(i, j);
-                int gridY = Grid.findGridCenterY(i, j);
+        for (short i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
+            for (short j = 0; j < UIController.MAX_V_NUM_GRID; j++) {
+                short x = coordinates.getX();
+                short y = coordinates.getY();
+                short gridX = Grid.findGridCenterX(i, j);
+                short gridY = Grid.findGridCenterY(i, j);
 
-                if (Geometry.findEuclideanDistanceToPoint(x, y, gridX, gridY)
+                if (Geometry.findEuclideanDistance(x, y, gridX, gridY)
                     <= range + Math.pow(UIController.GRID_WIDTH + UIController.GRID_HEIGHT, 2))
                     {
                         result.add(grids[i][j]);
@@ -166,17 +199,31 @@ class ArenaObjectStorage {
     LinkedList<ExistsInArena> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
-        
-        LinkedList<ExistsInArena> list = getGrid(coordinates).getAllObjects();
 
-        for (ExistsInArena obj : list)
-        {
-            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                {
-                    result.add(obj);
+        Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
+
+        if (filter.contains(TypeFilter.Tower)) {
+            for (Tower t : grid.getTowers()) {
+                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), t.getX(), t.getY()) == 0) {
+                    result.add(t);
                 }
+            }
+        }
+
+        if (filter.contains(TypeFilter.Projectile)) {
+            for (Projectile p : grid.getProjectiles()) {
+                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), p.getX(), p.getY()) == 0) {
+                    result.add(p);
+                }
+            }
+        }
+
+        if (filter.contains(TypeFilter.Monster)) {
+            for (Monster m : grid.getMonsters()) {
+                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), m.getX(), m.getY()) == 0) {
+                    result.add(m);
+                }
+            }
         }
 
         return result;
@@ -192,38 +239,29 @@ class ArenaObjectStorage {
         LinkedList<Grid> grids = getPotentialGridsInRange(coordinates, range);
 
         for (Grid grid : grids) {
-            LinkedList<ExistsInArena> list = grid.getAllObjects();
-
-            for (ExistsInArena obj : list)
-            {
-                if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                    || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                    || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                    {
-                        result.add(obj);
+            if (filter.contains(TypeFilter.Tower)) {
+                for (Tower t : grid.getTowers()) {
+                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), t.getX(), t.getY()) <= range) {
+                        result.add(t);
                     }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * @see Arena#findObjectsInGrid(int, int, EnumSet)
-     */
-    LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
-    {
-        LinkedList<ExistsInArena> result = new LinkedList<>();
-        
-        LinkedList<ExistsInArena> list = grids[xPos][yPos].getAllObjects();
-        for (ExistsInArena obj : list)
-        {
-            if ((obj instanceof Tower && filter.contains(TypeFilter.Tower))
-                || (obj instanceof Projectile && filter.contains(TypeFilter.Projectile))
-                || (obj instanceof Monster && filter.contains(TypeFilter.Monster)))
-                {
-                    result.add(obj);
                 }
+            }
+    
+            if (filter.contains(TypeFilter.Projectile)) {
+                for (Projectile p : grid.getProjectiles()) {
+                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), p.getX(), p.getY()) <= range) {
+                        result.add(p);
+                    }
+                }
+            }
+    
+            if (filter.contains(TypeFilter.Monster)) {
+                for (Monster m : grid.getMonsters()) {
+                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), m.getX(), m.getY()) <= range) {
+                        result.add(m);
+                    }
+                }
+            }
         }
 
         return result;
@@ -234,19 +272,22 @@ class ArenaObjectStorage {
      */
     LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        return findObjectsInGrid(Grid.findGridXPos(coordinates), Grid.findGridYPos(coordinates), filter);
-    }
+        LinkedList<ExistsInArena> result = new LinkedList<>();
 
-    /**
-     * @see Arena#findObjectsOccupying(Coordinates)
-     */
-    LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
-    {
-        LinkedList<Object> result = new LinkedList<>();
+        Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
 
-        result.addAll(findObjectsAtPixel(coordinates, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
-        result.addAll(findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
-        
+        if (filter.contains(TypeFilter.Tower)) {
+            result.addAll(grid.getTowers());
+        }
+
+        if (filter.contains(TypeFilter.Projectile)) {
+            result.addAll(grid.getProjectiles());
+        }
+
+        if (filter.contains(TypeFilter.Monster)) {
+            result.addAll(grid.getMonsters());
+        }
+
         return result;
     }
 

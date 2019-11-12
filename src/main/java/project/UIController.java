@@ -121,7 +121,6 @@ public class UIController {
      * the grids on arena.
      */
     private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID];
-
     /**
      * Play the game. Build towers are allowed.
      */
@@ -214,8 +213,8 @@ public class UIController {
     public void createArena() {
         if (grids[0][0] != null)
             return; //created already
-        for (int i = 0; i < MAX_V_NUM_GRID; i++)
-            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+        for (short i = 0; i < MAX_V_NUM_GRID; i++)
+            for (short j = 0; j < MAX_H_NUM_GRID; j++) {
                 Label newLabel = new Label();
                 if (j == MAX_H_NUM_GRID - 1 && i == 0) {
                     Image image1 = new Image("/end-zone.png", GRID_WIDTH, GRID_HEIGHT, true, true);
@@ -282,12 +281,12 @@ public class UIController {
     	    dragLabelEvent(l);
     	}
 
-    	for (int i = 0; i < MAX_V_NUM_GRID; i++) {
-            for (int j = 0; j < MAX_H_NUM_GRID; j++) {
+    	for (short i = 0; i < MAX_V_NUM_GRID; i++) {
+            for (short j = 0; j < MAX_H_NUM_GRID; j++) {
             	Label target = grids[i][j];
 
-            	int x = j * GRID_WIDTH;
-            	int y = i * GRID_HEIGHT;
+            	short x = (short) (j * GRID_WIDTH);
+            	short y = (short) (i * GRID_HEIGHT);
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
@@ -427,6 +426,7 @@ public class UIController {
             tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
         }
         tp.setShowDelay(Duration.ZERO);
+        tp.setHideDelay(Duration.ZERO);
 
         l.setOnMouseEntered(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
         l.setOnMouseExited(e -> tp.hide());
@@ -474,7 +474,7 @@ public class UIController {
         if (paneArena.getChildren().contains(vb)) {
             paneArena.getChildren().remove(vb);
         }
-        Coordinates coor = new Coordinates(center.getX() - GRID_WIDTH/2, center.getY() - GRID_HEIGHT/2);
+        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
 
         vb = new VBox(15);
         vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");

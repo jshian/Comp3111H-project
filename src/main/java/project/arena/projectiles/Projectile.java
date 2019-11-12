@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -15,8 +17,8 @@ import project.Geometry;
 import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.Grid;
 import project.arena.MovesInArena;
+import project.arena.monsters.Monster;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
@@ -40,52 +42,77 @@ public abstract class Projectile implements MovesInArena {
     /**
      * The Arena that this projectile is attached to.
      */
-    @Transient
+    @NotNull
+    @ManyToOne
     protected final Arena arena;
 
     /**
      * Represents the position of the projectile.
      */
     @NotNull
+    @OneToOne
     protected Coordinates coordinates;
 
     /**
-     * Represents the position of the tower.
+     * Represents the position from which the projectile is fired.
      */
     @NotNull
-    protected Coordinates tower;
+    @OneToOne
+    protected Coordinates origin;
 
     /**
-     * The coordinate of Monster that the projectile is travelling towards.
+     * The monster that the projectile is travelling towards.
      */
     @NotNull
-    protected Coordinates target;
+    @ManyToOne
+    protected Monster target;
+
+    /**
+     * The offset in x-coordinate of the projectile's landing spot from the target monster.
+     * @see Coordinates
+     */
+    protected short deltaX = 0;
+
+    /**
+     * The offset in y-coordinate of the projectile's landing spot from the target monster.
+     * @see Coordinates
+     */
+    protected short deltaY = 0;
+
+    /**
+     * The non-integral portion of the movement during each frame is accumulated here.
+     * When it reaches one, it is consumed to allow the projectile to move an extra pixel.
+     */
+    protected double unusedMovement = 0;
 
     /**
      * The maximum number of pixels the projectile can travel per frame.
      * Projectiles can travel diagonally.
      */
-    @NotNull
-    protected double speed;
+    protected double speed = 1;
+
+    /**
+     * Whether the projectile has reached the target location.
+     */
+    protected boolean hasReachedTarget = false;
 
     /**
      * The current attack power of the projectile.
      */
-    @NotNull
-    protected int attackPower;
+    protected int attackPower = 1;
 
     /**
      * Constructor for the Projectile class.
      * @param arena The arena the projectile is attached to.
      * @param coordinates The coordinates of the pixel where the projectile is initially located.
-     * @param target The Monster that the projectile will pursue, which should not be <code>null</code>.
+     * @param target The monster that the projectile will pursue.
      * @param speed The speed of the projectile.
      * @param attackPower The attack power of the projectile.
      */
-    public Projectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Coordinates target, double speed, int attackPower) {
+    public Projectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, double speed, int attackPower) {
         this.arena = arena;
-        this.coordinates = Grid.findGridCenter(coordinates);
-        this.tower = Grid.findGridCenter(coordinates);
+        this.coordinates = new Coordinates(coordinates);
+        this.origin = new Coordinates(coordinates);
         this.target = target;
         this.speed = speed;
         this.attackPower = attackPower;
@@ -95,56 +122,97 @@ public abstract class Projectile implements MovesInArena {
     }
 
     /**
-     * Copy constructor for the Projectile class. Performs deep copy.
-     * @param other The other object to copy form.
+     * Constructor for making a copy of Projectile class that is linked to another arena and target monster.
+     * @param arena The arena to link this object to.
+     * @param target The target monster of the copy.
+     * @param other The object to copy from.
      */
-    public Projectile(@NonNull Projectile other){
+    public Projectile(@NonNull Arena arena, @NonNull Monster target, @NonNull Projectile other){
         this.imageView = new ImageView(other.imageView.getImage());
-        this.arena = other.arena;
+        this.arena = arena;
         this.coordinates = new Coordinates(other.coordinates);
-        this.tower = new Coordinates(other.tower);
-        this.target = new Coordinates(other.target);
+        this.origin = new Coordinates(other.origin);
+        this.target = target;
         this.speed = other.speed;
         this.attackPower = other.attackPower;
         this.coordinates.bindByImage(this.imageView);
     }
 
     /**
-     * Creates a deep copy of the projectile.
+     * Creates a deep copy of the projectile while is linked to another arena and target monster.
+     * @param arena The arena to link this object to.
+     * @param target The target monster of the copy.
      * @return A deep copy of the projectile.
      */
-    public abstract Projectile deepCopy();
+    public abstract Projectile deepCopy(@NonNull Arena arena, @NonNull Monster target);
 
     // Interface implementation
     public ImageView getImageView() { return imageView; }
-    public int getX() { return coordinates.getX(); }
-    public int getY() { return coordinates.getY(); }
-    public void setLocation(int x, int y) { this.coordinates.update(x, y); }
+    public short getX() { return coordinates.getX(); }
+    public short getY() { return coordinates.getY(); }
+    public void setLocation(short x, short y) { this.coordinates.update(x, y); }
     public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public double getSpeed() { return speed; }
     public void nextFrame() {
-        double distance = Geometry.findEuclideanDistanceToPoint(getX(), getY(), target.getX(), target.getY());
+        short targetX, targetY;
+        targetX = (short) (target.getX() + deltaX);
+        if (targetX < 0) targetX = 0;
+        else if (targetX > UIController.ARENA_WIDTH) targetX = UIController.ARENA_WIDTH;
+        
+        targetY = (short) (target.getY() + deltaY);
+        if (targetY < 0) targetY = 0;
+        else if (targetY > UIController.ARENA_HEIGHT) targetY = UIController.ARENA_HEIGHT;
 
-        if (distance <= speed)
-            coordinates.update(target.getX(), target.getY());
-        else {
-            double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), target.getX(), target.getY());
-            int newX = coordinates.getX() + (int) (speed * Math.cos(angleFromTarget));
-            int newY = coordinates.getY() + (int) (speed * Math.sin(angleFromTarget));
+        double distanceFromTarget = Geometry.findEuclideanDistance(getX(), getY(), targetX, targetY);
+        double potentialDistanceTravelled = speed + unusedMovement;
+
+        if (distanceFromTarget <= potentialDistanceTravelled) {
+            coordinates.update(targetX, targetY);
+            hasReachedTarget = true;
+            damageTarget();
+        } else {
+            double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), targetX, targetY);
+            short newX = (short) (getX() + (short) (potentialDistanceTravelled * Math.cos(angleFromTarget)));
+            short newY = (short) (getY() + (short) (potentialDistanceTravelled * Math.sin(angleFromTarget)));
+
+            double actualDistanceTravelled = Geometry.findEuclideanDistance(getX(), getY(), newX, newY);
             coordinates.update(newX, newY);
+            unusedMovement += speed - actualDistanceTravelled;
         }
     }
+
+    /**
+     * Gets the class name of the tower that fired the projectile.
+     * @return The class name of the tower that fired the projectile.
+     */
+    protected abstract String getTowerClassName();
 
     /**
      * Determines whether the projectile has reached its target.
      * @return Whether the projectile has reached its target.
      */
-    public boolean hasReachedTarget() { return Geometry.isAt(getX(), getY(), target.getX(), target.getY()); }
-
+    public boolean hasReachedTarget() { return hasReachedTarget; }
 
     /**
-     * Accesses the attack power of the current projectile.
-     * @return The attack power of the current projectile.
+     * Damages the target of the projectile.
+     */
+    protected void damageTarget() {
+        if (!target.hasDied()) {
+            target.takeDamage(attackPower);
+            System.out.println(String.format("%s@(%d, %d) -> %s@(%d, %d)", getTowerClassName(), origin.getX(), origin.getY()
+                                , target.getClassName(), target.getX(), target.getY()));
+        }
+    }
+
+    /**
+     * Accesses the targeted monster of the projectile.
+     * @return The targeted monster of the projectile.
+     */
+    public Monster getTarget() { return target; }
+
+    /**
+     * Accesses the attack power of the projectile.
+     * @return The attack power of the projectile.
      */
     public int getAttackPower() { return attackPower; }
 }

@@ -45,29 +45,29 @@ public class GeometryTester {
     @Test
     public void testEuclideanDistanceToPoint() {
         // Same point
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, 0, 0, 0), 0, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(5, 0, 5, 0), 0, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, -10, 0, -10), 0, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(32, -456, 32, -456), 0, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, 0, 0, 0), 0, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(5, 0, 5, 0), 0, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, -10, 0, -10), 0, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(32, -456, 32, -456), 0, MAX_ERROR);
 
         // One equal coordinate
-        assertEquals(Geometry.findEuclideanDistanceToPoint(-1, 0, 0, 0), 1, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, -2, 0, 0), 2, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, 0, -3, 0), 3, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, 0, 0, -4), 4, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(6, 0, 0, 0), 6, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, 7, 0, 0), 7, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, 0, 8, 0), 8, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, 0, 0, 9), 9, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(-1, 0, 1, 0), 2, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(0, 2, 0, -2), 4, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(-1, 0, 0, 0), 1, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, -2, 0, 0), 2, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, 0, -3, 0), 3, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, 0, 0, -4), 4, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(6, 0, 0, 0), 6, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, 7, 0, 0), 7, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, 0, 8, 0), 8, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, 0, 0, 9), 9, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(-1, 0, 1, 0), 2, MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(0, 2, 0, -2), 4, MAX_ERROR);
 
         // Distinct x- and y- coordinates
-        assertEquals(Geometry.findEuclideanDistanceToPoint(-5, 7, -3, 6), Math.sqrt(5), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(490, 234, 436, -50), Math.sqrt(83572), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(56, 14, 43, 2), Math.sqrt(313), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(30, -19, 329, 10), Math.sqrt(90242), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistanceToPoint(130, -50, -40, -20), Math.sqrt(29800), MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(-5, 7, -3, 6), Math.sqrt(5), MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(490, 234, 436, -50), Math.sqrt(83572), MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(56, 14, 43, 2), Math.sqrt(313), MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(30, -19, 329, 10), Math.sqrt(90242), MAX_ERROR);
+        assertEquals(Geometry.findEuclideanDistance(130, -50, -40, -20), Math.sqrt(29800), MAX_ERROR);
     }
 
     @Test

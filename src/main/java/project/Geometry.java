@@ -4,8 +4,6 @@ import java.util.LinkedList;
 
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
-import math.geom2d.Shape2D;
-import math.geom2d.line.LineSegment2D;
 import math.geom2d.line.LinearShape2D;
 import math.geom2d.line.Ray2D;
 
@@ -40,7 +38,7 @@ public final class Geometry {
      * @param y2 The y-coordinate of the second point.
      * @return The Euclidean distance between the two points.
      */
-    public static double findEuclideanDistanceToPoint(int x1, int y1, int x2, int y2) {
+    public static double findEuclideanDistance(int x1, int y1, int x2, int y2) {
         return math.geom2d.Point2D.distance(x1, y1, x2, y2);
     }
     
@@ -140,7 +138,7 @@ public final class Geometry {
     public static boolean isInCircle(int xTest, int yTest, int x, int y, double r) throws UnsupportedOperationException {
         if (r < 0) throw new UnsupportedOperationException("The allowable error should not be negative.");
         
-        double distance = findEuclideanDistanceToPoint(xTest, yTest, x, y);
+        double distance = findEuclideanDistance(xTest, yTest, x, y);
         return distance < r || distance - r < EQUALITY_THRESHOLD;
     }
 

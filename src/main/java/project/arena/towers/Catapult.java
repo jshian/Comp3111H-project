@@ -1,10 +1,10 @@
 package project.arena.towers;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import org.apache.bcel.verifier.statics.DOUBLE_Upper;
+import javax.persistence.Entity;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -20,13 +20,13 @@ import project.arena.projectiles.CatapultProjectile;
 /**
  * Catapult can attack many monsters at the same time and has high shooting range.
  */
+@Entity
 public class Catapult extends Tower {
 
     /**
      * The damaging range of Catapult which default is 25.
      */
-    private final int damageRange = 25;
-
+    private final short damageRange = 25;
 
     /**
      * The least reload time Catapult can have which default is 2 frame.
@@ -69,15 +69,15 @@ public class Catapult extends Tower {
     }
 
     /**
-     * @see Tower#Tower(Tower)
+     * @see Tower#Tower(Arena, Tower)
      */
-    public Catapult(@NonNull Catapult other){
-        super(other);
+    public Catapult(@NonNull Arena arena, @NonNull Catapult other) {
+        super(arena, other);
     }
 
     @Override
-    public Catapult deepCopy() {
-        return new Catapult(this);
+    public Catapult deepCopy(@NonNull Arena arena) {
+        return new Catapult(arena, this);
     }
 
     /**
@@ -106,7 +106,7 @@ public class Catapult extends Tower {
      */
     @Override
     public boolean canShoot(Monster monster){
-        double dis = Geometry.findEuclideanDistanceToPoint(getX(), getY(), monster.getX(), monster.getY());
+        double dis = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
         return dis <= maxShootingRange && dis >= minShootingRange;
     }
 
@@ -119,11 +119,31 @@ public class Catapult extends Tower {
     public CatapultProjectile generateProjectile(){
         if(!isReload()) {
             LinkedList<ExistsInArena> selectList = new LinkedList<>();
-            Coordinates coordinate = selectMonster(arena.getMonsters(),selectList);
-            if (coordinate != null) {
+            Coordinates targetCoordinates = selectMonster(arena.getMonsters(), selectList);
+            if (targetCoordinates != null) {
+                short closestDistance = Short.MAX_VALUE;
+                double leastDelta = Double.POSITIVE_INFINITY;
+                Monster targetMonster = null;
+                for (Monster m : arena.getMonsters()) {
+                    Coordinates c = new Coordinates(m.getX(), m.getY());
+                    if (canShoot(m) && closestDistance == Short.MAX_VALUE) {
+                        closestDistance = arena.getDistanceToEndZone(c);
+                        
+                        double delta = Geometry.findEuclideanDistance(m.getX(), m.getY(), targetCoordinates.getX(), targetCoordinates.getY());
+                        if (delta < leastDelta) {
+                            leastDelta = delta;
+                            targetMonster = m;
+                        }
+                    }
+                    if (arena.getDistanceToEndZone(c) > closestDistance) break;
+                }
+
                 hasAttack = true;
                 this.counter = this.reload;
-                return new CatapultProjectile(arena, this.coordinates,coordinate,attackSpeed,attackPower,damageRange);
+                
+                short deltaX = (short) (targetCoordinates.getX() - targetMonster.getX());
+                short deltaY = (short) (targetCoordinates.getY() - targetMonster.getY());
+                return new CatapultProjectile(arena, coordinates, targetMonster, deltaX, deltaY, attackSpeed, attackPower, damageRange);
             }
         }
         return null;
@@ -138,7 +158,7 @@ public class Catapult extends Tower {
      */
     public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<ExistsInArena> selectList){
         LinkedList<Monster> nearestMon=new LinkedList<>();
-        int nearest = 0;
+        short nearest = 0;
         //find nearest to destination monster in shooting range
         for (Monster m:monsters) {
             if(canShoot(m)){
@@ -153,13 +173,13 @@ public class Catapult extends Tower {
                 nearestMon.add(m);
         }
         //find the target coordinate to attack
-        int radius = damageRange;
+        short radius = damageRange;
         Coordinates target = null;
         for (Monster m :nearestMon) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
 
-            for (int i = m.getX()-radius; i < m.getX()+radius; i++) {//square width
-                for (int j = m.getY()-radius; j < m.getY()+radius; j++) {//square length
+            for (short i = (short) (m.getX()-radius); i < m.getX()+radius; i++) {//square width
+                for (short j = (short) (m.getY()-radius); j < m.getY()+radius; j++) {//square length
                     if (i < 0 || i > UIController.ARENA_WIDTH) continue;
                     if (j < 0 || j > UIController.ARENA_HEIGHT) continue;
                     Coordinates c = new Coordinates(i,j);//tested coordinate
@@ -200,7 +220,7 @@ public class Catapult extends Tower {
      * Accesses the damage range of catapult.
      * @return The damage range of catapult.
      */
-    public int getDamageRange() {
+    public short getDamageRange() {
         return damageRange;
     }
 }
