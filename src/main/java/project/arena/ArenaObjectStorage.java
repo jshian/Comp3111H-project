@@ -235,13 +235,13 @@ class ArenaObjectStorage {
     }
 
     /**
-     * @see Arena#findObjectsInGrid(int, int, EnumSet)
+     * @see Arena#findObjectsInGrid(Coordinates, EnumSet)
      */
-    LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
+    LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         LinkedList<ExistsInArena> result = new LinkedList<>();
 
-        Grid grid = grids[xPos][yPos];
+        Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
 
         if (filter.contains(TypeFilter.Tower)) {
             result.addAll(grid.getTowers());
@@ -255,27 +255,6 @@ class ArenaObjectStorage {
             result.addAll(grid.getMonsters());
         }
 
-        return result;
-    }
-
-    /**
-     * @see Arena#findObjectsInGrid(Coordinates, EnumSet)
-     */
-    LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
-    {
-        return findObjectsInGrid(Grid.findGridXPos(coordinates), Grid.findGridYPos(coordinates), filter);
-    }
-
-    /**
-     * @see Arena#findObjectsOccupying(Coordinates)
-     */
-    LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
-    {
-        LinkedList<Object> result = new LinkedList<>();
-
-        result.addAll(findObjectsAtPixel(coordinates, EnumSet.of(TypeFilter.Projectile, TypeFilter.Monster)));
-        result.addAll(findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower)));
-        
         return result;
     }
 

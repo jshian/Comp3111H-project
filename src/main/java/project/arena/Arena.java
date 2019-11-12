@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.beans.binding.Bindings;
@@ -294,19 +293,6 @@ public final class Arena {
     }
 
     /**
-     * Finds all objects that are located inside a specified grid.
-     * @param xPos The x-position of the grid.
-     * @param yPos The y-position of the grid.
-     * @param filter Only the types that are specified will be included in the result.
-     * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
-     * @see TypeFilter
-     */
-    public LinkedList<ExistsInArena> findObjectsInGrid(int xPos, int yPos, @NonNull EnumSet<TypeFilter> filter)
-    {
-        return arenaObjectStorage.findObjectsInGrid(xPos, yPos, filter);
-    }
-
-    /**
      * Finds all objects that are located inside the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
      * @param filter Only the types that are specified will be included in the result.
@@ -316,16 +302,6 @@ public final class Arena {
     public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInGrid(coordinates, filter);
-    }
-
-    /**
-     * Finds all objects that occupy a specified coordinate in the arena.
-     * @param coordinates The specified coordinates.
-     * @return A linked list containing a reference to each object that satisfy the above criteria. Note that they do not have to be located at said coordinate.
-     */
-    public LinkedList<Object> findObjectsOccupying(@NonNull Coordinates coordinates)
-    {
-        return arenaObjectStorage.findObjectsOccupying(coordinates);
     }
 
     /**
