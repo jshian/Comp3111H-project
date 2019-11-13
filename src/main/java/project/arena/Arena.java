@@ -222,6 +222,21 @@ public final class Arena {
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
         this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
 
+        // deep copy without initial grids (that should be handled by UIController)
+        this.paneArena = new AnchorPane();
+        for (Monster m : getMonsters()) {
+            paneArena.getChildren().add(m.getImageView());
+        }
+        for (Projectile p : getProjectiles()) {
+            paneArena.getChildren().add(p.getImageView());
+        }
+        for (Tower t : getTowers()) {
+            paneArena.getChildren().add(t.getImageView());
+        }
+        for (HashMap.Entry<Node, Integer> entry : toRemove.entrySet()) {
+            paneArena.getChildren().add(entry.getKey());
+        }
+
         this.shadowArena = null;
     }
 
