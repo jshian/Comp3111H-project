@@ -93,17 +93,6 @@ public class Catapult extends Tower {
     }
 
     /**
-     * The shooting range of catapult is smaller than shooting range but higher than shooting limit.
-     * @param monster the monster who to be shoot.
-     * @return True if it is in the shooting range otherwise false.
-     */
-    @Override
-    public boolean canShoot(Monster monster){
-        double dis = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
-        return dis <= maxShootingRange && dis >= minShootingRange;
-    }
-
-    /**
      * Generates a projectile that attacks the target of the tower.
      * The target coordinates is set such that the splash effect hits the monster that is closest to the end-zone and in shooting range; and hits the most monsters.
      * @return The projectile that attacks the target of the tower, or <code>null</code> if either there is no valid target or the tower is reloading.
@@ -177,7 +166,7 @@ public class Catapult extends Tower {
                     if (j < 0 || j > UIController.ARENA_HEIGHT) continue;
                     Coordinates c = new Coordinates(i,j);//tested coordinate
 
-                    if (canShoot(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//damage range in current point
+                    if (isInRange(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//damage range in current point
                         LinkedList<Monster> monInCircle = new LinkedList<>();
 
                         for (Monster testMon:arena.getMonsters()){//find the monsters in the range

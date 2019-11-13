@@ -215,26 +215,28 @@ public abstract class Tower implements ExistsInArena {
     public abstract Projectile generateProjectile();
 
     /**
-     * To determine whether the monster is in shooting range or not.
-     * @param monster the monster who to be shoot.
-     * @return True if it is in the shooting range otherwise false.
+     * Determines whether the specified monster is a valid target to be shot at.
+     * @param monster The monster.
+     * @return Whether the monster is a valid target to be shot at.
      */
-    public boolean canShoot(Monster monster){
+    protected boolean canShoot(Monster monster) {
+        if (monster.hasDied()) return false;
+
         for (Coordinates c : monster.getPrevCoordinates()) {
-            if (canShoot(c)) return true;
+            if (isInRange(c)) return true;
         }
         
         return false;
     }
 
     /**
-     * To determine whether the coordinates is in the shooting range or not.
-     * @param coordinate the coordinates that to be shoot.
-     * @return True if it is in the shooting range otherwise false.
+     * Determines whether the specified pixel is in shooting range.
+     * @param coordinates The coordinates of the pixel.
+     * @return Whether the specified pixel is in shooting range.
      */
-    public boolean canShoot(@NonNull Coordinates coordinate){
-        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinate.getX(), coordinate.getY());
-        return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
+    protected boolean isInRange(@NonNull Coordinates coordinates) {
+        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinates.getX(), coordinates.getY());
+        return euclideanDistance <= maxShootingRange && euclideanDistance >= minShootingRange;
     }
 
     /**
