@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Helper class to test deep copying of objects.
@@ -33,8 +35,16 @@ public final class DeepCopyTester {
                     assertEquals(String.format("Primitive field '%s' should be the same after deep copying", 
                         f.getName()), f.get(o1), f.get(o2));
                 } else {
-                    assertNotSame(String.format("Object field '%s' should be different after deep copying", 
+                    if (Iterator.class.isAssignableFrom(f.getType())) {
+                        for (Object i : (Iterable<?>)f.get(o1)) {
+                            for (Object j : (Iterable<?>)f.get(o2)) {
+                                testDeepCopy(i, j);
+                            }
+                        }
+                    } else {
+                        assertNotSame(String.format("Object field '%s' should be different after deep copying", 
                         f.getName()), f.get(o1), f.get(o2));
+                    }
                 }
             }
         } catch (IllegalAccessException e) {
