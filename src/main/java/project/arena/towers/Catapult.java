@@ -9,7 +9,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.Geometry;
-import project.Player;
 import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
