@@ -4,24 +4,77 @@
     <meta charset="UTF-8">
     <title>Leaderboard</title>
 </head>
-<body>
-    <h1 style="text-align:center">
-        <p style="font-family:arial;color:red;f">
-        Leaderboard:
-        <ol>
-        <li> item 1</li>
-        <li> item 2</li>
-        <li> item 3</li>
-        <li> item 4</li>
-        <li> item 5</li>
-        <li> item 6</li>
-        <li> item 7</li>
-        <li> item 8</li>
-        <li> item 9</li>
-        <li> item 10</li>
-        </ol>
-        </p>
-    </h1>
+<style>
+    table {
+        table-layout: fixed;
+        width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 3px solid grey;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
 
+    td {
+        padding-left: 5px;
+        border: 1px solid grey;
+    }
+
+    td:first-child {
+        width: 30px;
+        padding-left: 3px;
+        border-right: 2px solid grey;
+        font-weight: bold;
+    }
+</style>
+<body>
+    <div style="border: 2px solid black; text-align: center;">
+        <p style="font-family: arial; font-size: 1.5em; font-weight: bold; color: red;">LEADERBOARD</p>
+    </div>
+    <div style="height: 10px;">&nbsp;</div>
+    <table>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Score 1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Score 2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Score 3</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Score 4</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Score 5</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Score 6</td>
+            </tr>
+            <tr>
+                <td >7</td>
+                <td>Score 7</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>Score 8</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>Score 9</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>Score 10</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
