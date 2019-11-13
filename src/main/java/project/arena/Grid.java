@@ -68,7 +68,7 @@ public final class Grid {
      * @param xPos The horizontal position of the grid, with 0 denoting the left-most grid increasing towards the right. This should be at least 0 and less than {@value UIController#MAX_H_NUM_GRID}.
      * @param yPos The vertical position of the grid, with 0 denoting the top-most grid, increasing towards the bottom. This should be at least 0 and less than {@value UIController#MAX_V_NUM_GRID}.
      */
-    Grid(short xPos, short yPos) {
+    public Grid(short xPos, short yPos) {
         checkGrid(xPos, yPos);
 
         this.xPos = xPos;
@@ -79,19 +79,19 @@ public final class Grid {
      * Accesses the x-position of the grid.
      * @return The x-position of the grid, where 0 is left-most, increasing towards the right.
      */
-    short getXPos() { return xPos; }
+    public short getXPos() { return xPos; }
 
     /**
      * Accesses the y-position of the grid.
      * @return The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      */
-    short getYPos() { return yPos; }
+    public short getYPos() { return yPos; }
 
     /**
      * Finds the coordinates of the center of the grid
      * @return The coordinates of the center of the grid.
      */
-    Coordinates getCenter() {
+    public Coordinates getCenter() {
         return findGridCenter(xPos, yPos);
     }
     
@@ -176,7 +176,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The x-coordinate of the center of the grid which encloses the specified set of coordinates.
      */
-    static short findGridCenterX(@NonNull Coordinates coordinates) {
+    public static short findGridCenterX(@NonNull Coordinates coordinates) {
         return findGridCenterX(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -186,7 +186,7 @@ public final class Grid {
      * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      * @return The x-coordinate of the center of the specified grid.
      */
-    static short findGridCenterX(short xPos, short yPos) {
+    public static short findGridCenterX(short xPos, short yPos) {
         checkGrid(xPos, yPos);
 
         return (short) ((xPos + 0.5) * UIController.GRID_WIDTH);
@@ -197,7 +197,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The y-coordinate of the center of the grid which encloses the specified set of coordinates.
      */
-    static short findGridCenterY(@NonNull Coordinates coordinates) {
+    public static short findGridCenterY(@NonNull Coordinates coordinates) {
         return findGridCenterY(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -207,7 +207,7 @@ public final class Grid {
      * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      * @return The y-coordinate of the center of the specified grid.
      */
-    static short findGridCenterY(short xPos, short yPos) {
+    public static short findGridCenterY(short xPos, short yPos) {
         checkGrid(xPos, yPos);
 
         return (short) ((yPos + 0.5) * UIController.GRID_HEIGHT);
@@ -237,7 +237,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The x-coordinate of the left edge of the grid which encloses the specified set of coordinates.
      */
-    static short findGridLeftX(@NonNull Coordinates coordinates) {
+    public static short findGridLeftX(@NonNull Coordinates coordinates) {
         return findGridLeftX(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -247,7 +247,7 @@ public final class Grid {
      * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      * @return The x-coordinate of the left edge of the specified grid.
      */
-    static short findGridLeftX(short xPos, short yPos) {
+    public static short findGridLeftX(short xPos, short yPos) {
         checkGrid(xPos, yPos);
 
         return (short) (xPos * UIController.GRID_WIDTH);
@@ -258,7 +258,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The y-coordinate of the top edge of the grid which encloses the specified set of coordinates.
      */
-    static short findGridTopY(@NonNull Coordinates coordinates) {
+    public static short findGridTopY(@NonNull Coordinates coordinates) {
         return findGridTopY(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -268,7 +268,7 @@ public final class Grid {
      * @param yPos The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      * @return The y-coordinate of the top edge of the specified grid.
      */
-    static short findGridTopY(short xPos, short yPos) {
+    public static short findGridTopY(short xPos, short yPos) {
         checkGrid(xPos, yPos);
 
         return (short) (yPos * UIController.GRID_HEIGHT);

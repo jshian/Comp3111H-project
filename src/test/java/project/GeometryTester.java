@@ -47,7 +47,7 @@ public class GeometryTester {
     }
     
     @Test
-    public void testEuclideanDistanceToPoint() {
+    public void testEuclideanDistance() {
         // Same point
         assertEquals(Geometry.findEuclideanDistance(0, 0, 0, 0), 0, MAX_ERROR);
         assertEquals(Geometry.findEuclideanDistance(5, 0, 5, 0), 0, MAX_ERROR);
