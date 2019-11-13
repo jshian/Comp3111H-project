@@ -16,7 +16,7 @@ import project.UIController;
  * Coordinates are in terms of pixels.
  * @see Arena
  */
-public class Coordinates implements Serializable {
+public final class Coordinates implements Serializable {
     // Implement Serializable
     private static final long serialVersionUID = -1061709817920817709L;
 

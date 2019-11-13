@@ -171,12 +171,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public abstract Monster deepCopy(@NonNull Arena arena);
     
     // Interface implementation
-    public ImageView getImageView() { return imageView; }
-    public short getX() { return coordinates.getX(); }
-    public short getY() { return coordinates.getY(); }
-    public void setLocation(short x, short y) { this.coordinates.update(x, y); }
-    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
-    public double getSpeed() { return speed; }
+    public final ImageView getImageView() { return imageView; }
+    public final short getX() { return coordinates.getX(); }
+    public final short getY() { return coordinates.getY(); }
+    public final void setLocation(short x, short y) { this.coordinates.update(x, y); }
+    public final void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+    public final double getSpeed() { return speed; }
     public void nextFrame() {
         // Move monster
         prevCoordinates.clear();
@@ -203,7 +203,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         else speed = maxSpeed;
         statusEffects.removeIf(x -> x.getDuration() <= 0);
     }
-    public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
+    public final int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
      * Gets the class name of the monster.
@@ -215,37 +215,37 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Accesses the health of the monster.
      * @return The health of the monster.
      */
-    public double getHealth() { return health.get(); }
+    public final double getHealth() { return health.get(); }
 
     /**
      * Sets the health of the monster.
      * @param value The new health of the monster.
      */
-    protected void setHealth(double value) { this.health.set(value); }
+    protected final void setHealth(double value) { this.health.set(value); }
 
     /**
      * Accesses the coordinates that the monster has passed through in the previous frame.
      * @return A linked list containing a reference to the coordinates that the monster has passed through in the previous frame.
      */
-    public LinkedList<Coordinates> getPrevCoordinates() { return prevCoordinates; }
+    public final LinkedList<Coordinates> getPrevCoordinates() { return prevCoordinates; }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.
      * @return The amount of resources granted to the player by the monster on death.
      */
-    public int getResources() { return resources; }
+    public final int getResources() { return resources; }
 
     /**
      * Accesses the status effects of the monster.
      * @return The status effects of the monster.
      */
-    public LinkedList<StatusEffect> getStatusEffects() { return statusEffects; }
+    public final LinkedList<StatusEffect> getStatusEffects() { return statusEffects; }
 
     /**
      * Reduces the health of the monster.
      * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
      */
-    public void takeDamage(double amount) {
+    public final void takeDamage(double amount) {
         if (amount <= 0) return;
         this.health.set(getHealth() - amount);
     }
@@ -254,13 +254,13 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Adds a status effect to the monster.
      * @param statusEffect The status effect to add.
      */
-    public void addStatusEffect(StatusEffect statusEffect) { this.statusEffects.add(statusEffect); }
+    public final void addStatusEffect(StatusEffect statusEffect) { this.statusEffects.add(statusEffect); }
 
     /**
      * Determines whether the monster has died.
      * @return Whether the monster has died.
      */
-    public boolean hasDied() { return getHealth() <= 0; }
+    public final boolean hasDied() { return getHealth() <= 0; }
 
     /**
      * Finds the next coordinates to move to.
@@ -272,7 +272,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * Finds the number of pixels the monster has to travel to reach its destination.
      * @return The number of pixels the monster has to travel to reach its destination.
      */
-    public short distanceToDestination() { return arena.getDistanceToEndZone(coordinates); }
+    public final short distanceToDestination() { return arena.getDistanceToEndZone(coordinates); }
 
     /**
      * show monster hp when mouse is hover over the monster.
@@ -300,5 +300,5 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * get the Label displaying hp of monster.
      * @return the Label displaying hp of monster.
      */
-    public Label getHpLabel() { return hpLabel; }
+    public final Label getHpLabel() { return hpLabel; }
 }

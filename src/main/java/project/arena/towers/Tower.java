@@ -155,11 +155,11 @@ public abstract class Tower implements ExistsInArena {
     public abstract Tower deepCopy(@NonNull Arena arena);
 
     // Interface implementation
-    public ImageView getImageView() { return imageView; }
-    public short getX() { return coordinates.getX(); }
-    public short getY() { return coordinates.getY(); }
-    public void setLocation(short x, short y) { this.coordinates.update(x, y); }
-    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+    public final ImageView getImageView() { return imageView; }
+    public final short getX() { return coordinates.getX(); }
+    public final short getY() { return coordinates.getY(); }
+    public final void setLocation(short x, short y) { this.coordinates.update(x, y); }
+    public final void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
     public void nextFrame() {
         if (hasAttack) {
             if (this.counter == 0) {
@@ -190,7 +190,7 @@ public abstract class Tower implements ExistsInArena {
      * @param player The player who upgrades the tower.
      * @return Whether the upgrade is successful.
      */
-    public boolean tryUpgrade(@NonNull Player player) {
+    public final boolean tryUpgrade(@NonNull Player player) {
         if (canUpgrade(player)) {
             System.out.println(String.format("%s is being upgraded", getClassName()));
             player.spendResources(upgradeCost);
@@ -234,7 +234,7 @@ public abstract class Tower implements ExistsInArena {
      * @param coordinates The coordinates of the pixel.
      * @return Whether the specified pixel is in shooting range.
      */
-    protected boolean isInRange(@NonNull Coordinates coordinates) {
+    protected final boolean isInRange(@NonNull Coordinates coordinates) {
         double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinates.getX(), coordinates.getY());
         return euclideanDistance <= maxShootingRange && euclideanDistance >= minShootingRange;
     }
@@ -243,64 +243,49 @@ public abstract class Tower implements ExistsInArena {
      * Accesses the attack power of the tower.
      * @return The attack power of the tower.
      */
-    public int getAttackPower() {
-        return attackPower;
-    }
+    public final int getAttackPower() { return attackPower; }
 
     /**
      * Accesses the cumulative building cost of the tower.
      * @return The cumulative building cost of the tower.
      */
-    public int getBuildingCost() {
-        return buildingCost;
-    }
+    public final int getBuildingCost() { return buildingCost; }
 
     /**
      * Accesses the maximum shooting range of the tower.
      * @return The maximum shooting range of the tower.
      */
-    public short getMaxShootingRange() {
-        return maxShootingRange;
-    }
+    public final short getMaxShootingRange() { return maxShootingRange; }
 
     /**
      * Accesses the minimum shooting range of the tower.
      * @return The minimum shooting range of the tower.
      */
-    public short getMinShootingRange() {
-        return minShootingRange;
-    }
-
+    public final short getMinShootingRange() { return minShootingRange; }
 
     /**
      * Accesses the attack speed of the tower.
      * @return The attack speed of the tower.
      */
-    public int getAttackSpeed() {
-        return attackSpeed;
-    }
+    public final int getAttackSpeed() { return attackSpeed; }
 
     /**
      * Accesses the reload time of the tower.
      * @return The reload time of the tower.
      */
-    public int getReload() {
-        return reload;
-    }
+    public final int getReload() { return reload; }
 
     /**
      * Accesses the upgrade cost of the tower.
      * @return The upgrade cost of the tower.
      */
-    public int getUpgradeCost() {
-        return upgradeCost;
-    }
+    public final int getUpgradeCost() { return upgradeCost; }
 
     /**
      * Tower has the reload time to do next attack.
      * @return whether the tower is reloading or not.
      */
-    public boolean isReload() { return counter > 0; }
+    public final boolean isReload() { return counter > 0; }
 
     /**Accesses the information of tower.
      * @return the information of tower.
