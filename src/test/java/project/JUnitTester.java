@@ -1,3 +1,5 @@
+package project;
+
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.testfx.framework.junit.*;
