@@ -1,10 +1,12 @@
 package project;
 
+import javax.persistence.Entity;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
+@Entity
 public class Player {
-
 
     // Attribute
     private final String name;
