@@ -171,9 +171,7 @@ public class UIController {
 
         this.mode = mode;
         disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
-            nextFrame();
-        }));
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> nextFrame()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -183,12 +181,7 @@ public class UIController {
      */
     private void resetGame() {
         paneArena.getChildren().removeAll(paneArena.getChildren());
-        for (int j = 0; j < grids.length; j++) {
-            for (int i = 0; i < grids[0].length; i++) {
-                grids[i][j] = null;
-            }
-        }
-        createArena();
+        paneArena.getChildren().addAll(initialArena().getChildren());
         arena = new Arena(remainingResources, paneArena);
     }
 
@@ -256,6 +249,20 @@ public class UIController {
 
         arena = new Arena(remainingResources, paneArena);
         setDragLabel();
+    }
+
+    /**
+     * A function to get an AnchorPane with initial grids of the game.
+     * @return return an AnchorPane with initial grids of the game.
+     */
+    public AnchorPane initialArena() {
+        AnchorPane newPane = new AnchorPane();
+        for (int j = 0; j < grids.length; j++) {
+            for (int i = 0; i < grids[0].length; i++) {
+                newPane.getChildren().add(grids[j][i]);
+            }
+        }
+        return newPane;
     }
 
     /**
