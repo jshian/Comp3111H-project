@@ -3,21 +3,19 @@ package project.arena;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-import javax.persistence.Entity;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.Geometry;
 import project.UIController;
 import project.arena.monsters.Monster;
 import project.arena.towers.Tower;
-import project.debug.FieldVisualizer;
+
+import debug.ScalarFieldVisualizer;
 
 /**
  * Manages the scalar fields of the arena.
  * @see Arena
  */
-@Entity
 class ArenaScalarFields {
 
     /**
@@ -131,7 +129,7 @@ class ArenaScalarFields {
     		}
         }
 
-        FieldVisualizer.visualizeDoubleArray(attacksToEndZone);
+        ScalarFieldVisualizer.visualizeDoubleArray(attacksToEndZone);
     }
 
     /**

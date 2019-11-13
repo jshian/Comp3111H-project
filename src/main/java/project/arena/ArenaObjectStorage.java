@@ -8,7 +8,7 @@ import java.util.PriorityQueue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Transient;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -60,7 +60,7 @@ class ArenaObjectStorage {
      * Stores grid information of the arena.
      * @see Grid
      */
-    @NotNull
+    @Transient
     private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
     {
         for (short i = 0; i < UIController.MAX_H_NUM_GRID; i++) {
