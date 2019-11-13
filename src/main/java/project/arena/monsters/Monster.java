@@ -54,7 +54,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      */
     @NotNull
     @ManyToOne
-	protected final Arena arena;
+    protected final Arena arena;
 
     /**
      * Represents the position of the monster.
