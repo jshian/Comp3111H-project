@@ -69,7 +69,10 @@ public final class DeepCopyTester {
                     if (n > 0 && Iterator.class.isAssignableFrom(f.getType())) {
                         for (Object i : (Iterable<?>)f.get(o1)) {
                             for (Object j : (Iterable<?>)f.get(o2)) {
-                                testDeepCopy(i, j, (short) (n - 1), seen);
+                                LinkedList<Object> seen_copy = new LinkedList<>();
+                                for (Object o : seen) seen_copy.add(o);
+                                
+                                testDeepCopy(i, j, (short) (n - 1), seen_copy);
                             }
                         }
                     } else {
