@@ -121,6 +121,7 @@ public abstract class Tower implements ExistsInArena {
         this.arena = arena;
         this.coordinates = new Coordinates(coordinates);
         this.imageView = imageView;
+
         this.coordinates.bindByImage(this.imageView);
     }
 
@@ -142,6 +143,7 @@ public abstract class Tower implements ExistsInArena {
         this.counter = other.counter;
         this.upgradeCost = other.upgradeCost;
         this.hasAttack = other.hasAttack;
+
         this.coordinates.bindByImage(this.imageView);
     }
 
@@ -218,8 +220,11 @@ public abstract class Tower implements ExistsInArena {
      * @return True if it is in the shooting range otherwise false.
      */
     public boolean canShoot(Monster monster){
-        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
-        return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
+        for (Coordinates c : monster.getPrevCoordinates()) {
+            if (canShoot(c)) return true;
+        }
+        
+        return false;
     }
 
     /**

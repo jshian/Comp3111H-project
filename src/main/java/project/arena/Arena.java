@@ -95,6 +95,19 @@ public final class Arena {
     static final int LASER_DURATION = 2;
 
     /**
+     * The player of the game.
+     */
+    @NotNull
+    @OneToOne
+    private Player player;
+
+    /**
+     * The arena of the game.
+     */
+    @Transient
+    private AnchorPane paneArena;
+
+    /**
      * The current frame number of the arena since the game began.
      */
     private int currentFrame = 0;
@@ -179,19 +192,6 @@ public final class Arena {
     private Arena shadowArena;
 
     /**
-     * The player of the game.
-     */
-    @NotNull
-    @OneToOne
-    private Player player;
-
-    /**
-     * The arena of the game.
-     */
-    @Transient
-    private AnchorPane paneArena;
-
-    /**
      * Constructor of the Arena class. Bind the label to resources.
      * @param resourceLabel the label to show remaining resources of player.
      * @param paneArena the arena pane of the game.
@@ -216,6 +216,7 @@ public final class Arena {
         this.currentFrame = other.currentFrame;
         this.difficulty = other.difficulty;
 
+        // TODO: Deep copy each object in toRemove and paneArena
         this.toRemove = new HashMap<>();
         for (HashMap.Entry<Node, Integer> entry : other.toRemove.entrySet()) {
             this.toRemove.put(entry.getKey(), entry.getValue());
