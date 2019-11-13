@@ -219,7 +219,7 @@ public abstract class Tower implements ExistsInArena {
      * @param monster The monster.
      * @return Whether the monster is a valid target to be shot at.
      */
-    protected boolean canShoot(Monster monster) {
+    protected boolean isValidTarget(Monster monster) {
         if (monster.hasDied()) return false;
 
         for (Coordinates c : monster.getPrevCoordinates()) {

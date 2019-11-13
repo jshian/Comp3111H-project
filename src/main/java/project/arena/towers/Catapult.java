@@ -108,7 +108,7 @@ public class Catapult extends Tower {
                 Monster targetMonster = null;
                 for (Monster m : arena.getMonsters()) {
                     Coordinates c = new Coordinates(m.getX(), m.getY());
-                    if (canShoot(m) && closestDistance == Short.MAX_VALUE) {
+                    if (isValidTarget(m) && closestDistance == Short.MAX_VALUE) {
                         closestDistance = arena.getDistanceToEndZone(c);
 
                         double delta = Geometry.findEuclideanDistance(m.getX(), m.getY(), targetCoordinates.getX(), targetCoordinates.getY());
@@ -143,7 +143,7 @@ public class Catapult extends Tower {
         short nearest = 0;
         //find nearest to destination monster in shooting range
         for (Monster m:monsters) {
-            if(canShoot(m)){
+            if(isValidTarget(m)){
                 nearest = arena.getDistanceToEndZone(new Coordinates(m.getX(),m.getY()));//distance;
                 break;
             }
@@ -151,7 +151,7 @@ public class Catapult extends Tower {
         //find all monster have the nearest distance and can be shoot
         for (Monster m :monsters) {
             Coordinates c = new Coordinates(m.getX(),m.getY());
-            if(arena.getDistanceToEndZone(c)==nearest && canShoot(m))
+            if(arena.getDistanceToEndZone(c)==nearest && isValidTarget(m))
                 nearestMon.add(m);
         }
         //find the target coordinate to attack
