@@ -3,9 +3,6 @@ package project.arena;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import project.UIController;
