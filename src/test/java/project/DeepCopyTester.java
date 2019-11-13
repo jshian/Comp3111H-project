@@ -20,8 +20,9 @@ public final class DeepCopyTester {
      * @param <T> The type of the objects.
      * @param o1 The first object.
      * @param o2 The second object.
+     * @param n The number of layers of objects in collections to check deep copies of. For example, a value of <code>0</code> means to only check the collection itself. A value of <code>1</code> means to check the objects in the collection, but if those objects are themselves collections, it will not further check the objects inside them. A negative value is equivalent to <code>0</code>.
      */
-    public static <T> void testDeepCopy(T o1, T o2) {
+    public static <T> void testDeepCopy(T o1, T o2, int n) {
         try {
             Field[] fields = o1.getClass().getDeclaredFields();
             HashMap<Field, Object> fieldValueMap_original = new HashMap<>();
@@ -35,10 +36,10 @@ public final class DeepCopyTester {
                     assertEquals(String.format("Primitive field '%s' should be the same after deep copying", 
                         f.getName()), f.get(o1), f.get(o2));
                 } else {
-                    if (Iterator.class.isAssignableFrom(f.getType())) {
+                    if (n > 0 && Iterator.class.isAssignableFrom(f.getType())) {
                         for (Object i : (Iterable<?>)f.get(o1)) {
                             for (Object j : (Iterable<?>)f.get(o2)) {
-                                testDeepCopy(i, j);
+                                testDeepCopy(i, j, n - 1);
                             }
                         }
                     } else {
