@@ -9,10 +9,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 import project.Geometry;
+import project.UIController;
 import project.arena.*;
 import project.arena.monsters.*;
 import project.arena.towers.*;
-import sample.MyController;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -29,7 +29,7 @@ public class CatapultTest extends ApplicationTest {
         s = new Scene(root, 600, 480);
         primaryStage.setScene(s);
         primaryStage.show();
-        MyController appController = loader.getController();
+        UIController appController = loader.getController();
         appController.createArena();
 	}
 
