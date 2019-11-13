@@ -54,7 +54,8 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      */
     @NotNull
     @ManyToOne
-    protected final Arena arena;
+	public
+    final Arena arena;
 
     /**
      * Represents the position of the monster.
@@ -155,6 +156,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.unusedMovement = other.unusedMovement;
         for (Coordinates c : other.prevCoordinates) this.prevCoordinates.add(new Coordinates(c));
         this.destination = new Coordinates(other.destination);
+        this.resources = other.resources;
         // hpLabel has already been deep copied
         for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
 

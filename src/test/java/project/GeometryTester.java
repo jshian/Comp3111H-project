@@ -9,6 +9,9 @@ import org.junit.rules.ExpectedException;
 
 import javafx.geometry.Point2D;
 
+/**
+ * Tests the {@link Geometry} class.
+ */
 public class GeometryTester {
 	@Rule
     public final ExpectedException expectedException = ExpectedException.none();

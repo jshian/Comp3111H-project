@@ -1,6 +1,10 @@
 package project.arena.monsters;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -8,23 +12,27 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import project.DeepCopyTester;
 import project.JavaFXTester;
 import project.arena.Arena;
 import project.arena.Coordinates;
 
+/**
+ * Tests the {@link Monster} class.
+ */
 public class MonsterTester extends JavaFXTester {
 
     static final double MAX_ERROR = 0.0001;
     
     @Test
-    public void testBaseMonster() {
-        Arena a = new Arena(new Label(), new AnchorPane());
+    public void testBasicMonster() {
+        Arena a1 = new Arena(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 15, (short) 25);
         Coordinates end = new Coordinates((short) 100, (short) 70);
         ImageView iv = new ImageView(new Image("/collision.png"));
         StatusEffect slowEffect = new StatusEffect(StatusEffect.EffectType.Slow, 2);
 
-        Fox f1 = new Fox(a, start, end, iv, 1);
+        Fox f1 = new Fox(a1, start, end, iv, 1);
         assertSame(f1.getImageView(), iv);
         assertEquals(f1.getX(), 15);
         assertEquals(f1.getY(), 25);
@@ -43,7 +51,7 @@ public class MonsterTester extends JavaFXTester {
         assertEquals(f1.getHealth(), -9.55, MAX_ERROR);
         assertTrue(f1.hasDied());
         f1.takeDamage(-999);
-        assertEquals(f1.getHealth(), -9.55, MAX_ERROR);
+        assertEquals(f1.getHealth(), -9.55, MAX_ERROR); // Negative damage taken should do nothing
         assertTrue(f1.hasDied());
         f1.setHealth(50);
         assertEquals(f1.getHealth(), 50, MAX_ERROR);
@@ -62,5 +70,11 @@ public class MonsterTester extends JavaFXTester {
 
         f1.nextFrame();
         assertTrue(originalSpeed == f1.getSpeed()); // Monster should no longer be slowed
+    
+        Arena a2 = new Arena(new Label(), new AnchorPane());
+        Fox f2 = new Fox(a2, f1);
+        assertEquals(f2.arena, a2);
+
+        DeepCopyTester.testDeepCopy(f1, f2);
     }
 }
