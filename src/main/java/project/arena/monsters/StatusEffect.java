@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Status effects can modify the stats of Monsters.
+ * Note, when applied, status effects only start to take effect and count down on the next frame.
  * @see Monster
  */
 @Entity
@@ -45,9 +46,10 @@ public class StatusEffect {
     /**
      * Default constructor for StatusEffect class.
      * @param effectType The type of effect.
-     * @param duration The duration of the effect in number of frames.
+     * @param duration The duration of the effect in number of frames, which should be greater than zero.
      */
     public StatusEffect(@NonNull EffectType effectType, int duration) {
+        if (duration <= 0) throw new IllegalArgumentException("Duration should be greater than zero.");
         this.effectType = effectType;
         this.duration = duration;
     }

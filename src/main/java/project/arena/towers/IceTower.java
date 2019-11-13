@@ -88,7 +88,7 @@ public class IceTower extends Tower {
     public Projectile generateProjectile(){
         if(!isReload()) {
             for (Monster m : arena.getMonsters()) {
-                if (canShoot(m)) {
+                if (isValidTarget(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
                     return new IceProjectile(arena, coordinates, m, attackSpeed, slowDownTime);

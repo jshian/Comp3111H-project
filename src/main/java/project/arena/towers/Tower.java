@@ -121,6 +121,7 @@ public abstract class Tower implements ExistsInArena {
         this.arena = arena;
         this.coordinates = new Coordinates(coordinates);
         this.imageView = imageView;
+
         this.coordinates.bindByImage(this.imageView);
     }
 
@@ -142,6 +143,7 @@ public abstract class Tower implements ExistsInArena {
         this.counter = other.counter;
         this.upgradeCost = other.upgradeCost;
         this.hasAttack = other.hasAttack;
+
         this.coordinates.bindByImage(this.imageView);
     }
 
@@ -190,12 +192,12 @@ public abstract class Tower implements ExistsInArena {
      */
     public boolean tryUpgrade(@NonNull Player player) {
         if (canUpgrade(player)) {
-            System.out.println(String.format("%s is being upgraded.", getClassName()));
+            System.out.println(String.format("%s is being upgraded", getClassName()));
             player.spendResources(upgradeCost);
             upgrade();
             return true;
         }
-        System.out.println(String.format("not enough resource to upgrade %s.", getClassName()));
+        System.out.println(String.format("not enough resource to upgrade %s", getClassName()));
         return false;
     }
 
@@ -213,23 +215,28 @@ public abstract class Tower implements ExistsInArena {
     public abstract Projectile generateProjectile();
 
     /**
-     * To determine whether the monster is in shooting range or not.
-     * @param monster the monster who to be shoot.
-     * @return True if it is in the shooting range otherwise false.
+     * Determines whether the specified monster is a valid target to be shot at.
+     * @param monster The monster.
+     * @return Whether the monster is a valid target to be shot at.
      */
-    public boolean canShoot(Monster monster){
-        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), monster.getX(), monster.getY());
-        return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
+    protected boolean isValidTarget(Monster monster) {
+        if (monster.hasDied()) return false;
+
+        for (Coordinates c : monster.getPrevCoordinates()) {
+            if (isInRange(c)) return true;
+        }
+        
+        return false;
     }
 
     /**
-     * To determine whether the coordinates is in the shooting range or not.
-     * @param coordinate the coordinates that to be shoot.
-     * @return True if it is in the shooting range otherwise false.
+     * Determines whether the specified pixel is in shooting range.
+     * @param coordinates The coordinates of the pixel.
+     * @return Whether the specified pixel is in shooting range.
      */
-    public boolean canShoot(@NonNull Coordinates coordinate){
-        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinate.getX(), coordinate.getY());
-        return euclideanDistance <= maxShootingRange && euclideanDistance>=minShootingRange;
+    protected boolean isInRange(@NonNull Coordinates coordinates) {
+        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), coordinates.getX(), coordinates.getY());
+        return euclideanDistance <= maxShootingRange && euclideanDistance >= minShootingRange;
     }
 
     /**

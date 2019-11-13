@@ -101,7 +101,7 @@ public class LaserTower extends Tower{
     public Projectile generateProjectile(){
         if(!isReload()) {
             for (Monster m : arena.getMonsters()) {
-                if (canShoot(m)) {
+                if (isValidTarget(m)) {
                     if (!consumeResource(arena.getPlayer())) return null;
                     hasAttack = true;
                     this.counter = this.reload;

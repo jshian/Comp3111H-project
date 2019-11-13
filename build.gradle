@@ -3,19 +3,20 @@ plugins {
 	id 'jacoco'
 	id 'application'
 	id 'org.openjfx.javafxplugin' version '0.0.7' apply false
-    id "org.checkerframework" version "0.4.8"
+    id "org.checkerframework" version '0.4.8'
 	id 'eclipse'
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-
-if (JavaVersion.current() != project.targetCompatibility) {
+if (JavaVersion.current() > org.gradle.api.JavaVersion.VERSION_1_10) {
+    println('Current JavaVersion: "' + JavaVersion.current() + '"');
+    println('Apply org.openjfx.javafxplugin');
     apply plugin: 'org.openjfx.javafxplugin'
     javafx {
-    	version = "12.0.1"
-	modules = ['javafx.controls','javafx.fxml' ]
+    	version = '12.0.1'
+		modules = ['javafx.base','javafx.controls','javafx.fxml','javafx.graphics']
     }
 } 
 
@@ -66,14 +67,14 @@ dependencies {
 
     // https://mvnrepository.com/artifact/math.geom2d/javaGeom/0.11.1
     compile group: 'math.geom2d', name: 'javaGeom', version: '0.11.1'
-
-
-    // VSCode only
-    // compileClasspath fileTree('C:/Program Files/Java/jre1.8.0_231/lib/ext')
 }
 
 test {
     useJUnit()
+}
+
+jacoco {
+    toolVersion = "0.8.2"
 }
 
 jacocoTestReport {

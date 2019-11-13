@@ -33,7 +33,6 @@ import project.arena.MovesInArena;
  * They can only move horizontally or vertically towards an adjacent grid that does not contain a Tower.
  * If they succeed, the game is lost.
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
- * TODO: Allow Towers to shoot monsters that are fast.
  */
 @Entity
 public abstract class Monster implements MovesInArena, Comparable<Monster> {
@@ -87,16 +86,21 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected double speed = 1;
 
     /**
-     * The location which the monster tries to reach.
-     */
-    @OneToOne
-    protected Coordinates destination;
-
-    /**
      * The non-integral portion of the movement during each frame is accumulated here.
      * When it reaches one, it is consumed to allow the monster to move an extra pixel.
      */
     protected double unusedMovement = 0;
+
+    /**
+     * A linked list containing a reference to the coordinates that the monster has passed through in the previous frame.
+     */
+    protected LinkedList<Coordinates> prevCoordinates = new LinkedList<Coordinates>();
+
+    /**
+     * The location which the monster tries to reach.
+     */
+    @OneToOne
+    protected Coordinates destination;
 
     /**
      * The amount of resources granted to the player on kill.
@@ -121,13 +125,16 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
      * @param imageView The ImageView that displays the monster.
-     * @param difficulty The difficulty of the monster.
+     * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
      */
     public Monster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+        if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
+        
         this.imageView = imageView;
         this.arena = arena;
         this.coordinates = new Coordinates(start);
         this.destination = new Coordinates(destination);
+
         this.coordinates.bindByImage(this.imageView);
         hoverMonsterEvent(this.arena);
     }
@@ -145,11 +152,14 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.health = new SimpleDoubleProperty(other.getHealth());
         this.maxSpeed = other.maxSpeed;
         this.speed = other.speed;
+        this.unusedMovement = other.unusedMovement;
+        for (Coordinates c : other.prevCoordinates) this.prevCoordinates.add(new Coordinates(c));
         this.destination = new Coordinates(other.destination);
+        // hpLabel has already been deep copied
+        for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
+
         this.coordinates.bindByImage(this.imageView);
         hoverMonsterEvent(arena);
-
-        for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
     }
 
     /**
@@ -168,15 +178,19 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public double getSpeed() { return speed; }
     public void nextFrame() {
         // Move monster
+        prevCoordinates.clear();
         unusedMovement += speed;
         while (unusedMovement >= 1) {
             Coordinates nextCoordinates = findNextCoordinates();
-            if (nextCoordinates != null) coordinates.update(nextCoordinates);
+            if (nextCoordinates != null) {
+                prevCoordinates.add(nextCoordinates);
+                coordinates.update(nextCoordinates);
+            }
 
             unusedMovement--;
         }
 
-        // Update speed
+        // Update status effects
         boolean isSlowed = false;
         for (StatusEffect se : statusEffects) {
             if (se.getEffectType() == StatusEffect.EffectType.Slow) {
@@ -186,6 +200,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         }
         if (isSlowed) speed = maxSpeed * StatusEffect.SLOW_MULTIPLIER;
         else speed = maxSpeed;
+        statusEffects.removeIf(x -> x.getDuration() <= 0);
     }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
@@ -208,6 +223,12 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected void setHealth(double value) { this.health.set(value); }
 
     /**
+     * Accesses the coordinates that the monster has passed through in the previous frame.
+     * @return A linked list containing a reference to the coordinates that the monster has passed through in the previous frame.
+     */
+    public LinkedList<Coordinates> getPrevCoordinates() { return prevCoordinates; }
+
+    /**
      * Accesses the amount of resources granted to the player by the monster on death.
      * @return The amount of resources granted to the player by the monster on death.
      */
@@ -221,9 +242,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
 
     /**
      * Reduces the health of the monster.
-     * @param amount The amount by which to reduce.
+     * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
      */
     public void takeDamage(double amount) {
+        if (amount <= 0) return;
         this.health.set(getHealth() - amount);
     }
 

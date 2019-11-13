@@ -95,6 +95,19 @@ public final class Arena {
     static final int LASER_DURATION = 2;
 
     /**
+     * The player of the game.
+     */
+    @NotNull
+    @OneToOne
+    private Player player;
+
+    /**
+     * The arena of the game.
+     */
+    @Transient
+    private AnchorPane paneArena;
+
+    /**
      * The current frame number of the arena since the game began.
      */
     private int currentFrame = 0;
@@ -108,6 +121,40 @@ public final class Arena {
      * Contains a reference to line, circle, and monster explosion on the arena.
      */
     private HashMap<Node, Integer> toRemove = new HashMap<>();
+
+    /**
+     * make a deep copy of another HashMap.
+     * @param other the HashMap to be copied.
+     * @return the deep copied HashMap.
+     */
+    private HashMap<Node, Integer> copyToRemove(HashMap<Node, Integer> other) {
+        HashMap<Node, Integer> newHashMap = new HashMap<>();
+        for (HashMap.Entry<Node, Integer> entry : other.entrySet()) {
+            Node key = entry.getKey();
+            if (key instanceof Line) {
+                Line old = (Line) key;
+                Line n = new Line(old.getStartX(), old.getStartY(), old.getEndX(), old.getEndY());
+                n.setStroke(old.getStroke());
+                n.setStrokeWidth(old.getStrokeWidth());
+                newHashMap.put(n, entry.getValue());
+            } else if (key instanceof Circle) {
+                Circle old = (Circle) key;
+                Circle n = new Circle();
+                n.setCenterX(old.getCenterX());
+                n.setCenterY(old.getCenterY());
+                n.setRadius(old.getRadius());
+                n.setFill(old.getFill());
+                newHashMap.put(n, entry.getValue());
+            } else if (key instanceof ImageView) {
+                ImageView old = (ImageView) key;
+                ImageView n = new ImageView(old.getImage());
+                n.setX(old.getX());
+                n.setY(old.getY());
+                newHashMap.put(n, entry.getValue());
+            }
+        }
+        return newHashMap;
+    }
 
     /**
      * The objects stored in this arena.
@@ -179,19 +226,6 @@ public final class Arena {
     private Arena shadowArena;
 
     /**
-     * The player of the game.
-     */
-    @NotNull
-    @OneToOne
-    private Player player;
-
-    /**
-     * The arena of the game.
-     */
-    @Transient
-    private AnchorPane paneArena;
-
-    /**
      * Constructor of the Arena class. Bind the label to resources.
      * @param resourceLabel the label to show remaining resources of player.
      * @param paneArena the arena pane of the game.
@@ -213,6 +247,7 @@ public final class Arena {
      */
     public Arena(@NonNull Arena other) {
         this.player = new Player(other.player.getName(), other.player.getResources());
+
         this.currentFrame = other.currentFrame;
         this.difficulty = other.difficulty;
 
@@ -222,7 +257,8 @@ public final class Arena {
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
         this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
 
-        // deep copy without initial grids (that should be handled by UIController)
+        // Deep copy paneArena without initial grids (that should be handled by UIController)
+        // Must be done after arenaObjectStorage so that the new images of the objects are fetched.
         this.paneArena = new AnchorPane();
         for (Monster m : getMonsters()) {
             paneArena.getChildren().add(m.getImageView());
@@ -499,9 +535,19 @@ public final class Arena {
     {
         Monster m = null;
         ImageView iv = null;
-        // we need to update c when monster move so create a new Coordinate instead.
-        Coordinates start = Grid.findGridCenter(STARTING_COORDINATES);
+
+        // Create some randomness of spawn location
+        short startX = (short) (STARTING_COORDINATES.getX() + Math.random() * UIController.GRID_WIDTH / 2);
+        if (startX < 0) startX = 0;
+        if (startX >= UIController.ARENA_WIDTH) startX = UIController.ARENA_WIDTH;
+        short startY = (short) (STARTING_COORDINATES.getY() + Math.random() * UIController.GRID_HEIGHT / 2);
+        if (startY < 0) startY = 0;
+        if (startY >= UIController.ARENA_HEIGHT) startY = UIController.ARENA_HEIGHT;
+        Coordinates start = new Coordinates(startX, startY);
+
+        // The end zone is always the same
         Coordinates end = Grid.findGridCenter(END_COORDINATES);
+
         switch(type) {
             case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
                 m = new Fox(this, start, end, iv, difficulty); break;
@@ -510,8 +556,7 @@ public final class Arena {
             case Unicorn: iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
                 m = new Unicorn(this, start, end, iv, difficulty); break;
         }
-        if (m == null)
-            return null;
+        if (m == null) return null;
             
         addObject(m);
         System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
@@ -718,39 +763,5 @@ public final class Arena {
         circle.setFill(Color.rgb(255, 255, 0));
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
-    }
-
-    /**
-     * make a deep copy of another HashMap.
-     * @param other the HashMap to be copied.
-     * @return the deep copied HashMap.
-     */
-    private HashMap<Node, Integer> copyToRemove(HashMap<Node, Integer> other) {
-        HashMap<Node, Integer> newHashMap = new HashMap<>();
-        for (HashMap.Entry<Node, Integer> entry : other.entrySet()) {
-            Node key = entry.getKey();
-            if (key instanceof Line) {
-                Line old = (Line) key;
-                Line n = new Line(old.getStartX(), old.getStartY(), old.getEndX(), old.getEndY());
-                n.setStroke(old.getStroke());
-                n.setStrokeWidth(old.getStrokeWidth());
-                newHashMap.put(n, entry.getValue());
-            } else if (key instanceof Circle) {
-                Circle old = (Circle) key;
-                Circle n = new Circle();
-                n.setCenterX(old.getCenterX());
-                n.setCenterY(old.getCenterY());
-                n.setRadius(old.getRadius());
-                n.setFill(old.getFill());
-                newHashMap.put(n, entry.getValue());
-            } else if (key instanceof ImageView) {
-                ImageView old = (ImageView) key;
-                ImageView n = new ImageView(old.getImage());
-                n.setX(old.getX());
-                n.setY(old.getY());
-                newHashMap.put(n, entry.getValue());
-            }
-        }
-        return newHashMap;
     }
 }

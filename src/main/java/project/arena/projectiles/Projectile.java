@@ -118,6 +118,7 @@ public abstract class Projectile implements MovesInArena {
         this.attackPower = attackPower;
         this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
                 UIController.GRID_HEIGHT/4, true, true));
+
         this.coordinates.bindByImage(this.imageView);
     }
 
@@ -133,8 +134,13 @@ public abstract class Projectile implements MovesInArena {
         this.coordinates = new Coordinates(other.coordinates);
         this.origin = new Coordinates(other.origin);
         this.target = target;
+        this.deltaX = other.deltaX;
+        this.deltaY = other.deltaY;
+        this.unusedMovement = other.unusedMovement;
         this.speed = other.speed;
+        this.hasReachedTarget = other.hasReachedTarget;
         this.attackPower = other.attackPower;
+        
         this.coordinates.bindByImage(this.imageView);
     }
 

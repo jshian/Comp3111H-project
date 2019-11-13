@@ -76,7 +76,7 @@ public class BasicTower extends Tower {
         if(!isReload()) {
 //            PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : arena.getMonsters()) {
-                if (canShoot(m)) {
+                if (isValidTarget(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
                     return new BasicProjectile(arena, coordinates, m, attackSpeed, attackPower);
