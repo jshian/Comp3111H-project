@@ -67,16 +67,16 @@ public class StatusEffect {
      * Accesses the type of the status effect.
      * @return The type of the status effect.
      */
-    public EffectType getEffectType() { return effectType; }
+    public final EffectType getEffectType() { return effectType; }
 
     /**
      * Accesses the remaining duration of the status effect.
      * @return The remaining duration of the status effect.
      */
-    public int getDuration() { return duration; }
+    public final int getDuration() { return duration; }
 
     /**
      * Counts down the status effect by one frame.
      */
-    public void countDown() { duration -= 1; }
+    public final void countDown() { duration -= 1; }
 }

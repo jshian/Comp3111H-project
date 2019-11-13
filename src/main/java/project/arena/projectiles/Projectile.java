@@ -153,12 +153,12 @@ public abstract class Projectile implements MovesInArena {
     public abstract Projectile deepCopy(@NonNull Arena arena, @NonNull Monster target);
 
     // Interface implementation
-    public ImageView getImageView() { return imageView; }
-    public short getX() { return coordinates.getX(); }
-    public short getY() { return coordinates.getY(); }
-    public void setLocation(short x, short y) { this.coordinates.update(x, y); }
-    public void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
-    public double getSpeed() { return speed; }
+    public final ImageView getImageView() { return imageView; }
+    public final short getX() { return coordinates.getX(); }
+    public final short getY() { return coordinates.getY(); }
+    public final void setLocation(short x, short y) { this.coordinates.update(x, y); }
+    public final void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+    public final double getSpeed() { return speed; }
     public void nextFrame() {
         short targetX, targetY;
         targetX = (short) (target.getX() + deltaX);
@@ -197,7 +197,7 @@ public abstract class Projectile implements MovesInArena {
      * Determines whether the projectile has reached its target.
      * @return Whether the projectile has reached its target.
      */
-    public boolean hasReachedTarget() { return hasReachedTarget; }
+    public final boolean hasReachedTarget() { return hasReachedTarget; }
 
     /**
      * Damages the target of the projectile.
@@ -214,11 +214,11 @@ public abstract class Projectile implements MovesInArena {
      * Accesses the targeted monster of the projectile.
      * @return The targeted monster of the projectile.
      */
-    public Monster getTarget() { return target; }
+    public final Monster getTarget() { return target; }
 
     /**
      * Accesses the attack power of the projectile.
      * @return The attack power of the projectile.
      */
-    public int getAttackPower() { return attackPower; }
+    public final int getAttackPower() { return attackPower; }
 }

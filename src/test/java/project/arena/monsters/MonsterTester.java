@@ -18,14 +18,14 @@ import project.arena.Arena;
 import project.arena.Coordinates;
 
 /**
- * Tests the {@link Monster} class.
+ * Tests the derived classes of {@link Monster} including {@link Fox}, {@link Penguin} and {@link Unicorn}.
  */
 public class MonsterTester extends JavaFXTester {
 
     static final double MAX_ERROR = 0.0001;
     
     @Test
-    public void testBasicMonster() {
+    public void testBaseClass() {
         Arena a1 = new Arena(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 15, (short) 25);
         Coordinates end = new Coordinates((short) 100, (short) 70);
@@ -76,5 +76,18 @@ public class MonsterTester extends JavaFXTester {
         assertEquals(f2.arena, a2);
 
         DeepCopyTester.testDeepCopy(f1, f2);
+    }
+
+    @Test
+    public void testFox() {
+        Arena a1 = new Arena(new Label(), new AnchorPane());
+        Coordinates start = new Coordinates((short) 18, (short) 23);
+        Coordinates end = new Coordinates((short) 34, (short) 64);
+        ImageView iv = new ImageView(new Image("/collision.png"));
+        StatusEffect slowEffect = new StatusEffect(StatusEffect.EffectType.Slow, 2);
+
+        Fox f1 = new Fox(a1, start, end, iv, 235);
+        assertFalse(f1.hasDied()); // Health on generation should be greater than zero
+        
     }
 }
