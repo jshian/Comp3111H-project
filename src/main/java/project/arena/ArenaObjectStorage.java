@@ -25,7 +25,7 @@ import project.arena.towers.Tower;
  * @see Arena
  */
 @Entity
-class ArenaObjectStorage {
+final class ArenaObjectStorage {
 
     /**
      * The arena that the class is linked to.

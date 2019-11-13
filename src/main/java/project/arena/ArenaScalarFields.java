@@ -16,7 +16,7 @@ import debug.ScalarFieldVisualizer;
  * Manages the scalar fields of the arena.
  * @see Arena
  */
-class ArenaScalarFields {
+final class ArenaScalarFields {
 
     /**
      * The arena that the class is linked to.

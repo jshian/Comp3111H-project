@@ -16,16 +16,16 @@ import project.arena.towers.Tower;
  * @see Arena
  * @see Tower
  */
-public class Grid {
+public final class Grid {
     /**
      * The x-position of the grid, where 0 is left-most, increasing towards the right.
      */
-    private final short xPos;
+    private short xPos;
 
     /**
      * The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      */
-    private final short yPos;
+    private short yPos;
 
     /**
      * Performs bounds checking of the grid.
