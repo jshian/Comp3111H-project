@@ -18,6 +18,9 @@ import project.arena.ExistsInArena;
 import project.arena.monsters.Monster;
 import project.arena.monsters.Unicorn;
 
+/**
+ * Tests the {@link Catapult} class.
+ */
 public class CatapultTest extends JavaFXTester {
 
     @Test

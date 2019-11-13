@@ -4,6 +4,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+/**
+ * Tests the {@link Coordinates} class.
+ */
 public class CoordinatesTester {
 	@Rule
 	public final ExpectedException expectedException = ExpectedException.none();

@@ -9,6 +9,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Base class to inherit from when testing objects that make use of JavaFX objects.
+ */
 public class JavaFXTester extends ApplicationTest {
 	@Rule
 	public final ExpectedException expectedException = ExpectedException.none();
