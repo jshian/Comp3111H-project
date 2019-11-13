@@ -5,36 +5,20 @@ import java.util.PriorityQueue;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.testfx.framework.junit.ApplicationTest;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import project.Geometry;
-import project.UIController;
-import project.arena.*;
-import project.arena.monsters.*;
+import project.JavaFXTester;
+import project.arena.Arena;
+import project.arena.Coordinates;
+import project.arena.ExistsInArena;
+import project.arena.monsters.Monster;
+import project.arena.monsters.Unicorn;
 
-public class CatapultTest extends ApplicationTest {
-
-	private Scene s;
-
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/project.fxml"));
-        Parent root = loader.load();
-        primaryStage.setTitle("Tower Defence");
-        s = new Scene(root, 600, 480);
-        primaryStage.setScene(s);
-        primaryStage.show();
-        UIController appController = loader.getController();
-        appController.createArena();
-	}
+public class CatapultTest extends JavaFXTester {
 
     @Test
     public void selectMonster() {

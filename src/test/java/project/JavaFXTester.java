@@ -9,11 +9,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class JUnitTester extends ApplicationTest {
+public class JavaFXTester extends ApplicationTest {
 	@Rule
 	public final ExpectedException expectedException = ExpectedException.none();
 
-	private Scene s;
+	protected Scene s;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {

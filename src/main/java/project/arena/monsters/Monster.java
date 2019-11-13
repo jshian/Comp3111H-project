@@ -125,9 +125,11 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
      * @param imageView The ImageView that displays the monster.
-     * @param difficulty The difficulty of the monster.
+     * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
      */
     public Monster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
+        if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
+        
         this.imageView = imageView;
         this.arena = arena;
         this.coordinates = new Coordinates(start);
@@ -188,7 +190,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
             unusedMovement--;
         }
 
-        // Update speed
+        // Update status effects
         boolean isSlowed = false;
         for (StatusEffect se : statusEffects) {
             if (se.getEffectType() == StatusEffect.EffectType.Slow) {
@@ -198,6 +200,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         }
         if (isSlowed) speed = maxSpeed * StatusEffect.SLOW_MULTIPLIER;
         else speed = maxSpeed;
+        statusEffects.removeIf(x -> x.getDuration() <= 0);
     }
     public int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
@@ -239,9 +242,10 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
 
     /**
      * Reduces the health of the monster.
-     * @param amount The amount by which to reduce.
+     * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
      */
     public void takeDamage(double amount) {
+        if (amount <= 0) return;
         this.health.set(getHealth() - amount);
     }
 
