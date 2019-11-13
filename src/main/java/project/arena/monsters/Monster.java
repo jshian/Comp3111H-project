@@ -14,8 +14,13 @@ import javax.validation.constraints.NotNull;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -270,6 +275,8 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     private void hoverMonsterEvent(Arena arena) {
         hpLabel.textProperty().bind(Bindings.format("hp: %.2f", health));
         hpLabel.setAlignment(Pos.CENTER);
+        hpLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255,0.7),
+                CornerRadii.EMPTY, Insets.EMPTY)));
         //seems like layout can only bindBidirectional, error otherwise.
         hpLabel.layoutXProperty().bindBidirectional(imageView.xProperty());
         hpLabel.layoutYProperty().bindBidirectional(imageView.yProperty());

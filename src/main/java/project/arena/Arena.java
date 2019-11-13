@@ -118,9 +118,43 @@ public final class Arena {
     private double difficulty = 1;
 
     /**
-     * Contains a reference to line, circle, and image view on the arena.
+     * Contains a reference to line, circle, and monster explosion on the arena.
      */
     private HashMap<Node, Integer> toRemove = new HashMap<>();
+
+    /**
+     * make a deep copy of another HashMap.
+     * @param other the HashMap to be copied.
+     * @return the deep copied HashMap.
+     */
+    private HashMap<Node, Integer> copyToRemove(HashMap<Node, Integer> other) {
+        HashMap<Node, Integer> newHashMap = new HashMap<>();
+        for (HashMap.Entry<Node, Integer> entry : other.entrySet()) {
+            Node key = entry.getKey();
+            if (key instanceof Line) {
+                Line old = (Line) key;
+                Line n = new Line(old.getStartX(), old.getStartY(), old.getEndX(), old.getEndY());
+                n.setStroke(old.getStroke());
+                n.setStrokeWidth(old.getStrokeWidth());
+                newHashMap.put(n, entry.getValue());
+            } else if (key instanceof Circle) {
+                Circle old = (Circle) key;
+                Circle n = new Circle();
+                n.setCenterX(old.getCenterX());
+                n.setCenterY(old.getCenterY());
+                n.setRadius(old.getRadius());
+                n.setFill(old.getFill());
+                newHashMap.put(n, entry.getValue());
+            } else if (key instanceof ImageView) {
+                ImageView old = (ImageView) key;
+                ImageView n = new ImageView(old.getImage());
+                n.setX(old.getX());
+                n.setY(old.getY());
+                newHashMap.put(n, entry.getValue());
+            }
+        }
+        return newHashMap;
+    }
 
     /**
      * The objects stored in this arena.
@@ -213,18 +247,31 @@ public final class Arena {
      */
     public Arena(@NonNull Arena other) {
         this.player = new Player(other.player.getName(), other.player.getResources());
+
         this.currentFrame = other.currentFrame;
         this.difficulty = other.difficulty;
 
-        // TODO: Deep copy each object in toRemove and paneArena
-        this.toRemove = new HashMap<>();
-        for (HashMap.Entry<Node, Integer> entry : other.toRemove.entrySet()) {
-            this.toRemove.put(entry.getKey(), entry.getValue());
-        }
+        this.toRemove = copyToRemove(other.toRemove);
 
         // arenaScalarFields must be set up before arenaObjectStorage because Monster ordering depends on it
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
         this.arenaObjectStorage = new ArenaObjectStorage(this, other.arenaObjectStorage);
+
+        // Deep copy paneArena without initial grids (that should be handled by UIController)
+        // Must be done after arenaObjectStorage so that the new images of the objects are fetched.
+        this.paneArena = new AnchorPane();
+        for (Monster m : getMonsters()) {
+            paneArena.getChildren().add(m.getImageView());
+        }
+        for (Projectile p : getProjectiles()) {
+            paneArena.getChildren().add(p.getImageView());
+        }
+        for (Tower t : getTowers()) {
+            paneArena.getChildren().add(t.getImageView());
+        }
+        for (HashMap.Entry<Node, Integer> entry : toRemove.entrySet()) {
+            paneArena.getChildren().add(entry.getKey());
+        }
 
         this.shadowArena = null;
     }
@@ -708,6 +755,4 @@ public final class Arena {
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
     }
-
-
 }
