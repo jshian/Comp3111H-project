@@ -535,9 +535,19 @@ public final class Arena {
     {
         Monster m = null;
         ImageView iv = null;
-        // we need to update c when monster move so create a new Coordinate instead.
-        Coordinates start = Grid.findGridCenter(STARTING_COORDINATES);
+
+        // Create some randomness of spawn location
+        short startX = (short) (STARTING_COORDINATES.getX() + Math.random() * UIController.GRID_WIDTH / 2);
+        if (startX < 0) startX = 0;
+        if (startX >= UIController.ARENA_WIDTH) startX = UIController.ARENA_WIDTH;
+        short startY = (short) (STARTING_COORDINATES.getY() + Math.random() * UIController.GRID_HEIGHT / 2);
+        if (startY < 0) startY = 0;
+        if (startY >= UIController.ARENA_HEIGHT) startY = UIController.ARENA_HEIGHT;
+        Coordinates start = new Coordinates(startX, startY);
+
+        // The end zone is always the same
         Coordinates end = Grid.findGridCenter(END_COORDINATES);
+
         switch(type) {
             case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
                 m = new Fox(this, start, end, iv, difficulty); break;
@@ -546,8 +556,7 @@ public final class Arena {
             case Unicorn: iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
                 m = new Unicorn(this, start, end, iv, difficulty); break;
         }
-        if (m == null)
-            return null;
+        if (m == null) return null;
             
         addObject(m);
         System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
