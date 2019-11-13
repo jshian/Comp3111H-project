@@ -5,7 +5,6 @@ import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -20,7 +19,6 @@ import project.arena.towers.Tower;
  * @see Arena
  * @see Tower
  */
-@Entity
 public class Grid {
     /**
      * The x-position of the grid, where 0 is left-most, increasing towards the right.
@@ -52,14 +50,12 @@ public class Grid {
      * Contains a reference to each Tower on the arena.
      * @see Tower
      */
-    @OneToMany
     private LinkedList<Tower> towers = new LinkedList<>();
 
     /**
      * Contains a reference to each Projectile on the arena.
      * @see Projectile
      */
-    @OneToMany
     private LinkedList<Projectile> projectiles = new LinkedList<>();
 
     /**
@@ -68,7 +64,6 @@ public class Grid {
      * The first element is closest to the end zone while the last element is furthest.
      * @see Monster
      */
-    @OneToMany
     private PriorityQueue<Monster> monsters = new PriorityQueue<>();
 
     /**
