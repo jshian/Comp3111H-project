@@ -20,7 +20,6 @@ public final class DeepCopyTester {
      * @param <T> The type of the objects.
      * @param o1 The first object.
      * @param o2 The second object.
-     * @param n The number of layers of objects in collections to check deep copies of. For example, a value of <code>0</code> means to only check the collection itself. A value of <code>1</code> means to check the objects in the collection, but if those objects are themselves collections, it will not further check the objects inside them. A negative value is equivalent to <code>0</code>.
      */
     public static <T> void testDeepCopy(T o1, T o2) {
         testDeepCopy(o1, o2, Short.MAX_VALUE);
