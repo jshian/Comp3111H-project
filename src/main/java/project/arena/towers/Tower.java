@@ -192,12 +192,12 @@ public abstract class Tower implements ExistsInArena {
      */
     public boolean tryUpgrade(@NonNull Player player) {
         if (canUpgrade(player)) {
-            System.out.println(String.format("%s is being upgraded.", getClassName()));
+            System.out.println(String.format("%s is being upgraded", getClassName()));
             player.spendResources(upgradeCost);
             upgrade();
             return true;
         }
-        System.out.println(String.format("not enough resource to upgrade %s.", getClassName()));
+        System.out.println(String.format("not enough resource to upgrade %s", getClassName()));
         return false;
     }
 
