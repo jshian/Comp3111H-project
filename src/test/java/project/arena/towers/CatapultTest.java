@@ -26,7 +26,7 @@ public class CatapultTest extends ApplicationTest {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/project.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("Tower Defence");
         s = new Scene(root, 600, 480);
