@@ -1,23 +1,24 @@
 package project.arena.towers;
 
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.testfx.framework.junit.ApplicationTest;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import org.junit.Assert;
-import org.junit.Test;
-import org.testfx.framework.junit.ApplicationTest;
 import project.Geometry;
 import project.UIController;
 import project.arena.*;
 import project.arena.monsters.*;
-import project.arena.towers.*;
-
-import java.util.LinkedList;
-import java.util.PriorityQueue;
 
 public class CatapultTest extends ApplicationTest {
 

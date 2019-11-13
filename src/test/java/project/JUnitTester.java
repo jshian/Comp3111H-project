@@ -1,15 +1,13 @@
 package project;
 
-import org.junit.*;
+import org.junit.Rule;
 import org.junit.rules.ExpectedException;
-import org.testfx.framework.junit.*;
+import org.testfx.framework.junit.ApplicationTest;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import project.*;
 
 public class JUnitTester extends ApplicationTest {
 	@Rule

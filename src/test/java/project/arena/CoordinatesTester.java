@@ -4,8 +4,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import project.arena.Coordinates;
-
 public class CoordinatesTester {
 	@Rule
 	public final ExpectedException expectedException = ExpectedException.none();

@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import javafx.geometry.Point2D;
-import project.Geometry;
 
 public class GeometryTester {
 	@Rule
