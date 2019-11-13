@@ -148,7 +148,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         this.unusedMovement = other.unusedMovement;
         for (Coordinates c : other.prevCoordinates) this.prevCoordinates.add(new Coordinates(c));
         this.destination = new Coordinates(other.destination);
-        this.hpLabel = other.hpLabel; // TODO: Deep copy?
+        // hpLabel has already been deep copied
         for (StatusEffect se : other.statusEffects) this.statusEffects.add(new StatusEffect(se));
 
         this.coordinates.bindByImage(this.imageView);
