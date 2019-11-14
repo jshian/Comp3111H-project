@@ -1,10 +1,16 @@
 package project.arena.towers;
 
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import org.junit.Assert;
 import org.junit.Test;
 import project.JavaFXTester;
+import project.arena.Coordinates;
+import project.arena.Grid;
 
 public class BuildTower extends JavaFXTester {
 
@@ -14,8 +20,10 @@ public class BuildTower extends JavaFXTester {
     public void testBuildTower() {
         AnchorPane b = (AnchorPane)s.lookup("#paneArena");
 
-        simulateBuildTower(TowerType.BasicTower,50,50);
-        simulateBuildTower(TowerType.Catapult,50,50);
+        simulateBuildTower(TowerType.BasicTower, (short)50, (short)50);
+        simulateBuildTower(TowerType.Catapult, (short)50, (short)50);
+        Assert.assertTrue(haveTower(TowerType.BasicTower, (short)50, (short)50));
+        Assert.assertTrue(!haveTower(TowerType.BasicTower, (short)50, (short)50));
     }
 
     /**
@@ -25,12 +33,45 @@ public class BuildTower extends JavaFXTester {
      * @param x The x-coordinate on paneArena.
      * @param y The y-coordinate on paneArena.
      */
-    public void simulateBuildTower(TowerType type, double x, double y) {
+    public void simulateBuildTower(TowerType type, short x, short y) {
         AnchorPane b = (AnchorPane)s.lookup("#paneArena");
         Bounds paneBound = b.localToScreen(b.getBoundsInLocal());
         double sceneX = paneBound.getMinX();
         double sceneY = paneBound.getMinY();
         drag("#label" + type.name(), MouseButton.PRIMARY);
         dropTo(sceneX+x, sceneY+y);
+    }
+
+    /**
+     * Test if there is a tower with specific tower type in the grid of specific coordinates.
+     * @param type The type of the tower.
+     * @param x The x-coordinate on paneArena.
+     * @param y The y-coordinate on paneArena.
+     */
+    public boolean haveTower(TowerType type, short x, short y) {
+        Coordinates topLeft = Grid.findGridTopLeft(new Coordinates(x,y));
+        AnchorPane b = (AnchorPane)s.lookup("#paneArena");
+        for (Node n : b.getChildren()) {
+            if (n instanceof ImageView) {
+                if (((ImageView) n).getX() == topLeft.getX() && ((ImageView) n).getX() == topLeft.getY()) {
+                    Image img = ((ImageView) n).getImage();
+                    Image compare = null;
+                    switch(type) {
+                        case BasicTower: compare = new Image("/basicTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+                        case Catapult: compare = new Image("/catapult.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+                        case IceTower: compare = new Image("/iceTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+                        case LaserTower: compare = new Image("/laserTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+                    }
+                    boolean equal = true;
+                    for (int i = 0; i < img.getHeight(); i++)
+                        for (int j = 0; j < img.getWidth(); j++)
+                            if (img.getPixelReader().getColor(i, j) != compare.getPixelReader().getColor(i, j))
+                                equal = false;
+                    if (equal == true)
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 }
