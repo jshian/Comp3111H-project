@@ -38,6 +38,9 @@ public class BuildTower extends JavaFXTester {
         Bounds paneBound = b.localToScreen(b.getBoundsInLocal());
         double sceneX = paneBound.getMinX();
         double sceneY = paneBound.getMinY();
+        // this work
+        // drag("#paneArena", MouseButton.PRIMARY);
+        // this need mouse to move little bit so that dropTo runs. Plz help.
         drag("#label" + type.name(), MouseButton.PRIMARY);
         dropTo(sceneX+x, sceneY+y);
     }
