@@ -178,7 +178,7 @@ public class GeometryTester {
         assertEquals(p25.getX(), 0 , MAX_ERROR);
         assertEquals(p25.getY(), 5, MAX_ERROR);
         Point2D p26 = Geometry.intersectBox(3, 7, 3, 79, 0, 0, 296, 305);
-        assertEquals(p26.getX(), 0, MAX_ERROR);
+        assertEquals(p26.getX(), 3, MAX_ERROR);
         assertEquals(p26.getY(), 305, MAX_ERROR);
         Point2D p27 = Geometry.intersectBox(47, 432, 47, 45, 0, 0, 479, 345);
         assertEquals(p27.getX(), 47, MAX_ERROR);
@@ -198,8 +198,8 @@ public class GeometryTester {
         assertEquals(p31.getX(), 329, MAX_ERROR);
         assertEquals(p31.getY(), 10, MAX_ERROR);
         Point2D p32 = Geometry.intersectBox(130, -50, -40, -20, -70, -90, 315, 120);
-        assertEquals(p32.getX(), -65, MAX_ERROR);
-        assertEquals(p32.getY(), 30, MAX_ERROR);
+        assertEquals(p32.getX(), -70, MAX_ERROR);
+        assertEquals(p32.getY(), -14.705882, MAX_ERROR);
         Point2D p33 = Geometry.intersectBox(420, 460, 420, 420, 0, 0, 480, 480);
         assertEquals(p33.getX(), 420, MAX_ERROR);
         assertEquals(p33.getY(), 0, MAX_ERROR);
@@ -228,13 +228,13 @@ public class GeometryTester {
         assertEquals(Geometry.isInRay(1, -5, 0, 0, 0, 1, 0), false);
         assertEquals(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 3), true);
         assertEquals(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 2.99), false);
-        assertEquals(Geometry.isInRay(-9, -12, 0, 0, 9, 12, 0), true);
-        assertEquals(Geometry.isInRay(-8, -12, 0, 0, 9, 12, 0), false);
-        assertEquals(Geometry.isInRay(-5, -15, 0, 0, 9, 12, 3), true);
-        assertEquals(Geometry.isInRay(-5, -15, 0, 0, 9, 12, 2.99), false);
+        assertEquals(Geometry.isInRay(-9, -12, 0, 0, -6, -8, 0), true);
+        assertEquals(Geometry.isInRay(-8, -12, 0, 0, -6, -8, 0), false);
+        assertEquals(Geometry.isInRay(-5, -15, 0, 0, -9, -12, 5), true);
+        assertEquals(Geometry.isInRay(-5, -15, 0, 0, -9, -12, 4.99), false);
 
         // General
-        assertEquals(Geometry.isInRay(0, 5, -5, 7, -3, 6, 3), false);
+        assertEquals(Geometry.isInRay(0, 5, -5, 7, -3, -6, 3), false);
         assertEquals(Geometry.isInRay(423, -324, 490, 234, 436, -50, 60), true);
         assertEquals(Geometry.isInRay(82, 39, 56, 14, 43, 2, 57), true);
         assertEquals(Geometry.isInRay(126, -95, 30, -19, 329, 10, 83), false);
