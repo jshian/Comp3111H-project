@@ -2,6 +2,7 @@ package project.arena.towers;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -18,8 +19,6 @@ public class BuildTower extends JavaFXTester {
 
     @Test
     public void testBuildTower() {
-        AnchorPane b = (AnchorPane)s.lookup("#paneArena");
-
         simulateBuildTower(TowerType.BasicTower, (short)50, (short)50);
         simulateBuildTower(TowerType.Catapult, (short)50, (short)50);
         Assert.assertTrue(haveTower(TowerType.BasicTower, (short)50, (short)50));
@@ -34,14 +33,14 @@ public class BuildTower extends JavaFXTester {
      * @param y The y-coordinate on paneArena.
      */
     public void simulateBuildTower(TowerType type, short x, short y) {
+        Label l = (Label)s.lookup("#label" + type.name());
+        Bounds labelBound = l.localToScreen(l.getBoundsInLocal());
         AnchorPane b = (AnchorPane)s.lookup("#paneArena");
         Bounds paneBound = b.localToScreen(b.getBoundsInLocal());
         double sceneX = paneBound.getMinX();
         double sceneY = paneBound.getMinY();
-        // this work
-        // drag("#paneArena", MouseButton.PRIMARY);
-        // this need mouse to move little bit so that dropTo runs. Plz help.
-        drag("#label" + type.name(), MouseButton.PRIMARY);
+
+        drag(labelBound.getMinX()+1, labelBound.getMinY()+1, MouseButton.PRIMARY);
         dropTo(sceneX+x, sceneY+y);
     }
 
