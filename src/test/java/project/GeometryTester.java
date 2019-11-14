@@ -2,6 +2,7 @@ package project;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,17 +75,22 @@ public class GeometryTester {
         assertEquals(Geometry.findEuclideanDistance(130, -50, -40, -20), Math.sqrt(29800), MAX_ERROR);
     }
 
+    public void assertUnsupportedOperationException_findAngleFrom(int x1, int y1, int x2, int y2) {
+        try {
+            Geometry.findAngleFrom(x1, y1, x2, y2);
+            fail(String.format("findAngleFrom with parameters (%d, %d, %d, %d) should have thrown an exception.", x1, y1, x2, y2));
+        } catch (UnsupportedOperationException e) {
+
+        }
+    }
+
     @Test
     public void testAngleFrom() {
         // Same point
-        expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.findAngleFrom(0, 0, 0, 0), 0, MAX_ERROR);
-        expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.findAngleFrom(5, 0, 5, 0), 0, MAX_ERROR);
-        expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.findAngleFrom(0, -10, 0, -10), 0, MAX_ERROR);
-        expectedException.expect(UnsupportedOperationException.class);
-        assertEquals(Geometry.findAngleFrom(32, -456, 32, -456), 0, MAX_ERROR);
+        assertUnsupportedOperationException_findAngleFrom(0, 0, 0, 0);
+        assertUnsupportedOperationException_findAngleFrom(5, 0, 5, 0);
+        assertUnsupportedOperationException_findAngleFrom(0, -10, 0, -10);
+        assertUnsupportedOperationException_findAngleFrom(32, -456, 32, -456);
 
         // One equal coordinate
         assertEquals(Geometry.findAngleFrom(-1, 0, 0, 0), 0, MAX_ERROR);
@@ -99,50 +105,44 @@ public class GeometryTester {
         assertEquals(Geometry.findAngleFrom(0, 2, 0, -2), 3 * Math.PI / 2, MAX_ERROR);
 
         // Distinct x- and y- coordinates
-        assertEquals(Geometry.findAngleFrom(-5, 7, -3, 6), Math.toRadians(301.60750), MAX_ERROR);
+        assertEquals(Geometry.findAngleFrom(-5, 7, -3, 6), Math.toRadians(333.43495), MAX_ERROR);
         assertEquals(Geometry.findAngleFrom(490, 234, 436, -50), Math.toRadians(259.23424), MAX_ERROR);
         assertEquals(Geometry.findAngleFrom(56, 14, 43, 2), Math.toRadians(222.70938), MAX_ERROR);
         assertEquals(Geometry.findAngleFrom(30, -19, 329, 10), Math.toRadians(5.5397881), MAX_ERROR);
         assertEquals(Geometry.findAngleFrom(130, -50, -40, -20), Math.toRadians(169.99202), MAX_ERROR);
     }
+    
+    public void assertUnsupportedOperationException_intersectBox(int x0, int y0, int x, int y, int boxMinX, int boxMinY, int boxWidth, int boxHeight) {
+        try {
+            Geometry.intersectBox(x0, y0, x, y, boxMinX, boxMinY, boxWidth, boxHeight);
+            fail(String.format("intersectBox with parameters (%d, %d, %d, %d, %d, %d, %d, %d) should have thrown an exception.", x0, y0, x, y, boxMinX, boxMinY, boxWidth, boxHeight));
+        } catch (UnsupportedOperationException e) {
+
+        }
+    }
 
     @Test
     public void testIntersectBox() {
         // Same point
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p1 = Geometry.intersectBox(0, 0, 0, 0, -1, -1, 2, 2);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p2 = Geometry.intersectBox(-1, 0, -1, 0, -2, -2, 2, 2);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p3 = Geometry.intersectBox(0, 1, 0, 1, 0, 0, 2, 2);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p4 = Geometry.intersectBox(-1, -1, -1, -1, -2, -2, 2, 2);
+    	assertUnsupportedOperationException_intersectBox(0, 0, 0, 0, -1, -1, 2, 2);
+    	assertUnsupportedOperationException_intersectBox(-1, 0, -1, 0, -2, -2, 2, 2);
+    	assertUnsupportedOperationException_intersectBox(0, 1, 0, 1, 0, 0, 2, 2);
+    	assertUnsupportedOperationException_intersectBox(-1, -1, -1, -1, -2, -2, 2, 2);
 
         // Invalid box size
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p5 = Geometry.intersectBox(0, 0, 1, 1, 2, -1, -4, 4);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p6 = Geometry.intersectBox(0, 0, 1, 1, -1, 2, 4, -4);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p7 = Geometry.intersectBox(0, 0, 1, 1, 0, -1, 0, 4);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p8 = Geometry.intersectBox(0, 0, 1, 1, -1, 0, 4, 0);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p9 = Geometry.intersectBox(0, 0, 1, 1, 2, 2, -4, -4);
-        expectedException.expect(UnsupportedOperationException.class);
-        Point2D p10 = Geometry.intersectBox(0, 0, 1, 1, 0, 0, 0, 0);
+    	assertUnsupportedOperationException_intersectBox(0, 0, 1, 1, 2, -1, -4, 4);
+    	assertUnsupportedOperationException_intersectBox(0, 0, 1, 1, -1, 2, 4, -4);
+    	assertUnsupportedOperationException_intersectBox(0, 0, 1, 1, 0, -1, 0, 4);
+    	assertUnsupportedOperationException_intersectBox(0, 0, 1, 1, -1, 0, 4, 0);
+    	assertUnsupportedOperationException_intersectBox(0, 0, 1, 1, 2, 2, -4, -4);
+    	assertUnsupportedOperationException_intersectBox(0, 0, 1, 1, 0, 0, 0, 0);
 
         // Ray does not touch box
-        Point2D p11 = Geometry.intersectBox(0, 0, 2, 2, 2, 0, 1, 1);
-        assertNull(p11);
-        Point2D p12 = Geometry.intersectBox(0, 0, 2, 2, 0, 2, 1, 1);
-        assertNull(p12);
-        Point2D p13 = Geometry.intersectBox(0, 0, 2, 2, -2, -2, 1, 1);
-        assertNull(p13);
-        Point2D p14 = Geometry.intersectBox(0, 0, -2, -2, 1, 1, 1, 1);
-        assertNull(p14);
-        Point2D p15 = Geometry.intersectBox(13, -34, -3, 2, -1, -2, 71, 40);
-        assertNull(p15);
+    	assertNull(Geometry.intersectBox(0, 0, 2, 2, 2, 0, 1, 1));
+    	assertNull(Geometry.intersectBox(0, 0, 2, 2, 0, 2, 1, 1));
+    	assertNull(Geometry.intersectBox(0, 0, 2, 2, -2, -2, 1, 1));
+    	assertNull(Geometry.intersectBox(0, 0, -2, -2, 1, 1, 1, 1));
+    	assertNull(Geometry.intersectBox(13, -34, -3, 2, -1, -2, 71, 40));
 
         // Boundary of box
         Point2D p16 = Geometry.intersectBox(30, 0, 0, 0, 0, 0, 30, 67);
@@ -204,22 +204,27 @@ public class GeometryTester {
         assertEquals(p33.getX(), 420, MAX_ERROR);
         assertEquals(p33.getY(), 0, MAX_ERROR);
     }
+    
+    public void assertUnsupportedOperationException_isInRay(int testX, int testY, int x0, int y0, int x, int y, int maxDist) {
+        try {
+            Geometry.isInRay(testX, testY, x0, y0, x, y, maxDist);
+            fail(String.format("isInRay with parameters (%d, %d, %d, %d, %d, %d, %d) should have thrown an exception.", testX, testY, x0, y0, x, y, maxDist));
+        } catch (UnsupportedOperationException e) {
+
+        }
+    }
 
     @Test
     public void testIsInRay(){
         // Same point
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b1 = Geometry.isInRay(4, 6, 0, 0, 0, 0, 3);
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b2 = Geometry.isInRay(-3, -4, 5, 0, 5, 0, 3);
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b3 = Geometry.isInRay(20, -43, 0, -10, 0, -10, 3);
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b4 = Geometry.isInRay(-23, 45, 32, -456, 32, -456, 3);
+    	assertUnsupportedOperationException_isInRay(4, 6, 0, 0, 0, 0, 3);
+    	assertUnsupportedOperationException_isInRay(-3, -4, 5, 0, 5, 0, 3);
+    	assertUnsupportedOperationException_isInRay(20, -43, 0, -10, 0, -10, 3);
+    	assertUnsupportedOperationException_isInRay(-23, 45, 32, -456, 32, -456, 3);
 
         // Boundary
         assertEquals(Geometry.isInRay(0, 0, 0, 0, 1, 0, 0), true);
-        assertEquals(Geometry.isInRay(0, -5, 0, 0, 0, 1, 0), true);
+        assertEquals(Geometry.isInRay(0, -5, 0, 0, 0, -1, 0), true);
         assertEquals(Geometry.isInRay(1, -5, 0, 0, 0, 1, 0), false);
         assertEquals(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 3), true);
         assertEquals(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 2.99), false);
@@ -236,17 +241,22 @@ public class GeometryTester {
         assertEquals(Geometry.isInRay(-50, 30, 130, -50, -40, -20, 40), false);
     }
     
+    public void assertUnsupportedOperationException_isInCircle(int testX, int testY, int x0, int y0, double r) {
+        try {
+            Geometry.isInCircle(testX, testY, x0, y0, r);
+            fail(String.format("isInCircle with parameters (%d, %d, %d, %d, %.2f) should have thrown an exception.", testX, testY, x0, y0, r));
+        } catch (UnsupportedOperationException e) {
+
+        }
+    }
+    
     @Test
     public void testIsInCircle() {
         // Negative radius
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b1 = Geometry.isInCircle(0, 0, 0, 0, -1);
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b2 = Geometry.isInCircle(5, 0, 5, 0, -2);
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b3 = Geometry.isInCircle(0, -10, 0, -10, -7);
-        expectedException.expect(UnsupportedOperationException.class);
-        boolean b4 = Geometry.isInCircle(32, -456, 32, -456, -12);
+    	assertUnsupportedOperationException_isInCircle(0, 0, 0, 0, -1);
+    	assertUnsupportedOperationException_isInCircle(5, 0, 5, 0, -2);
+    	assertUnsupportedOperationException_isInCircle(0, -10, 0, -10, -7);
+    	assertUnsupportedOperationException_isInCircle(32, -456, 32, -456, -12);
 
         // Zero radius
         assertEquals(Geometry.isInCircle(0, 0, 0, 0, 0), true);
@@ -268,7 +278,7 @@ public class GeometryTester {
         assertEquals(Geometry.isInCircle(-5, 7, -3, 6, Math.sqrt(5)), true);
         assertEquals(Geometry.isInCircle(490, 234, 436, -50, Math.sqrt(83572 - 1)), false);
         assertEquals(Geometry.isInCircle(56, 14, 43, 2, Math.sqrt(313)), true);
-        assertEquals(Geometry.isInCircle(30, -19, 329, 10, Math.sqrt(90242 + 1)), false);
+        assertEquals(Geometry.isInCircle(30, -19, 329, 10, Math.sqrt(90242 - 1)), false);
         assertEquals(Geometry.isInCircle(130, -50, -40, -20, Math.sqrt(29800)), true);
     }
 

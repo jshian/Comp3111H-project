@@ -2,15 +2,14 @@ package project.arena.monsters;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
 import org.junit.Test;
-import org.testfx.api.FxRobot;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -31,6 +30,15 @@ public class MonsterTester extends JavaFXTester {
 
     static final double MAX_ERROR = 0.0001;
     
+	public void assertIllegalArgumentException_constructorTestMonster(Arena arena, Coordinates start, Coordinates end, ImageView iv, double difficulty) {
+		try {
+			Monster m = new TestMonster(arena, start, end, iv, difficulty);
+			fail(String.format("The constructor with parameters (Arena, Coordinates, Coordinates, ImageView, %.2f) should have thrown an exception.", difficulty));
+		} catch (IllegalArgumentException e) {
+			
+		}
+	}
+    
     @Test
     public void testBaseClassMethods() {
         Arena a1 = new Arena(new Label(), new AnchorPane());
@@ -40,9 +48,8 @@ public class MonsterTester extends JavaFXTester {
         StatusEffect slowEffect = new StatusEffect(StatusEffect.EffectType.Slow, 2);        
 
         // Test regular constructor
-        expectedException.expect(IllegalArgumentException.class);
-        Monster m0 = new TestMonster(a1, start, end, iv, 0); // Difficulty must be at least 1
-
+        assertIllegalArgumentException_constructorTestMonster(a1, start, end, iv, 0); // Difficulty must be at least 1
+        
         Monster m1 = new TestMonster(a1, start, end, iv, 1);
         assertSame(m1.getImageView(), iv);
         assertEquals(m1.getX(), 15);
@@ -102,17 +109,25 @@ public class MonsterTester extends JavaFXTester {
 
         DeepCopyTester.testDeepCopy(m1, m2);
     }
+    
+	public void assertIllegalArgumentException_constructorFox(Arena arena, Coordinates start, Coordinates end, ImageView iv, double difficulty) {
+		try {
+			Fox m = new Fox(arena, start, end, iv, difficulty);
+			fail(String.format("The constructor with parameters (Arena, Coordinates, Coordinates, ImageView, %.2f) should have thrown an exception.", difficulty));
+		} catch (IllegalArgumentException e) {
+			
+		}
+	}
 
     @Test
-    public void testFox() throws InterruptedException {
+    public void testFox() {
         Arena a1 = new Arena(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 18, (short) 23);
         Coordinates end = new Coordinates((short) 480, (short) 480);
         ImageView iv = new ImageView(new Image("/fox.png"));
 
         // Test regular constructor
-        expectedException.expect(IllegalArgumentException.class);
-        Fox f0 = new Fox(a1, start, end, iv, 0); // Difficulty must be at least 1
+        assertIllegalArgumentException_constructorFox(a1, start, end, iv, 0); // Difficulty must be at least 1
 
         Fox f1 = new Fox(a1, start, end, iv, 1);
         assertFalse(f1.hasDied()); // Health on generation should be greater than zero
@@ -127,18 +142,13 @@ public class MonsterTester extends JavaFXTester {
         for (Grid grid : gridsToPlaceTower) {
             a1.buildTower(grid.getCenter(), new ImageView("/basicTower.png"), TowerType.BasicTower);
         }
-
+        /*
         f1.setHealth(Double.POSITIVE_INFINITY); // So it can't die
-        
-        Thread thread = new Thread() {
-            @Override
-            public void run() { a1.nextFrame(); }
-        };
-
+        a1.addObject(f1);
         while (f1.findNextCoordinates() != null) {
-            thread.run();
-            Thread.sleep(200);
-        }
+            a1.nextFrame();
+            // Thread.sleep(1000);
+        }*/
 
         // Test copy constructor
         Arena a2 = new Arena(new Label(), new AnchorPane());
