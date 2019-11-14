@@ -74,7 +74,6 @@ public final class ExceptionThrownTester {
 
     /**
      * Tests whether a specified exception is thrown when invoking a method. If not, an {@link AssertionError} is thrown.
-     * <b>Only use this for methods that do not accept any primitive arguments.</b>
      * @param exceptionType The type of the exception that should be thrown.
      * @param obj The object to invoke the method on.
      * @param methodName The name of the method to invoke.
