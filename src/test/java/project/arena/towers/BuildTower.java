@@ -23,7 +23,7 @@ public class BuildTower extends JavaFXTester {
         simulateBuildTower(TowerType.BasicTower, (short)50, (short)50);
         simulateBuildTower(TowerType.Catapult, (short)50, (short)50);
         Assert.assertTrue(haveTower(TowerType.BasicTower, (short)50, (short)50));
-        Assert.assertTrue(!haveTower(TowerType.BasicTower, (short)50, (short)50));
+        Assert.assertTrue(!haveTower(TowerType.Catapult, (short)50, (short)50));
     }
 
     /**
@@ -65,8 +65,10 @@ public class BuildTower extends JavaFXTester {
                     boolean equal = true;
                     for (int i = 0; i < img.getHeight(); i++)
                         for (int j = 0; j < img.getWidth(); j++)
-                            if (img.getPixelReader().getColor(i, j) != compare.getPixelReader().getColor(i, j))
+                            if (!img.getPixelReader().getColor(i, j).toString().equals(compare.getPixelReader().getColor(i, j).toString())) {
                                 equal = false;
+                                break;
+                            }
                     if (equal == true)
                         return true;
                 }
