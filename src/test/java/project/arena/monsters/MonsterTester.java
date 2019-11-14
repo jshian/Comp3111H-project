@@ -23,6 +23,8 @@ import project.arena.Coordinates;
 import project.arena.Grid;
 import project.arena.Arena.TowerType;
 
+import static project.ExceptionThrownTester.assertExceptionThrown_constructor;
+
 /**
  * Tests the derived classes of {@link Monster} including {@link Fox}, {@link Penguin} and {@link Unicorn}.
  */
@@ -30,25 +32,17 @@ public class MonsterTester extends JavaFXTester {
 
     static final double MAX_ERROR = 0.0001;
     
-	public void assertIllegalArgumentException_constructorTestMonster(Arena arena, Coordinates start, Coordinates end, ImageView iv, double difficulty) {
-		try {
-			Monster m = new TestMonster(arena, start, end, iv, difficulty);
-			fail(String.format("The constructor with parameters (Arena, Coordinates, Coordinates, ImageView, %.2f) should have thrown an exception.", difficulty));
-		} catch (IllegalArgumentException e) {
-			
-		}
-	}
-    
     @Test
     public void testBaseClassMethods() {
         Arena a1 = new Arena(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 15, (short) 25);
         Coordinates end = new Coordinates((short) 100, (short) 70);
         ImageView iv = new ImageView(new Image("/collision.png"));
-        StatusEffect slowEffect = new StatusEffect(StatusEffect.EffectType.Slow, 2);        
+
+        Class<?>[] constructorArgTypes = { Arena.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
 
         // Test regular constructor
-        assertIllegalArgumentException_constructorTestMonster(a1, start, end, iv, 0); // Difficulty must be at least 1
+        assertExceptionThrown_constructor(IllegalArgumentException.class, TestMonster.class, constructorArgTypes, new Object[]{ a1, start, end, iv, 0 }); // Difficulty must be at least 1
         
         Monster m1 = new TestMonster(a1, start, end, iv, 1);
         assertSame(m1.getImageView(), iv);
@@ -85,8 +79,12 @@ public class MonsterTester extends JavaFXTester {
         assertFalse(m1.hasDied());
 
         // Test status effect
+        StatusEffect slowEffect = new StatusEffect(StatusEffect.EffectType.Slow, 2);
+        
         double originalSpeed = m1.getSpeed();
         m1.addStatusEffect(slowEffect);
+        LinkedList<StatusEffect> effects = m1.getStatusEffects();
+        assertTrue(effects.size() == 1 && effects.peek() == slowEffect);
         assertTrue(originalSpeed == m1.getSpeed()); // Monster should be pending slow
 
         m1.nextFrame();
@@ -106,18 +104,14 @@ public class MonsterTester extends JavaFXTester {
         Arena a2 = new Arena(new Label(), new AnchorPane());
         Monster m2 = new TestMonster(a2, (TestMonster)m1);
         assertEquals(m2.arena, a2);
-
-        DeepCopyTester.testDeepCopy(m1, m2);
+        DeepCopyTester.assertDeepCopy(m1, m2);
+        
+        m2.addStatusEffect(slowEffect);
+        
+        Arena a3 = new Arena(new Label(), new AnchorPane());
+        Monster m3 = new TestMonster(a3, (TestMonster)m2);
+        DeepCopyTester.assertDeepCopy(m2, m3);
     }
-    
-	public void assertIllegalArgumentException_constructorFox(Arena arena, Coordinates start, Coordinates end, ImageView iv, double difficulty) {
-		try {
-			Fox m = new Fox(arena, start, end, iv, difficulty);
-			fail(String.format("The constructor with parameters (Arena, Coordinates, Coordinates, ImageView, %.2f) should have thrown an exception.", difficulty));
-		} catch (IllegalArgumentException e) {
-			
-		}
-	}
 
     @Test
     public void testFox() {
@@ -126,13 +120,15 @@ public class MonsterTester extends JavaFXTester {
         Coordinates end = new Coordinates((short) 480, (short) 480);
         ImageView iv = new ImageView(new Image("/fox.png"));
 
+        Class<?>[] constructorArgTypes = { Arena.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
+
         // Test regular constructor
-        assertIllegalArgumentException_constructorFox(a1, start, end, iv, 0); // Difficulty must be at least 1
+        assertExceptionThrown_constructor(IllegalArgumentException.class, Fox.class, constructorArgTypes, new Object[]{ a1, start, end, iv, 0 }); // Difficulty must be at least 1
 
         Fox f1 = new Fox(a1, start, end, iv, 1);
         assertFalse(f1.hasDied()); // Health on generation should be greater than zero
 
-        // Test Pathfinding...
+        // Test pathfinding...
         
         // Case 1a: Line of BasicTowers at y = 1
         LinkedList<Grid> gridsToPlaceTower = new LinkedList<>();
@@ -155,7 +151,7 @@ public class MonsterTester extends JavaFXTester {
         Fox f2 = new Fox(a2, f1);
         assertEquals(f2.arena, a2);
 
-        DeepCopyTester.testDeepCopy(f1, f2);
+        DeepCopyTester.assertDeepCopy(f1, f2);
 
     }
 }

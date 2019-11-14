@@ -98,6 +98,8 @@ public final class Geometry {
             }
         }
 
+        if (minPoint == null) return null;
+
         return new javafx.geometry.Point2D(minPoint.x(), minPoint.y());
     }
 
