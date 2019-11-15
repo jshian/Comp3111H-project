@@ -41,56 +41,50 @@ import project.arena.towers.Tower;
 
 /**
  * The area where most of the action takes place in the game.
- * Monsters spawn at the starting position and try to reach the end-zone.
- * Towers reside on the arena and fire Projectiles at Monsters in range.
- * @see Monster
- * @see Tower
- * @see Projectile
+ * {@link Monster}s spawn at the starting position and try to reach the end-zone.
+ * {@link Tower}s reside on the arena and fire {@link Projectile}s at enemies in range.
  */
 @Entity
 public final class Arena {
 
     /**
-     * x-coordinate of the starting position.
-     * @see Coordinates
+     * x-position of the {@link Grid} representing the starting position.
      */
     static final short STARTING_GRID_X_POS = 0;
 
     /**
-     * y-coordinate of the starting position.
-     * @see Coordinates
+     * y-position of the {@link Grid} representing the starting position.
      */
     static final short STARTING_GRID_Y_POS = 0;
 
     /**
-     * Coordinates of the starting position.
+     * Coordinates of the center of the {@link Grid} representing the starting position.
      */
     static final Coordinates STARTING_COORDINATES = Grid.findGridCenter(STARTING_GRID_X_POS, STARTING_GRID_Y_POS);
 
     /**
-     * x-coordinate of the end zone.
-     * @see Coordinates
+     * x-position of the {@link Grid} representing the end-zone.
      */
     static final short END_GRID_X_POS = 11;
 
     /**
-     * y-coordinate of the end zone.
-     * @see Coordinates
+     * y-position of the {@link Grid} representing the end-zone.
      */
     static final short END_GRID_Y_POS = 0;
+
     /**
-     * Coordinates of the end zone.
+     * Coordinates of the center of the {@link Grid} representing the end-zone.
      */
     static final Coordinates END_COORDINATES = Grid.findGridCenter(END_GRID_X_POS, END_GRID_Y_POS);
 
     /**
-     * The number of frames between each wave of Monsters.
+     * The number of frames between each wave of {@link Monster}s.
      * @see #spawnWave()
      */
     static final int WAVE_INTERVAL = 50;
 
     /**
-     * The duration of laser being displayed.
+     * The duration of laser of {@link LaserTower} being displayed.
      */
     static final int LASER_DURATION = 2;
 
@@ -315,21 +309,67 @@ public final class Arena {
 
     /**
      * An enum for filtering objects in the Arena according to type.
-     * @see Tower
-     * @see Projectile
-     * @see Monster
      */
-    public enum TypeFilter { Tower, Projectile, Monster }
+    public enum TypeFilter {
+        /**
+         * {@link Tower} objects are selected.
+         */
+        Tower,
+
+        /**
+         * {@link Projectile} objects are selected.
+         */
+        Projectile,
+
+        /**
+         * {@link Monster} objects are selected.
+         */
+        Monster }
 
     /**
      * An enum for generate monster in the Arena according to type.
      */
-    public static enum MonsterType { Fox, Penguin, Unicorn }
+    public static enum MonsterType {
+        /**
+         * The {@link Fox}.
+         */
+        Fox,
+
+        /**
+         * The {@link Penguin}.
+         */
+        Penguin,
+
+        /**
+         * The {@link Unicorn}.
+         */
+        Unicorn
+    }
 
     /**
-     * An enum for building tower in the Arena according to type.
+     * An enum for building towers in the Arena according to type.
      */
-    public static enum TowerType { BasicTower, Catapult, IceTower, LaserTower }
+    public static enum TowerType {
+        /**
+         * The {@link BasicTower}.
+         */
+        BasicTower,
+
+        /**
+         * The {@link Catapult}.
+         */
+        Catapult,
+
+        /**
+         * The {@link IceTower}.
+         */
+        IceTower,
+
+        /**
+         * The {@link LaserTower}.
+         */
+        LaserTower
+    }
 
     /**
      * Finds all objects that are located at a specified pixel.

@@ -20,9 +20,7 @@ import project.arena.projectiles.Projectile;
 import project.arena.towers.Tower;
 
 /**
- * Manages the storage of objects in the arena.
- * 
- * @see Arena
+ * Manages the storage of objects in the {@link Arena}.
  */
 @Entity
 final class ArenaObjectStorage {
@@ -34,31 +32,27 @@ final class ArenaObjectStorage {
     private Arena arena;
 
     /**
-     * Contains a reference to each Tower on the arena.
-     * @see Tower
+     * Contains a reference to each {@link Tower} on the arena.
      */
     @OneToMany
     private LinkedList<Tower> towers = new LinkedList<>();
 
     /**
-     * Contains a reference to each Projectile on the arena.
-     * @see Projectile
+     * Contains a reference to each {@link Projectile} on the arena.
      */
     @OneToMany
     private LinkedList<Projectile> projectiles = new LinkedList<>();
 
     /**
-     * Contains a reference to each Monster on the arena.
+     * Contains a reference to each {@link Monster} on the arena.
      * In addition, the monsters are sorted according to how close they are from reaching the end zone.
      * The first element is closest to the end zone while the last element is furthest.
-     * @see Monster
      */
     @OneToMany
     private PriorityQueue<Monster> monsters = new PriorityQueue<>();
 
     /**
-     * Stores grid information of the arena.
-     * @see Grid
+     * Stores {@link Grid} information of the arena.=
      */
     @Transient
     private Grid[][] grids = new Grid[UIController.MAX_H_NUM_GRID][UIController.MAX_V_NUM_GRID];
