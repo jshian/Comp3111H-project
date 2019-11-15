@@ -112,7 +112,7 @@ public class MonsterTester extends JavaFXTester {
     }
 
     @Test
-    public void testFox() throws InterruptedException {
+    public void testFox() {
         Arena a1 = new Arena(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 18, (short) 23);
         Coordinates end = new Coordinates((short) 480, (short) 480);
@@ -144,11 +144,9 @@ public class MonsterTester extends JavaFXTester {
         }
         addMonsterToArena(f);
         simulateGameNoSpawning();
-        close();
+        clickOn("OK"); // Close the gameover alert
 
         // Case 1b: Line of Catapults
-        a = getCurrentArena();
-
         f = new Fox(a, start, end, iv, 100);
         f.setHealth(Double.POSITIVE_INFINITY); // So it can't die
 
@@ -157,7 +155,7 @@ public class MonsterTester extends JavaFXTester {
         }
         addMonsterToArena(f);
         simulateGameNoSpawning();
-        close();
+        clickOn("OK"); // Close the gameover alert
 
         // Test copy constructor
         Arena a2 = new Arena(new Label(), new AnchorPane());
