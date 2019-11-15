@@ -158,7 +158,7 @@ public class UIController {
      */
     @FXML
     private void save() {
-
+        // TODO: save the game
     }
 
     /**
@@ -171,7 +171,7 @@ public class UIController {
 
         this.mode = mode;
         disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> nextFrame()));
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.02), e -> nextFrame()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -278,7 +278,7 @@ public class UIController {
             if (gameOver) {
                 mode = GameMode.end;
                 enableGameButton();
-                showAlert("Gameover","Gameover");
+                showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
                 if (timeline != null) {
                     timeline.stop();
                 }
@@ -520,13 +520,15 @@ public class UIController {
      * show an alert to notify the player some information.
      * @param title title of the dialog box.
      * @param content content of the dialog box.
+     * @return the alert being shown.
      */
-    private void showAlert(String title, String content) {
+    private Alert showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.show();
+        return alert;
     }
 }
 
