@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
@@ -21,7 +20,6 @@ import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.Grid;
-import project.arena.Arena.TowerType;
 
 import static project.ExceptionThrownTester.assertExceptionThrown_constructor;
 
@@ -80,7 +78,7 @@ public class MonsterTester extends JavaFXTester {
 
         // Test status effect
         StatusEffect slowEffect = new StatusEffect(StatusEffect.EffectType.Slow, 2);
-        
+
         double originalSpeed = m1.getSpeed();
         m1.addStatusEffect(slowEffect);
         LinkedList<StatusEffect> effects = m1.getStatusEffects();
@@ -114,11 +112,11 @@ public class MonsterTester extends JavaFXTester {
     }
 
     @Test
-    public void testFox() {
+    public void testFox() throws InterruptedException {
         Arena a1 = new Arena(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 18, (short) 23);
         Coordinates end = new Coordinates((short) 480, (short) 480);
-        ImageView iv = new ImageView(new Image("/fox.png"));
+        ImageView iv = new ImageView(new Image("/fox.png", 8, 8, true, true));
 
         Class<?>[] constructorArgTypes = { Arena.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
 
@@ -129,22 +127,37 @@ public class MonsterTester extends JavaFXTester {
         assertFalse(f1.hasDied()); // Health on generation should be greater than zero
 
         // Test pathfinding...
-        
-        // Case 1a: Line of BasicTowers at y = 1
+        // Case 1: Line of towers at y = 1
         LinkedList<Grid> gridsToPlaceTower = new LinkedList<>();
         for (short i = 1; i < UIController.MAX_H_NUM_GRID - 1; i++) {
             gridsToPlaceTower.add(new Grid(i, (short) 1));
         }
+
+        // Case 1a: Line of BasicTowers
+        Arena a = getCurrentArena();
+
+        Fox f = new Fox(a, start, end, iv, 100);
+        f.setHealth(Double.POSITIVE_INFINITY); // So it can't die
+
         for (Grid grid : gridsToPlaceTower) {
-            a1.buildTower(grid.getCenter(), new ImageView("/basicTower.png"), TowerType.BasicTower);
+            simulateBuildTower(TowerType.BasicTower, grid.getXPos(), grid.getYPos());
         }
-        /*
-        f1.setHealth(Double.POSITIVE_INFINITY); // So it can't die
-        a1.addObject(f1);
-        while (f1.findNextCoordinates() != null) {
-            a1.nextFrame();
-            // Thread.sleep(1000);
-        }*/
+        addMonsterToArena(f);
+        simulateGameNoSpawning();
+        close();
+
+        // Case 1b: Line of Catapults
+        a = getCurrentArena();
+
+        f = new Fox(a, start, end, iv, 100);
+        f.setHealth(Double.POSITIVE_INFINITY); // So it can't die
+
+        for (Grid grid : gridsToPlaceTower) {
+            simulateBuildTower(TowerType.Catapult, grid.getXPos(), grid.getYPos());
+        }
+        addMonsterToArena(f);
+        simulateGameNoSpawning();
+        close();
 
         // Test copy constructor
         Arena a2 = new Arena(new Label(), new AnchorPane());
@@ -152,6 +165,5 @@ public class MonsterTester extends JavaFXTester {
         assertEquals(f2.arena, a2);
 
         DeepCopyTester.assertDeepCopy(f1, f2);
-
     }
 }
