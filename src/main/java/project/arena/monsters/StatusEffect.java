@@ -9,9 +9,8 @@ import javax.validation.constraints.NotNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Status effects can modify the stats of Monsters.
+ * Status effects can modify the stats of {@link Monster}s.
  * Note, when applied, status effects only start to take effect and count down on the next frame.
- * @see Monster
  */
 @Entity
 public class StatusEffect {

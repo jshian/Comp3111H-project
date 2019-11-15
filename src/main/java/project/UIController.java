@@ -86,11 +86,11 @@ public class UIController {
     /**
      * An enum to show game state.
      */
-    static enum modes {normal, simulate, play, end};
+    static enum GameMode {normal, simulate, play, end};
     /**
      * the game state.
      */
-    static modes mode = modes.normal;
+    static GameMode mode = GameMode.normal;
 
     /**
      * the arena of the game.
@@ -126,7 +126,7 @@ public class UIController {
      */
     @FXML
     private void play() {
-        run(modes.play);
+        run(GameMode.play);
     }
 
     /**
@@ -134,7 +134,7 @@ public class UIController {
      */
     @FXML
     private void simulate() {
-        run(modes.simulate);
+        run(GameMode.simulate);
     }
 
     /**
@@ -143,9 +143,9 @@ public class UIController {
     @FXML
     private void pause() {
         if (timeline != null) {
-            if (this.mode == modes.simulate) {
+            if (this.mode == GameMode.simulate) {
                 buttonSimulate.setDisable(false);
-            } else if (this.mode == modes.play) {
+            } else if (this.mode == GameMode.play) {
                 buttonPlay.setDisable(false);
             }
             buttonNextFrame.setDisable(false);
@@ -165,8 +165,8 @@ public class UIController {
      * Run the game.
      * @param mode specify the mode of the game.
      */
-    private void run(modes mode) {
-        if (this.mode == modes.end)
+    private void run(GameMode mode) {
+        if (this.mode == GameMode.end)
             resetGame();
 
         this.mode = mode;
@@ -270,10 +270,10 @@ public class UIController {
      */
     @FXML
     private void nextFrame() {
-        if (this.mode != modes.end) {
+        if (this.mode != GameMode.end) {
             boolean gameOver = arena.nextFrame();
             if (gameOver) {
-                mode = modes.end;
+                mode = GameMode.end;
                 enableGameButton();
                 showAlert("Gameover","Gameover");
                 if (timeline != null) {
@@ -301,7 +301,7 @@ public class UIController {
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
-                    if(mode != modes.simulate && mode != modes.end) {
+                    if(mode != GameMode.simulate && mode != GameMode.end) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                         Object source = e.getGestureSource();
                         Arena.TowerType type = null;
@@ -329,7 +329,7 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    if (mode != modes.simulate && mode != modes.end) {
+            	    if (mode != GameMode.simulate && mode != GameMode.end) {
                         Image img = null;
                         Arena.TowerType type = null;
                         Object source = e.getGestureSource();
@@ -443,7 +443,7 @@ public class UIController {
         l.setOnMouseExited(e -> tp.hide());
 
         l.setOnDragDetected(e -> {
-            if (mode != modes.simulate) {
+            if (mode != GameMode.simulate) {
                 Dragboard db = l.startDragAndDrop(TransferMode.ANY);
 
                 ClipboardContent content = new ClipboardContent();

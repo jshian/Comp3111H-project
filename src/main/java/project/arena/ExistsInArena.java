@@ -29,10 +29,9 @@ public interface ExistsInArena {
     public short getY();
 
     /**
-     * Updates the coordinates of the object.
+     * Updates the {@link Coordinates} of the object.
      * @param x The new x-coordinate.
      * @param y The new y-coordinate.
-     * @see Coordinates
      */
     public void setLocation(short x, short y);
 

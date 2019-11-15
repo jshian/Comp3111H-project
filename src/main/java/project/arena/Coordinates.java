@@ -12,9 +12,8 @@ import javafx.scene.image.ImageView;
 import project.UIController;
 
 /**
- * Custom class to store 2D Cartesian coordinates of objects in the Arena
+ * Custom class to store 2D Cartesian coordinates of objects in the {@link Arena}.
  * Coordinates are in terms of pixels.
- * @see Arena
  */
 public final class Coordinates implements Serializable {
     // Implement Serializable

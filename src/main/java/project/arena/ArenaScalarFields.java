@@ -13,8 +13,7 @@ import project.arena.towers.Tower;
 import debug.ScalarFieldVisualizer;
 
 /**
- * Manages the scalar fields of the arena.
- * @see Arena
+ * Manages the scalar fields of the {@link Arena}.
  */
 final class ArenaScalarFields {
 
@@ -37,9 +36,8 @@ final class ArenaScalarFields {
     }
 
     /**
-     * Stores the shortest distance to reach the end-zone in terms of number of pixels from each pixel.
+     * Stores the shortest distance for a {@link Monster} to reach the end-zone in terms of number of pixels from each pixel.
      * Indices correspond to the x- and y- coordinates.
-     * @see Monster
      * @see Coordinates
      */
     private short[][] distanceToEndZone = new short[UIController.ARENA_WIDTH + 1][UIController.ARENA_WIDTH + 1];
@@ -78,18 +76,16 @@ final class ArenaScalarFields {
     }
 
     /**
-     * Stores the number of attacks a lone monster that moves at 1 pixel per frame would take to reach the end-zone from each pixel.
+     * Stores the number of attacks a lone {@link Monster} that moves at 1 pixel per frame would take to reach the end-zone from each pixel.
      * Indices correspond to the x- and y- coordinates.
-     * @see Monster
      * @see Coordinates
      */
     private double[][] attacksToEndZone = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];
 
     /**
-     * Stores the number of attacks a lone monster would take per frame at each pixel.
+     * Stores the number of attacks a lone {@link Monster} would take per frame at each pixel.
      * Indices correspond to the x- and y- coordinates.
      * Note: To prevent being stuck, a very small movement cost is added.
-     * @see Monster
      * @see Coordinates
      */
     private double[][] attacksPerFrame = new double[UIController.ARENA_WIDTH + 1][UIController.ARENA_HEIGHT + 1];

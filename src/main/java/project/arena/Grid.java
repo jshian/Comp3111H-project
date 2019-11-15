@@ -11,10 +11,8 @@ import project.arena.projectiles.Projectile;
 import project.arena.towers.Tower;
 
 /**
- * Grids are arranged in a tabular manner in the Arena and limit the positioning of Towers.
+ * Grids are arranged in a tabular manner in the {@link Arena} and limit the positioning of {@link Towers}.
  * The class is comprised mainly of helper functions to manage the conversion between {@link Coordinates} and the corresponding grid.
- * @see Arena
- * @see Tower
  */
 public final class Grid {
     /**
@@ -44,22 +42,19 @@ public final class Grid {
     }
 
     /**
-     * Contains a reference to each Tower on the arena.
-     * @see Tower
+     * Contains a reference to each {@link Tower} on the arena.
      */
     private LinkedList<Tower> towers = new LinkedList<>();
 
     /**
-     * Contains a reference to each Projectile on the arena.
-     * @see Projectile
+     * Contains a reference to each {@link Projectile} on the arena.
      */
     private LinkedList<Projectile> projectiles = new LinkedList<>();
 
     /**
-     * Contains a reference to each Monster on the arena.
+     * Contains a reference to each {@link Monster} on the arena.
      * In addition, the monsters are sorted according to how close they are from reaching the end zone.
      * The first element is closest to the end zone while the last element is furthest.
-     * @see Monster
      */
     private PriorityQueue<Monster> monsters = new PriorityQueue<>();
 
