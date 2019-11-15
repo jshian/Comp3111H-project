@@ -123,7 +123,7 @@ public class JavaFXTester extends ApplicationTest {
 
 			timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
 				try {
-					field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1);
+					field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1); // Moves currentFrame back so monsters never spawn
 					method_nextFrame.invoke(appController);
 				} catch (Exception ex) {
 					fail("An unexpected error has occurred");
