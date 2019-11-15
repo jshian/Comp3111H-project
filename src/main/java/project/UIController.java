@@ -171,7 +171,7 @@ public class UIController {
 
         this.mode = mode;
         disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.02), e -> nextFrame()));
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> nextFrame()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
