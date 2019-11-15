@@ -20,6 +20,7 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.Animation.Status;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -43,7 +44,6 @@ public class JavaFXTester extends ApplicationTest {
 	protected Stage primaryStage;
 	protected Scene currentScene;
 	protected UIController appController;
-	protected boolean isRunning;
 
 	public static enum TowerType { BasicTower, Catapult, IceTower, LaserTower }
 
@@ -59,10 +59,6 @@ public class JavaFXTester extends ApplicationTest {
 		this.primaryStage.show();
 		this.appController = (UIController)loader.getController();
 		this.appController.createArena();
-	}
-	
-	protected final void clear() {
-		// I want to reset the arena
 	}
 
 	/**
@@ -102,18 +98,25 @@ public class JavaFXTester extends ApplicationTest {
 	protected final void simulateGameNoSpawning() {
 		Arena arena = getCurrentArena();
 
+		// Similar to Arena.run
 		try {
 			Field field_mode = UIController.class.getDeclaredField("mode");
 			field_mode.setAccessible(true);
-			field_mode.set(arena, GameMode.simulate);
+			if (field_mode.get(arena) == GameMode.end) {
+				Method method_resetGame = UIController.class.getDeclaredMethod("resetGame");
+				method_resetGame.setAccessible(true);
+				method_resetGame.invoke(appController);
+			}
 
-			Field field_timeline = UIController.class.getDeclaredField("timeline");
-			field_timeline.setAccessible(true);
-			Timeline timeline = (Timeline) field_timeline.get(appController);
+			field_mode.set(arena, GameMode.simulate);
 
 			Method method_disableGameButton = UIController.class.getDeclaredMethod("disableGameButton");
 			method_disableGameButton.setAccessible(true);
 			method_disableGameButton.invoke(appController);
+
+			Field field_timeline = UIController.class.getDeclaredField("timeline");
+			field_timeline.setAccessible(true);
+			Timeline timeline = (Timeline) field_timeline.get(appController);
 
 			Method method_nextFrame = UIController.class.getDeclaredMethod("nextFrame");
 			method_nextFrame.setAccessible(true);
@@ -121,7 +124,7 @@ public class JavaFXTester extends ApplicationTest {
 			Field field_currentFrame = Arena.class.getDeclaredField("currentFrame");
 			field_currentFrame.setAccessible(true);
 
-			timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
+			timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
 				try {
 					field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1); // Moves currentFrame back so monsters never spawn
 					method_nextFrame.invoke(appController);
@@ -130,12 +133,8 @@ public class JavaFXTester extends ApplicationTest {
 				}
 			}));
 			timeline.setCycleCount(Timeline.INDEFINITE);
-			timeline.setOnFinished(e -> isRunning = false);
-
-			isRunning = true;
 			timeline.play();
-			while (isRunning) { } // Wait until finished
-			clear();
+			while (field_mode.get(arena) != GameMode.end) { } // Wait until finished
 		} catch (Exception e) {
 			fail("An unexpected error has occurred");
 		}
