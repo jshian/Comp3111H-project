@@ -95,7 +95,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     /**
      * A linked list containing a reference to the coordinates that the monster has passed through in the previous frame.
      */
-    protected LinkedList<Coordinates> prevCoordinates = new LinkedList<Coordinates>();
+    protected LinkedList<Coordinates> prevCoordinates = new LinkedList<>();
 
     /**
      * The location which the monster tries to reach.
