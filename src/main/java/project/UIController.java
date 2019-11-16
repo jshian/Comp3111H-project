@@ -142,15 +142,13 @@ public class UIController {
      */
     @FXML
     private void pause() {
-        if (timeline != null) {
-            if (this.mode == GameMode.simulate) {
-                buttonSimulate.setDisable(false);
-            } else if (this.mode == GameMode.play) {
-                buttonPlay.setDisable(false);
-            }
-            buttonNextFrame.setDisable(false);
-            timeline.pause();
+        if (this.mode == GameMode.simulate) {
+            buttonSimulate.setDisable(false);
+        } else if (this.mode == GameMode.play) {
+            buttonPlay.setDisable(false);
         }
+        buttonNextFrame.setDisable(false);
+        timeline.pause();
     }
 
     /**
@@ -180,8 +178,7 @@ public class UIController {
      * Reset the game.
      */
     private void resetGame() {
-        if (timeline != null)
-            timeline.stop();
+        timeline.stop();
         paneArena.getChildren().removeAll(paneArena.getChildren());
         paneArena.getChildren().addAll(initialArena().getChildren());
         arena = new Arena(remainingResources, paneArena);
