@@ -589,11 +589,11 @@ public final class Arena {
         Coordinates end = Grid.findGridCenter(END_COORDINATES);
 
         switch(type) {
-            case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+            case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
                 m = new Fox(this, start, end, iv, difficulty); break;
-            case Penguin: iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+            case Penguin: iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
                 m = new Penguin(this, start, end, iv, difficulty); break;
-            case Unicorn: iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+            case Unicorn: iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
                 m = new Unicorn(this, start, end, iv, difficulty); break;
         }
         if (m == null) return null;
