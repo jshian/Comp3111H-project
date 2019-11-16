@@ -83,7 +83,7 @@ public class JavaFXTester extends ApplicationTest {
 	 * Adds a monster to the arena that is currently loaded.
 	 */
 	protected final void addMonsterToArena(Monster m) {
-        Platform.runLater(new Runnable() {
+		interact(new Runnable() {
             @Override
             public void run() {
                 getCurrentArena().addObject(m);
@@ -124,7 +124,7 @@ public class JavaFXTester extends ApplicationTest {
 			Field field_currentFrame = Arena.class.getDeclaredField("currentFrame");
 			field_currentFrame.setAccessible(true);
 
-			timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> {
+			timeline = new Timeline(new KeyFrame(Duration.seconds(0.05), e -> {
 				try {
 					field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1); // Moves currentFrame back so monsters never spawn
 					method_nextFrame.invoke(appController);
@@ -134,7 +134,8 @@ public class JavaFXTester extends ApplicationTest {
 			}));
 			timeline.setCycleCount(Timeline.INDEFINITE);
 			timeline.play();
-			while (field_mode.get(arena) != GameMode.end) { } // Wait until finished
+			while (field_mode.get(arena) != GameMode.normal) {}	// Wait until finished
+			timeline.stop();
 		} catch (Exception e) {
 			fail("An unexpected error has occurred");
 		}

@@ -116,7 +116,7 @@ public class MonsterTester extends JavaFXTester {
         Arena a1 = new Arena(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 18, (short) 23);
         Coordinates end = new Coordinates((short) 480, (short) 480);
-        ImageView iv = new ImageView(new Image("/fox.png", 8, 8, true, true));
+        ImageView iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
 
         Class<?>[] constructorArgTypes = { Arena.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
 
@@ -132,11 +132,9 @@ public class MonsterTester extends JavaFXTester {
         for (short i = 1; i < UIController.MAX_H_NUM_GRID - 1; i++) {
             gridsToPlaceTower.add(new Grid(i, (short) 1));
         }
-
+        
         // Case 1a: Line of BasicTowers
-        Arena a = getCurrentArena();
-
-        Fox f = new Fox(a, start, end, iv, 100);
+        Fox f = new Fox(getCurrentArena(), start, end, iv, 100);
         f.setHealth(Double.POSITIVE_INFINITY); // So it can't die
 
         for (Grid grid : gridsToPlaceTower) {
@@ -144,10 +142,9 @@ public class MonsterTester extends JavaFXTester {
         }
         addMonsterToArena(f);
         simulateGameNoSpawning();
-        clickOn("OK"); // Close the gameover alert
 
         // Case 1b: Line of Catapults
-        f = new Fox(a, start, end, iv, 100);
+        f = new Fox(getCurrentArena(), start, end, iv, 100);
         f.setHealth(Double.POSITIVE_INFINITY); // So it can't die
 
         for (Grid grid : gridsToPlaceTower) {
@@ -155,7 +152,6 @@ public class MonsterTester extends JavaFXTester {
         }
         addMonsterToArena(f);
         simulateGameNoSpawning();
-        clickOn("OK"); // Close the gameover alert
 
         // Test copy constructor
         Arena a2 = new Arena(new Label(), new AnchorPane());

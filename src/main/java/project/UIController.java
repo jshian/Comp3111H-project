@@ -182,10 +182,10 @@ public class UIController {
     private void resetGame() {
         if (timeline != null)
             timeline.stop();
-        this.mode = GameMode.normal;
         paneArena.getChildren().removeAll(paneArena.getChildren());
         paneArena.getChildren().addAll(initialArena().getChildren());
         arena = new Arena(remainingResources, paneArena);
+        this.mode = GameMode.normal;
     }
 
     /**
@@ -279,9 +279,6 @@ public class UIController {
                 mode = GameMode.end;
                 enableGameButton();
                 showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
-                if (timeline != null) {
-                    timeline.stop();
-                }
             }
         }
     }
