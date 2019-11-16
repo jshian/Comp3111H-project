@@ -279,9 +279,6 @@ public class UIController {
                 mode = GameMode.end;
                 enableGameButton();
                 showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
-                if (timeline != null) {
-                    timeline.stop();
-                }
             }
         }
     }
