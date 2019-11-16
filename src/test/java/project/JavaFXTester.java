@@ -158,9 +158,9 @@ public class JavaFXTester extends ApplicationTest {
 	 */
 	protected final void simulateBuildTower(@NonNull TowerType type, @NonNull Coordinates coordinates) {
 		Label l = (Label)currentScene.lookup("#label" + type.name());
-		Bounds labelBound = l.localToScreen(l.getBoundsInLocal());
+		Bounds labelBound = l.localToScreen(l.getLayoutBounds());
 		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
-		Bounds paneBound = b.localToScreen(b.getBoundsInLocal());
+		Bounds paneBound = b.localToScreen(b.getLayoutBounds());
 		double sceneX = paneBound.getMinX();
 		double sceneY = paneBound.getMinY();
 
