@@ -20,6 +20,8 @@ import project.arena.ExistsInArena;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;
 
+import java.util.LinkedList;
+
 /**
  * Towers is added by player to stop monster moving to the end zone.
  */
@@ -221,8 +223,10 @@ public abstract class Tower implements ExistsInArena {
      */
     protected boolean isValidTarget(Monster monster) {
         if (monster.hasDied()) return false;
-
-        for (Coordinates c : monster.getPrevCoordinates()) {
+        LinkedList<Coordinates> prevCoordinates = monster.getPrevCoordinates();
+        if (prevCoordinates.size() == 0)
+            if (isInRange(new Coordinates(monster.getX(),monster.getY()))) return true;
+        for (Coordinates c : prevCoordinates) {
             if (isInRange(c)) return true;
         }
         
