@@ -20,6 +20,7 @@ import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.Grid;
+import project.arena.Arena.MonsterType;
 
 import static project.ExceptionThrownTester.assertExceptionThrown_constructor;
 
@@ -134,24 +135,18 @@ public class MonsterTester extends JavaFXTester {
         }
         
         // Case 1a: Line of BasicTowers
-        Fox f = new Fox(getCurrentArena(), start, end, iv, 100);
-        f.setHealth(Double.POSITIVE_INFINITY); // So it can't die
-
         for (Grid grid : gridsToPlaceTower) {
             simulateBuildTower(TowerType.BasicTower, grid.getXPos(), grid.getYPos());
         }
-        addMonsterToArena(f);
-        simulateGameNoSpawning();
+        addMonsterToArena(MonsterType.Fox, start, end, iv, 100, true);
+        simulateGameNoSpawning(4);
 
         // Case 1b: Line of Catapults
-        f = new Fox(getCurrentArena(), start, end, iv, 100);
-        f.setHealth(Double.POSITIVE_INFINITY); // So it can't die
-
         for (Grid grid : gridsToPlaceTower) {
             simulateBuildTower(TowerType.Catapult, grid.getXPos(), grid.getYPos());
         }
-        addMonsterToArena(f);
-        simulateGameNoSpawning();
+        addMonsterToArena(MonsterType.Fox, start, end, iv, 100, true);
+        simulateGameNoSpawning(4);
 
         // Test copy constructor
         Arena a2 = new Arena(new Label(), new AnchorPane());

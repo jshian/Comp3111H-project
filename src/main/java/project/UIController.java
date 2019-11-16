@@ -273,9 +273,9 @@ public class UIController {
         if (this.mode != GameMode.end) {
             boolean gameOver = arena.nextFrame();
             if (gameOver) {
+                mode = GameMode.end;
                 enableGameButton();
                 showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
-                mode = GameMode.end;
             }
         }
     }

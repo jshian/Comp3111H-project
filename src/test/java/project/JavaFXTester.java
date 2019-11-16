@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 
@@ -31,7 +32,11 @@ import project.UIController.GameMode;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.Grid;
+import project.arena.Arena.MonsterType;
+import project.arena.monsters.Fox;
 import project.arena.monsters.Monster;
+import project.arena.monsters.Penguin;
+import project.arena.monsters.Unicorn;
 import project.arena.towers.BuildTower;
 
 /**
@@ -81,12 +86,44 @@ public class JavaFXTester extends ApplicationTest {
 
 	/**
 	 * Adds a monster to the arena that is currently loaded.
+	 * @param monsterType The type of the monster.
+     * @param start The starting location of the monster.
+     * @param destination The destination of the monster. It will try to move there.
+     * @param imageView The ImageView that displays the monster.
+     * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
+	 * @param isInvulnerable Whether the monster should be invulnerable.
 	 */
-	protected final void addMonsterToArena(Monster m) {
+	protected final void addMonsterToArena(MonsterType monsterType, Coordinates start, Coordinates end, ImageView iv, double difficulty, boolean isInvulnerable) {
+		final Arena arena = getCurrentArena();
+		Monster m = null;
+		switch (monsterType) {
+			case Fox:
+				m = new Fox(arena, start, end, iv, difficulty);
+				break;
+			case Penguin:
+			m = new Penguin(arena, start, end, iv, difficulty);
+				break;
+			case Unicorn: default:
+			m = new Unicorn(arena, start, end, iv, difficulty);
+				break;
+		}
+
+		if (isInvulnerable) {
+			try {
+				Method method_setHealth = Monster.class.getDeclaredMethod("setHealth", double.class);
+				method_setHealth.setAccessible(true);
+				method_setHealth.invoke(m, Double.POSITIVE_INFINITY);
+			} catch (Exception ex) {
+				fail("An unexpected error has occurred");
+			}
+		}
+
+		final Monster finalMonster = m;
+		
 		interact(new Runnable() {
             @Override
             public void run() {
-                getCurrentArena().addObject(m);
+				getCurrentArena().addObject(finalMonster);
             }
         });
 	}
@@ -94,9 +131,10 @@ public class JavaFXTester extends ApplicationTest {
 	/**
 	 * Simulates a game but no additional monsters are spawned.
 	 * Waits until the game has ended.
+	 * @param speedMultiplier The rate at which to speed up the game.
 	 */
-	protected final void simulateGameNoSpawning() {
-		Arena arena = getCurrentArena();
+	protected final void simulateGameNoSpawning(double speedMultiplier) {
+		final Arena arena = getCurrentArena();
 
 		// Similar to Arena.run
 		try {
@@ -124,7 +162,7 @@ public class JavaFXTester extends ApplicationTest {
 			Field field_currentFrame = Arena.class.getDeclaredField("currentFrame");
 			field_currentFrame.setAccessible(true);
 
-			timeline = new Timeline(new KeyFrame(Duration.seconds(0.05), e -> {
+			timeline = new Timeline(new KeyFrame(Duration.seconds(0.2 / speedMultiplier), e -> {
 				try {
 					field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1); // Moves currentFrame back so monsters never spawn
 					method_nextFrame.invoke(appController);
@@ -134,8 +172,9 @@ public class JavaFXTester extends ApplicationTest {
 			}));
 			timeline.setCycleCount(Timeline.INDEFINITE);
 			timeline.play();
+			field_timeline.set(appController, timeline);
+
 			while (field_mode.get(arena) != GameMode.normal) {}	// Wait until finished
-			timeline.stop();
 		} catch (Exception e) {
 			fail("An unexpected error has occurred");
 		}
