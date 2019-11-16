@@ -138,14 +138,28 @@ public class MonsterTester extends JavaFXTester {
         for (Grid grid : gridsToPlaceTower) {
             simulateBuildTower(TowerType.BasicTower, grid.getXPos(), grid.getYPos());
         }
-        addMonsterToArena(MonsterType.Fox, start, end, iv, 100, true);
+        addMonsterToArena(MonsterType.Fox, start, end, 1000, true);
+        addMonsterToArena(MonsterType.Fox, new Coordinates((short) 160, (short) 0), end, 100, true);
+        simulateGameNoSpawning(4);
+
+        for (Grid grid : gridsToPlaceTower) {
+            simulateBuildTower(TowerType.BasicTower, grid.getXPos(), grid.getYPos());
+        }
+        addMonsterToArena(MonsterType.Fox, new Coordinates((short) 200, (short) 0), end, 1, true);
         simulateGameNoSpawning(4);
 
         // Case 1b: Line of Catapults
         for (Grid grid : gridsToPlaceTower) {
             simulateBuildTower(TowerType.Catapult, grid.getXPos(), grid.getYPos());
         }
-        addMonsterToArena(MonsterType.Fox, start, end, iv, 100, true);
+        addMonsterToArena(MonsterType.Fox, start, end, 1000, true);
+        addMonsterToArena(MonsterType.Fox, new Coordinates((short) 160, (short) 0), end, 100, true);
+        simulateGameNoSpawning(4);
+
+        for (Grid grid : gridsToPlaceTower) {
+            simulateBuildTower(TowerType.Catapult, grid.getXPos(), grid.getYPos());
+        }
+        addMonsterToArena(MonsterType.Fox, new Coordinates((short) 200, (short) 0), end, 1, true);
         simulateGameNoSpawning(4);
 
         // Test copy constructor

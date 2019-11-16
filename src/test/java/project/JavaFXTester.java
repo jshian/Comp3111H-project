@@ -89,22 +89,25 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param monsterType The type of the monster.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
-     * @param imageView The ImageView that displays the monster.
      * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
 	 * @param isInvulnerable Whether the monster should be invulnerable.
 	 */
-	protected final void addMonsterToArena(MonsterType monsterType, Coordinates start, Coordinates end, ImageView iv, double difficulty, boolean isInvulnerable) {
+	protected final void addMonsterToArena(MonsterType monsterType, Coordinates start, Coordinates end, double difficulty, boolean isInvulnerable) {
 		final Arena arena = getCurrentArena();
+		ImageView iv = null;
 		Monster m = null;
 		switch (monsterType) {
 			case Fox:
+				iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
 				m = new Fox(arena, start, end, iv, difficulty);
 				break;
 			case Penguin:
-			m = new Penguin(arena, start, end, iv, difficulty);
+				iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
+				m = new Penguin(arena, start, end, iv, difficulty);
 				break;
 			case Unicorn: default:
-			m = new Unicorn(arena, start, end, iv, difficulty);
+				iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
+				m = new Unicorn(arena, start, end, iv, difficulty);
 				break;
 		}
 
