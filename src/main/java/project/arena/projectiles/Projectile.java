@@ -17,7 +17,7 @@ import project.Geometry;
 import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.MovesInArena;
+import project.arena.ArenaMovingObject;
 import project.arena.monsters.Monster;
 
 /**
@@ -25,7 +25,7 @@ import project.arena.monsters.Monster;
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Projectile implements MovesInArena {
+public abstract class Projectile implements ArenaMovingObject {
     /**
      * ID for storage using Java Persistence API
      */

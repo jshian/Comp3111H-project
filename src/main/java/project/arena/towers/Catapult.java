@@ -12,7 +12,7 @@ import project.Geometry;
 import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.ExistsInArena;
+import project.arena.ArenaObject;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.CatapultProjectile;
 
@@ -100,7 +100,7 @@ public class Catapult extends Tower {
     @Override
     public CatapultProjectile generateProjectile(){
         if(!isReload()) {
-            LinkedList<ExistsInArena> selectList = new LinkedList<>();
+            LinkedList<ArenaObject> selectList = new LinkedList<>();
             Coordinates targetCoordinates = selectMonster(arena.getMonsters(), selectList);
             if (targetCoordinates != null) {
                 short closestDistance = Short.MAX_VALUE;
@@ -138,7 +138,7 @@ public class Catapult extends Tower {
      * @param selectList The list of attacked monster in current position (used for testing).
      * @return The coordinate that will be attacked by Catapult.
      */
-    public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<ExistsInArena> selectList){
+    public Coordinates selectMonster(PriorityQueue<Monster> monsters, LinkedList<ArenaObject> selectList){
         LinkedList<Monster> nearestMon=new LinkedList<>();
         short nearest = 0;
         //find nearest to destination monster in shooting range

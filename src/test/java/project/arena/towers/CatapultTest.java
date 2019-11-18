@@ -14,7 +14,7 @@ import project.Geometry;
 import project.JavaFXTester;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.ExistsInArena;
+import project.arena.ArenaObject;
 import project.arena.monsters.Monster;
 import project.arena.monsters.Unicorn;
 
@@ -29,7 +29,7 @@ public class CatapultTest extends JavaFXTester {
         Image img = new Image("/unicorn.png");
         Coordinates destination = new Coordinates((short) 470, (short) 10);
         PriorityQueue<Monster> testList = new PriorityQueue<>();
-        LinkedList<ExistsInArena> selectList = new LinkedList<>();
+        LinkedList<ArenaObject> selectList = new LinkedList<>();
         LinkedList<Monster> answerList = new LinkedList<>();
         Coordinates target;
 
@@ -41,7 +41,7 @@ public class CatapultTest extends JavaFXTester {
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m3);
         Assert.assertEquals(selectList,answerList);
-        for (ExistsInArena m :selectList) {
+        for (ArenaObject m :selectList) {
             Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), target.getX(), target.getY(),25));
         }
         selectList.clear();
@@ -51,7 +51,7 @@ public class CatapultTest extends JavaFXTester {
         Monster m5 = new Unicorn(arena, new Coordinates((short) 330, (short) 10), destination, new ImageView(img), 1);testList.add(m5);arena.addObject(m5);
         target=catapult.selectMonster(testList,selectList);
         Assert.assertEquals(selectList,answerList);
-        for (ExistsInArena m :selectList) {
+        for (ArenaObject m :selectList) {
             Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), target.getX(), target.getY(),25));
         }
         selectList.clear();
@@ -62,7 +62,7 @@ public class CatapultTest extends JavaFXTester {
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m6);
         Assert.assertEquals(selectList,answerList);
-        for (ExistsInArena m :selectList) {
+        for (ArenaObject m :selectList) {
             Assert.assertTrue(Geometry.isInCircle(m.getX(), m.getY(), target.getX(), target.getY(), 25));
         }
         selectList.clear();

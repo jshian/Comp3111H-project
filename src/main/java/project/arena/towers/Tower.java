@@ -16,7 +16,7 @@ import project.Geometry;
 import project.Player;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.ExistsInArena;
+import project.arena.ArenaObject;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;
 
@@ -24,7 +24,7 @@ import project.arena.projectiles.Projectile;
  * Towers is added by player to stop monster moving to the end zone.
  */
 @Entity
-public abstract class Tower implements ExistsInArena {
+public abstract class Tower implements ArenaObject {
     /**
      * ID for storage using Java Persistence API
      */
