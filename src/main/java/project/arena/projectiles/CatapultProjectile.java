@@ -4,7 +4,10 @@ import javax.persistence.Entity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import project.Geometry;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
@@ -32,6 +35,14 @@ public class CatapultProjectile extends Projectile {
         this.deltaX = deltaX;
         this.deltaY = deltaY;
         this.damageRange=damageRange;
+    }
+
+    @Override
+    protected void setupImage() {
+        this.imageView = new ImageView(new Image("/catapultProjectile.png", UIController.GRID_WIDTH / 2,
+                UIController.GRID_HEIGHT / 2, true, true));
+
+        this.coordinates.bindByImage(this.imageView);
     }
 
     /**

@@ -37,7 +37,7 @@ public abstract class Projectile implements MovesInArena {
      * The ImageView that displays the projectile.
      */
     @Transient
-    private ImageView imageView;
+    protected ImageView imageView;
 
     /**
      * The Arena that this projectile is attached to.
@@ -116,8 +116,16 @@ public abstract class Projectile implements MovesInArena {
         this.target = target;
         this.speed = speed;
         this.attackPower = attackPower;
-        this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
-                UIController.GRID_HEIGHT/4, true, true));
+
+        setupImage();
+    }
+
+    /**
+     * Sets up the image of the projectile.
+     */
+    protected void setupImage() {
+        this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH / 8,
+                UIController.GRID_HEIGHT / 8, true, true));
 
         this.coordinates.bindByImage(this.imageView);
     }

@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
@@ -27,6 +30,14 @@ public class IceProjectile extends Projectile {
     public IceProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, double speed, int slowDown){
         super(arena,coordinates,target,speed,0);
         this.slowDownTime=slowDown;
+    }
+
+    @Override
+    protected void setupImage() {
+        this.imageView = new ImageView(new Image("/iceProjectile.png", UIController.GRID_WIDTH / 8,
+                UIController.GRID_HEIGHT / 8, true, true));
+
+        this.coordinates.bindByImage(this.imageView);
     }
 
     /**

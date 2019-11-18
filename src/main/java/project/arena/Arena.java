@@ -764,14 +764,7 @@ public final class Arena {
      * @param target The target of the ray.
      */
     public void drawRay(@NonNull ExistsInArena source, @NonNull ExistsInArena target) {
-        Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
-                                                    0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
-        
-        Line ray = new Line(source.getX(), source.getY(), edgePt.getX(), edgePt.getY());
-        ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
-        ray.setStrokeWidth(3);
-        toRemove.put(ray, LASER_DURATION);
-        paneArena.getChildren().add(ray);
+        drawRay(new Coordinates(source.getX(), source.getY()), new Coordinates(target.getX(), target.getY()));
     }
 
     /**
@@ -800,7 +793,7 @@ public final class Arena {
         circle.setCenterX(source.getX());
         circle.setCenterY(source.getY());
         circle.setRadius(damageRange);
-        circle.setFill(Color.rgb(255, 255, 0));
+        circle.setFill(Color.rgb(128, 64, 0));
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
     }

@@ -6,7 +6,10 @@ import javax.persistence.Entity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import project.Geometry;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
@@ -23,6 +26,14 @@ public class LaserProjectile extends Projectile {
      */
     public LaserProjectile(Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, int attackPower) {
         super(arena,coordinates,target,0,attackPower);//since laser attack is immediate so no need speed.
+    }
+
+    @Override
+    protected void setupImage() {
+        this.imageView = new ImageView(new Image("/laserProjectile.png", UIController.GRID_WIDTH / 4,
+                UIController.GRID_HEIGHT / 4, true, true));
+
+        this.coordinates.bindByImage(this.imageView);
     }
 
     /**
