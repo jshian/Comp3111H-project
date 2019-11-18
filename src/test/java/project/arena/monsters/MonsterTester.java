@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static project.ExceptionThrownTester.assertExceptionThrown_constructor;
 
 import java.util.LinkedList;
 
@@ -18,11 +19,9 @@ import project.DeepCopyTester;
 import project.JavaFXTester;
 import project.UIController;
 import project.arena.Arena;
+import project.arena.ArenaObjectFactory.MonsterType;
 import project.arena.Coordinates;
 import project.arena.Grid;
-import project.arena.Arena.MonsterType;
-
-import static project.ExceptionThrownTester.assertExceptionThrown_constructor;
 
 /**
  * Tests the derived classes of {@link Monster} including {@link Fox}, {@link Penguin} and {@link Unicorn}.

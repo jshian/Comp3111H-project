@@ -21,6 +21,7 @@ import project.arena.towers.Tower;
 
 /**
  * Manages the storage of objects in the {@link Arena}.
+ * @see ArenaObject
  */
 @Entity
 final class ArenaObjectStorage {

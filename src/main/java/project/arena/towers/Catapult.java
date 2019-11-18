@@ -13,14 +13,23 @@ import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.ArenaObject;
+import project.arena.ArenaObjectFactory;
 import project.arena.monsters.Monster;
-import project.arena.projectiles.CatapultProjectile;
+import project.arena.projectiles.Projectile;
 
 /**
  * Catapult can attack many monsters at the same time and has high shooting range.
  */
 @Entity
 public class Catapult extends Tower {
+
+    /**
+     * Finds the initial building cost of the tower.
+     * @return The initial building cost of the tower.
+     */
+    public static int findInitialBuildingCost() {
+        return 20;
+    }
 
     /**
      * The damaging range of Catapult which default is 25.
@@ -40,7 +49,7 @@ public class Catapult extends Tower {
     public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 25;
-        this.buildingCost = 20;
+        this.buildingCost = findInitialBuildingCost();
         this.minShootingRange = 50;
         this.maxShootingRange = 150;
         this.reload = 20;
@@ -98,7 +107,7 @@ public class Catapult extends Tower {
      * @return The projectile that attacks the target of the tower, or <code>null</code> if either there is no valid target or the tower is reloading.
      */
     @Override
-    public CatapultProjectile generateProjectile(){
+    public Projectile generateProjectile(){
         if(!isReload()) {
             LinkedList<ArenaObject> selectList = new LinkedList<>();
             Coordinates targetCoordinates = selectMonster(arena.getMonsters(), selectList);
@@ -125,7 +134,7 @@ public class Catapult extends Tower {
 
                 short deltaX = (short) (targetCoordinates.getX() - targetMonster.getX());
                 short deltaY = (short) (targetCoordinates.getY() - targetMonster.getY());
-                return new CatapultProjectile(arena, coordinates, targetMonster, deltaX, deltaY, projectileSpeed, attackPower, damageRange);
+                return ArenaObjectFactory.createProjectile(arena, this, targetMonster, deltaX, deltaY);
             }
         }
         return null;

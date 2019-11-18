@@ -1,14 +1,5 @@
 package project;
 
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
-
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
@@ -21,18 +12,23 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.animation.Animation.Status;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import project.UIController.GameMode;
 import project.arena.Arena;
+import project.arena.ArenaObjectFactory.MonsterType;
 import project.arena.Coordinates;
 import project.arena.Grid;
-import project.arena.Arena.MonsterType;
 import project.arena.monsters.Fox;
 import project.arena.monsters.Monster;
 import project.arena.monsters.Penguin;

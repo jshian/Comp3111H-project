@@ -65,7 +65,15 @@ public abstract class Tower implements ArenaObject {
     /**
      * The cumulative building cost of the tower, which increases as the tower is upgraded.
      */
-    protected int buildingCost = 1;
+    protected int buildingCost = findInitialBuildingCost();
+
+    /**
+     * Finds the initial building cost of the tower.
+     * @return The initial building cost of the tower.
+     */
+    public static int findInitialBuildingCost() {
+        return 1;
+    }
 
     /**
      * The maximum shooting range of the tower.
@@ -264,10 +272,10 @@ public abstract class Tower implements ArenaObject {
     public final short getMinShootingRange() { return minShootingRange; }
 
     /**
-     * Accesses the attack speed of the tower.
-     * @return The attack speed of the tower.
+     * Accesses the projectile speed of the tower.
+     * @return The projectile speed of the tower.
      */
-    public final int getAttackSpeed() { return projectileSpeed; }
+    public final int getProjectileSpeed() { return projectileSpeed; }
 
     /**
      * Accesses the reload time of the tower.
@@ -291,6 +299,5 @@ public abstract class Tower implements ArenaObject {
      * @return the information of tower.
      */
     public abstract String getInformation();
-
-
+    
 }

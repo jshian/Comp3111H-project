@@ -28,10 +28,9 @@ import javafx.scene.shape.Line;
 import project.Geometry;
 import project.Player;
 import project.UIController;
-import project.arena.monsters.Fox;
+import project.arena.ArenaObjectFactory.MonsterType;
+import project.arena.ArenaObjectFactory.TowerType;
 import project.arena.monsters.Monster;
-import project.arena.monsters.Penguin;
-import project.arena.monsters.Unicorn;
 import project.arena.projectiles.Projectile;
 import project.arena.towers.BasicTower;
 import project.arena.towers.Catapult;
@@ -324,52 +323,9 @@ public final class Arena {
         /**
          * {@link Monster} objects are selected.
          */
-        Monster }
-
-    /**
-     * An enum for generate monster in the Arena according to type.
-     */
-    public static enum MonsterType {
-        /**
-         * The {@link Fox}.
-         */
-        Fox,
-
-        /**
-         * The {@link Penguin}.
-         */
-        Penguin,
-
-        /**
-         * The {@link Unicorn}.
-         */
-        Unicorn
+        Monster
     }
 
-    /**
-     * An enum for building towers in the Arena according to type.
-     */
-    public static enum TowerType {
-        /**
-         * The {@link BasicTower}.
-         */
-        BasicTower,
-
-        /**
-         * The {@link Catapult}.
-         */
-        Catapult,
-
-        /**
-         * The {@link IceTower}.
-         */
-        IceTower,
-
-        /**
-         * The {@link LaserTower}.
-         */
-        LaserTower
-    }
 
     /**
      * Finds all objects that are located at a specified pixel.
@@ -409,21 +365,32 @@ public final class Arena {
     }
 
     /**
+     * Determines the cost of building a tower.
+     * @param type The type of tower to build.
+     */
+    public int findTowerBuildingCost(@NonNull TowerType type) {
+        switch (type) {
+            case BasicTower:
+                return BasicTower.findInitialBuildingCost();
+            case IceTower:
+                return IceTower.findInitialBuildingCost();
+            case Catapult:
+                return Catapult.findInitialBuildingCost();
+            case LaserTower:
+                return LaserTower.findInitialBuildingCost();
+        }
+
+        throw new IllegalArgumentException("The tower type must be specified");
+    }
+
+    /**
      * check if the player has enough resources to build the tower.
      * @param type type of the tower.
      * @return true if the player has enough resources or false otherwise.
      */
     public boolean hasResources(@NonNull TowerType type)
     {
-        int cost = 500;
-        Coordinates c = new Coordinates((short) 0, (short) 0);
-        switch(type) {
-            case BasicTower: cost = new BasicTower(this, c).getBuildingCost(); break;
-            case IceTower: cost = new IceTower(this, c).getBuildingCost(); break;
-            case Catapult: cost = new Catapult(this, c).getBuildingCost(); break;
-            case LaserTower: cost = new LaserTower(this, c).getBuildingCost(); break;
-        }
-        return player.hasResources(cost);
+        return player.hasResources(findTowerBuildingCost(type));
     }
 
     /**
@@ -509,17 +476,9 @@ public final class Arena {
      */
     public Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull TowerType type)
     {
-        Tower t = null;
-        int cost = 0;
         Coordinates center = Grid.findGridCenter(coordinates);
-        switch(type) {
-            case BasicTower: t = new BasicTower(this, center, iv); break;
-            case IceTower: t = new IceTower(this, center, iv); break;
-            case Catapult: t = new Catapult(this, center, iv); break;
-            case LaserTower: t = new LaserTower(this, center, iv); break;
-            default: return null;
-        }
-        cost = t.getBuildingCost();
+        Tower t = ArenaObjectFactory.createTower(type, this, center);
+        int cost = t.getBuildingCost();
 
         if (player.hasResources(cost)) {
             player.spendResources(cost);
@@ -573,9 +532,6 @@ public final class Arena {
      */
     public Monster generateMonster(@NonNull MonsterType type)
     {
-        Monster m = null;
-        ImageView iv = null;
-
         // Create some randomness of spawn location
         short startX = (short) (STARTING_COORDINATES.getX() + Math.random() * UIController.GRID_WIDTH / 2);
         if (startX < 0) startX = 0;
@@ -586,18 +542,9 @@ public final class Arena {
         Coordinates start = new Coordinates(startX, startY);
 
         // The end zone is always the same
-        Coordinates end = Grid.findGridCenter(END_COORDINATES);
+        Coordinates destination = Grid.findGridCenter(END_COORDINATES);
 
-        switch(type) {
-            case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                m = new Fox(this, start, end, iv, difficulty); break;
-            case Penguin: iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                m = new Penguin(this, start, end, iv, difficulty); break;
-            case Unicorn: iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                m = new Unicorn(this, start, end, iv, difficulty); break;
-        }
-        if (m == null) return null;
-            
+        Monster m = ArenaObjectFactory.createMonster(type, this, start, destination, difficulty);
         addObject(m);
         System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
 

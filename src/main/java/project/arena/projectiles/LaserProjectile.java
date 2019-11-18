@@ -6,34 +6,21 @@ import javax.persistence.Entity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import project.Geometry;
-import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
+import project.arena.towers.LaserTower;
 
 @Entity
 public class LaserProjectile extends Projectile {
 
     /**
-     * Constructor for the Projectile class.
-     * @param arena The arena the projectile is attached to.
-     * @param coordinates The coordinates of the pixel where the projectile is initially located.
-     * @param target The monster that the projectile will pursue.
-     * @param attackPower The attack power of the projectile.
+     * @see Projectile#Projectile(Arena, Tower, Monster, short, short, ImageView)
      */
-    public LaserProjectile(Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, int attackPower) {
-        super(arena,coordinates,target,Integer.MAX_VALUE,attackPower);//since laser attack is immediate so no need speed.
-    }
-
-    @Override
-    protected void setupImage() {
-        this.imageView = new ImageView(new Image("/laserProjectile.png", UIController.GRID_WIDTH / 4,
-                UIController.GRID_HEIGHT / 4, true, true));
-
-        this.coordinates.bindByImage(this.imageView);
+    public LaserProjectile(@NonNull Arena arena, @NonNull LaserTower tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
+        super(arena, tower, target, deltaX, deltaY, imageView);
     }
 
     /**

@@ -6,9 +6,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.arena.Arena;
+import project.arena.ArenaObjectFactory;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
-import project.arena.projectiles.BasicProjectile;
 import project.arena.projectiles.Projectile;
 
 /**
@@ -18,6 +18,14 @@ import project.arena.projectiles.Projectile;
 public class BasicTower extends Tower {
 
     /**
+     * Finds the initial building cost of the tower.
+     * @return The initial building cost of the tower.
+     */
+    public static int findInitialBuildingCost() {
+        return 10;
+    }
+
+    /**
      * Constructor of basic tower.
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinate of basic tower.
@@ -25,7 +33,7 @@ public class BasicTower extends Tower {
     public BasicTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 10;
-        this.buildingCost = 10;
+        this.buildingCost = findInitialBuildingCost();
         this.maxShootingRange = 65;
         this.projectileSpeed = 5;
         this.upgradeCost = 10;
@@ -74,12 +82,11 @@ public class BasicTower extends Tower {
     @Override
     public Projectile generateProjectile(){
         if(!isReload()) {
-//            PriorityQueue<Monster> monsters = arena.getMonsters();
             for (Monster m : arena.getMonsters()) {
                 if (isValidTarget(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new BasicProjectile(arena, coordinates, m, projectileSpeed, attackPower);
+                    return ArenaObjectFactory.createProjectile(arena, this, m, (short) 0, (short) 0);
                 }
             }
         }
