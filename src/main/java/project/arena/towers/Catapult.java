@@ -45,7 +45,7 @@ public class Catapult extends Tower {
         this.maxShootingRange = 150;
         this.reload = 20;
         this.counter = 0;
-        this.attackSpeed = 50;
+        this.projectileSpeed = 50;
         this.upgradeCost = 20;
     }
 
@@ -63,7 +63,7 @@ public class Catapult extends Tower {
         this.maxShootingRange = 150;
         this.reload = 20;
         this.counter = 0;
-        this.attackSpeed = 50;
+        this.projectileSpeed = 50;
         this.upgradeCost = 20;
     }
 
@@ -125,7 +125,7 @@ public class Catapult extends Tower {
 
                 short deltaX = (short) (targetCoordinates.getX() - targetMonster.getX());
                 short deltaY = (short) (targetCoordinates.getY() - targetMonster.getY());
-                return new CatapultProjectile(arena, coordinates, targetMonster, deltaX, deltaY, attackSpeed, attackPower, damageRange);
+                return new CatapultProjectile(arena, coordinates, targetMonster, deltaX, deltaY, projectileSpeed, attackPower, damageRange);
             }
         }
         return null;

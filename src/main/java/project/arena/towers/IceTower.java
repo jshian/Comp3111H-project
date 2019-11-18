@@ -38,7 +38,7 @@ public class IceTower extends Tower {
         this.buildingCost = 15;
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
-        this.attackSpeed = 10;
+        this.projectileSpeed = 10;
         this.upgradeCost = 10;
     }
 
@@ -54,7 +54,7 @@ public class IceTower extends Tower {
         this.buildingCost = 15;
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
-        this.attackSpeed = 10;
+        this.projectileSpeed = 10;
         this.upgradeCost = 10;
     }
 
@@ -91,7 +91,7 @@ public class IceTower extends Tower {
                 if (isValidTarget(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new IceProjectile(arena, coordinates, m, attackSpeed, slowDownTime);
+                    return new IceProjectile(arena, coordinates, m, projectileSpeed, slowDownTime);
                 }
             }
         }

@@ -78,9 +78,9 @@ public abstract class Tower implements ExistsInArena {
     protected short minShootingRange = 0;
 
     /**
-     * The attack speed of tower for how many px per frame
+     * The speed of projectiles shot by the tower for how many px per frame
      */
-    protected int attackSpeed = 5;
+    protected int projectileSpeed = 5;
 
     /**
      * The reload time for tower after it attack monsters.
@@ -138,7 +138,7 @@ public abstract class Tower implements ExistsInArena {
         this.buildingCost = other.buildingCost;
         this.maxShootingRange = other.maxShootingRange;
         this.minShootingRange = other.minShootingRange;
-        this.attackSpeed = other.attackSpeed;
+        this.projectileSpeed = other.projectileSpeed;
         this.reload = other.reload;
         this.counter = other.counter;
         this.upgradeCost = other.upgradeCost;
@@ -267,7 +267,7 @@ public abstract class Tower implements ExistsInArena {
      * Accesses the attack speed of the tower.
      * @return The attack speed of the tower.
      */
-    public final int getAttackSpeed() { return attackSpeed; }
+    public final int getAttackSpeed() { return projectileSpeed; }
 
     /**
      * Accesses the reload time of the tower.

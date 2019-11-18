@@ -27,7 +27,7 @@ public class BasicTower extends Tower {
         this.attackPower = 10;
         this.buildingCost = 10;
         this.maxShootingRange = 65;
-        this.attackSpeed = 5;
+        this.projectileSpeed = 5;
         this.upgradeCost = 10;
     }
 
@@ -42,7 +42,7 @@ public class BasicTower extends Tower {
         this.attackPower = 10;
         this.buildingCost = 10;
         this.maxShootingRange = 65;
-        this.attackSpeed = 5;
+        this.projectileSpeed = 5;
         this.upgradeCost = 10;
     }
 
@@ -79,7 +79,7 @@ public class BasicTower extends Tower {
                 if (isValidTarget(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new BasicProjectile(arena, coordinates, m, attackSpeed, attackPower);
+                    return new BasicProjectile(arena, coordinates, m, projectileSpeed, attackPower);
                 }
             }
         }
