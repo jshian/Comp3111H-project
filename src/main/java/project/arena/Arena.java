@@ -161,7 +161,7 @@ public final class Arena {
      * Adds an object to the arena.
      * @param obj The object to add.
      */
-    public void addObject(@NonNull ExistsInArena obj) {
+    public void addObject(@NonNull ArenaObject obj) {
         paneArena.getChildren().add(obj.getImageView());
         arenaObjectStorage.processAddObject(obj);
 
@@ -174,7 +174,7 @@ public final class Arena {
      * Removes an object from the arena.
      * @param obj The object to remove.
      */
-    public void removeObject(@NonNull ExistsInArena obj) {
+    public void removeObject(@NonNull ArenaObject obj) {
         paneArena.getChildren().remove(obj.getImageView());
         arenaObjectStorage.processRemoveObject(obj);
 
@@ -193,7 +193,7 @@ public final class Arena {
      * @param newCoordinates The coordinates of the new location.
      * @throws IllegalArgumentException The object type is not recognized.
      */
-    private void moveObject(@NonNull ExistsInArena obj, @NonNull Coordinates newCoordinates)
+    private void moveObject(@NonNull ArenaObject obj, @NonNull Coordinates newCoordinates)
     {
         arenaObjectStorage.processMoveObject(obj, newCoordinates);
     }
@@ -203,7 +203,7 @@ public final class Arena {
      * @param obj The object to update.
      * @return the object that has been marked as pending { add, removal }.
      */
-    private ExistsInArena[] objectNextFrame(@NonNull ExistsInArena obj) {
+    private ArenaObject[] objectNextFrame(@NonNull ArenaObject obj) {
         return arenaObjectStorage.processObjectNextFrame(obj);
     }
 
@@ -378,7 +378,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<ExistsInArena> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsAtPixel(coordinates, filter);
     }
@@ -391,7 +391,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monster}s are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
-    public LinkedList<ExistsInArena> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInRange(coordinates, range, filter);
     }
@@ -403,7 +403,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
-    public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInGrid(coordinates, filter);
     }
@@ -678,12 +678,12 @@ public final class Arena {
      * process next frame for all objects in the arena.
      */
     private void nextFrameForAllObjects() {
-        ArrayList<ExistsInArena> objectsToBeAdded = new ArrayList<>();
-        ArrayList<ExistsInArena> objectsToBeRemoved = new ArrayList<>();
+        ArrayList<ArenaObject> objectsToBeAdded = new ArrayList<>();
+        ArrayList<ArenaObject> objectsToBeRemoved = new ArrayList<>();
 
         // update projectile
         for (Projectile p : getProjectiles()) {
-            ExistsInArena toRemove = objectNextFrame(p)[1];
+            ArenaObject toRemove = objectNextFrame(p)[1];
             if (toRemove != null) {
                 objectsToBeRemoved.add(toRemove);
             }
@@ -691,7 +691,7 @@ public final class Arena {
 
         // towers attack monsters
         for (Tower t : getTowers()) {
-            ExistsInArena toAdd = objectNextFrame(t)[0];
+            ArenaObject toAdd = objectNextFrame(t)[0];
             if (toAdd != null) {
                 objectsToBeAdded.add(toAdd);
             }
@@ -699,14 +699,14 @@ public final class Arena {
 
         // update monsters
         for (Monster m : getMonsters()) {
-            ExistsInArena toRemove = objectNextFrame(m)[1];
+            ArenaObject toRemove = objectNextFrame(m)[1];
             if (toRemove != null) {
                 objectsToBeRemoved.add(toRemove);
             }
         }
 
         // remove objects
-        for (ExistsInArena e : objectsToBeRemoved) {
+        for (ArenaObject e : objectsToBeRemoved) {
             if (e instanceof Projectile) {
                 removeObject(e);
             } else if (e instanceof Monster) { // turn dead monster to explosion
@@ -723,7 +723,7 @@ public final class Arena {
         }
 
         // add objects
-        for (ExistsInArena e : objectsToBeAdded) {
+        for (ArenaObject e : objectsToBeAdded) {
             if (e instanceof Projectile) {
                 addObject(e);
             }
@@ -763,7 +763,7 @@ public final class Arena {
      * @param source The origin of the ray.
      * @param target The target of the ray.
      */
-    public void drawRay(@NonNull ExistsInArena source, @NonNull ExistsInArena target) {
+    public void drawRay(@NonNull ArenaObject source, @NonNull ArenaObject target) {
         drawRay(new Coordinates(source.getX(), source.getY()), new Coordinates(target.getX(), target.getY()));
     }
 

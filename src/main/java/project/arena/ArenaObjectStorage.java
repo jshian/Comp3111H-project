@@ -190,9 +190,9 @@ final class ArenaObjectStorage {
     /**
      * @see Arena#findObjectsAtPixel(Coordinates, EnumSet)
      */
-    LinkedList<ExistsInArena> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    LinkedList<ArenaObject> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<ExistsInArena> result = new LinkedList<>();
+        LinkedList<ArenaObject> result = new LinkedList<>();
 
         Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
 
@@ -226,9 +226,9 @@ final class ArenaObjectStorage {
     /**
      * @see Arena#findObjectsInRange(Coordinates, double, EnumSet)
      */
-    LinkedList<ExistsInArena> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
+    LinkedList<ArenaObject> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<ExistsInArena> result = new LinkedList<>();
+        LinkedList<ArenaObject> result = new LinkedList<>();
 
         LinkedList<Grid> grids = getPotentialGridsInRange(coordinates, range);
 
@@ -264,9 +264,9 @@ final class ArenaObjectStorage {
     /**
      * @see Arena#findObjectsInGrid(Coordinates, EnumSet)
      */
-    LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    LinkedList<ArenaObject> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
-        LinkedList<ExistsInArena> result = new LinkedList<>();
+        LinkedList<ArenaObject> result = new LinkedList<>();
 
         Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
 
@@ -290,7 +290,7 @@ final class ArenaObjectStorage {
      * @param obj The object to add.
      * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void processAddObject(@NonNull ExistsInArena obj) throws IllegalArgumentException {
+    void processAddObject(@NonNull ArenaObject obj) throws IllegalArgumentException {
         if (obj instanceof Tower) {
             if (!towers.contains(obj)) {
                 towers.add((Tower)obj);
@@ -316,7 +316,7 @@ final class ArenaObjectStorage {
      * @param obj The object to remove.
      * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void processRemoveObject(@NonNull ExistsInArena obj) throws IllegalArgumentException {
+    void processRemoveObject(@NonNull ArenaObject obj) throws IllegalArgumentException {
         if (obj instanceof Tower) {
             towers.remove((Tower)obj);
         } else if (obj instanceof Projectile) {
@@ -336,7 +336,7 @@ final class ArenaObjectStorage {
      * @param obj The object to move.
      * @param newCoordinates The coordinates of the new location.
      */
-    void processMoveObject(@NonNull ExistsInArena obj, @NonNull Coordinates newCoordinates)
+    void processMoveObject(@NonNull ArenaObject obj, @NonNull Coordinates newCoordinates)
     {
         Coordinates c = new Coordinates(obj.getX(), obj.getY());
         getGrid(c).removeObject(obj);
@@ -351,7 +351,7 @@ final class ArenaObjectStorage {
      * @param obj The object to update.
      * @return The objects that has been marked as pending { add, remove }.
      */
-    ExistsInArena[] processObjectNextFrame(@NonNull ExistsInArena obj) {
+    ArenaObject[] processObjectNextFrame(@NonNull ArenaObject obj) {
         Coordinates originalCoordinates = new Coordinates(obj.getX(), obj.getY());
         obj.nextFrame();
         Coordinates newCoordinates = new Coordinates(obj.getX(), obj.getY());
@@ -361,7 +361,7 @@ final class ArenaObjectStorage {
             getGrid(newCoordinates).addObject(obj);
         }
         
-        ExistsInArena[] result = new ExistsInArena[2];
+        ArenaObject[] result = new ArenaObject[2];
 
         if (obj instanceof Tower) {
             result[0] = ((Tower)obj).generateProjectile();

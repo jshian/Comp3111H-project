@@ -27,7 +27,7 @@ import javafx.scene.image.ImageView;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.Grid;
-import project.arena.MovesInArena;
+import project.arena.ArenaMovingObject;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
@@ -36,7 +36,7 @@ import project.arena.MovesInArena;
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Monster implements MovesInArena, Comparable<Monster> {
+public abstract class Monster implements ArenaMovingObject, Comparable<Monster> {
     /**
      * ID for storage using Java Persistence API
      */

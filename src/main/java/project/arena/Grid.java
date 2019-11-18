@@ -113,7 +113,7 @@ public final class Grid {
      * @param obj The object to add.
      * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void addObject(@NonNull ExistsInArena obj) throws IllegalArgumentException {
+    void addObject(@NonNull ArenaObject obj) throws IllegalArgumentException {
         if (obj instanceof Tower) {
             if (!towers.contains(obj)) {
                 towers.add((Tower)obj);
@@ -136,7 +136,7 @@ public final class Grid {
      * @param obj The object to be removed.
      * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void removeObject(@NonNull ExistsInArena obj) throws IllegalArgumentException {
+    void removeObject(@NonNull ArenaObject obj) throws IllegalArgumentException {
         if (obj instanceof Tower) {
             towers.remove((Tower)obj);
         } else if (obj instanceof Projectile) {

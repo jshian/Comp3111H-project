@@ -5,9 +5,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.ImageView;
 
 /**
- * Interface for objects that exist inside the arena.
+ * Interface for objects that exist inside the {@link Arena}.
  */
-public interface ExistsInArena {
+public interface ArenaObject {
     /**
      * Access the ImageView associated with the object.
      * @return The ImageView associated with the object.
