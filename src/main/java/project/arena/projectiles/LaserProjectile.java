@@ -25,7 +25,7 @@ public class LaserProjectile extends Projectile {
      * @param attackPower The attack power of the projectile.
      */
     public LaserProjectile(Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, int attackPower) {
-        super(arena,coordinates,target,0,attackPower);//since laser attack is immediate so no need speed.
+        super(arena,coordinates,target,Integer.MAX_VALUE,attackPower);//since laser attack is immediate so no need speed.
     }
 
     @Override
