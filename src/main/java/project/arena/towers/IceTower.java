@@ -38,7 +38,7 @@ public class IceTower extends Tower {
         this.buildingCost = 15;
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
-        this.attackSpeed = 5;
+        this.attackSpeed = 10;
         this.upgradeCost = 10;
     }
 
@@ -54,7 +54,7 @@ public class IceTower extends Tower {
         this.buildingCost = 15;
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
-        this.attackSpeed = 5;
+        this.attackSpeed = 10;
         this.upgradeCost = 10;
     }
 
