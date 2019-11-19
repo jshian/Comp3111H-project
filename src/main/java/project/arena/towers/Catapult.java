@@ -13,7 +13,6 @@ import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.ArenaObject;
-import project.arena.ArenaObjectFactory;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;
 
@@ -134,7 +133,7 @@ public class Catapult extends Tower {
 
                 short deltaX = (short) (targetCoordinates.getX() - targetMonster.getX());
                 short deltaY = (short) (targetCoordinates.getY() - targetMonster.getY());
-                return ArenaObjectFactory.createProjectile(arena, this, targetMonster, deltaX, deltaY);
+                return arena.createProjectile(this, targetMonster, deltaX, deltaY);
             }
         }
         return null;

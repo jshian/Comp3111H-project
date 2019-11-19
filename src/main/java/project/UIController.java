@@ -329,7 +329,6 @@ public class UIController {
 
             	target.setOnDragDropped(e -> {
             	    if (mode != GameMode.simulate && mode != GameMode.end) {
-                        Image img = null;
                         TowerType type = null;
                         Object source = e.getGestureSource();
                         if (source.equals(labelBasicTower)) {
@@ -346,9 +345,8 @@ public class UIController {
                             // not enough resources
                             showAlert("Not enough resources", "Do not have enough resources to build " + type + "!");
 
-                        } else if (img != null && arena.canBuildTower(c, type)) {
-                            ImageView iv = new ImageView(img);
-                            Tower t = arena.buildTower(c, iv, type);
+                        } else if (arena.canBuildTower(c, type)) {
+                            Tower t = arena.buildTower(c, type);
 
                             if (t != null) {
                                 setTowerEvent(t);

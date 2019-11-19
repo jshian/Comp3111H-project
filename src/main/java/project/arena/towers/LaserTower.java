@@ -7,7 +7,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.ImageView;
 import project.Player;
 import project.arena.Arena;
-import project.arena.ArenaObjectFactory;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;
@@ -115,7 +114,7 @@ public class LaserTower extends Tower{
                     if (!consumeResource(arena.getPlayer())) return null;
                     hasAttack = true;
                     this.counter = this.reload;
-                    return ArenaObjectFactory.createProjectile(arena, this, m, (short) 0, (short) 0);
+                    return arena.createProjectile(this, m, (short) 0, (short) 0);
                 }
             }
         }
