@@ -384,7 +384,7 @@ public class UIController {
 
         iv.setOnMouseEntered(e -> {
             drawTowerCircle(center, t);
-            tp = new Tooltip(t.toString());
+            tp = new Tooltip(t.getInformation());
             tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7);
         });
         iv.setOnMouseMoved(e -> tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7));
@@ -443,6 +443,7 @@ public class UIController {
 
         l.setOnMouseEntered(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
         l.setOnMouseMoved(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
+        l.setOnMouseExited(e -> tp.hide());
         l.setOnMouseExited(e -> tp.hide());
 
         l.setOnDragDetected(e -> {
