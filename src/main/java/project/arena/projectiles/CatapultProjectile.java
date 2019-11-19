@@ -4,10 +4,11 @@ import javax.persistence.Entity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.ImageView;
 import project.Geometry;
 import project.arena.Arena;
-import project.arena.Coordinates;
 import project.arena.monsters.Monster;
+import project.arena.towers.Catapult;
 
 @Entity
 public class CatapultProjectile extends Projectile {
@@ -18,20 +19,11 @@ public class CatapultProjectile extends Projectile {
     private short damageRange;
 
     /**
-     * Constructor for the Projectile class.
-     * @param arena The arena the projectile is attached to.
-     * @param coordinates The coordinates of the pixel where the catapult projectile is initially located.
-     * @param target The monster that the projectile will pursue.
-     * @param deltaX The x-offset from the targeted monster where the projectile will land.
-     * @param deltaY The y-offset from the targeted monster where the projectile will land.
-     * @param speed The speed of the catapult projectile.
-     * @param attackPower The attack power of the catapult projectile.
+     * Projectile#Projectile(Arena, Tower, Monster, short, short, ImageView)
      */
-    public CatapultProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, short deltaX, short deltaY, double speed, int attackPower, short damageRange){
-        super(arena,coordinates,target,speed,attackPower);
-        this.deltaX = deltaX;
-        this.deltaY = deltaY;
-        this.damageRange=damageRange;
+    public CatapultProjectile(@NonNull Arena arena, @NonNull Catapult tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
+        super(arena, tower, target, deltaX, deltaY, imageView);
+        this.damageRange = tower.getDamageRange();
     }
 
     /**

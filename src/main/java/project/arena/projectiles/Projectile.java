@@ -11,21 +11,21 @@ import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import project.Geometry;
 import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.MovesInArena;
+import project.arena.ArenaMovingObject;
 import project.arena.monsters.Monster;
+import project.arena.towers.Tower;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Projectile implements MovesInArena {
+public abstract class Projectile implements ArenaMovingObject {
     /**
      * ID for storage using Java Persistence API
      */
@@ -37,7 +37,7 @@ public abstract class Projectile implements MovesInArena {
      * The ImageView that displays the projectile.
      */
     @Transient
-    private ImageView imageView;
+    protected ImageView imageView;
 
     /**
      * The Arena that this projectile is attached to.
@@ -104,20 +104,22 @@ public abstract class Projectile implements MovesInArena {
     /**
      * Constructor for the Projectile class.
      * @param arena The arena the projectile is attached to.
-     * @param coordinates The coordinates of the pixel where the projectile is initially located.
+     * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
-     * @param speed The speed of the projectile.
-     * @param attackPower The attack power of the projectile.
+     * @param deltaX The x-offset from the targeted monster where the projectile will land.
+     * @param deltaY The y-offset from the targeted monster where the projectile will land.
+     * @param imageView The ImageView that displays the projectile.
      */
-    public Projectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, double speed, int attackPower) {
+    public Projectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
         this.arena = arena;
-        this.coordinates = new Coordinates(coordinates);
-        this.origin = new Coordinates(coordinates);
+        this.coordinates = new Coordinates(tower.getX(), tower.getY());
+        this.origin = new Coordinates(tower.getX(), tower.getY());
+        this.imageView = imageView;
         this.target = target;
-        this.speed = speed;
-        this.attackPower = attackPower;
-        this.imageView = new ImageView(new Image("/projectile.png", UIController.GRID_WIDTH/4,
-                UIController.GRID_HEIGHT/4, true, true));
+        this.deltaX = deltaX;
+        this.deltaY = deltaY;
+        this.speed = tower.getProjectileSpeed();
+        this.attackPower = tower.getAttackPower();
 
         this.coordinates.bindByImage(this.imageView);
     }

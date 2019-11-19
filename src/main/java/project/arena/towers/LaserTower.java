@@ -9,9 +9,9 @@ import javafx.scene.image.ImageView;
 import project.Player;
 import project.UIController;
 import project.arena.Arena;
+import project.arena.ArenaObjectFactory;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
-import project.arena.projectiles.LaserProjectile;
 import project.arena.projectiles.Projectile;
 
 /**
@@ -19,6 +19,14 @@ import project.arena.projectiles.Projectile;
  */
 @Entity
 public class LaserTower extends Tower{
+
+    /**
+     * Finds the initial building cost of the tower.
+     * @return The initial building cost of the tower.
+     */
+    public static int findInitialBuildingCost() {
+        return 20;
+    }
 
     /**
      * The consumption of resources by laser tower each time.
@@ -34,8 +42,9 @@ public class LaserTower extends Tower{
     public LaserTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 30;
-        this.buildingCost = 20;
+        this.buildingCost = findInitialBuildingCost();
         this.maxShootingRange = 100;
+        this.projectileSpeed = Integer.MAX_VALUE;
         this.consume = 2;
         this.upgradeCost = 10;
         this.imageView = new ImageView(new Image("/laserTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
@@ -54,6 +63,7 @@ public class LaserTower extends Tower{
         this.attackPower = 30;
         this.buildingCost = 20;
         this.maxShootingRange = 100;
+        this.projectileSpeed = Integer.MAX_VALUE;
         this.consume = 2;
         this.upgradeCost = 10;
     }
@@ -109,7 +119,7 @@ public class LaserTower extends Tower{
                     if (!consumeResource(arena.getPlayer())) return null;
                     hasAttack = true;
                     this.counter = this.reload;
-                    return new LaserProjectile(arena, coordinates, m, attackPower);
+                    return ArenaObjectFactory.createProjectile(arena, this, m, (short) 0, (short) 0);
                 }
             }
         }

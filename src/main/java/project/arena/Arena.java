@@ -28,10 +28,9 @@ import javafx.scene.shape.Line;
 import project.Geometry;
 import project.Player;
 import project.UIController;
-import project.arena.monsters.Fox;
+import project.arena.ArenaObjectFactory.MonsterType;
+import project.arena.ArenaObjectFactory.TowerType;
 import project.arena.monsters.Monster;
-import project.arena.monsters.Penguin;
-import project.arena.monsters.Unicorn;
 import project.arena.projectiles.Projectile;
 import project.arena.towers.BasicTower;
 import project.arena.towers.Catapult;
@@ -151,6 +150,12 @@ public final class Arena {
     }
 
     /**
+     * The factory to create the objects in the arena.
+     */
+    @Transient
+    private ArenaObjectFactory arenaObjectFactory;
+
+    /**
      * The objects stored in this arena.
      */
     @NotNull
@@ -161,7 +166,7 @@ public final class Arena {
      * Adds an object to the arena.
      * @param obj The object to add.
      */
-    public void addObject(@NonNull ExistsInArena obj) {
+    public void addObject(@NonNull ArenaObject obj) {
         paneArena.getChildren().add(obj.getImageView());
         arenaObjectStorage.processAddObject(obj);
 
@@ -174,7 +179,7 @@ public final class Arena {
      * Removes an object from the arena.
      * @param obj The object to remove.
      */
-    public void removeObject(@NonNull ExistsInArena obj) {
+    public void removeObject(@NonNull ArenaObject obj) {
         paneArena.getChildren().remove(obj.getImageView());
         arenaObjectStorage.processRemoveObject(obj);
 
@@ -193,7 +198,7 @@ public final class Arena {
      * @param newCoordinates The coordinates of the new location.
      * @throws IllegalArgumentException The object type is not recognized.
      */
-    private void moveObject(@NonNull ExistsInArena obj, @NonNull Coordinates newCoordinates)
+    private void moveObject(@NonNull ArenaObject obj, @NonNull Coordinates newCoordinates)
     {
         arenaObjectStorage.processMoveObject(obj, newCoordinates);
     }
@@ -203,7 +208,7 @@ public final class Arena {
      * @param obj The object to update.
      * @return the object that has been marked as pending { add, removal }.
      */
-    private ExistsInArena[] objectNextFrame(@NonNull ExistsInArena obj) {
+    private ArenaObject[] objectNextFrame(@NonNull ArenaObject obj) {
         return arenaObjectStorage.processObjectNextFrame(obj);
     }
 
@@ -229,6 +234,7 @@ public final class Arena {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
 
+        arenaObjectFactory = new ArenaObjectFactory(this);
         arenaObjectStorage = new ArenaObjectStorage(this);
         arenaScalarFields = new ArenaScalarFields(this);
 
@@ -246,6 +252,8 @@ public final class Arena {
         this.difficulty = other.difficulty;
 
         this.toRemove = copyToRemove(other.toRemove);
+
+        this.arenaObjectFactory = new ArenaObjectFactory(this);
 
         // arenaScalarFields must be set up before arenaObjectStorage because Monster ordering depends on it
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
@@ -324,52 +332,9 @@ public final class Arena {
         /**
          * {@link Monster} objects are selected.
          */
-        Monster }
-
-    /**
-     * An enum for generate monster in the Arena according to type.
-     */
-    public static enum MonsterType {
-        /**
-         * The {@link Fox}.
-         */
-        Fox,
-
-        /**
-         * The {@link Penguin}.
-         */
-        Penguin,
-
-        /**
-         * The {@link Unicorn}.
-         */
-        Unicorn
+        Monster
     }
 
-    /**
-     * An enum for building towers in the Arena according to type.
-     */
-    public static enum TowerType {
-        /**
-         * The {@link BasicTower}.
-         */
-        BasicTower,
-
-        /**
-         * The {@link Catapult}.
-         */
-        Catapult,
-
-        /**
-         * The {@link IceTower}.
-         */
-        IceTower,
-
-        /**
-         * The {@link LaserTower}.
-         */
-        LaserTower
-    }
 
     /**
      * Finds all objects that are located at a specified pixel.
@@ -378,7 +343,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<ExistsInArena> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsAtPixel(coordinates, filter);
     }
@@ -391,7 +356,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monster}s are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
-    public LinkedList<ExistsInArena> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInRange(coordinates, range, filter);
     }
@@ -403,9 +368,28 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
-    public LinkedList<ExistsInArena> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInGrid(coordinates, filter);
+    }
+
+    /**
+     * Determines the cost of building a tower.
+     * @param type The type of tower to build.
+     */
+    public int findTowerBuildingCost(@NonNull TowerType type) {
+        switch (type) {
+            case BasicTower:
+                return BasicTower.findInitialBuildingCost();
+            case IceTower:
+                return IceTower.findInitialBuildingCost();
+            case Catapult:
+                return Catapult.findInitialBuildingCost();
+            case LaserTower:
+                return LaserTower.findInitialBuildingCost();
+        }
+
+        throw new IllegalArgumentException("The tower type must be specified");
     }
 
     /**
@@ -415,15 +399,7 @@ public final class Arena {
      */
     public boolean hasResources(@NonNull TowerType type)
     {
-        int cost = 500;
-        Coordinates c = new Coordinates((short) 0, (short) 0);
-        switch(type) {
-            case BasicTower: cost = new BasicTower(this, c).getBuildingCost(); break;
-            case IceTower: cost = new IceTower(this, c).getBuildingCost(); break;
-            case Catapult: cost = new Catapult(this, c).getBuildingCost(); break;
-            case LaserTower: cost = new LaserTower(this, c).getBuildingCost(); break;
-        }
-        return player.hasResources(cost);
+        return player.hasResources(findTowerBuildingCost(type));
     }
 
     /**
@@ -508,17 +484,9 @@ public final class Arena {
      */
     public Tower buildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
     {
-        Tower t = null;
-        int cost = 0;
         Coordinates center = Grid.findGridCenter(coordinates);
-        switch(type) {
-            case BasicTower: t = new BasicTower(this, center); break;
-            case IceTower: t = new IceTower(this, center); break;
-            case Catapult: t = new Catapult(this, center); break;
-            case LaserTower: t = new LaserTower(this, center); break;
-            default: return null;
-        }
-        cost = t.getBuildingCost();
+        Tower t = arenaObjectFactory.createTower(type, this, center);
+        int cost = t.getBuildingCost();
 
         if (player.hasResources(cost)) {
             player.spendResources(cost);
@@ -572,9 +540,6 @@ public final class Arena {
      */
     public Monster generateMonster(@NonNull MonsterType type)
     {
-        Monster m = null;
-        ImageView iv = null;
-
         // Create some randomness of spawn location
         short startX = (short) (STARTING_COORDINATES.getX() + Math.random() * UIController.GRID_WIDTH / 2);
         if (startX < 0) startX = 0;
@@ -585,15 +550,9 @@ public final class Arena {
         Coordinates start = new Coordinates(startX, startY);
 
         // The end zone is always the same
-        Coordinates end = Grid.findGridCenter(END_COORDINATES);
+        Coordinates destination = Grid.findGridCenter(END_COORDINATES);
 
-        switch(type) {
-            case Fox: m = new Fox(this, start, end, difficulty); break;
-            case Penguin: m = new Penguin(this, start, end, difficulty); break;
-            case Unicorn: m = new Unicorn(this, start, end, difficulty); break;
-        }
-        if (m == null) return null;
-            
+        Monster m = arenaObjectFactory.createMonster(type, this, start, destination, difficulty);
         addObject(m);
         System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
 
@@ -674,12 +633,12 @@ public final class Arena {
      * process next frame for all objects in the arena.
      */
     private void nextFrameForAllObjects() {
-        ArrayList<ExistsInArena> objectsToBeAdded = new ArrayList<>();
-        ArrayList<ExistsInArena> objectsToBeRemoved = new ArrayList<>();
+        ArrayList<ArenaObject> objectsToBeAdded = new ArrayList<>();
+        ArrayList<ArenaObject> objectsToBeRemoved = new ArrayList<>();
 
         // update projectile
         for (Projectile p : getProjectiles()) {
-            ExistsInArena toRemove = objectNextFrame(p)[1];
+            ArenaObject toRemove = objectNextFrame(p)[1];
             if (toRemove != null) {
                 objectsToBeRemoved.add(toRemove);
             }
@@ -687,7 +646,7 @@ public final class Arena {
 
         // towers attack monsters
         for (Tower t : getTowers()) {
-            ExistsInArena toAdd = objectNextFrame(t)[0];
+            ArenaObject toAdd = objectNextFrame(t)[0];
             if (toAdd != null) {
                 objectsToBeAdded.add(toAdd);
             }
@@ -695,14 +654,14 @@ public final class Arena {
 
         // update monsters
         for (Monster m : getMonsters()) {
-            ExistsInArena toRemove = objectNextFrame(m)[1];
+            ArenaObject toRemove = objectNextFrame(m)[1];
             if (toRemove != null) {
                 objectsToBeRemoved.add(toRemove);
             }
         }
 
         // remove objects
-        for (ExistsInArena e : objectsToBeRemoved) {
+        for (ArenaObject e : objectsToBeRemoved) {
             if (e instanceof Projectile) {
                 removeObject(e);
             } else if (e instanceof Monster) { // turn dead monster to explosion
@@ -717,7 +676,7 @@ public final class Arena {
         }
 
         // add objects
-        for (ExistsInArena e : objectsToBeAdded) {
+        for (ArenaObject e : objectsToBeAdded) {
             if (e instanceof Projectile) {
                 addObject(e);
             }
@@ -757,15 +716,8 @@ public final class Arena {
      * @param source The origin of the ray.
      * @param target The target of the ray.
      */
-    public void drawRay(@NonNull ExistsInArena source, @NonNull ExistsInArena target) {
-        Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
-                                                    0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
-        
-        Line ray = new Line(source.getX(), source.getY(), edgePt.getX(), edgePt.getY());
-        ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
-        ray.setStrokeWidth(3);
-        toRemove.put(ray, LASER_DURATION);
-        paneArena.getChildren().add(ray);
+    public void drawRay(@NonNull ArenaObject source, @NonNull ArenaObject target) {
+        drawRay(new Coordinates(source.getX(), source.getY()), new Coordinates(target.getX(), target.getY()));
     }
 
     /**
@@ -794,7 +746,7 @@ public final class Arena {
         circle.setCenterX(source.getX());
         circle.setCenterY(source.getY());
         circle.setRadius(damageRange);
-        circle.setFill(Color.rgb(255, 255, 0));
+        circle.setFill(Color.rgb(128, 64, 0));
         paneArena.getChildren().add(circle);
         toRemove.put(circle,1);
     }

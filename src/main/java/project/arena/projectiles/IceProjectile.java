@@ -4,10 +4,12 @@ import javax.persistence.Entity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import javafx.scene.image.ImageView;
 import project.arena.Arena;
-import project.arena.Coordinates;
 import project.arena.monsters.Monster;
 import project.arena.monsters.StatusEffect;
+import project.arena.towers.IceTower;
+import project.arena.towers.Tower;
 
 @Entity
 public class IceProjectile extends Projectile {
@@ -17,16 +19,11 @@ public class IceProjectile extends Projectile {
     private int slowDownTime;
 
     /**
-     * Constructor for the Projectile class.
-     * @param arena The arena the projectile is attached to.
-     * @param coordinates The coordinates of the pixel where the ice projectile is initially located.
-     * @param target The monster that the projectile will pursue.
-     * @param speed The speed of the ice projectile.
-     * @param slowDown The cold down time of the ice projectile.
+     * @see Projectile#Projectile(Arena, Tower, Monster, short, short, ImageView)
      */
-    public IceProjectile(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull Monster target, double speed, int slowDown){
-        super(arena,coordinates,target,speed,0);
-        this.slowDownTime=slowDown;
+    public IceProjectile(@NonNull Arena arena, @NonNull IceTower tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
+        super(arena, tower, target, deltaX, deltaY, imageView);
+        this.slowDownTime = tower.getSlowDownTime();
     }
 
     /**

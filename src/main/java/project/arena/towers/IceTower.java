@@ -8,9 +8,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.ImageView;
 import project.UIController;
 import project.arena.Arena;
+import project.arena.ArenaObjectFactory;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
-import project.arena.projectiles.IceProjectile;
 import project.arena.projectiles.Projectile;
 
 /**
@@ -18,6 +18,14 @@ import project.arena.projectiles.Projectile;
  */
 @Entity
 public class IceTower extends Tower {
+
+    /**
+     * Finds the initial building cost of the tower.
+     * @return The initial building cost of the tower.
+     */
+    public static int findInitialBuildingCost() {
+        return 15;
+    }
 
     /**
      * The maximum slow down duration of the tower.
@@ -37,10 +45,10 @@ public class IceTower extends Tower {
     public IceTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 0;
-        this.buildingCost = 15;
+        this.buildingCost = findInitialBuildingCost();
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
-        this.attackSpeed = 5;
+        this.projectileSpeed = 10;
         this.upgradeCost = 10;
         this.imageView = new ImageView(new Image("/iceTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
         this.coordinates.bindByImage(this.imageView);
@@ -58,7 +66,7 @@ public class IceTower extends Tower {
         this.buildingCost = 15;
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
-        this.attackSpeed = 5;
+        this.projectileSpeed = 10;
         this.upgradeCost = 10;
     }
 
@@ -95,12 +103,18 @@ public class IceTower extends Tower {
                 if (isValidTarget(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return new IceProjectile(arena, coordinates, m, attackSpeed, slowDownTime);
+                    return ArenaObjectFactory.createProjectile(arena, this, m, (short) 0, (short) 0);
                 }
             }
         }
         return null;
     }
+
+    /**
+     * Accesses the slow down time of tower.
+     * @return the slow down time of tower.
+     */
+    public final int getSlowDownTime() { return slowDownTime; }
 
     /**
      * Accesses the information of tower.
