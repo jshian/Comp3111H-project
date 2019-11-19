@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -279,21 +280,19 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * show monster hp when mouse is hover over the monster.
      */
     private void hoverMonsterEvent(Arena arena) {
-        hpLabel.textProperty().bind(Bindings.format("hp: %.2f", health));
-        hpLabel.setAlignment(Pos.CENTER);
-        hpLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255,0.7),
-                CornerRadii.EMPTY, Insets.EMPTY)));
-        //seems like layout can only bindBidirectional, error otherwise.
-        hpLabel.layoutXProperty().bindBidirectional(imageView.xProperty());
-        hpLabel.layoutYProperty().bindBidirectional(imageView.yProperty());
+        Tooltip tp = new Tooltip();
+        tp.textProperty().bind(Bindings.format("hp: %.2f", health));
 
-        this.imageView.setOnMouseEntered(e -> {
-            arena.getPane().getChildren().add(hpLabel);
+        imageView.setOnMouseEntered(e -> {
+            tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7);
         });
 
-        this.imageView.setOnMouseExited(e -> {
-            if (arena.getPane().getChildren().contains(hpLabel))
-                arena.getPane().getChildren().remove(hpLabel);
+        imageView.setOnMouseMoved(e -> {
+            tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7);
+        });
+
+        imageView.setOnMouseExited(e -> {
+            tp.hide();
         });
     }
 

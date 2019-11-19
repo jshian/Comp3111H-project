@@ -115,7 +115,7 @@ public class UIController {
     /**
      * the timeline for running the game.
      */
-    private Timeline timeline;
+    private Timeline timeline = new Timeline();
 
     /**
      * the grids on arena.
@@ -157,6 +157,17 @@ public class UIController {
     @FXML
     private void save() {
         // TODO: save the game
+    }
+
+    /**
+     * Load the game
+     */
+    private void load() {
+        // TODO: load the game
+        // TODO: load arena instead of creating a new one.
+        Arena arena = new Arena(remainingResources, paneArena);
+
+
     }
 
     /**
@@ -380,6 +391,7 @@ public class UIController {
             tp = new Tooltip(t.getInformation());
             tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7);
         });
+        iv.setOnMouseMoved(e -> tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7));
         iv.setOnMouseExited(e -> {
             paneArena.getChildren().remove(towerCircle);
             tp.hide();
@@ -437,6 +449,7 @@ public class UIController {
         tp.setHideDelay(Duration.ZERO);
 
         l.setOnMouseEntered(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
+        l.setOnMouseMoved(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
         l.setOnMouseExited(e -> tp.hide());
 
         l.setOnDragDetected(e -> {
