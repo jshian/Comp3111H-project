@@ -165,11 +165,40 @@ public abstract class Tower implements ArenaObject {
     public abstract Tower deepCopy(@NonNull Arena arena);
 
     // Interface implementation
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final ImageView getImageView() { return imageView; }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final short getX() { return coordinates.getX(); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final short getY() { return coordinates.getY(); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setLocation(short x, short y) { this.coordinates.update(x, y); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void nextFrame() {
         if (hasAttack) {
             if (this.counter == 0) {

@@ -160,45 +160,46 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
     public abstract Monster deepCopy(@NonNull Arena arena);
     
     // Interface implementation
-
     /**
-     * Accesses the ImageView of the monster.
-     * @return the ImageView of the monster.
+     * {@inheritDoc}
      */
+    @Override
     public final ImageView getImageView() { return imageView; }
 
     /**
-     * Accesses the x-coordinate of the monster.
-     * @return the x-coordinate of the monster.
+     * {@inheritDoc}
      */
+    @Override
     public final short getX() { return coordinates.getX(); }
 
     /**
-     * Accesses the y-coordinate of the monster.
-     * @return the y-coordinate of the monster.
+     * {@inheritDoc}
      */
+    @Override
     public final short getY() { return coordinates.getY(); }
 
     /**
-     * Set the coordinates of the monster.
-     * @param x the new x-coordinate of the monster.
-     * @param y the new y-coordinate of the monster.
+     * {@inheritDoc}
      */
+    @Override
     public final void setLocation(short x, short y) { this.coordinates.update(x, y); }
 
     /**
-     * Set the coordinates of the monster.
-     * @param coordinates the new coordinates of the monster.
+     * {@inheritDoc}
      */
+    @Override
     public final void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
 
     /**
-     * Access the speed of the monster.
-     * @return speed of the monster.
+     * {@inheritDoc}
      */
+    @Override
     public final double getSpeed() { return speed; }
 
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void nextFrame() {
         // Move monster
         prevCoordinates.clear();
@@ -225,6 +226,11 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
         else speed = maxSpeed;
         statusEffects.removeIf(x -> x.getDuration() <= 0);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
