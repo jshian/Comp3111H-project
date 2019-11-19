@@ -120,7 +120,7 @@ public class IceTower extends Tower {
      * @return the information of tower.
      */
     @Override
-    public String getInformation() {
+    public String toString() {
         return String.format("attack power: %d\nupgrade cost: %d\nshooting range: [%d , %d]\n"
                 + "slow down time: %d", this.attackPower, this.upgradeCost, this.minShootingRange,
                 this.maxShootingRange,this.slowDownTime);

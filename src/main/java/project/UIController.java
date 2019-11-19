@@ -384,7 +384,7 @@ public class UIController {
 
         iv.setOnMouseEntered(e -> {
             drawTowerCircle(center, t);
-            tp = new Tooltip(t.getInformation());
+            tp = new Tooltip(t.toString());
             tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7);
         });
         iv.setOnMouseMoved(e -> tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7));

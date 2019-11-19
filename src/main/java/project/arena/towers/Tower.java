@@ -302,6 +302,7 @@ public abstract class Tower implements ArenaObject {
     /**Accesses the information of tower.
      * @return the information of tower.
      */
-    public abstract String getInformation();
+    @Override
+    public abstract String toString();
     
 }

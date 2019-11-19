@@ -203,7 +203,7 @@ public class Catapult extends Tower {
      * @return the information of tower.
      */
     @Override
-    public String getInformation() {
+    public String toString() {
         return String.format("attack power: %d\nupgrade cost: %d\nshooting range: [%d ,  %d]\n"
                 + "reload time: %d\ndamage range: %d", this.attackPower,
                 this.upgradeCost, this.minShootingRange, this.maxShootingRange, this.reload, this.damageRange);
