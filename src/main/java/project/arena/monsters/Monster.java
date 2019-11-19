@@ -303,16 +303,8 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
         Tooltip tp = new Tooltip();
         tp.textProperty().bind(Bindings.format("hp: %.2f", health));
 
-        imageView.setOnMouseEntered(e -> {
-            tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7);
-        });
-
-        imageView.setOnMouseMoved(e -> {
-            tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7);
-        });
-
-        imageView.setOnMouseExited(e -> {
-            tp.hide();
-        });
+        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseExited(e -> tp.hide());
     }
 }
