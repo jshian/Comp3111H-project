@@ -42,7 +42,7 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
      * The ImageView that displays the monster.
      */
     @Transient
-    protected ImageView imageView = null;
+    protected ImageView imageView;
 
     /**
      * The Arena that this monster is attached to.
@@ -107,21 +107,6 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
      */
     @OneToMany
     protected LinkedList<StatusEffect> statusEffects = new LinkedList<>();
-
-    /**
-     * Constructor for the Monster class.
-     * @param arena The arena the monster is attached to.
-     * @param start The starting location of the monster.
-     * @param destination The destination of the monster. It will try to move there.
-     * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
-     */
-    public Monster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
-        if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
-
-        this.arena = arena;
-        this.coordinates = new Coordinates(start);
-        this.destination = new Coordinates(destination);
-    }
 
     /**
      * Constructor for the Monster class.
