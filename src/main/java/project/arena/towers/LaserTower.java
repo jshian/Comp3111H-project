@@ -115,7 +115,7 @@ public class LaserTower extends Tower{
                     if (!consumeResource(arena.getPlayer())) return null;
                     hasAttack = true;
                     this.counter = this.reload;
-                    return ArenaObjectFactory.createProjectile(arena, this, m, (short) 0, (short) 0);
+                    return arena.createProjectile(this, m, (short) 0, (short) 0);
                 }
             }
         }

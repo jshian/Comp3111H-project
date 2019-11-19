@@ -86,7 +86,7 @@ public class BasicTower extends Tower {
                 if (isValidTarget(m)) {
                     this.hasAttack = true;
                     this.counter = this.reload;
-                    return ArenaObjectFactory.createProjectile(arena, this, m, (short) 0, (short) 0);
+                    return arena.createProjectile(this, m, (short) 0, (short) 0);
                 }
             }
         }

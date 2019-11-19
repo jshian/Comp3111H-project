@@ -134,7 +134,7 @@ public class Catapult extends Tower {
 
                 short deltaX = (short) (targetCoordinates.getX() - targetMonster.getX());
                 short deltaY = (short) (targetCoordinates.getY() - targetMonster.getY());
-                return ArenaObjectFactory.createProjectile(arena, this, targetMonster, deltaX, deltaY);
+                return arena.createProjectile(this, targetMonster, deltaX, deltaY);
             }
         }
         return null;

@@ -516,6 +516,18 @@ public final class Arena {
     }
 
     /**
+     * Creates a Projectile object in the arena.
+     * @param tower The tower from which this projectile originates.
+     * @param target The monster that the projectile will pursue.
+     * @param deltaX The x-offset from the targeted monster where the projectile will land.
+     * @param deltaY The y-offset from the targeted monster where the projectile will land.
+     * @return The newly-created Projectile object.
+     */
+    public Projectile createProjectile(@NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
+        return arenaObjectFactory.createProjectile(this, tower, target, deltaX, deltaY);
+    }
+
+    /**
      * Spawns a wave of Monsters at the starting position of the arena.
      */
     public void spawnWave()

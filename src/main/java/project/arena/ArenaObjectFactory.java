@@ -90,7 +90,7 @@ public final class ArenaObjectFactory {
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      * @return The newly-created Projectile object.
      */
-    static Projectile createProjectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
+    Projectile createProjectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
         ImageView iv;
 
         if (tower instanceof BasicTower) {
