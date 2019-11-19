@@ -16,7 +16,7 @@ import project.Geometry;
 import project.Player;
 import project.arena.Arena;
 import project.arena.Coordinates;
-import project.arena.ExistsInArena;
+import project.arena.ArenaObject;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;
 
@@ -26,7 +26,7 @@ import java.util.LinkedList;
  * Towers is added by player to stop monster moving to the end zone.
  */
 @Entity
-public abstract class Tower implements ExistsInArena {
+public abstract class Tower implements ArenaObject {
     /**
      * ID for storage using Java Persistence API
      */
@@ -67,7 +67,15 @@ public abstract class Tower implements ExistsInArena {
     /**
      * The cumulative building cost of the tower, which increases as the tower is upgraded.
      */
-    protected int buildingCost = 1;
+    protected int buildingCost = findInitialBuildingCost();
+
+    /**
+     * Finds the initial building cost of the tower.
+     * @return The initial building cost of the tower.
+     */
+    public static int findInitialBuildingCost() {
+        return 1;
+    }
 
     /**
      * The maximum shooting range of the tower.
@@ -80,9 +88,9 @@ public abstract class Tower implements ExistsInArena {
     protected short minShootingRange = 0;
 
     /**
-     * The attack speed of tower for how many px per frame
+     * The speed of projectiles shot by the tower for how many px per frame
      */
-    protected int attackSpeed = 5;
+    protected int projectileSpeed = 5;
 
     /**
      * The reload time for tower after it attack monsters.
@@ -140,7 +148,7 @@ public abstract class Tower implements ExistsInArena {
         this.buildingCost = other.buildingCost;
         this.maxShootingRange = other.maxShootingRange;
         this.minShootingRange = other.minShootingRange;
-        this.attackSpeed = other.attackSpeed;
+        this.projectileSpeed = other.projectileSpeed;
         this.reload = other.reload;
         this.counter = other.counter;
         this.upgradeCost = other.upgradeCost;
@@ -268,10 +276,10 @@ public abstract class Tower implements ExistsInArena {
     public final short getMinShootingRange() { return minShootingRange; }
 
     /**
-     * Accesses the attack speed of the tower.
-     * @return The attack speed of the tower.
+     * Accesses the projectile speed of the tower.
+     * @return The projectile speed of the tower.
      */
-    public final int getAttackSpeed() { return attackSpeed; }
+    public final int getProjectileSpeed() { return projectileSpeed; }
 
     /**
      * Accesses the reload time of the tower.
@@ -295,6 +303,5 @@ public abstract class Tower implements ExistsInArena {
      * @return the information of tower.
      */
     public abstract String getInformation();
-
-
+    
 }

@@ -25,8 +25,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import project.arena.Arena;
+import project.arena.ArenaObjectFactory;
 import project.arena.Coordinates;
 import project.arena.Grid;
+import project.arena.ArenaObjectFactory.TowerType;
 import project.arena.towers.*;
 
 
@@ -301,15 +303,15 @@ public class UIController {
                     if(mode != GameMode.simulate && mode != GameMode.end) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                         Object source = e.getGestureSource();
-                        Arena.TowerType type = null;
+                        TowerType type = null;
                         if (source.equals(labelBasicTower)) {
-                            type = Arena.TowerType.BasicTower;
+                            type = TowerType.BasicTower;
                         } else if (source.equals(labelIceTower)) {
-                            type = Arena.TowerType.IceTower;
+                            type = TowerType.IceTower;
                         } else if (source.equals(labelCatapult)) {
-                            type = Arena.TowerType.Catapult;
+                            type = TowerType.Catapult;
                         } else if (source.equals(labelLaserTower)) {
-                            type = Arena.TowerType.LaserTower;
+                            type = TowerType.LaserTower;
                         }
                         if (arena.canBuildTower(c, type)) {
                             target.setStyle("-fx-border-color: blue;");
@@ -328,20 +330,16 @@ public class UIController {
             	target.setOnDragDropped(e -> {
             	    if (mode != GameMode.simulate && mode != GameMode.end) {
                         Image img = null;
-                        Arena.TowerType type = null;
+                        TowerType type = null;
                         Object source = e.getGestureSource();
                         if (source.equals(labelBasicTower)) {
-                            img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = Arena.TowerType.BasicTower;
+                            type = TowerType.BasicTower;
                         } else if (source.equals(labelIceTower)) {
-                            img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = Arena.TowerType.IceTower;
+                            type = TowerType.IceTower;
                         } else if (source.equals(labelCatapult)) {
-                            img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = Arena.TowerType.Catapult;
+                            type = TowerType.Catapult;
                         } else if (source.equals(labelLaserTower)) {
-                            img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
-                            type = Arena.TowerType.LaserTower;
+                            type = TowerType.LaserTower;
                         }
 
                         if (!arena.hasResources(type)) {
@@ -419,20 +417,17 @@ public class UIController {
      */
     private void dragLabelEvent(Label l) {
         Tooltip tp = new Tooltip();
-        Tower temp;
+        TowerType type = null;
         if (l.equals(labelBasicTower)) {
-            temp = new BasicTower(arena, new Coordinates((short)0,(short)0));
-            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+            type = TowerType.BasicTower;
         } else if (l.equals(labelIceTower)) {
-            temp = new IceTower(arena, new Coordinates((short)0,(short)0));
-            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+            type = TowerType.IceTower;
         } else if (l.equals(labelCatapult)) {
-            temp = new Catapult(arena, new Coordinates((short)0,(short)0));
-            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+            type = TowerType.Catapult;
         } else if (l.equals(labelLaserTower)) {
-            temp = new LaserTower(arena, new Coordinates((short)0,(short)0));
-            tp.setText(String.format("building cost: %d", temp.getBuildingCost()));
+            type = TowerType.LaserTower;
         }
+        tp.setText(String.format("building cost: %d", arena.findTowerBuildingCost(type)));
         tp.setShowDelay(Duration.ZERO);
         tp.setHideDelay(Duration.ZERO);
 
