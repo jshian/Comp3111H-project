@@ -42,7 +42,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * The ImageView that displays the monster.
      */
     @Transient
-    private ImageView imageView;
+    protected ImageView imageView = null;
 
     /**
      * The Arena that this monster is attached to.
@@ -113,12 +113,27 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
      * @param arena The arena the monster is attached to.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster. It will try to move there.
+     * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
+     */
+    public Monster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
+        if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
+
+        this.arena = arena;
+        this.coordinates = new Coordinates(start);
+        this.destination = new Coordinates(destination);
+    }
+
+    /**
+     * Constructor for the Monster class.
+     * @param arena The arena the monster is attached to.
+     * @param start The starting location of the monster.
+     * @param destination The destination of the monster. It will try to move there.
      * @param imageView The ImageView that displays the monster.
      * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
      */
     public Monster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
-        
+
         this.imageView = imageView;
         this.arena = arena;
         this.coordinates = new Coordinates(start);
@@ -299,7 +314,7 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     /**
      * show monster hp when mouse is hover over the monster.
      */
-    private void hoverMonsterEvent(Arena arena) {
+    protected void hoverMonsterEvent(Arena arena) {
         Tooltip tp = new Tooltip();
         tp.textProperty().bind(Bindings.format("hp: %.2f", health));
 

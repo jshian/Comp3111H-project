@@ -2,10 +2,12 @@ package project.arena.towers;
 
 import javax.persistence.Entity;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.Player;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
@@ -36,6 +38,8 @@ public class LaserTower extends Tower{
         this.maxShootingRange = 100;
         this.consume = 2;
         this.upgradeCost = 10;
+        this.imageView = new ImageView(new Image("/laserTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+        this.coordinates.bindByImage(this.imageView);
     }
 
     /**

@@ -38,7 +38,7 @@ public abstract class Tower implements ExistsInArena {
      * The ImageView that displays the monster.
      */
     @Transient
-    protected ImageView imageView;
+    protected ImageView imageView = null;
 
     /**
      * The Arena that this tower is attached to.

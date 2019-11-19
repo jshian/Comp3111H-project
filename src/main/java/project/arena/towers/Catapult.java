@@ -5,6 +5,7 @@ import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -47,6 +48,8 @@ public class Catapult extends Tower {
         this.counter = 0;
         this.attackSpeed = 50;
         this.upgradeCost = 20;
+        this.imageView = new ImageView(new Image("/catapult.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+        this.coordinates.bindByImage(this.imageView);
     }
 
     /**

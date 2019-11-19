@@ -167,7 +167,7 @@ public class UIController {
         // TODO: load arena instead of creating a new one.
         Arena arena = new Arena(remainingResources, paneArena);
 
-
+        resetGame();
     }
 
     /**
@@ -338,20 +338,15 @@ public class UIController {
 
             	target.setOnDragDropped(e -> {
             	    if (mode != GameMode.simulate && mode != GameMode.end) {
-                        Image img = null;
                         Arena.TowerType type = null;
                         Object source = e.getGestureSource();
                         if (source.equals(labelBasicTower)) {
-                            img = new Image("/basicTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
                             type = Arena.TowerType.BasicTower;
                         } else if (source.equals(labelIceTower)) {
-                            img = new Image("/iceTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
                             type = Arena.TowerType.IceTower;
                         } else if (source.equals(labelCatapult)) {
-                            img = new Image("/catapult.png", GRID_WIDTH, GRID_HEIGHT, true, true);
                             type = Arena.TowerType.Catapult;
                         } else if (source.equals(labelLaserTower)) {
-                            img = new Image("/laserTower.png", GRID_WIDTH, GRID_HEIGHT, true, true);
                             type = Arena.TowerType.LaserTower;
                         }
 
@@ -359,9 +354,8 @@ public class UIController {
                             // not enough resources
                             showAlert("Not enough resources", "Do not have enough resources to build " + type + "!");
 
-                        } else if (img != null && arena.canBuildTower(c, type)) {
-                            ImageView iv = new ImageView(img);
-                            Tower t = arena.buildTower(c, iv, type);
+                        } else if (arena.canBuildTower(c, type)) {
+                            Tower t = arena.buildTower(c, type);
 
                             if (t != null) {
                                 setTowerEvent(t);
@@ -464,27 +458,6 @@ public class UIController {
             e.consume();
         });
     }
-
-//    /**
-//     * Display tower information.
-//     * @param center center coordinate of tower.
-//     * @param t the tower that need to display information.
-//     */
-//    private void displayTowerInfo(Coordinates center, Tower t) {
-//        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
-//
-//        towerLabel = new Label(t.getInformation());
-//        towerLabel.setAlignment(Pos.CENTER);
-//        towerLabel.setMinWidth(GRID_WIDTH * 3);
-//        towerLabel.setMinHeight(GRID_HEIGHT * 2);
-//        double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
-//        double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
-//        towerLabel.setLayoutX(positionX);
-//        towerLabel.setLayoutY(positionY);
-//        towerLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
-//        towerLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
-//        paneArena.getChildren().add(towerLabel);
-//    }
 
     /**
      * Display the VBox that perform upgrade/destroy of a tower.

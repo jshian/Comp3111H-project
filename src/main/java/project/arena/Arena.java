@@ -503,20 +503,19 @@ public final class Arena {
     /**
      * Builds a Tower at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
-     * @param iv ImageView of the tower
      * @param type specify the class of tower.
      * @return the tower being built, or null if not enough resources
      */
-    public Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull TowerType type)
+    public Tower buildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
     {
         Tower t = null;
         int cost = 0;
         Coordinates center = Grid.findGridCenter(coordinates);
         switch(type) {
-            case BasicTower: t = new BasicTower(this, center, iv); break;
-            case IceTower: t = new IceTower(this, center, iv); break;
-            case Catapult: t = new Catapult(this, center, iv); break;
-            case LaserTower: t = new LaserTower(this, center, iv); break;
+            case BasicTower: t = new BasicTower(this, center); break;
+            case IceTower: t = new IceTower(this, center); break;
+            case Catapult: t = new Catapult(this, center); break;
+            case LaserTower: t = new LaserTower(this, center); break;
             default: return null;
         }
         cost = t.getBuildingCost();
@@ -589,12 +588,9 @@ public final class Arena {
         Coordinates end = Grid.findGridCenter(END_COORDINATES);
 
         switch(type) {
-            case Fox: iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                m = new Fox(this, start, end, iv, difficulty); break;
-            case Penguin: iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                m = new Penguin(this, start, end, iv, difficulty); break;
-            case Unicorn: iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                m = new Unicorn(this, start, end, iv, difficulty); break;
+            case Fox: m = new Fox(this, start, end, difficulty); break;
+            case Penguin: m = new Penguin(this, start, end, difficulty); break;
+            case Unicorn: m = new Unicorn(this, start, end, difficulty); break;
         }
         if (m == null) return null;
             
