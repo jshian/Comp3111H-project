@@ -7,7 +7,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.ImageView;
 import project.Player;
 import project.arena.Arena;
-import project.arena.ArenaObjectFactory;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;

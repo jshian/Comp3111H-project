@@ -153,7 +153,7 @@ public final class Arena {
      * The factory to create the objects in the arena.
      */
     @Transient
-    private ArenaObjectFactory arenaObjectFactory;
+    private ArenaObjectFactory arenaObjectFactory = new ArenaObjectFactory(this);
 
     /**
      * The objects stored in this arena.
@@ -234,7 +234,6 @@ public final class Arena {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
 
-        arenaObjectFactory = new ArenaObjectFactory(this);
         arenaObjectStorage = new ArenaObjectStorage(this);
         arenaScalarFields = new ArenaScalarFields(this);
 
@@ -252,8 +251,6 @@ public final class Arena {
         this.difficulty = other.difficulty;
 
         this.toRemove = copyToRemove(other.toRemove);
-
-        this.arenaObjectFactory = new ArenaObjectFactory(this);
 
         // arenaScalarFields must be set up before arenaObjectStorage because Monster ordering depends on it
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
@@ -479,14 +476,13 @@ public final class Arena {
     /**
      * Builds a Tower at the grid where a specified pixel is located.
      * @param coordinates The coordinates of the pixel.
-     * @param iv ImageView of the tower
      * @param type specify the class of tower.
      * @return the tower being built, or null if not enough resources
      */
-    public Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull TowerType type)
+    public Tower buildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
     {
         Coordinates center = Grid.findGridCenter(coordinates);
-        Tower t = arenaObjectFactory.createTower(type, this, center);
+        Tower t = arenaObjectFactory.createTower(type, center);
         int cost = t.getBuildingCost();
 
         if (player.hasResources(cost)) {
@@ -524,7 +520,7 @@ public final class Arena {
      * @return The newly-created Projectile object.
      */
     public Projectile createProjectile(@NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
-        return arenaObjectFactory.createProjectile(this, tower, target, deltaX, deltaY);
+        return arenaObjectFactory.createProjectile(tower, target, deltaX, deltaY);
     }
 
     /**
@@ -565,7 +561,7 @@ public final class Arena {
         // The end zone is always the same
         Coordinates destination = Grid.findGridCenter(END_COORDINATES);
 
-        Monster m = arenaObjectFactory.createMonster(type, this, start, destination, difficulty);
+        Monster m = arenaObjectFactory.createMonster(type, start, destination, difficulty);
         addObject(m);
         System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
 

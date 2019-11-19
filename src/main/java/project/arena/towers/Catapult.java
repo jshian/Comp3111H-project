@@ -13,7 +13,6 @@ import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.ArenaObject;
-import project.arena.ArenaObjectFactory;
 import project.arena.monsters.Monster;
 import project.arena.projectiles.Projectile;
 
