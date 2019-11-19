@@ -42,7 +42,7 @@ public class IceTower extends Tower {
     public IceTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 0;
-        this.buildingCost = findInitialBuildingCost();
+        this.buildValue = findInitialBuildingCost();
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
         this.projectileSpeed = 10;
@@ -58,7 +58,7 @@ public class IceTower extends Tower {
     public IceTower(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 0;
-        this.buildingCost = 15;
+        this.buildValue = 15;
         this.maxShootingRange = 50;
         this.slowDownTime = 10;
         this.projectileSpeed = 10;
@@ -114,6 +114,6 @@ public class IceTower extends Tower {
     @Override
     public String getInformation() {
         return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,
-            this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildingCost);
+            this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
     }
 }

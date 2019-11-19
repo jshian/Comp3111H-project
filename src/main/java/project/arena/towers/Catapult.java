@@ -48,7 +48,7 @@ public class Catapult extends Tower {
     public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 25;
-        this.buildingCost = findInitialBuildingCost();
+        this.buildValue = findInitialBuildingCost();
         this.minShootingRange = 50;
         this.maxShootingRange = 150;
         this.reload = 20;
@@ -66,7 +66,7 @@ public class Catapult extends Tower {
     public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 25;
-        this.buildingCost = 20;
+        this.buildValue = 20;
         this.minShootingRange = 50;
         this.maxShootingRange = 150;
         this.reload = 20;
@@ -198,7 +198,7 @@ public class Catapult extends Tower {
     @Override
     public String getInformation() {
         return String.format("Attack Power: %d\nSplash Radius: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,
-            this.splashRadius, this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildingCost);
+            this.splashRadius, this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
     }
 
     /**

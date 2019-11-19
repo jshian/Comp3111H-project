@@ -32,7 +32,7 @@ public class BasicTower extends Tower {
     public BasicTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 10;
-        this.buildingCost = findInitialBuildingCost();
+        this.buildValue = findInitialBuildingCost();
         this.maxShootingRange = 65;
         this.projectileSpeed = 5;
         this.upgradeCost = 10;
@@ -47,7 +47,7 @@ public class BasicTower extends Tower {
     public BasicTower(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 10;
-        this.buildingCost = 10;
+        this.buildValue = 10;
         this.maxShootingRange = 65;
         this.projectileSpeed = 5;
         this.upgradeCost = 10;

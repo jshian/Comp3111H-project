@@ -65,7 +65,7 @@ public abstract class Tower implements ArenaObject {
     /**
      * The cumulative building cost of the tower, which increases as the tower is upgraded.
      */
-    protected int buildingCost = findInitialBuildingCost();
+    protected int buildValue = findInitialBuildingCost();
 
     /**
      * Finds the initial building cost of the tower.
@@ -143,7 +143,7 @@ public abstract class Tower implements ArenaObject {
         this.arena = arena;
         this.coordinates = new Coordinates(other.coordinates);
         this.attackPower = other.attackPower;
-        this.buildingCost = other.buildingCost;
+        this.buildValue = other.buildValue;
         this.maxShootingRange = other.maxShootingRange;
         this.minShootingRange = other.minShootingRange;
         this.projectileSpeed = other.projectileSpeed;
@@ -213,7 +213,7 @@ public abstract class Tower implements ArenaObject {
      * Upgrades the tower.
      */
     protected void upgrade() {
-        buildingCost += upgradeCost;
+        buildValue += upgradeCost;
     }
 
     /**
@@ -257,7 +257,7 @@ public abstract class Tower implements ArenaObject {
      * Accesses the cumulative building cost of the tower.
      * @return The cumulative building cost of the tower.
      */
-    public final int getBuildingCost() { return buildingCost; }
+    public final int getBuildValue() { return buildValue; }
 
     /**
      * Accesses the maximum shooting range of the tower.
@@ -301,7 +301,7 @@ public abstract class Tower implements ArenaObject {
      */
     public String getInformation() {
         return String.format("Attack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,
-            this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildingCost);
+            this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
     }
     
 }

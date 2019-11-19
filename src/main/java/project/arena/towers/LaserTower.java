@@ -26,9 +26,9 @@ public class LaserTower extends Tower{
     }
 
     /**
-     * The consumption of resources by laser tower each time.
+     * The consumption of resources by laser tower each time it shoots.
      */
-    private int consume = 1;
+    private int shootingCost = 1;
 
     /**
      * Constructor of laser tower.
@@ -39,10 +39,10 @@ public class LaserTower extends Tower{
     public LaserTower(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 30;
-        this.buildingCost = findInitialBuildingCost();
+        this.buildValue = findInitialBuildingCost();
         this.maxShootingRange = 100;
         this.projectileSpeed = Integer.MAX_VALUE;
-        this.consume = 2;
+        this.shootingCost = 2;
         this.upgradeCost = 10;
     }
 
@@ -56,10 +56,10 @@ public class LaserTower extends Tower{
     public LaserTower(@NonNull Arena arena, @NonNull Coordinates coordinates, @NonNull ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 30;
-        this.buildingCost = 20;
+        this.buildValue = 20;
         this.maxShootingRange = 100;
         this.projectileSpeed = Integer.MAX_VALUE;
-        this.consume = 2;
+        this.shootingCost = 2;
         this.upgradeCost = 10;
     }
 
@@ -68,7 +68,7 @@ public class LaserTower extends Tower{
      */
     public LaserTower(@NonNull Arena arena, @NonNull LaserTower other) {
         super(arena, other);
-        this.consume = other.consume;
+        this.shootingCost = other.shootingCost;
     }
 
     @Override
@@ -85,8 +85,8 @@ public class LaserTower extends Tower{
      * @return true if player has enough resources to attack, false otherwise.
      */
     private boolean consumeResource(@NonNull Player player){
-        if (player.hasResources(consume)) {
-            player.spendResources(consume);
+        if (player.hasResources(shootingCost)) {
+            player.spendResources(shootingCost);
             return true;
         }
         return false;
@@ -127,8 +127,8 @@ public class LaserTower extends Tower{
      */
     @Override
     public String getInformation() {
-        return String.format("Shooting Cost: %d\nAttack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.consume,
-            this.attackPower, this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildingCost);
+        return String.format("Shooting Cost: %d\nAttack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.shootingCost,
+            this.attackPower, this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
     }
 }
 
