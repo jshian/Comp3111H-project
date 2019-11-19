@@ -30,7 +30,7 @@ public final class ArenaObjectFactory {
     }
 
     /**
-     * An enum for building towers in the Arena according to type.
+     * An enum of supported {@link Tower} types.
      */
     public static enum TowerType {
         /**
@@ -57,11 +57,10 @@ public final class ArenaObjectFactory {
     /**
      * Creates a Tower object.
      * @param type The type of tower to create.
-     * @param arena The arena that the tower belongs to.
      * @param center The coordinates of the center of the tower.
      * @return The newly-created Tower object.
      */
-    Tower createTower(@NonNull TowerType type, @NonNull Arena arena, @NonNull Coordinates center) {
+    Tower createTower(@NonNull TowerType type, @NonNull Coordinates center) {
         ImageView iv;
         switch (type) {
             case BasicTower:
@@ -83,14 +82,13 @@ public final class ArenaObjectFactory {
 
     /**
      * Creates a Projectile object.
-     * @param arena The arena that the projectile belongs to.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      * @return The newly-created Projectile object.
      */
-    static Projectile createProjectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
+    Projectile createProjectile(@NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
         ImageView iv;
 
         if (tower instanceof BasicTower) {
@@ -112,7 +110,7 @@ public final class ArenaObjectFactory {
 
 
     /**
-     * An enum for generate monster in the Arena according to type.
+     * An enum of supported {@link Monster} types.
      */
     public static enum MonsterType {
         /**
@@ -134,13 +132,12 @@ public final class ArenaObjectFactory {
     /**
      * Creates a Monster object.
      * @param type The type of monster to create.
-     * @param arena The arena the monster belongs to.
      * @param start The starting location of the monster.
      * @param destination The destination of the monster.
      * @param difficulty The difficulty of the monster.
      * @return The newly-created Monster object.
      */
-    Monster createMonster(@NonNull MonsterType type, @NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
+    Monster createMonster(@NonNull MonsterType type, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
         ImageView iv;
         switch (type) {
             case Fox:
