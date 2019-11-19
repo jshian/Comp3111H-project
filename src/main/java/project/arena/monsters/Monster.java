@@ -14,14 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -110,12 +103,6 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     protected int resources = 0;
 
     /**
-     * Label that display the hp of the monster.
-     */
-    @Transient
-    protected Label hpLabel = new Label();
-
-    /**
      * A linked list of references to each status effect that is active against the monster.
      */
     @OneToMany
@@ -173,12 +160,45 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
     public abstract Monster deepCopy(@NonNull Arena arena);
     
     // Interface implementation
+
+    /**
+     * Accesses the ImageView of the monster.
+     * @return the ImageView of the monster.
+     */
     public final ImageView getImageView() { return imageView; }
+
+    /**
+     * Accesses the x-coordinate of the monster.
+     * @return the x-coordinate of the monster.
+     */
     public final short getX() { return coordinates.getX(); }
+
+    /**
+     * Accesses the y-coordinate of the monster.
+     * @return the y-coordinate of the monster.
+     */
     public final short getY() { return coordinates.getY(); }
+
+    /**
+     * Set the coordinates of the monster.
+     * @param x the new x-coordinate of the monster.
+     * @param y the new y-coordinate of the monster.
+     */
     public final void setLocation(short x, short y) { this.coordinates.update(x, y); }
+
+    /**
+     * Set the coordinates of the monster.
+     * @param coordinates the new coordinates of the monster.
+     */
     public final void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+
+    /**
+     * Access the speed of the monster.
+     * @return speed of the monster.
+     */
     public final double getSpeed() { return speed; }
+
+
     public void nextFrame() {
         // Move monster
         prevCoordinates.clear();
@@ -295,10 +315,4 @@ public abstract class Monster implements MovesInArena, Comparable<Monster> {
             tp.hide();
         });
     }
-
-    /**
-     * get the Label displaying hp of monster.
-     * @return the Label displaying hp of monster.
-     */
-    public final Label getHpLabel() { return hpLabel; }
 }
