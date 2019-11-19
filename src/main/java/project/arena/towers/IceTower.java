@@ -111,14 +111,9 @@ public class IceTower extends Tower {
      */
     public final int getSlowDownTime() { return slowDownTime; }
 
-    /**
-     * Accesses the information of tower.
-     * @return the information of tower.
-     */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nupgrade cost: %d\nshooting range: [%d , %d]\n"
-                + "slow down time: %d", this.attackPower, this.upgradeCost, this.minShootingRange,
-                this.maxShootingRange,this.slowDownTime);
+        return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,
+            this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildingCost);
     }
 }

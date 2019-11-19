@@ -279,7 +279,7 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
      * show monster hp when mouse is hover over the monster.
      */
     private void hoverMonsterEvent(Arena arena) {
-        hpLabel.textProperty().bind(Bindings.format("hp: %.2f", health));
+        hpLabel.textProperty().bind(Bindings.format("HP: %.2f", health));
         hpLabel.setAlignment(Pos.CENTER);
         hpLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255,0.7),
                 CornerRadii.EMPTY, Insets.EMPTY)));

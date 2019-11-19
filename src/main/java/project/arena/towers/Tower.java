@@ -295,9 +295,13 @@ public abstract class Tower implements ArenaObject {
      */
     public final boolean isReload() { return counter > 0; }
 
-    /**Accesses the information of tower.
+    /**
+     * Accesses the information of tower.
      * @return the information of tower.
      */
-    public abstract String getInformation();
+    public String getInformation() {
+        return String.format("Attack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,
+            this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildingCost);
+    }
     
 }
