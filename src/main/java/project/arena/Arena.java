@@ -150,6 +150,12 @@ public final class Arena {
     }
 
     /**
+     * The factory to create the objects in the arena.
+     */
+    @Transient
+    private ArenaObjectFactory arenaObjectFactory;
+
+    /**
      * The objects stored in this arena.
      */
     @NotNull
@@ -228,6 +234,7 @@ public final class Arena {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
 
+        arenaObjectFactory = new ArenaObjectFactory(this);
         arenaObjectStorage = new ArenaObjectStorage(this);
         arenaScalarFields = new ArenaScalarFields(this);
 
@@ -245,6 +252,8 @@ public final class Arena {
         this.difficulty = other.difficulty;
 
         this.toRemove = copyToRemove(other.toRemove);
+
+        this.arenaObjectFactory = new ArenaObjectFactory(this);
 
         // arenaScalarFields must be set up before arenaObjectStorage because Monster ordering depends on it
         this.arenaScalarFields = new ArenaScalarFields(this, other.arenaScalarFields);
@@ -477,7 +486,7 @@ public final class Arena {
     public Tower buildTower(@NonNull Coordinates coordinates, @NonNull ImageView iv, @NonNull TowerType type)
     {
         Coordinates center = Grid.findGridCenter(coordinates);
-        Tower t = ArenaObjectFactory.createTower(type, this, center);
+        Tower t = arenaObjectFactory.createTower(type, this, center);
         int cost = t.getBuildingCost();
 
         if (player.hasResources(cost)) {
@@ -544,7 +553,7 @@ public final class Arena {
         // The end zone is always the same
         Coordinates destination = Grid.findGridCenter(END_COORDINATES);
 
-        Monster m = ArenaObjectFactory.createMonster(type, this, start, destination, difficulty);
+        Monster m = arenaObjectFactory.createMonster(type, this, start, destination, difficulty);
         addObject(m);
         System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
 

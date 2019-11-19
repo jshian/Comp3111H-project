@@ -15,7 +15,19 @@ import project.arena.monsters.*;
  * @see ArenaObject
  */
 public final class ArenaObjectFactory {
-    private ArenaObjectFactory() { }
+
+    /**
+     * The arena that the class is linked to.
+     */
+    private Arena arena;
+
+    /**
+     * Constructor for the ArenaObjectFactory class.
+     * @param arena The arena to link this object to.
+     */
+    ArenaObjectFactory(Arena arena) {
+        this.arena = arena;
+    }
 
     /**
      * An enum for building towers in the Arena according to type.
@@ -49,7 +61,7 @@ public final class ArenaObjectFactory {
      * @param center The coordinates of the center of the tower.
      * @return The newly-created Tower object.
      */
-    static Tower createTower(@NonNull TowerType type, @NonNull Arena arena, @NonNull Coordinates center) {
+    Tower createTower(@NonNull TowerType type, @NonNull Arena arena, @NonNull Coordinates center) {
         ImageView iv;
         switch (type) {
             case BasicTower:
@@ -78,7 +90,7 @@ public final class ArenaObjectFactory {
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      * @return The newly-created Projectile object.
      */
-    public static Projectile createProjectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
+    static Projectile createProjectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
         ImageView iv;
 
         if (tower instanceof BasicTower) {
@@ -128,7 +140,7 @@ public final class ArenaObjectFactory {
      * @param difficulty The difficulty of the monster.
      * @return The newly-created Monster object.
      */
-    static Monster createMonster(@NonNull MonsterType type, @NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
+    Monster createMonster(@NonNull MonsterType type, @NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
         ImageView iv;
         switch (type) {
             case Fox:
