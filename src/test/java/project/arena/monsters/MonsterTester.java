@@ -122,7 +122,7 @@ public class MonsterTester extends JavaFXTester {
         // Test regular constructor
         assertExceptionThrown_constructor(IllegalArgumentException.class, Fox.class, constructorArgTypes, new Object[]{ a1, start, end, iv, 0 }); // Difficulty must be at least 1
 
-        Fox f1 = new Fox(a1, start, end, 1);
+        Fox f1 = new Fox(a1, start, end, iv, 1);
         assertFalse(f1.hasDied()); // Health on generation should be greater than zero
 
         // Test pathfinding...
