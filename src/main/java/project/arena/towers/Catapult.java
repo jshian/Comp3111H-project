@@ -31,9 +31,9 @@ public class Catapult extends Tower {
     }
 
     /**
-     * The damaging range of Catapult which default is 25.
+     * The splash radius of Catapult which default is 25.
      */
-    private final short damageRange = 25;
+    private final short splashRadius = 25;
 
     /**
      * The least reload time Catapult can have which default is 2 frame.
@@ -48,7 +48,7 @@ public class Catapult extends Tower {
     public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 25;
-        this.buildingCost = findInitialBuildingCost();
+        this.buildValue = findInitialBuildingCost();
         this.minShootingRange = 50;
         this.maxShootingRange = 150;
         this.reload = 20;
@@ -66,7 +66,7 @@ public class Catapult extends Tower {
     public Catapult(@NonNull Arena arena, @NonNull Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 25;
-        this.buildingCost = 20;
+        this.buildValue = 20;
         this.minShootingRange = 50;
         this.maxShootingRange = 150;
         this.reload = 20;
@@ -163,7 +163,7 @@ public class Catapult extends Tower {
                 nearestMon.add(m);
         }
         //find the target coordinate to attack
-        short radius = damageRange;
+        short radius = splashRadius;
         Coordinates target = null;
         for (Monster m :nearestMon) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
@@ -174,7 +174,7 @@ public class Catapult extends Tower {
                     if (j < 0 || j > UIController.ARENA_HEIGHT) continue;
                     Coordinates c = new Coordinates(i,j);//tested coordinate
 
-                    if (isInRange(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//damage range in current point
+                    if (isInRange(c) && Geometry.isInCircle(i,j,m.getX(),m.getY(),radius)){//splash radius in current point
                         LinkedList<Monster> monInCircle = new LinkedList<>();
 
                         for (Monster testMon:arena.getMonsters()){//find the monsters in the range
@@ -195,22 +195,17 @@ public class Catapult extends Tower {
         return target;
     }
 
-    /**
-     * Accesses the information of tower.
-     * @return the information of tower.
-     */
     @Override
     public String getInformation() {
-        return String.format("attack power: %d\nupgrade cost: %d\nshooting range: [%d ,  %d]\n"
-                + "reload time: %d\ndamage range: %d", this.attackPower,
-                this.upgradeCost, this.minShootingRange, this.maxShootingRange, this.reload, this.damageRange);
+        return String.format("Attack Power: %d\nSplash Radius: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,
+            this.splashRadius, this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
     }
 
     /**
-     * Accesses the damage range of catapult.
-     * @return The damage range of catapult.
+     * Accesses the splash radius of catapult.
+     * @return The splash radius of catapult.
      */
-    public short getDamageRange() {
-        return damageRange;
+    public short getSplashRadius() {
+        return splashRadius;
     }
 }

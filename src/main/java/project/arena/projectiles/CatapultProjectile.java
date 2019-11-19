@@ -23,7 +23,7 @@ public class CatapultProjectile extends Projectile {
      */
     public CatapultProjectile(@NonNull Arena arena, @NonNull Catapult tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
         super(arena, tower, target, deltaX, deltaY, imageView);
-        this.damageRange = tower.getDamageRange();
+        this.damageRange = tower.getSplashRadius();
     }
 
     /**
