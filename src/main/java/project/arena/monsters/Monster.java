@@ -118,7 +118,7 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
      */
     public Monster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
-
+        
         this.imageView = imageView;
         this.arena = arena;
         this.coordinates = new Coordinates(start);

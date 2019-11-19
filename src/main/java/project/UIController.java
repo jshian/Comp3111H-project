@@ -437,7 +437,7 @@ public class UIController {
         } else if (l.equals(labelLaserTower)) {
             type = TowerType.LaserTower;
         }
-        tp.setText(String.format("building cost: %d", arena.findTowerBuildingCost(type)));
+        tp.setText(String.format("Build Cost: %d", arena.findTowerBuildingCost(type)));
         tp.setShowDelay(Duration.ZERO);
         tp.setHideDelay(Duration.ZERO);
 

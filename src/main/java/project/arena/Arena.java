@@ -185,7 +185,7 @@ public final class Arena {
 
         if (obj instanceof Tower) {
             arenaScalarFields.processRemoveTower((Tower)obj, false);
-            player.receiveResources(((Tower)obj).getBuildingCost() / 2);
+            player.receiveResources(((Tower)obj).getBuildValue() / 2);
         }
         if (obj instanceof Monster) {
             player.receiveResources(((Monster)obj).getResources());
@@ -483,7 +483,7 @@ public final class Arena {
     {
         Coordinates center = Grid.findGridCenter(coordinates);
         Tower t = arenaObjectFactory.createTower(type, center);
-        int cost = t.getBuildingCost();
+        int cost = t.getBuildValue();
 
         if (player.hasResources(cost)) {
             player.spendResources(cost);
