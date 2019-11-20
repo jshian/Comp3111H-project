@@ -164,12 +164,13 @@ public class UIController {
     /**
      * Load the game
      */
+    @FXML
     private void load() {
         // TODO: load the game
         // TODO: load arena instead of creating a new one.
-        Arena arena = new Arena(remainingResources, paneArena);
+        //Arena arena = new Arena(remainingResources, paneArena);
 
-        resetGame();
+        //resetGame();
     }
 
     /**
