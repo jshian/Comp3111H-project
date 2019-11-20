@@ -1,6 +1,7 @@
 package project.arena.towers;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
 import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -38,8 +39,7 @@ public class BasicTower extends Tower {
         this.maxShootingRange = 65;
         this.projectileSpeed = 5;
         this.upgradeCost = 10;
-        this.imageView = new ImageView(new Image("/basicTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-        this.coordinates.bindByImage(this.imageView);
+        loadImage();
     }
 
     /**
@@ -94,5 +94,14 @@ public class BasicTower extends Tower {
             }
         }
         return null;
+    }
+
+    /**
+     * Load ImageView of monster.
+     */
+    @PostLoad
+    public void loadImage() {
+        imageView = new ImageView(new Image("/basicTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+        coordinates.bindByImage(imageView);
     }
 }

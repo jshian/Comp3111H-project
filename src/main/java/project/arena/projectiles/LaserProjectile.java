@@ -3,24 +3,28 @@ package project.arena.projectiles;
 import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.Geometry;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
 import project.arena.towers.LaserTower;
+import project.arena.towers.Tower;
 
 @Entity
 public class LaserProjectile extends Projectile {
 
     /**
-     * @see Projectile#Projectile(Arena, Tower, Monster, short, short, ImageView)
+     * @see Projectile#Projectile(Arena, Tower, Monster, short, short)
      */
-    public LaserProjectile(@NonNull Arena arena, @NonNull LaserTower tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
-        super(arena, tower, target, deltaX, deltaY, imageView);
+    public LaserProjectile(@NonNull Arena arena, @NonNull LaserTower tower, @NonNull Monster target, short deltaX, short deltaY) {
+        super(arena, tower, target, deltaX, deltaY);
     }
 
     /**
@@ -54,5 +58,14 @@ public class LaserProjectile extends Projectile {
         }
 
         hasReachedTarget = true; // Hitscan
+    }
+
+    /**
+     * Load ImageView of monster.
+     */
+    @PostLoad
+    public void loadImage() {
+        imageView = new ImageView(new Image("/laserProjectile.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
+        coordinates.bindByImage(imageView);
     }
 }

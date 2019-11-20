@@ -64,17 +64,13 @@ public final class ArenaObjectFactory {
         ImageView iv;
         switch (type) {
             case BasicTower:
-                iv = new ImageView(new Image("/basicTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-                return new BasicTower(arena, center, iv);
+                return new BasicTower(arena, center);
             case IceTower:
-                iv = new ImageView(new Image("/iceTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-                return new IceTower(arena, center, iv);
+                return new IceTower(arena, center);
             case Catapult:
-                iv = new ImageView(new Image("/catapult.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-                return new Catapult(arena, center, iv);
+                return new Catapult(arena, center);
             case LaserTower:
-                iv = new ImageView(new Image("/laserTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-                return new LaserTower(arena, center, iv);
+                return new LaserTower(arena, center);
         }
 
         throw new IllegalArgumentException("The Tower type must be specified");
@@ -89,20 +85,14 @@ public final class ArenaObjectFactory {
      * @return The newly-created Projectile object.
      */
     Projectile createProjectile(@NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
-        ImageView iv;
-
         if (tower instanceof BasicTower) {
-            iv = new ImageView(new Image("/basicProjectile.png", UIController.GRID_WIDTH / 8, UIController.GRID_HEIGHT / 8, true, true));
-            return new BasicProjectile(arena, (BasicTower)tower, target, deltaX, deltaY, iv);
+            return new BasicProjectile(arena, (BasicTower)tower, target, deltaX, deltaY);
         } else if (tower instanceof IceTower) {
-            iv = new ImageView(new Image("/iceProjectile.png", UIController.GRID_WIDTH / 8, UIController.GRID_HEIGHT / 8, true, true));
-            return new IceProjectile(arena, (IceTower)tower, target, deltaX, deltaY, iv);
+            return new IceProjectile(arena, (IceTower)tower, target, deltaX, deltaY);
         } else if (tower instanceof Catapult) {
-            iv = new ImageView(new Image("/catapultProjectile.png", UIController.GRID_WIDTH / 2, UIController.GRID_HEIGHT / 2, true, true));
-            return new CatapultProjectile(arena, (Catapult)tower, target, deltaX, deltaY, iv);
+            return new CatapultProjectile(arena, (Catapult)tower, target, deltaX, deltaY);
         } else if (tower instanceof LaserTower) {
-            iv = new ImageView(new Image("/laserProjectile.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-            return new LaserProjectile(arena, (LaserTower)tower, target, deltaX, deltaY, iv);
+            return new LaserProjectile(arena, (LaserTower)tower, target, deltaX, deltaY);
         } else {
             throw new IllegalArgumentException("Unknown Tower type");
         }
@@ -138,17 +128,13 @@ public final class ArenaObjectFactory {
      * @return The newly-created Monster object.
      */
     Monster createMonster(@NonNull MonsterType type, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
-        ImageView iv;
         switch (type) {
             case Fox:
-                iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                return new Fox(arena, start, destination, iv, difficulty);
+                return new Fox(arena, start, destination, difficulty);
             case Penguin:
-                iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                return new Penguin(arena, start, destination, iv, difficulty);
+                return new Penguin(arena, start, destination, difficulty);
             case Unicorn:
-                iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-                return new Unicorn(arena, start, destination, iv, difficulty);
+                return new Unicorn(arena, start, destination, difficulty);
         }
 
         throw new IllegalArgumentException("The Monster type must be specified");

@@ -444,7 +444,6 @@ public class UIController {
         l.setOnMouseEntered(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
         l.setOnMouseMoved(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
         l.setOnMouseExited(e -> tp.hide());
-        l.setOnMouseExited(e -> tp.hide());
 
         l.setOnDragDetected(e -> {
             if (mode != GameMode.simulate) {

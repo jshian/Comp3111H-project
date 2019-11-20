@@ -37,7 +37,7 @@ public abstract class Projectile implements ArenaMovingObject {
      * The ImageView that displays the projectile.
      */
     @Transient
-    protected ImageView imageView;
+    protected ImageView imageView = null;
 
     /**
      * The Arena that this projectile is attached to.
@@ -108,20 +108,16 @@ public abstract class Projectile implements ArenaMovingObject {
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
-     * @param imageView The ImageView that displays the projectile.
      */
-    public Projectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
+    public Projectile(@NonNull Arena arena, @NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
         this.arena = arena;
         this.coordinates = new Coordinates(tower.getX(), tower.getY());
         this.origin = new Coordinates(tower.getX(), tower.getY());
-        this.imageView = imageView;
         this.target = target;
         this.deltaX = deltaX;
         this.deltaY = deltaY;
         this.speed = tower.getProjectileSpeed();
         this.attackPower = tower.getAttackPower();
-
-        this.coordinates.bindByImage(this.imageView);
     }
 
     /**

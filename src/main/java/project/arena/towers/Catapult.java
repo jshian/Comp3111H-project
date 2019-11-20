@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
 import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -56,8 +57,7 @@ public class Catapult extends Tower {
         this.counter = 0;
         this.projectileSpeed = 50;
         this.upgradeCost = 20;
-        this.imageView = new ImageView(new Image("/catapult.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-        this.coordinates.bindByImage(this.imageView);
+        loadImage();
     }
 
     /**
@@ -214,5 +214,14 @@ public class Catapult extends Tower {
      */
     public short getSplashRadius() {
         return splashRadius;
+    }
+
+    /**
+     * Load ImageView of monster.
+     */
+    @PostLoad
+    public void loadImage() {
+        imageView = new ImageView(new Image("/catapult.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+        coordinates.bindByImage(imageView);
     }
 }
