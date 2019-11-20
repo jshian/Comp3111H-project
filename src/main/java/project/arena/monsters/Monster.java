@@ -14,13 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
+import javafx.scene.control.Tooltip;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -48,7 +42,7 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
      * The ImageView that displays the monster.
      */
     @Transient
-    private ImageView imageView;
+    protected ImageView imageView;
 
     /**
      * The Arena that this monster is attached to.
@@ -109,12 +103,6 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
     protected int resources = 0;
 
     /**
-     * Label that display the hp of the monster.
-     */
-    @Transient
-    protected Label hpLabel = new Label();
-
-    /**
      * A linked list of references to each status effect that is active against the monster.
      */
     @OneToMany
@@ -172,12 +160,46 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
     public abstract Monster deepCopy(@NonNull Arena arena);
     
     // Interface implementation
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final ImageView getImageView() { return imageView; }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final short getX() { return coordinates.getX(); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final short getY() { return coordinates.getY(); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setLocation(short x, short y) { this.coordinates.update(x, y); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void setLocation(@NonNull Coordinates coordinates) { this.coordinates.update(coordinates); }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final double getSpeed() { return speed; }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void nextFrame() {
         // Move monster
         prevCoordinates.clear();
@@ -204,6 +226,11 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
         else speed = maxSpeed;
         statusEffects.removeIf(x -> x.getDuration() <= 0);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
 
     /**
@@ -278,28 +305,12 @@ public abstract class Monster implements ArenaMovingObject, Comparable<Monster> 
     /**
      * show monster hp when mouse is hover over the monster.
      */
-    private void hoverMonsterEvent(Arena arena) {
-        hpLabel.textProperty().bind(Bindings.format("HP: %.2f", health));
-        hpLabel.setAlignment(Pos.CENTER);
-        hpLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255,0.7),
-                CornerRadii.EMPTY, Insets.EMPTY)));
-        //seems like layout can only bindBidirectional, error otherwise.
-        hpLabel.layoutXProperty().bindBidirectional(imageView.xProperty());
-        hpLabel.layoutYProperty().bindBidirectional(imageView.yProperty());
+    protected void hoverMonsterEvent(Arena arena) {
+        Tooltip tp = new Tooltip();
+        tp.textProperty().bind(Bindings.format("hp: %.2f", health));
 
-        this.imageView.setOnMouseEntered(e -> {
-            arena.getPane().getChildren().add(hpLabel);
-        });
-
-        this.imageView.setOnMouseExited(e -> {
-            if (arena.getPane().getChildren().contains(hpLabel))
-                arena.getPane().getChildren().remove(hpLabel);
-        });
+        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseExited(e -> tp.hide());
     }
-
-    /**
-     * get the Label displaying hp of monster.
-     * @return the Label displaying hp of monster.
-     */
-    public final Label getHpLabel() { return hpLabel; }
 }

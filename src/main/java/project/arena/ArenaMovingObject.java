@@ -8,5 +8,5 @@ public interface ArenaMovingObject extends ArenaObject {
      * Accesses the current speed of the object.
      * @return The current speed of the object.
      */
-    public double getSpeed();
+    double getSpeed();
 }

@@ -2,9 +2,11 @@ package project.arena.towers;
 
 import javax.persistence.Entity;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 import project.arena.monsters.Monster;
@@ -47,6 +49,8 @@ public class IceTower extends Tower {
         this.slowDownTime = 10;
         this.projectileSpeed = 10;
         this.upgradeCost = 10;
+        this.imageView = new ImageView(new Image("/iceTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+        this.coordinates.bindByImage(this.imageView);
     }
 
     /**
@@ -111,6 +115,10 @@ public class IceTower extends Tower {
      */
     public final int getSlowDownTime() { return slowDownTime; }
 
+    /**
+     * Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
         return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,

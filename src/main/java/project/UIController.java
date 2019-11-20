@@ -117,7 +117,7 @@ public class UIController {
     /**
      * the timeline for running the game.
      */
-    private Timeline timeline;
+    private Timeline timeline = new Timeline();
 
     /**
      * the grids on arena.
@@ -159,6 +159,17 @@ public class UIController {
     @FXML
     private void save() {
         // TODO: save the game
+    }
+
+    /**
+     * Load the game
+     */
+    private void load() {
+        // TODO: load the game
+        // TODO: load arena instead of creating a new one.
+        Arena arena = new Arena(remainingResources, paneArena);
+
+        resetGame();
     }
 
     /**
@@ -376,6 +387,7 @@ public class UIController {
             tp = new Tooltip(t.getInformation());
             tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7);
         });
+        iv.setOnMouseMoved(e -> tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7));
         iv.setOnMouseExited(e -> {
             paneArena.getChildren().remove(towerCircle);
             tp.hide();
@@ -430,6 +442,8 @@ public class UIController {
         tp.setHideDelay(Duration.ZERO);
 
         l.setOnMouseEntered(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
+        l.setOnMouseMoved(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
+        l.setOnMouseExited(e -> tp.hide());
         l.setOnMouseExited(e -> tp.hide());
 
         l.setOnDragDetected(e -> {
@@ -444,27 +458,6 @@ public class UIController {
             e.consume();
         });
     }
-
-//    /**
-//     * Display tower information.
-//     * @param center center coordinate of tower.
-//     * @param t the tower that need to display information.
-//     */
-//    private void displayTowerInfo(Coordinates center, Tower t) {
-//        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
-//
-//        towerLabel = new Label(t.getInformation());
-//        towerLabel.setAlignment(Pos.CENTER);
-//        towerLabel.setMinWidth(GRID_WIDTH * 3);
-//        towerLabel.setMinHeight(GRID_HEIGHT * 2);
-//        double positionX = coor.getX() > paneArena.getWidth()/2 ? coor.getX() - GRID_WIDTH * 3: coor.getX() + GRID_WIDTH;
-//        double positionY = coor.getY() > paneArena.getHeight()/2 ? coor.getY() - GRID_HEIGHT * 2: coor.getY() + GRID_HEIGHT;
-//        towerLabel.setLayoutX(positionX);
-//        towerLabel.setLayoutY(positionY);
-//        towerLabel.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
-//        towerLabel.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
-//        paneArena.getChildren().add(towerLabel);
-//    }
 
     /**
      * Display the VBox that perform upgrade/destroy of a tower.

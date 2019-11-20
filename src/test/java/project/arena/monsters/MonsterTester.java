@@ -29,7 +29,7 @@ import project.arena.Grid;
 public class MonsterTester extends JavaFXTester {
 
     static final double MAX_ERROR = 0.0001;
-    
+
     @Test
     public void testBaseClassMethods() {
         Arena a1 = new Arena(new Label(), new AnchorPane());
@@ -41,12 +41,11 @@ public class MonsterTester extends JavaFXTester {
 
         // Test regular constructor
         assertExceptionThrown_constructor(IllegalArgumentException.class, TestMonster.class, constructorArgTypes, new Object[]{ a1, start, end, iv, 0 }); // Difficulty must be at least 1
-        
+
         Monster m1 = new TestMonster(a1, start, end, iv, 1);
         assertSame(m1.getImageView(), iv);
         assertEquals(m1.getX(), 15);
         assertEquals(m1.getY(), 25);
-        assertNotNull(m1.getHpLabel());
         assertNotNull(m1.getPrevCoordinates());
         assertTrue(m1.getPrevCoordinates().isEmpty());
 
@@ -57,7 +56,7 @@ public class MonsterTester extends JavaFXTester {
         m1.setLocation(new Coordinates((short) 3, (short) 2));
         assertEquals(m1.getX(), 3);
         assertEquals(m1.getY(), 2);
-        
+
         // Test health
         assertFalse(m1.hasDied()); // Health on generation should be greater than zero
         m1.setHealth(23.45);
@@ -97,15 +96,15 @@ public class MonsterTester extends JavaFXTester {
 
         m1.nextFrame();
         assertTrue(originalSpeed == m1.getSpeed()); // Monster should not be slowed
-    
+
         // Test copy constructor
         Arena a2 = new Arena(new Label(), new AnchorPane());
         Monster m2 = new TestMonster(a2, (TestMonster)m1);
         assertEquals(m2.arena, a2);
         DeepCopyTester.assertDeepCopy(m1, m2);
-        
+
         m2.addStatusEffect(slowEffect);
-        
+
         Arena a3 = new Arena(new Label(), new AnchorPane());
         Monster m3 = new TestMonster(a3, (TestMonster)m2);
         DeepCopyTester.assertDeepCopy(m2, m3);

@@ -5,6 +5,7 @@ import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
@@ -55,6 +56,8 @@ public class Catapult extends Tower {
         this.counter = 0;
         this.projectileSpeed = 50;
         this.upgradeCost = 20;
+        this.imageView = new ImageView(new Image("/catapult.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+        this.coordinates.bindByImage(this.imageView);
     }
 
     /**
@@ -195,6 +198,10 @@ public class Catapult extends Tower {
         return target;
     }
 
+    /**
+     * Accesses the information of tower.
+     * @return the information of tower.
+     */
     @Override
     public String getInformation() {
         return String.format("Attack Power: %d\nSplash Radius: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,

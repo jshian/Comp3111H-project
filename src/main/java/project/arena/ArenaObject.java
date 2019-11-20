@@ -12,37 +12,37 @@ public interface ArenaObject {
      * Access the ImageView associated with the object.
      * @return The ImageView associated with the object.
      */
-    public ImageView getImageView();
+    ImageView getImageView();
 
     /**
      * Accesses the x-coordinate of the object.
      * @return The x-coordinate of the object.
      * @see Coordinates
      */
-    public short getX();
+    short getX();
 
     /**
      * Accesses the y-coordinate of the object.
      * @return The y-coordinate of the object.
      * @see Coordinates
      */
-    public short getY();
+    short getY();
 
     /**
      * Updates the {@link Coordinates} of the object.
      * @param x The new x-coordinate.
      * @param y The new y-coordinate.
      */
-    public void setLocation(short x, short y);
+    void setLocation(short x, short y);
 
     /**
      * Updates the coordinates of the object.
      * @param coordinates The new coordinates.
      */
-    public void setLocation(@NonNull Coordinates coordinates);
+    void setLocation(@NonNull Coordinates coordinates);
 
     /**
      * Updates the object by one frame.
      */
-    public void nextFrame();
+     void nextFrame();
 }
