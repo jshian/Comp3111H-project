@@ -1,10 +1,13 @@
 package project.arena.monsters;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.Coordinates;
 
@@ -14,15 +17,16 @@ import project.arena.Coordinates;
 @Entity
 public class Fox extends Monster {
     /**
-     * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
+     * @see Monster#Monster(Arena, Coordinates, Coordinates, double)
      */
-    public Fox(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
-        super(arena, start, destination, imageView, difficulty);
+    public Fox(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
+        super(arena, start, destination, difficulty);
         this.maxHealth = 5 + 2 * difficulty;
         this.maxSpeed = 5 + 0.5 * Math.log10(difficulty);
         this.health.set(this.maxHealth);
         this.speed = this.maxSpeed;
         this.resources = (int) (difficulty * 1.5);
+        loadImage();
     }
 
     /**
@@ -42,4 +46,14 @@ public class Fox extends Monster {
 
     @Override
     public Coordinates findNextCoordinates() { return arena.findNextTowardsEnd_prioritizeAttack(coordinates); }
+
+    /**
+     * Load ImageView of monster.
+     */
+    @PostLoad
+    public void loadImage() {
+        imageView = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
+        coordinates.bindByImage(imageView);
+        hoverMonsterEvent(this.arena);
+    }
 }

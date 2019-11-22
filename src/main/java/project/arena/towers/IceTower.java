@@ -1,6 +1,7 @@
 package project.arena.towers;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
 import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -49,8 +50,7 @@ public class IceTower extends Tower {
         this.slowDownTime = 10;
         this.projectileSpeed = 10;
         this.upgradeCost = 10;
-        this.imageView = new ImageView(new Image("/iceTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-        this.coordinates.bindByImage(this.imageView);
+        loadImage();
     }
 
     /**
@@ -123,5 +123,14 @@ public class IceTower extends Tower {
     public String getInformation() {
         return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,
             this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
+    }
+
+    /**
+     * Load ImageView of monster.
+     */
+    @PostLoad
+    public void loadImage() {
+        imageView = new ImageView(new Image("/iceTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
+        coordinates.bindByImage(imageView);
     }
 }

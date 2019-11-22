@@ -52,7 +52,7 @@ Members:
 	* The tower is not built.
 	* *Tower Placing Mode* is exited.
 1. Enter *Tower Placing Mode* and move the mouse pointer outside the arena and release left-click. Verify that the resulting behavior is identical to that of attempting to place a tower in an invalid grid.
-1. Enter *Tower Placing Mode* and right-click anywhere. Verify that the resulting behavior is identical to that of attempting to place a tower in an invalid grid.
+1. Enter *Tower Placing Mode* and right-click anywhere on the arena. Verify that the resulting behavior is identical to that of attempting to place a tower in an invalid grid.
 1. Mouse over the tower previously built. Verify the following:
 	* The tower's *Tower Information* is displayed on the graphic interface. (Regular Task 1(ii)(c))
 	* The pixels within the tower's range is shaded. (Regular Task 1(ii)(c)(a))
@@ -65,7 +65,7 @@ Members:
 	* A dialog box appears which prompts that there is insufficient resources to build the tower. (Regular Task 1(ii)(d))
 1. Mouse over any one of the towers previously built, and then left-click on it. Verify the following:
 	* Two buttons `destroy the tower` and `upgrade` appear near the *Tower Information*. (Regular Task 1(ii)(e))
-1. Right-click anywhere, including the buttons and on the tower itself. Verify the following:
+1. Right-click anywhere on the arena, including the buttons and on the tower itself. Verify the following:
 	* The two buttons disappear.
 1. Exit the mouse pointer from the tower and left-click on it again.
 1. Left-click on the `destroy the tower` button. Verify the following:

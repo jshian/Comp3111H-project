@@ -35,9 +35,9 @@ public class CatapultTest extends JavaFXTester {
 
         //test shooting range valid
         Catapult catapult = new Catapult(arena, new Coordinates((short) 370,(short) 10));
-        Monster m1 = new Unicorn(arena, new Coordinates((short) 110, (short) 110), destination, new ImageView(img), 1);testList.add(m1);arena.addObject(m1);
-        Monster m2 = new Unicorn(arena, new Coordinates((short) 130, (short) 110), destination, new ImageView(img), 1);testList.add(m2);arena.addObject(m2);
-        Monster m3 = new Unicorn(arena, new Coordinates((short) 450, (short) 10), destination, new ImageView(img), 1);testList.add(m3);arena.addObject(m3);
+        Monster m1 = new Unicorn(arena, new Coordinates((short) 110, (short) 110), destination, 1);testList.add(m1);arena.addObject(m1);
+        Monster m2 = new Unicorn(arena, new Coordinates((short) 130, (short) 110), destination, 1);testList.add(m2);arena.addObject(m2);
+        Monster m3 = new Unicorn(arena, new Coordinates((short) 450, (short) 10), destination, 1);testList.add(m3);arena.addObject(m3);
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m3);
         Assert.assertEquals(selectList,answerList);
@@ -47,8 +47,8 @@ public class CatapultTest extends JavaFXTester {
         selectList.clear();
 
         //test shoot monster with nearest but not most monsters
-        Monster m4 = new Unicorn(arena, new Coordinates((short) 330, (short) 10), destination, new ImageView(img), 1);testList.add(m4);arena.addObject(m4);
-        Monster m5 = new Unicorn(arena, new Coordinates((short) 330, (short) 10), destination, new ImageView(img), 1);testList.add(m5);arena.addObject(m5);
+        Monster m4 = new Unicorn(arena, new Coordinates((short) 330, (short) 10), destination, 1);testList.add(m4);arena.addObject(m4);
+        Monster m5 = new Unicorn(arena, new Coordinates((short) 330, (short) 10), destination, 1);testList.add(m5);arena.addObject(m5);
         target=catapult.selectMonster(testList,selectList);
         Assert.assertEquals(selectList,answerList);
         for (ArenaObject m :selectList) {
@@ -57,8 +57,8 @@ public class CatapultTest extends JavaFXTester {
         selectList.clear();
 
         //test shoot monster with same nearest but most monster
-        Monster m6 = new Unicorn(arena, new Coordinates((short) 430, (short) 10), destination, new ImageView(img), 1);testList.add(m6);arena.addObject(m6);
-        Monster m7 = new Unicorn(arena, new Coordinates((short) 470, (short) 50), destination, new ImageView(img), 1);testList.add(m7);arena.addObject(m7);
+        Monster m6 = new Unicorn(arena, new Coordinates((short) 430, (short) 10), destination, 1);testList.add(m6);arena.addObject(m6);
+        Monster m7 = new Unicorn(arena, new Coordinates((short) 470, (short) 50), destination, 1);testList.add(m7);arena.addObject(m7);
         target=catapult.selectMonster(testList,selectList);
         answerList.add(m6);
         Assert.assertEquals(selectList,answerList);

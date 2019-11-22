@@ -164,12 +164,13 @@ public class UIController {
     /**
      * Load the game
      */
+    @FXML
     private void load() {
         // TODO: load the game
         // TODO: load arena instead of creating a new one.
-        Arena arena = new Arena(remainingResources, paneArena);
+        //Arena arena = new Arena(remainingResources, paneArena);
 
-        resetGame();
+        //resetGame();
     }
 
     /**
@@ -443,7 +444,6 @@ public class UIController {
 
         l.setOnMouseEntered(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
         l.setOnMouseMoved(e -> tp.show(l, e.getScreenX()+8, e.getScreenY()+7));
-        l.setOnMouseExited(e -> tp.hide());
         l.setOnMouseExited(e -> tp.hide());
 
         l.setOnDragDetected(e -> {

@@ -1,10 +1,13 @@
 package project.arena.projectiles;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.monsters.Monster;
 import project.arena.monsters.StatusEffect;
@@ -19,11 +22,12 @@ public class IceProjectile extends Projectile {
     private int slowDownTime;
 
     /**
-     * @see Projectile#Projectile(Arena, Tower, Monster, short, short, ImageView)
+     * @see Projectile#Projectile(Arena, Tower, Monster, short, short)
      */
-    public IceProjectile(@NonNull Arena arena, @NonNull IceTower tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
-        super(arena, tower, target, deltaX, deltaY, imageView);
+    public IceProjectile(@NonNull Arena arena, @NonNull IceTower tower, @NonNull Monster target, short deltaX, short deltaY) {
+        super(arena, tower, target, deltaX, deltaY);
         this.slowDownTime = tower.getSlowDownTime();
+        loadImage();
     }
 
     /**
@@ -55,5 +59,14 @@ public class IceProjectile extends Projectile {
         if (!target.hasDied()) {
             target.addStatusEffect(new StatusEffect(StatusEffect.EffectType.Slow, slowDownTime));
         }
+    }
+
+    /**
+     * Load ImageView of monster.
+     */
+    @PostLoad
+    public void loadImage() {
+        imageView = new ImageView(new Image("/iceProjectile.png", UIController.GRID_WIDTH / 8, UIController.GRID_HEIGHT / 8, true, true));
+        coordinates.bindByImage(imageView);
     }
 }

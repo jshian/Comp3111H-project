@@ -45,4 +45,9 @@ public interface ArenaObject {
      * Updates the object by one frame.
      */
      void nextFrame();
+
+    /**
+     * Load the ImageView of the object.
+     */
+    void loadImage();
 }

@@ -1,11 +1,14 @@
 package project.arena.projectiles;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
+import javafx.scene.image.Image;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.Geometry;
+import project.UIController;
 import project.arena.Arena;
 import project.arena.monsters.Monster;
 import project.arena.towers.Catapult;
@@ -19,11 +22,12 @@ public class CatapultProjectile extends Projectile {
     private short damageRange;
 
     /**
-     * Projectile#Projectile(Arena, Tower, Monster, short, short, ImageView)
+     * Projectile#Projectile(Arena, Tower, Monster, short, short)
      */
-    public CatapultProjectile(@NonNull Arena arena, @NonNull Catapult tower, @NonNull Monster target, short deltaX, short deltaY, @NonNull ImageView imageView) {
-        super(arena, tower, target, deltaX, deltaY, imageView);
+    public CatapultProjectile(@NonNull Arena arena, @NonNull Catapult tower, @NonNull Monster target, short deltaX, short deltaY) {
+        super(arena, tower, target, deltaX, deltaY);
         this.damageRange = tower.getSplashRadius();
+        loadImage();
     }
 
     /**
@@ -58,5 +62,14 @@ public class CatapultProjectile extends Projectile {
                 }
             }
         }
+    }
+
+    /**
+     * Load ImageView of monster.
+     */
+    @PostLoad
+    public void loadImage() {
+        imageView = new ImageView(new Image("/catapultProjectile.png", UIController.GRID_WIDTH / 2, UIController.GRID_HEIGHT / 2, true, true));
+        coordinates.bindByImage(imageView);
     }
 }

@@ -11,7 +11,9 @@ import project.arena.Coordinates;
  */
 class TestMonster extends Monster {
     TestMonster(@NonNull Arena arena, @NonNull Coordinates start, @NonNull Coordinates destination, ImageView imageView, double difficulty) {
-        super(arena, start, destination, imageView, difficulty);
+        super(arena, start, destination, difficulty);
+        this.imageView = imageView;
+        this.coordinates.bindByImage(imageView);
     }
 
     TestMonster(@NonNull Arena arena, @NonNull TestMonster other) {
@@ -23,4 +25,7 @@ class TestMonster extends Monster {
 
     @Override
     public TestMonster deepCopy(@NonNull Arena arena) { return new TestMonster(arena, this); }
+
+    @Override
+    public void loadImage() {};
 }
