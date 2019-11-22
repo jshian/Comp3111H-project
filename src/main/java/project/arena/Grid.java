@@ -113,7 +113,7 @@ public final class Grid {
      * @param obj The object to add.
      * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void addObject(@NonNull ArenaObject obj) throws IllegalArgumentException {
+    void addObject(ArenaObject obj) throws IllegalArgumentException {
         if (obj instanceof Tower) {
             if (!towers.contains(obj)) {
                 towers.add((Tower)obj);
@@ -136,7 +136,7 @@ public final class Grid {
      * @param obj The object to be removed.
      * @throws IllegalArgumentException If the object type is not recognized.
      */
-    void removeObject(@NonNull ArenaObject obj) throws IllegalArgumentException {
+    void removeObject(ArenaObject obj) throws IllegalArgumentException {
         if (obj instanceof Tower) {
             towers.remove((Tower)obj);
         } else if (obj instanceof Projectile) {
@@ -153,7 +153,7 @@ public final class Grid {
      * @param coordinates The specified set of coordinates.
      * @return The x-position of the grid, where 0 is left-most, increasing towards the right.
      */
-    public static short findGridXPos(@NonNull Coordinates coordinates) {
+    public static short findGridXPos(Coordinates coordinates) {
         return (short) Math.min(coordinates.getX() / UIController.GRID_WIDTH, UIController.MAX_H_NUM_GRID - 1);
     }
 
@@ -162,7 +162,7 @@ public final class Grid {
      * @param coordinates The specified set of coordinates.
      * @return The y-position of the grid, where 0 is top-most, increasing towards the bottom.
      */
-    public static short findGridYPos(@NonNull Coordinates coordinates) {
+    public static short findGridYPos(Coordinates coordinates) {
         return (short) Math.min(coordinates.getY() / UIController.GRID_HEIGHT, UIController.MAX_V_NUM_GRID - 1);
     }
 
@@ -171,7 +171,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The x-coordinate of the center of the grid which encloses the specified set of coordinates.
      */
-    public static short findGridCenterX(@NonNull Coordinates coordinates) {
+    public static short findGridCenterX(Coordinates coordinates) {
         return findGridCenterX(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -192,7 +192,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The y-coordinate of the center of the grid which encloses the specified set of coordinates.
      */
-    public static short findGridCenterY(@NonNull Coordinates coordinates) {
+    public static short findGridCenterY(Coordinates coordinates) {
         return findGridCenterY(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -213,7 +213,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The coordinates of the center of the grid which encloses the specified set of coordinates.
      */
-    public static Coordinates findGridCenter(@NonNull Coordinates coordinates) {
+    public static Coordinates findGridCenter(Coordinates coordinates) {
         return findGridCenter(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -232,7 +232,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The x-coordinate of the left edge of the grid which encloses the specified set of coordinates.
      */
-    public static short findGridLeftX(@NonNull Coordinates coordinates) {
+    public static short findGridLeftX(Coordinates coordinates) {
         return findGridLeftX(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -253,7 +253,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The y-coordinate of the top edge of the grid which encloses the specified set of coordinates.
      */
-    public static short findGridTopY(@NonNull Coordinates coordinates) {
+    public static short findGridTopY(Coordinates coordinates) {
         return findGridTopY(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -274,7 +274,7 @@ public final class Grid {
      * @param coordinates The set of coordinates.
      * @return The coordinates of the top-left corner of the grid which encloses the specified set of coordinates.
      */
-    public static Coordinates findGridTopLeft(@NonNull Coordinates coordinates) {
+    public static Coordinates findGridTopLeft(Coordinates coordinates) {
         return findGridTopLeft(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 
@@ -293,7 +293,7 @@ public final class Grid {
      * @param coordinates The coordinates of the pixel.
      * @return A linked list containing a reference to the {x, y} position of each taxicab neighbour.
      */
-    public static LinkedList<short[]> findTaxicabNeighbours(@NonNull Coordinates coordinates) {
+    public static LinkedList<short[]> findTaxicabNeighbours(Coordinates coordinates) {
         return findTaxicabNeighbours(findGridXPos(coordinates), findGridYPos(coordinates));
     }
 

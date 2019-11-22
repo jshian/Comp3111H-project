@@ -194,7 +194,7 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param type The type of the tower.
 	 * @param coordinates The coordinates inside the paneArena.
 	 */
-	protected final void simulateBuildTower(@NonNull TowerType type, @NonNull Coordinates coordinates) {
+	protected final void simulateBuildTower(TowerType type, Coordinates coordinates) {
 		Label l = (Label)currentScene.lookup("#label" + type.name());
 		Bounds labelBound = l.localToScreen(l.getLayoutBounds());
 		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
@@ -221,7 +221,7 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param type The type of the tower.
 	 * @param coordinates The coordinates inside the paneArena.
 	 */
-	protected final boolean hasTower(@NonNull TowerType type, @NonNull Coordinates coordinates) {
+	protected final boolean hasTower(TowerType type, Coordinates coordinates) {
 		Coordinates topLeft = Grid.findGridTopLeft(coordinates);
 		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
 		for (Node n : b.getChildren()) {

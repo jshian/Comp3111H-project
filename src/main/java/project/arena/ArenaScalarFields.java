@@ -200,7 +200,7 @@ final class ArenaScalarFields {
      * @param coordinates The coordinates of the pixel.
      * @return The distance to reach the end-zone from the pixel, in number of pixels traversed.
      */
-    short getDistanceToEndZone(@NonNull Coordinates coordinates) {
+    short getDistanceToEndZone(Coordinates coordinates) {
         return distanceToEndZone[coordinates.getX()][coordinates.getY()];
     }
 
@@ -209,7 +209,7 @@ final class ArenaScalarFields {
      * @param coordinates The coordinates of the pixel.
      * @return The number of attacks a lone monster that moves at 1 pixel per frame would get to reach the end-zone from the specified pixel. 
      */
-    double getAttacksToEndZone(@NonNull Coordinates coordinates) {
+    double getAttacksToEndZone(Coordinates coordinates) {
         return attacksToEndZone[coordinates.getX()][coordinates.getY()];
     }
 
@@ -236,7 +236,7 @@ final class ArenaScalarFields {
      * @param tower The tower that was added.
      * @param deferRefresh Whether to defer the refreshing of scalar fields that directly influence pathfinding.
      */
-    void processAddTower(@NonNull Tower tower, boolean deferRefresh) {
+    void processAddTower(Tower tower, boolean deferRefresh) {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame
@@ -253,7 +253,7 @@ final class ArenaScalarFields {
      * @param tower The tower that was removed.
      * @param deferRefresh Whether to defer the refreshing of scalar fields that directly influence pathfinding.
      */
-    void processRemoveTower(@NonNull Tower tower, boolean deferRefresh) {
+    void processRemoveTower(Tower tower, boolean deferRefresh) {
         LinkedList<Coordinates> pixelsInRange = getPixelsInRange(new Coordinates(tower.getX(), tower.getY()), tower.getMinShootingRange(), tower.getMaxShootingRange());
 
         // Update attacksPerFrame

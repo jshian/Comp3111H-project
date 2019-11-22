@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Point2D;
@@ -166,7 +167,7 @@ public final class Arena {
      * Adds an object to the arena.
      * @param obj The object to add.
      */
-    public void addObject(@NonNull ArenaObject obj) {
+    public void addObject(ArenaObject obj) {
         paneArena.getChildren().add(obj.getImageView());
         arenaObjectStorage.processAddObject(obj);
 
@@ -179,7 +180,7 @@ public final class Arena {
      * Removes an object from the arena.
      * @param obj The object to remove.
      */
-    public void removeObject(@NonNull ArenaObject obj) {
+    public void removeObject(ArenaObject obj) {
         paneArena.getChildren().remove(obj.getImageView());
         arenaObjectStorage.processRemoveObject(obj);
 
@@ -198,7 +199,7 @@ public final class Arena {
      * @param newCoordinates The coordinates of the new location.
      * @throws IllegalArgumentException The object type is not recognized.
      */
-    private void moveObject(@NonNull ArenaObject obj, @NonNull Coordinates newCoordinates)
+    private void moveObject(ArenaObject obj, Coordinates newCoordinates)
     {
         arenaObjectStorage.processMoveObject(obj, newCoordinates);
     }
@@ -208,7 +209,7 @@ public final class Arena {
      * @param obj The object to update.
      * @return the object that has been marked as pending { add, removal }.
      */
-    private ArenaObject[] objectNextFrame(@NonNull ArenaObject obj) {
+    private ArenaObject[] objectNextFrame(ArenaObject obj) {
         return arenaObjectStorage.processObjectNextFrame(obj);
     }
 
@@ -229,7 +230,7 @@ public final class Arena {
      * @param resourceLabel the label to show remaining resources of player.
      * @param paneArena the arena pane of the game.
      */
-    public Arena(@NonNull Label resourceLabel, @NonNull AnchorPane paneArena) {
+    public Arena(Label resourceLabel, AnchorPane paneArena) {
         player = new Player("name", 200);
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
@@ -244,7 +245,7 @@ public final class Arena {
      * Copy constructor of the Arena class. Performs deep copy.
      * @param other The other object to copy from.
      */
-    public Arena(@NonNull Arena other) {
+    public Arena(Arena other) {
         this.player = new Player(other.player.getName(), other.player.getResources());
 
         this.currentFrame = other.currentFrame;
@@ -308,7 +309,7 @@ public final class Arena {
     /**
      * @see ArenaScalarFields#getDistanceToEndZone(Coordinates)
      */
-    public short getDistanceToEndZone(@NonNull Coordinates coordinates) {
+    public short getDistanceToEndZone(Coordinates coordinates) {
         return arenaScalarFields.getDistanceToEndZone(coordinates);
     }
 
@@ -340,7 +341,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria.
      * @see TypeFilter
      */
-    public LinkedList<ArenaObject> findObjectsAtPixel(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsAtPixel(coordinates, filter);
     }
@@ -353,7 +354,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monster}s are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
-    public LinkedList<ArenaObject> findObjectsInRange(@NonNull Coordinates coordinates, double range, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsInRange(Coordinates coordinates, double range, EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInRange(coordinates, range, filter);
     }
@@ -365,7 +366,7 @@ public final class Arena {
      * @return A linked list containing a reference to each object that satisfies the above criteria. If only {@link Monsters} are included, they will be sorted by path length to the end-zone.
      * @see TypeFilter
      */
-    public LinkedList<ArenaObject> findObjectsInGrid(@NonNull Coordinates coordinates, @NonNull EnumSet<TypeFilter> filter)
+    public LinkedList<ArenaObject> findObjectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
     {
         return arenaObjectStorage.findObjectsInGrid(coordinates, filter);
     }
@@ -374,7 +375,7 @@ public final class Arena {
      * Determines the cost of building a tower.
      * @param type The type of tower to build.
      */
-    public int findTowerBuildingCost(@NonNull TowerType type) {
+    public int findTowerBuildingCost(TowerType type) {
         switch (type) {
             case BasicTower:
                 return BasicTower.findInitialBuildingCost();
@@ -394,7 +395,7 @@ public final class Arena {
      * @param type type of the tower.
      * @return true if the player has enough resources or false otherwise.
      */
-    public boolean hasResources(@NonNull TowerType type)
+    public boolean hasResources(TowerType type)
     {
         return player.hasResources(findTowerBuildingCost(type));
     }
@@ -405,7 +406,7 @@ public final class Arena {
      * @param type type of the tower.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
-    public boolean canBuildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
+    public boolean canBuildTower(Coordinates coordinates, TowerType type)
     {
         boolean empty = findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
         if (!empty) return false;
@@ -424,7 +425,7 @@ public final class Arena {
      * @param coordinates The coordinates of tower to be built.
      * @return true if all monster can go to end-zone after building a tower, false otherwise.
      */
-    private boolean hasRoute(@NonNull Coordinates coordinates) {
+    private boolean hasRoute(Coordinates coordinates) {
         Grid gridToBeBuilt = arenaObjectStorage.getGrid(coordinates);
 
         boolean[][] noTower = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
@@ -459,7 +460,7 @@ public final class Arena {
      * @param x x-position of the destination.
      * @param y y-position of the destination.
      */
-    private void gridDFS(@NonNull boolean[][] noTower, @NonNull boolean[][] visited, short x, short y)
+    private void gridDFS(boolean[][] noTower, boolean[][] visited, short x, short y)
     {
         if (x < 0 || y < 0 || x >= noTower.length || y >= noTower[0].length)
             return;
@@ -479,7 +480,7 @@ public final class Arena {
      * @param type specify the class of tower.
      * @return the tower being built, or null if not enough resources
      */
-    public Tower buildTower(@NonNull Coordinates coordinates, @NonNull TowerType type)
+    public @Nullable Tower buildTower(Coordinates coordinates, TowerType type)
     {
         Coordinates center = Grid.findGridCenter(coordinates);
         Tower t = arenaObjectFactory.createTower(type, center);
@@ -499,7 +500,7 @@ public final class Arena {
      * @param t the tower to be upgrade
      * @return true if upgrade is successful, false if player don't have enough resources.
      */
-    public boolean upgradeTower(@NonNull Tower t) {
+    public boolean upgradeTower(Tower t) {
         if (t.canUpgrade(player)) {
             arenaScalarFields.processRemoveTower(t, true);
             t.tryUpgrade(player);
@@ -519,7 +520,7 @@ public final class Arena {
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      * @return The newly-created Projectile object.
      */
-    public Projectile createProjectile(@NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
+    public Projectile createProjectile(Tower tower, Monster target, short deltaX, short deltaY) {
         return arenaObjectFactory.createProjectile(tower, target, deltaX, deltaY);
     }
 
@@ -547,7 +548,7 @@ public final class Arena {
      * @param type specify the type of the monster.
      * @return the monster being generated.
      */
-    public Monster generateMonster(@NonNull MonsterType type)
+    public Monster generateMonster(MonsterType type)
     {
         // Create some randomness of spawn location
         short startX = (short) (STARTING_COORDINATES.getX() + Math.random() * UIController.GRID_WIDTH / 2);
@@ -566,56 +567,6 @@ public final class Arena {
         System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
 
         return m;
-    }
-
-    /**
-     * Finds the next location for an object to move in order to reach the end-zone by moving as few pixels as possible.
-     * @param coordinates The coordinates of the object.
-     * @return The coordinates of the next pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
-     */
-    public Coordinates findNextTowardsEnd_prioritizeMovement(@NonNull Coordinates coordinates) {
-        if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
-        if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
-
-        LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
-
-        short lowestCost = Short.MAX_VALUE;
-        Coordinates lowestCostNeighbour = null;
-        for (Coordinates neighbour : neighbours) {
-            short cost = arenaScalarFields.getDistanceToEndZone(neighbour);
-
-            if (cost < lowestCost) {
-                lowestCost = cost;
-                lowestCostNeighbour = neighbour;
-            }
-        }
-
-        return lowestCostNeighbour;
-    }
-
-    /**
-     * Finds the next location for an object to move in order to reach the end-zone with the least attacks received.
-     * @param coordinates The coordinates of the object.
-     * @return The coordinates of the next pixel to move to. If there is no valid path or the pixel is already at the end-zone, returns <code>null</code>.
-     */
-    public Coordinates findNextTowardsEnd_prioritizeAttack(@NonNull Coordinates coordinates) {
-        if (Double.isInfinite(arenaScalarFields.getDistanceToEndZone(coordinates))) return null;
-        if (Geometry.isAt(END_COORDINATES.getX(), END_COORDINATES.getY(), coordinates.getX(), coordinates.getY())) return null;
-
-        LinkedList<Coordinates> neighbours = Coordinates.findTaxicabNeighbours(coordinates);
-
-        double lowestCost = Double.POSITIVE_INFINITY;
-        Coordinates lowestCostNeighbour = null;
-        for (Coordinates neighbour : neighbours) {
-            double cost = arenaScalarFields.getAttacksToEndZone(neighbour);
-
-            if (cost < lowestCost) {
-                lowestCost = cost;
-                lowestCostNeighbour = neighbour;
-            }
-        }
-
-        return lowestCostNeighbour;
     }
 
     /**
@@ -725,7 +676,7 @@ public final class Arena {
      * @param source The origin of the ray.
      * @param target The target of the ray.
      */
-    public void drawRay(@NonNull ArenaObject source, @NonNull ArenaObject target) {
+    public void drawRay(ArenaObject source, ArenaObject target) {
         drawRay(new Coordinates(source.getX(), source.getY()), new Coordinates(target.getX(), target.getY()));
     }
 
@@ -734,7 +685,7 @@ public final class Arena {
      * @param source The origin of the ray.
      * @param target The target of the ray.
      */
-    public void drawRay(@NonNull Coordinates source, @NonNull Coordinates target) {
+    public void drawRay(Coordinates source, Coordinates target) {
         Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
                                                     0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
         
@@ -750,7 +701,7 @@ public final class Arena {
      * @param source The center coordinates og the circle.
      * @param damageRange The radius of the circle.
      */
-    public void drawCircle(@NonNull Coordinates source, @NonNull short damageRange){
+    public void drawCircle(Coordinates source, short damageRange){
         Circle circle = new Circle();
         circle.setCenterX(source.getX());
         circle.setCenterY(source.getY());

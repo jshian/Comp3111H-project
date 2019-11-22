@@ -5,9 +5,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import project.UIController;
-import project.arena.towers.*;
-import project.arena.projectiles.*;
-import project.arena.monsters.*;
+import project.entity.*;
 
 /**
  * Manages the creation of objects in the {@link Arena}.
@@ -60,7 +58,7 @@ public final class ArenaObjectFactory {
      * @param center The coordinates of the center of the tower.
      * @return The newly-created Tower object.
      */
-    Tower createTower(@NonNull TowerType type, @NonNull Coordinates center) {
+    Tower createTower(TowerType type, Coordinates center) {
         ImageView iv;
         switch (type) {
             case BasicTower:
@@ -88,7 +86,7 @@ public final class ArenaObjectFactory {
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      * @return The newly-created Projectile object.
      */
-    Projectile createProjectile(@NonNull Tower tower, @NonNull Monster target, short deltaX, short deltaY) {
+    Projectile createProjectile(Tower tower, Monster target, short deltaX, short deltaY) {
         ImageView iv;
 
         if (tower instanceof BasicTower) {
@@ -137,7 +135,7 @@ public final class ArenaObjectFactory {
      * @param difficulty The difficulty of the monster.
      * @return The newly-created Monster object.
      */
-    Monster createMonster(@NonNull MonsterType type, @NonNull Coordinates start, @NonNull Coordinates destination, double difficulty) {
+    Monster createMonster(MonsterType type, Coordinates start, Coordinates destination, double difficulty) {
         ImageView iv;
         switch (type) {
             case Fox:
