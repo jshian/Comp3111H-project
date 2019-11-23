@@ -1,16 +1,17 @@
-package project.controller;
+package project.field;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import project.controller.ArenaManager;
 import project.entity.ArenaObjectPositionInfo;
 
 /**
  * A scalar field that permeates the arena.
  */
-public abstract class ArenaScalarField<T extends Number & Comparable<T>> {
+public class ArenaScalarField<T extends Number & Comparable<T>> {
 
     private Object[][] values = new Object[ArenaManager.ARENA_WIDTH][ArenaManager.ARENA_HEIGHT];
 

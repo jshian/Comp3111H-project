@@ -24,7 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.ArenaObjectFactory;
 import project.arena.Coordinates;
 import project.arena.Grid;
@@ -97,7 +97,7 @@ public class UIController {
     /**
      * the arena of the game.
      */
-    private Arena arena;
+    private ArenaInstance arena;
 
     /**
      * circle that shows shooting range of tower.
@@ -167,7 +167,7 @@ public class UIController {
     private void load() {
         // TODO: load the game
         // TODO: load arena instead of creating a new one.
-        Arena arena = new Arena(remainingResources, paneArena);
+        ArenaInstance arena = new ArenaInstance(remainingResources, paneArena);
 
         resetGame();
     }
@@ -194,7 +194,7 @@ public class UIController {
         timeline.stop();
         paneArena.getChildren().removeAll(paneArena.getChildren());
         paneArena.getChildren().addAll(initialArena().getChildren());
-        arena = new Arena(remainingResources, paneArena);
+        arena = new ArenaInstance(remainingResources, paneArena);
         this.mode = GameMode.normal;
     }
 
@@ -260,7 +260,7 @@ public class UIController {
             }
         });
 
-        arena = new Arena(remainingResources, paneArena);
+        arena = new ArenaInstance(remainingResources, paneArena);
         setDragLabel();
     }
 
@@ -286,6 +286,7 @@ public class UIController {
         if (this.mode != GameMode.end) {
             boolean gameOver = arena.nextFrame();
             if (gameOver) {
+                System.out.println("Gameover");
                 mode = GameMode.end;
                 enableGameButton();
                 showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());

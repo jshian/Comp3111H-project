@@ -8,7 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.ImageView;
 import project.Player;
 import project.UIController;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 
 /**
@@ -16,6 +16,11 @@ import project.arena.Coordinates;
  */
 @Entity
 public class LaserTower extends Tower{
+
+    /**
+     * The duration of laser of {@link LaserTower} being displayed.
+     */
+    static final int LASER_DISPLAY_DURATION = 2;
 
     /**
      * Finds the initial building cost of the tower.
@@ -36,7 +41,7 @@ public class LaserTower extends Tower{
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of laser tower.
      */
-    public LaserTower(Arena arena, Coordinates coordinates){
+    public LaserTower(ArenaInstance arena, Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 30;
         this.buildValue = findInitialBuildingCost();
@@ -55,7 +60,7 @@ public class LaserTower extends Tower{
      * @param coordinates The coordinates of laser tower.
      * @param imageView The image view of laser tower.
      */
-    public LaserTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public LaserTower(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 30;
         this.buildValue = 20;
@@ -66,15 +71,15 @@ public class LaserTower extends Tower{
     }
 
     /**
-     * @see Tower#Tower(Arena, Tower)
+     * @see Tower#Tower(ArenaInstance, Tower)
      */
-    public LaserTower(Arena arena, LaserTower other) {
+    public LaserTower(ArenaInstance arena, LaserTower other) {
         super(arena, other);
         this.shootingCost = other.shootingCost;
     }
 
     @Override
-    public LaserTower deepCopy(Arena arena) {
+    public LaserTower deepCopy(ArenaInstance arena) {
         return new LaserTower(arena, this);
     }
 

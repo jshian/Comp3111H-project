@@ -7,7 +7,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.UIController;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 
 /**
@@ -29,7 +29,7 @@ public class BasicTower extends Tower {
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinate of basic tower.
      */
-    public BasicTower(Arena arena, Coordinates coordinates){
+    public BasicTower(ArenaInstance arena, Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 10;
         this.buildValue = findInitialBuildingCost();
@@ -46,7 +46,7 @@ public class BasicTower extends Tower {
      * @param coordinates The coordinates of the tower.
      * @param imageView The image view of the tower.
      */
-    public BasicTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public BasicTower(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 10;
         this.buildValue = 10;
@@ -56,14 +56,14 @@ public class BasicTower extends Tower {
     }
 
     /**
-     * @see Tower#Tower(Arena, Tower)
+     * @see Tower#Tower(ArenaInstance, Tower)
      */
-    public BasicTower(Arena arena, BasicTower other) {
+    public BasicTower(ArenaInstance arena, BasicTower other) {
         super(arena, other);
     }
 
     @Override
-    public BasicTower deepCopy(Arena arena) {
+    public BasicTower deepCopy(ArenaInstance arena) {
         return new BasicTower(arena, this);
     }
 

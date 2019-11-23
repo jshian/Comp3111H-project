@@ -18,7 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import project.DeepCopyTester;
 import project.JavaFXTester;
 import project.UIController;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.ArenaObjectFactory.MonsterType;
 import project.arena.Coordinates;
 import project.arena.Grid;
@@ -32,12 +32,12 @@ public class MonsterTester extends JavaFXTester {
 
     @Test
     public void testBaseClassMethods() {
-        Arena a1 = new Arena(new Label(), new AnchorPane());
+        ArenaInstance a1 = new ArenaInstance(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 15, (short) 25);
         Coordinates end = new Coordinates((short) 100, (short) 70);
         ImageView iv = new ImageView(new Image("/collision.png"));
 
-        Class<?>[] constructorArgTypes = { Arena.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
+        Class<?>[] constructorArgTypes = { ArenaInstance.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
 
         // Test regular constructor
         assertExceptionThrown_constructor(IllegalArgumentException.class, TestMonster.class, constructorArgTypes, new Object[]{ a1, start, end, iv, 0 }); // Difficulty must be at least 1
@@ -98,26 +98,26 @@ public class MonsterTester extends JavaFXTester {
         assertTrue(originalSpeed == m1.getSpeed()); // Monster should not be slowed
 
         // Test copy constructor
-        Arena a2 = new Arena(new Label(), new AnchorPane());
+        ArenaInstance a2 = new ArenaInstance(new Label(), new AnchorPane());
         Monster m2 = new TestMonster(a2, (TestMonster)m1);
         assertEquals(m2.arena, a2);
         DeepCopyTester.assertDeepCopy(m1, m2);
 
         m2.addStatusEffect(slowEffect);
 
-        Arena a3 = new Arena(new Label(), new AnchorPane());
+        ArenaInstance a3 = new ArenaInstance(new Label(), new AnchorPane());
         Monster m3 = new TestMonster(a3, (TestMonster)m2);
         DeepCopyTester.assertDeepCopy(m2, m3);
     }
 
     @Test
     public void testFox() {
-        Arena a1 = new Arena(new Label(), new AnchorPane());
+        ArenaInstance a1 = new ArenaInstance(new Label(), new AnchorPane());
         Coordinates start = new Coordinates((short) 18, (short) 23);
         Coordinates end = new Coordinates((short) 480, (short) 480);
         ImageView iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
 
-        Class<?>[] constructorArgTypes = { Arena.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
+        Class<?>[] constructorArgTypes = { ArenaInstance.class, Coordinates.class, Coordinates.class, ImageView.class, double.class };
 
         // Test regular constructor
         assertExceptionThrown_constructor(IllegalArgumentException.class, Fox.class, constructorArgTypes, new Object[]{ a1, start, end, iv, 0 }); // Difficulty must be at least 1
@@ -161,7 +161,7 @@ public class MonsterTester extends JavaFXTester {
         simulateGameNoSpawning(4);
 
         // Test copy constructor
-        Arena a2 = new Arena(new Label(), new AnchorPane());
+        ArenaInstance a2 = new ArenaInstance(new Label(), new AnchorPane());
         Fox f2 = new Fox(a2, f1);
         assertEquals(f2.arena, a2);
 

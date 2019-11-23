@@ -14,7 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.ImageView;
 import project.Geometry;
 import project.Player;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 
 import java.util.LinkedList;
 
@@ -41,7 +41,7 @@ public abstract class Tower extends ArenaObject {
      */
     @NotNull
     @ManyToOne
-    protected final Arena arena;
+    protected final ArenaInstance arena;
 
     /**
      * Represents the position of the tower.
@@ -112,7 +112,7 @@ public abstract class Tower extends ArenaObject {
      * Constructor for Tower class.
      * @param coordinates The coordinates of the tower.
      */
-    public Tower(Arena arena, Coordinates coordinates){
+    public Tower(ArenaInstance arena, Coordinates coordinates){
         this.arena = arena;
         this.coordinates = coordinates;
     }
@@ -123,7 +123,7 @@ public abstract class Tower extends ArenaObject {
      * @param coordinates The coordinates of the tower.
      * @param imageView The image view of the tower.
      */
-    public Tower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public Tower(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
         this.arena = arena;
         this.coordinates = new Coordinates(coordinates);
         this.imageView = imageView;
@@ -136,7 +136,7 @@ public abstract class Tower extends ArenaObject {
      * @param arena The arena to link this object to.
      * @param other The object to copy from.
      */
-    public Tower(Arena arena, Tower other) {
+    public Tower(ArenaInstance arena, Tower other) {
         this.imageView = new ImageView(other.imageView.getImage());
         this.arena = arena;
         this.coordinates = new Coordinates(other.coordinates);
@@ -158,7 +158,7 @@ public abstract class Tower extends ArenaObject {
      * @param arena The arena to link this object to.
      * @return A deep copy of the tower.
      */
-    public abstract Tower deepCopy(Arena arena);
+    public abstract Tower deepCopy(ArenaInstance arena);
 
     // Interface implementation
     /**

@@ -9,25 +9,28 @@ import project.event.eventsets.*;
  */
 public final class ArenaEventManager {
 
-    private ArenaEventManager() {}
+    /**
+     * Constructs a newly allocated {@link ArenaEventManager} object.
+     */
+    ArenaEventManager() {}
 
     /**
      * Event manager for arena-wide events.
      */
-    public static final EventManager<ArenaEvent, EventArgs> ARENA = new EventManager<>();
+    public final EventManager<ArenaEvent, EventArgs> ARENA = new EventManager<>();
 
     /**
      * Event manager for events about {@ArenaObject} I/O.
      */
-    public static final EventManager<ArenaObjectIOEvent, ArenaObjectEventArgs> OBJECT_IO = new EventManager<>();
+    public final EventManager<ArenaObjectIOEvent, ArenaObjectEventArgs> OBJECT_IO = new EventManager<>();
 
     /**
      * Event manager for events about {@ArenaObject} movement.
      */
-    public static final EventManager<ArenaObjectMoveEvent, ArenaObjectMoveEventArgs> OBJECT_MOVE = new EventManager<>();
+    public final EventManager<ArenaObjectMoveEvent, ArenaObjectMoveEventArgs> OBJECT_MOVE = new EventManager<>();
 
     /**
      * Event manager for events about {@Tower}.
      */
-    public static final EventManager<ArenaTowerChangeEvent, ArenaTowerEventArgs> TOWER_CHANGE = new EventManager<>();
+    public final EventManager<ArenaTowerChangeEvent, ArenaTowerUpgradeArgs> TOWER_CHANGE = new EventManager<>();
 }

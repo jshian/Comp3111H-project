@@ -18,7 +18,7 @@ import javafx.scene.control.Tooltip;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 import project.arena.Grid;
 import project.controller.ArenaScalarField;
@@ -102,7 +102,7 @@ public abstract class Monster extends ArenaComparableObject implements Informati
      * @param imageView The ImageView that displays the monster.
      * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
      */
-    public Monster(Arena arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
+    public Monster(ArenaInstance arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
         
         this.imageView = imageView;
@@ -229,7 +229,7 @@ public abstract class Monster extends ArenaComparableObject implements Informati
     /**
      * show monster hp when mouse is hover over the monster.
      */
-    protected void hoverMonsterEvent(Arena arena) {
+    protected void hoverMonsterEvent(ArenaInstance arena) {
         Tooltip tp = new Tooltip();
         tp.textProperty().bind(Bindings.format("hp: %.2f", health));
 

@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 
 /**
@@ -19,9 +19,9 @@ public class Penguin extends Monster {
     private static double REGENERATION_RATE = 0.1;
     
     /**
-     * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
+     * @see Monster#Monster(ArenaInstance, Coordinates, Coordinates, ImageView, double)
      */
-    public Penguin(Arena arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
+    public Penguin(ArenaInstance arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
         this.maxHealth = 7.5 + 3 * difficulty;
         this.maxSpeed = 3 + 0.3 * Math.log10(difficulty);
@@ -31,14 +31,14 @@ public class Penguin extends Monster {
     }
 
     /**
-     * @see Monster#Monster(Arena, Monster)
+     * @see Monster#Monster(ArenaInstance, Monster)
      */
-    public Penguin(Arena arena, Penguin other) {
+    public Penguin(ArenaInstance arena, Penguin other) {
         super(arena, other);
     }
     
     @Override
-    public Penguin deepCopy(Arena arena) {
+    public Penguin deepCopy(ArenaInstance arena) {
         return new Penguin(arena, this);
     }
 

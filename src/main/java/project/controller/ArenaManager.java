@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import project.arena.ArenaInstance;
 import project.entity.BasicTower;
 import project.entity.Catapult;
 import project.entity.IceTower;
@@ -69,18 +70,28 @@ public final class ArenaManager {
     static int WAVE_INTERVAL = 50;
 
     /**
-     * The active instance.
+     * The active event manager.
      */
-    private static ArenaInstance activeInstance;
+    private static ArenaEventManager activeEventManager = new ArenaEventManager();
 
     /**
-     * Copy of an instance to facilitate undisturbed saving of the game.
+     * The active scalar field manager.
+     */
+    private static ArenaScalarFieldManager activeScalarFieldManager = new ArenaScalarFieldManager();
+
+    /**
+     * The active arena instance.
+     */
+    private static ArenaInstance activeArenaInstance;
+
+    /**
+     * Copy of an arena instance to facilitate undisturbed saving of the game.
      * Each object within will be automatically unsubscribed from all {@link ArenaEvent}s.
      */
-    private static ArenaInstance shadowInstance;
+    private static ArenaInstance shadowArenaInstance;
 
     /**
-     * Constructs a newly allocated ArenaManager object.
+     * Constructs a newly allocated {@link ArenaManager} object.
      */
     private ArenaManager() {
         assert ARENA_WIDTH % GRID_WIDTH == 0;
@@ -90,6 +101,19 @@ public final class ArenaManager {
         assert END_X >= 0 && END_X <= ARENA_WIDTH;
         assert END_Y >= 0 && END_Y <= ARENA_HEIGHT;
     }
+
+    /**
+     * Archives the currently active event manager, setting the active instance to a new one.
+     */
+    private static void archive() {
+        activeEventManager = new ArenaEventManager();
+    }
+
+    // TODO
+    public static void save() {}
+
+    // TODO
+    public static void load() {}
 
     /**
      * Enum of available {@link Tower} types for the arena.
@@ -127,4 +151,32 @@ public final class ArenaManager {
          */
         public Class<? extends Tower> getTowerType() { return towerType; }
     }
+
+    /**
+     * Returns the cost to build a tower of some type.
+     * @param type The tower type.
+     * @return The building cost of the specified tower type.
+     */
+    public static int getTowerBuildingCost(TowerType type) {
+        return type.getTowerType().getBuildingCost();
+    }
+
+    /**
+     * Returns the active event manager.
+     * @return The active event manager.
+     */
+    public static ArenaEventManager getActiveEventManager() { return activeEventManager; }
+
+    /**
+     * Returns the active scalar field manager.
+     * @return The active scalar field manager.
+     */
+    public static ArenaScalarFieldManager getActiveScalarFieldManager() { return activeScalarFieldManager; }
+
+    /**
+     * Returns the active arena instance.
+     * @return The active arena instance.
+     */
+    public static ArenaInstance getActiveArenaInstance() { return activeArenaInstance; }
+
 }

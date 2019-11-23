@@ -13,5 +13,10 @@ public enum ArenaEvent implements EventSet {
     /**
      * The arena has finished processing its next frame.
      */
-    NEXT_FRAME_END;
+    NEXT_FRAME_END,
+
+    /**
+     * Gameover has occurred.
+     */
+    GAME_OVER;
 }

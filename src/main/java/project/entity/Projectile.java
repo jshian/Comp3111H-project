@@ -18,6 +18,7 @@ import project.controller.ArenaEventManager;
 import project.controller.ArenaManager;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventsets.ArenaObjectIOEvent;
+import project.query.ArenaObjectStorage;
 
 /**
  * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
@@ -99,12 +100,11 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
                 hasReachedTarget = true;
                 damageTarget();
 
-                ArenaObjectEventArgs invokeArgs = new ArenaObjectEventArgs() {
-                    {
-                        subject = Projectile.this;
-                    }
-                };
-                ArenaEventManager.OBJECT_IO.invoke(ArenaObjectIOEvent.REMOVE, this, invokeArgs);
+                ArenaManager.getActiveEventManager().OBJECT_IO.invoke(ArenaObjectIOEvent.REMOVE, this,
+                        new ArenaObjectEventArgs() {
+                            { subject = Projectile.this; }
+                        }
+                );
             } else {
                 double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), targetX, targetY);
                 short newX = (short) (getX() + (short) (potentialDistanceTravelled * Math.cos(angleFromTarget)));
@@ -125,9 +125,10 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
+     * @param isActive Whether the object is active.
      */
-    public Projectile(ArenaObjectStorage storage, ImageView imageView, Tower tower, Monster target, short deltaX, short deltaY) {
-        super(storage, imageView, tower.getX(), tower.getY());
+    public Projectile(ArenaObjectStorage storage, ImageView imageView, Tower tower, Monster target, short deltaX, short deltaY, boolean isActive) {
+        super(storage, imageView, tower.getX(), tower.getY(), isActive);
         this.target = target;
         this.deltaX = deltaX;
         this.deltaY = deltaY;

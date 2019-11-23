@@ -12,7 +12,7 @@ import project.event.eventsets.EventSet;
  * @param <TEvent> An enum type denoting the set of events.
  * @param <TEventArgs> A class type denoting the set of arguments.
  */
-public class EventManager<TEvent extends Enum<?> & EventSet, TEventArgs extends EventArgs> {
+public class EventManager<TEvent extends Enum<TEvent> & EventSet, TEventArgs extends EventArgs> {
 
     HashMap<TEvent, LinkedList<EventHandler<TEventArgs>>> subscribers = new HashMap<>();
 

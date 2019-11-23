@@ -9,7 +9,7 @@ import project.query.ArenaObjectStorage;
 public abstract class ArenaComparableObject extends ArenaObject implements Comparable<ArenaComparableObject> {
 
     /**
-     * Constructs a newly allocated ArenaComparableObject object.
+     * Constructs a newly allocated {@link ArenaComparableObject} object.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
@@ -19,6 +19,8 @@ public abstract class ArenaComparableObject extends ArenaObject implements Compa
         super(storage, imageView, x, y);
     }
 
-    public abstract int compareTo(ArenaComparableObject o);
+    public int compareTo(ArenaComparableObject o) {
+        return 0; // By default, objects of different types are considered "equal"
+    }
 
 }

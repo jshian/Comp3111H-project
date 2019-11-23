@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 
 /**
@@ -14,9 +14,9 @@ import project.arena.Coordinates;
 @Entity
 public class Fox extends Monster {
     /**
-     * @see Monster#Monster(Arena, Coordinates, Coordinates, ImageView, double)
+     * @see Monster#Monster(ArenaInstance, Coordinates, Coordinates, ImageView, double)
      */
-    public Fox(Arena arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
+    public Fox(ArenaInstance arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
         this.maxHealth = 5 + 2 * difficulty;
         this.maxSpeed = 5 + 0.5 * Math.log10(difficulty);
@@ -26,14 +26,14 @@ public class Fox extends Monster {
     }
 
     /**
-     * @see Monster#Monster(Arena, Monster)
+     * @see Monster#Monster(ArenaInstance, Monster)
      */
-    public Fox(Arena arena, Fox other) {
+    public Fox(ArenaInstance arena, Fox other) {
         super(arena, other);
     }
     
     @Override
-    public Fox deepCopy(Arena arena) {
+    public Fox deepCopy(ArenaInstance arena) {
         return new Fox(arena, this);
     }
 

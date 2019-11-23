@@ -3,18 +3,18 @@ package project.arena.monsters;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 
 /**
  * Stub that is a basic implementation of {@link Monster}.
  */
 class TestMonster extends Monster {
-    TestMonster(Arena arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
+    TestMonster(ArenaInstance arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
         super(arena, start, destination, imageView, difficulty);
     }
 
-    TestMonster(Arena arena, TestMonster other) {
+    TestMonster(ArenaInstance arena, TestMonster other) {
         super(arena, other);
     }
 
@@ -22,5 +22,5 @@ class TestMonster extends Monster {
     public String getClassName() { return "TestMonster"; }
 
     @Override
-    public TestMonster deepCopy(Arena arena) { return new TestMonster(arena, this); }
+    public TestMonster deepCopy(ArenaInstance arena) { return new TestMonster(arena, this); }
 }

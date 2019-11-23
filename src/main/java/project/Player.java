@@ -4,6 +4,13 @@ import javax.persistence.Entity;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import project.controller.ArenaManager;
+import project.entity.ArenaObject;
+import project.entity.Monster;
+import project.entity.Tower;
+import project.event.EventHandler;
+import project.event.eventargs.ArenaObjectEventArgs;
+import project.event.eventsets.ArenaObjectIOEvent;
 
 @Entity
 public class Player {
@@ -13,6 +20,20 @@ public class Player {
     private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
+     * The method invoked when an {@link ArenaObject} is removed.
+     */
+    private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+
+        if (subject instanceof Tower) {
+            receiveResources(((Tower) subject).getBuildValue() / 2);
+        }
+        if (subject instanceof Monster) {
+            receiveResources(((Monster) subject).getResources());
+        }
+    };
+
+    /**
      * Constructor of player
      * @param name the name of player
      * @param resource the amount of resources player has.
@@ -20,6 +41,8 @@ public class Player {
     public Player(String name, int resource) {
         this.name = name;
         this.resources.set(resource);
+
+        ArenaManager.getActiveEventManager().OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
     }
 
     /**

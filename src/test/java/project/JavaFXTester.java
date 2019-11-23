@@ -25,7 +25,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import project.UIController.GameMode;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.ArenaObjectFactory.MonsterType;
 import project.arena.Coordinates;
 import project.arena.Grid;
@@ -66,13 +66,13 @@ public class JavaFXTester extends ApplicationTest {
 	 * Accesses the arena that is currently loaded.
 	 * @return The arena that is currently loaded.
 	 */
-	protected final Arena getCurrentArena() {
-		Arena arena = null;
+	protected final ArenaInstance getCurrentArena() {
+		ArenaInstance arena = null;
 
 		try {
 			Field f = UIController.class.getDeclaredField("arena");
 			f.setAccessible(true);
-			arena = (Arena) f.get(this.appController);
+			arena = (ArenaInstance) f.get(this.appController);
 		} catch (Exception e) {
 			fail("An unexpected error has occurred");
 		}
@@ -89,7 +89,7 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param isInvulnerable Whether the monster should be invulnerable.
 	 */
 	protected final void addMonsterToArena(MonsterType monsterType, Coordinates start, Coordinates end, double difficulty, boolean isInvulnerable) {
-		final Arena arena = getCurrentArena();
+		final ArenaInstance arena = getCurrentArena();
 		ImageView iv = null;
 		Monster m = null;
 		switch (monsterType) {
@@ -133,7 +133,7 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param speedMultiplier The rate at which to speed up the game.
 	 */
 	protected final void simulateGameNoSpawning(double speedMultiplier) {
-		final Arena arena = getCurrentArena();
+		final ArenaInstance arena = getCurrentArena();
 
 		// Similar to Arena.run
 		try {
@@ -158,7 +158,7 @@ public class JavaFXTester extends ApplicationTest {
 			Method method_nextFrame = UIController.class.getDeclaredMethod("nextFrame");
 			method_nextFrame.setAccessible(true);
 
-			Field field_currentFrame = Arena.class.getDeclaredField("currentFrame");
+			Field field_currentFrame = ArenaInstance.class.getDeclaredField("currentFrame");
 			field_currentFrame.setAccessible(true);
 
 			timeline = new Timeline(new KeyFrame(Duration.seconds(0.2 / speedMultiplier), e -> {

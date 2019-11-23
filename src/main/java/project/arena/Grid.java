@@ -11,7 +11,7 @@ import project.arena.projectiles.Projectile;
 import project.arena.towers.Tower;
 
 /**
- * Grids are arranged in a tabular manner in the {@link Arena} and limit the positioning of {@link Towers}.
+ * Grids are arranged in a tabular manner in the {@link ArenaInstance} and limit the positioning of {@link Towers}.
  * The class is comprised mainly of helper functions to manage the conversion between {@link Coordinates} and the corresponding grid.
  */
 public final class Grid {

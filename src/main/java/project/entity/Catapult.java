@@ -11,7 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import javafx.scene.image.ImageView;
 import project.Geometry;
 import project.UIController;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 
 /**
@@ -43,7 +43,7 @@ public class Catapult extends Tower {
      * @param arena The arena to attach the catapult to.
      * @param coordinates The coordinate of catapult.
      */
-    public Catapult(Arena arena, Coordinates coordinates){
+    public Catapult(ArenaInstance arena, Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 25;
         this.buildValue = findInitialBuildingCost();
@@ -63,7 +63,7 @@ public class Catapult extends Tower {
      * @param coordinates The coordinate of catapult.
      * @param imageView The image view of catapult.
      */
-    public Catapult(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public Catapult(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 25;
         this.buildValue = 20;
@@ -76,14 +76,14 @@ public class Catapult extends Tower {
     }
 
     /**
-     * @see Tower#Tower(Arena, Tower)
+     * @see Tower#Tower(ArenaInstance, Tower)
      */
-    public Catapult(Arena arena, Catapult other) {
+    public Catapult(ArenaInstance arena, Catapult other) {
         super(arena, other);
     }
 
     @Override
-    public Catapult deepCopy(Arena arena) {
+    public Catapult deepCopy(ArenaInstance arena) {
         return new Catapult(arena, this);
     }
 

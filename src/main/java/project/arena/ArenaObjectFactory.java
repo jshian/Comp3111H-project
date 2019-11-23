@@ -8,7 +8,7 @@ import project.UIController;
 import project.entity.*;
 
 /**
- * Manages the creation of objects in the {@link Arena}.
+ * Manages the creation of objects in the {@link ArenaInstance}.
  * 
  * @see ArenaObject
  */
@@ -17,13 +17,13 @@ public final class ArenaObjectFactory {
     /**
      * The arena that the class is linked to.
      */
-    private Arena arena;
+    private ArenaInstance arena;
 
     /**
      * Constructor for the ArenaObjectFactory class.
      * @param arena The arena to link this object to.
      */
-    ArenaObjectFactory(Arena arena) {
+    ArenaObjectFactory(ArenaInstance arena) {
         this.arena = arena;
     }
 

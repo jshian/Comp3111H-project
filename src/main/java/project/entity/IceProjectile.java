@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 
 @Entity
 public class IceProjectile extends Projectile {

@@ -7,7 +7,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.UIController;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
 
 /**
@@ -39,7 +39,7 @@ public class IceTower extends Tower {
      * @param arena The arena to attach the tower to.
      * @param coordinates The coordinates of ice tower.
      */
-    public IceTower(Arena arena, Coordinates coordinates){
+    public IceTower(ArenaInstance arena, Coordinates coordinates){
         super(arena, coordinates);
         this.attackPower = 0;
         this.buildValue = findInitialBuildingCost();
@@ -57,7 +57,7 @@ public class IceTower extends Tower {
      * @param coordinates The coordinates of ice tower.
      * @param imageView The image view of ice tower.
      */
-    public IceTower(Arena arena, Coordinates coordinates, ImageView imageView) {
+    public IceTower(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
         super(arena, coordinates, imageView);
         this.attackPower = 0;
         this.buildValue = 15;
@@ -68,15 +68,15 @@ public class IceTower extends Tower {
     }
 
     /**
-     * @see Tower#Tower(Arena, Tower)
+     * @see Tower#Tower(ArenaInstance, Tower)
      */
-    public IceTower(Arena arena, IceTower other) {
+    public IceTower(ArenaInstance arena, IceTower other) {
         super(arena, other);
         this.slowDownTime = other.slowDownTime;
     }
 
     @Override
-    public IceTower deepCopy(Arena arena) {
+    public IceTower deepCopy(ArenaInstance arena) {
         return new IceTower(arena, this);
     }
 

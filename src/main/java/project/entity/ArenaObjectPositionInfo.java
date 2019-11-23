@@ -13,7 +13,7 @@ public final class ArenaObjectPositionInfo {
     private IntegerProperty y;
 
     /**
-     * Constructs a newly allocated ArenaObjectPositionInfo object.
+     * Constructs a newly allocated {@link ArenaObjectPositionInfo} object.
      * @param imageView The ImageView to bound the object's position to.
      * @param x The x-coordinate to store.
      * @param y The y-coordinate to store.

@@ -1,8 +1,11 @@
 package project.entity;
 
 import javax.persistence.Entity;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import javafx.scene.image.ImageView;
-import project.controller.ArenaEventManager;
+import project.controller.ArenaManager;
 import project.event.EventHandler;
 import project.event.eventargs.EventArgs;
 import project.event.eventsets.ArenaEvent;
@@ -32,21 +35,31 @@ public abstract class ArenaObject {
     /**
      * The method invoked when the next frame is called.
      */
-    protected EventHandler<EventArgs> onNextFrame;
+    @Nullable
+    protected EventHandler<EventArgs> onNextFrame = null;
+
+    /**
+     * Whether the object sends and receives events.
+     */
+    protected boolean isActive;
     
     /**
-     * Constructs a newly allocated ArenaObject object.
+     * Constructs a newly allocated {@link ArenaObject} object.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
+     * @param isActive Whether the object is active.
      */
-    public ArenaObject(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
+    public ArenaObject(ArenaObjectStorage storage, ImageView imageView, short x, short y, boolean isActive) {
         this.storage = storage;
         this.imageView = imageView;
         this.position = new ArenaObjectPositionInfo(imageView, x, y);
+        this.isActive = isActive;
 
-        if (onNextFrame != null) ArenaEventManager.ARENA.subscribe(ArenaEvent.NEXT_FRAME, onNextFrame);
+        if (isActive) {
+            if (onNextFrame != null) ArenaManager.getActiveEventManager().ARENA.subscribe(ArenaEvent.NEXT_FRAME, onNextFrame);
+        }
     }
 
     /**

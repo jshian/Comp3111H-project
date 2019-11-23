@@ -2,22 +2,16 @@ package project.query;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import project.Geometry;
-import project.UIController;
-import project.arena.Arena.TypeFilter;
 import project.controller.ArenaEventManager;
 import project.controller.ArenaManager;
+import project.entity.ArenaComparableObject;
 import project.entity.ArenaObject;
 import project.entity.Monster;
 import project.entity.Projectile;
@@ -29,7 +23,7 @@ import project.event.eventsets.ArenaObjectIOEvent;
 import project.event.eventsets.ArenaObjectMoveEvent;
 
 /**
- * Manages the storage of objects in the {@link Arena}.
+ * Manages the storage of objects in the {@link ArenaInstance}.
  * @see ArenaObject
  */
 @Entity
@@ -38,6 +32,7 @@ public final class ArenaObjectStorage {
     /**
      * Index for each object in the x-direction.
      */
+    @Transient
     private ArrayList<LinkedList<ArenaObject>> objectsAtX = new ArrayList<>(ArenaManager.ARENA_WIDTH + 1);
     {
         for (int x = 0; x <= ArenaManager.ARENA_WIDTH; x++) {
@@ -48,6 +43,7 @@ public final class ArenaObjectStorage {
     /**
      * Index for each object in the y-direction.
      */
+    @Transient
     private ArrayList<LinkedList<ArenaObject>> objectsAtY = new ArrayList<>(ArenaManager.ARENA_HEIGHT + 1);
     {
         for (int y = 0; y <= ArenaManager.ARENA_HEIGHT; y++) {
@@ -72,6 +68,81 @@ public final class ArenaObjectStorage {
      */
     @OneToMany
     private LinkedList<Monster> monsters = new LinkedList<>();
+
+    /**
+     * Enum of the stored types of {@link ArenaObject} inside the storage.
+     */
+    public enum StoredType {
+
+        /**
+         * Refers to {@link Tower}.
+         */
+        TOWER (Tower.class),
+
+        /**
+         * Refers to {@link Projectile}.
+         */
+        PROJECTILE (Projectile.class),
+
+        /**
+         * Refers to all types of {@link Monster}.
+         */
+        MONSTER (Monster.class);
+        
+
+        private final Class<? extends ArenaObject> clazz;
+
+        StoredType(Class<? extends ArenaObject> clazz) {
+            this.clazz = clazz;
+        }
+
+        /**
+         * Returns the class of the supported object type.
+         * @return The class of the supported object type.
+         */
+        public Class<? extends ArenaObject> getObjectClass() { return clazz; }
+    }
+
+    /**
+     * Enum of the stored types of {@link ArenaComparableObject} inside the storage.
+     */
+    public enum StoredComparableType {
+
+        /**
+         * Refers to all types of {@link Monster}.
+         */
+        MONSTER (Monster.class);
+        
+
+        private final Class<? extends ArenaComparableObject> clazz;
+
+        StoredComparableType(Class<? extends ArenaComparableObject> clazz) {
+            this.clazz = clazz;
+        }
+
+        /**
+         * Returns the class of the supported object type.
+         * @return The class of the supported object type.
+         */
+        public Class<? extends ArenaComparableObject> getObjectClass() { return clazz; }
+    }
+
+    /**
+     * Sorting option for a sorted query.
+     */
+    public enum SortOption {
+
+        /**
+         * Results are in ascending order.
+         */
+        ASCENDING,
+
+        /**
+         * Results are in descending order.
+         */
+        DESCENDING;
+
+    }
 
     /**
      * The method invoked when an {@link ArenaObject} is added.
@@ -101,7 +172,7 @@ public final class ArenaObjectStorage {
             assert (!monsters.contains(subject));
             monsters.add((Monster) subject);
         } else {
-            System.out.println("Warning: Unknown ArenaObject detected");
+            System.err.println("The type of ArenaObject is unsupported by the storage");
         }
     };
 
@@ -133,7 +204,7 @@ public final class ArenaObjectStorage {
             assert (monsters.contains(subject));
             monsters.remove((Monster) subject);
         } else {
-            System.out.println("Warning: Unknown ArenaObject detected");
+            System.err.println("The type of ArenaObject is unsupported by the storage");
         }
     };
 
@@ -167,202 +238,136 @@ public final class ArenaObjectStorage {
     };
 
     /**
-     * Constructs a newly allocated ArenaObjectStorage object.
+     * Constructs a newly allocated {@link ArenaObjectStorage} object.
      */
     public ArenaObjectStorage() {
-        ArenaEventManager.OBJECT_IO.subscribe(ArenaObjectIOEvent.ADD, onAddObject);
-        ArenaEventManager.OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
-        ArenaEventManager.OBJECT_MOVE.subscribe(ArenaObjectMoveEvent.MOVE, onMoveObject);
+        ArenaEventManager manager = ArenaManager.getActiveEventManager();
+        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.ADD, onAddObject);
+        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
+        manager.OBJECT_MOVE.subscribe(ArenaObjectMoveEvent.MOVE, onMoveObject);
     }
 
     /**
-     * @see Arena#findObjectsAtPixel(Coordinates, EnumSet)
+     * Returns the index for x-coordinate.
+     * @return The index for x-coordinate.
      */
-    LinkedList<ArenaObject> findObjectsAtPixel(Coordinates coordinates, EnumSet<TypeFilter> filter)
-    {
+    ArrayList<LinkedList<ArenaObject>> getXIndex() {
+        return objectsAtX;
+    }
+
+    /**
+     * Returns the index for y-coordinate.
+     * @return The index for y-coordinate.
+     */
+    ArrayList<LinkedList<ArenaObject>> getYIndex() {
+        return objectsAtY;
+    }
+
+    /**
+     * Returns the index for a supported object type.
+     * @param type The supported object type.
+     * @return The index for a supported object type.
+     */
+    LinkedList<? extends ArenaObject> getIndexFor(StoredType type) {
+        switch (type) {
+            case TOWER: return towers;
+            case PROJECTILE: return projectiles;
+            case MONSTER: return monsters;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the index for a supported object type.
+     * @param type The supported object type.
+     * @return The index for a supported object type.
+     */
+    LinkedList<? extends ArenaComparableObject> getIndexFor(StoredComparableType type) {
+        switch (type) {
+            case MONSTER: return monsters;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns every stored {@link ArenaObject}.
+     * @return Every stored {@link ArenaObject}.
+     */
+    LinkedList<ArenaObject> getAllObjects() {
         LinkedList<ArenaObject> result = new LinkedList<>();
 
-        Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
-
-        if (filter.contains(TypeFilter.Tower)) {
-            for (Tower t : grid.getTowers()) {
-                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), t.getX(), t.getY()) == 0) {
-                    result.add(t);
-                }
-            }
-        }
-
-        if (filter.contains(TypeFilter.Projectile)) {
-            for (Projectile p : grid.getProjectiles()) {
-                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), p.getX(), p.getY()) == 0) {
-                    result.add(p);
-                }
-            }
-        }
-
-        if (filter.contains(TypeFilter.Monster)) {
-            for (Monster m : grid.getMonsters()) {
-                if (Geometry.findTaxicabDistance(coordinates.getX(), coordinates.getY(), m.getX(), m.getY()) == 0) {
-                    result.add(m);
-                }
-            }
+        for (StoredType type : EnumSet.allOf(StoredType.class)) {
+            result.addAll(getIndexFor(type));
         }
 
         return result;
     }
 
     /**
-     * @see Arena#findObjectsInRange(Coordinates, double, EnumSet)
+     * Returns every stored {@link ArenaComparableObject}.
+     * @return Every stored {@link ArenaComparableObject}.
      */
-    LinkedList<ArenaObject> findObjectsInRange(Coordinates coordinates, double range, EnumSet<TypeFilter> filter)
-    {
-        LinkedList<ArenaObject> result = new LinkedList<>();
+    LinkedList<ArenaComparableObject> getComparableObjects() {
+        LinkedList<ArenaComparableObject> result = new LinkedList<>();
 
-        LinkedList<Grid> grids = getPotentialGridsInRange(coordinates, range);
-
-        for (Grid grid : grids) {
-            if (filter.contains(TypeFilter.Tower)) {
-                for (Tower t : grid.getTowers()) {
-                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), t.getX(), t.getY()) <= range) {
-                        result.add(t);
-                    }
-                }
-            }
-    
-            if (filter.contains(TypeFilter.Projectile)) {
-                for (Projectile p : grid.getProjectiles()) {
-                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), p.getX(), p.getY()) <= range) {
-                        result.add(p);
-                    }
-                }
-            }
-    
-            if (filter.contains(TypeFilter.Monster)) {
-                for (Monster m : grid.getMonsters()) {
-                    if (Geometry.findEuclideanDistance(coordinates.getX(), coordinates.getY(), m.getX(), m.getY()) <= range) {
-                        result.add(m);
-                    }
-                }
-            }
+        for (StoredComparableType type : EnumSet.allOf(StoredComparableType.class)) {
+            result.addAll(getIndexFor(type));
         }
 
         return result;
     }
 
     /**
-     * @see Arena#findObjectsInGrid(Coordinates, EnumSet)
+     * Returns the fraction of {@link ArenaObject}s that are {@link ArenaComparableObject}s.
+     * @return The fraction of {@link ArenaObject}s that are {@link ArenaComparableObject}s.
      */
-    LinkedList<ArenaObject> findObjectsInGrid(Coordinates coordinates, EnumSet<TypeFilter> filter)
-    {
-        LinkedList<ArenaObject> result = new LinkedList<>();
+    float getComparableFraction() { return ((float) monsters.size()) / (towers.size() + monsters.size()); }
 
-        Grid grid = grids[Grid.findGridXPos(coordinates)][Grid.findGridYPos(coordinates)];
-
-        if (filter.contains(TypeFilter.Tower)) {
-            result.addAll(grid.getTowers());
-        }
-
-        if (filter.contains(TypeFilter.Projectile)) {
-            result.addAll(grid.getProjectiles());
-        }
-
-        if (filter.contains(TypeFilter.Monster)) {
-            result.addAll(grid.getMonsters());
-        }
-
-        return result;
+    /**
+     * Runs a query on the storage.
+     * @param selector The selector for the query.
+     * @param types The types of {@link ArenaObject} to select.
+     * @return The query result.
+     */
+    public LinkedList<ArenaObject> getQueryResult(ArenaObjectSelector selector, EnumSet<StoredType> types) {
+        ArenaObjectQuery query = new ArenaObjectQuery(selector);
+        return query.run(this, types);
     }
 
     /**
-     * Updates the object storage with respect to the addition of an object.
-     * @param obj The object to add.
-     * @throws IllegalArgumentException If the object type is not recognized.
+     * Runs a query on the storage.
+     * @param selectors The list of selectors for the query.
+     * @param types The types of {@link ArenaObject} to select.
+     * @return The query result.
      */
-    void processAddObject(ArenaObject obj) throws IllegalArgumentException {
-        if (obj instanceof Tower) {
-            if (!towers.contains(obj)) {
-                towers.add((Tower)obj);
-            }
-        } else if (obj instanceof Projectile) {
-            if (!projectiles.contains(obj)) {
-                projectiles.add((Projectile)obj);
-            }
-        } else if (obj instanceof Monster) {
-            if (!monsters.contains(obj)) {
-                monsters.add((Monster)obj);
-            }
-        } else {
-            throw new IllegalArgumentException("The object type is not recognized");
-        }
-
-        Coordinates c = new Coordinates(obj.getX(), obj.getY());
-        getGrid(c).addObject(obj);
+    public LinkedList<ArenaObject> getQueryResult(LinkedList<ArenaObjectSelector> selectors, EnumSet<StoredType> types) {
+        ArenaObjectQuery query = new ArenaObjectQuery(selectors);
+        return query.run(this, types);
     }
 
     /**
-     * Updates the object storage with respect to the removal of an object.
-     * @param obj The object to remove.
-     * @throws IllegalArgumentException If the object type is not recognized.
+     * Runs a sorted query on the storage.
+     * @param selector The selector for the query.
+     * @param types The types of {@link ArenaComparableObject} to select.
+     * @param option The sorting option.
+     * @return The query result.
      */
-    void processRemoveObject(ArenaObject obj) throws IllegalArgumentException {
-        if (obj instanceof Tower) {
-            towers.remove((Tower)obj);
-        } else if (obj instanceof Projectile) {
-            projectiles.remove((Projectile)obj);
-        } else if (obj instanceof Monster) {
-            monsters.remove((Monster)obj);
-        } else {
-            throw new IllegalArgumentException("The object type is not recognized");
-        }
-
-        Coordinates c = new Coordinates(obj.getX(), obj.getY());
-        getGrid(c).removeObject(obj);
+    public PriorityQueue<ArenaComparableObject> getSortedQueryResult(ArenaObjectSortedSelector selector, EnumSet<StoredComparableType> types, SortOption option) {
+        ArenaObjectSortedQuery query = new ArenaObjectSortedQuery(selector);
+        return query.run(this, types, option);
     }
 
     /**
-     * Updates the object storage with respect to the movement of an object.
-     * @param obj The object to move.
-     * @param newCoordinates The coordinates of the new location.
+     * Runs a sorted query on the storage.
+     * @param selectors The list of selectors for the query.
+     * @param types The types of {@link ArenaComparableObject} to select.
+     * @param option The sorting option.
+     * @return The query result.
      */
-    void processMoveObject(ArenaObject obj, Coordinates newCoordinates)
-    {
-        Coordinates c = new Coordinates(obj.getX(), obj.getY());
-        getGrid(c).removeObject(obj);
-
-        obj.setLocation(newCoordinates);
-
-        getGrid(newCoordinates).addObject(obj);
-    }
-    
-    /**
-     * Updates the object storage with respect to the updating of an object to the next frame.
-     * @param obj The object to update.
-     * @return The objects that has been marked as pending { add, remove }.
-     */
-    ArenaObject[] processObjectNextFrame(ArenaObject obj) {
-        Coordinates originalCoordinates = new Coordinates(obj.getX(), obj.getY());
-        obj.nextFrame();
-        Coordinates newCoordinates = new Coordinates(obj.getX(), obj.getY());
-
-        if (!Geometry.isAt(newCoordinates.getX(), newCoordinates.getY(), originalCoordinates.getX(), originalCoordinates.getY())) {
-            getGrid(originalCoordinates).removeObject(obj);
-            getGrid(newCoordinates).addObject(obj);
-        }
-        
-        ArenaObject[] result = new ArenaObject[2];
-
-        if (obj instanceof Tower) {
-            result[0] = ((Tower)obj).generateProjectile();
-        } else if (obj instanceof Projectile) {
-            if (((Projectile)obj).hasReachedTarget()) {
-                result[1] = obj;
-            }
-        } else if (obj instanceof Monster) {
-            if (((Monster)obj).hasDied()) {
-                result[1] = obj;
-            }
-        }
-
-        return result;
+    public PriorityQueue<ArenaComparableObject> getSortedQueryResult(LinkedList<ArenaObjectSortedSelector> selectors, EnumSet<StoredComparableType> types, SortOption option) {
+        ArenaObjectSortedQuery query = new ArenaObjectSortedQuery(selectors);
+        return query.run(this, types, option);
     }
 }

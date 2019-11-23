@@ -12,9 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import project.Geometry;
 import project.JavaFXTester;
-import project.arena.Arena;
+import project.arena.ArenaInstance;
 import project.arena.Coordinates;
-import project.arena.ArenaObject;
+import project.arena.ArenaInstance;
 import project.arena.monsters.Monster;
 import project.arena.monsters.Unicorn;
 
@@ -25,7 +25,7 @@ public class CatapultTest extends JavaFXTester {
 
     @Test
     public void selectMonster() {
-        Arena arena = new Arena(new Label(), new AnchorPane());
+        ArenaInstance arena = new ArenaInstance(new Label(), new AnchorPane());
         Image img = new Image("/unicorn.png");
         Coordinates destination = new Coordinates((short) 470, (short) 10);
         PriorityQueue<Monster> testList = new PriorityQueue<>();
