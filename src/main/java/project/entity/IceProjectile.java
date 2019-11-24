@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 
 import project.query.ArenaObjectStorage;
 
+/**
+ * Projectile created by {@link IceTower}.
+ */
 @Entity
 public class IceProjectile extends Projectile {
     /**
@@ -14,7 +17,7 @@ public class IceProjectile extends Projectile {
     private int slowDownTime;
 
     /**
-     * Constructs a newly allocated {@link IceProjectile} object.
+     * Constructs a newly allocated {@link IceProjectile} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param tower The tower from which this projectile originates.

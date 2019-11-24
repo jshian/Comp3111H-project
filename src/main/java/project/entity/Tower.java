@@ -9,10 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import project.Player;
 import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
+import project.event.EventHandler;
 import project.event.eventargs.ArenaTowerEventArgs;
+import project.event.eventargs.BooleanResultEventArgs;
 import project.query.ArenaObjectRingSortedSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.SortOption;
@@ -107,7 +108,59 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     }
 
     /**
-     * Constructs a newly allocated {@link Tower} object.
+     * The method invoked when a tower is being checked whether it can be upgraded.
+     */
+    protected EventHandler<ArenaTowerEventArgs> onCheckUpgradeTower = (sender, args) -> {
+        if (args.subject != this) return;
+
+        // Whether the player has enough resources
+        boolean canUpgrade = ArenaManager.getActivePlayer().hasResources(upgradeCost);
+
+        ArenaManager.getActiveEventRegister().ARENA_TOWER_UPGRADE_CHECK_RESULT.invoke(this,
+                new BooleanResultEventArgs() {
+                    {
+                        recipient = sender;
+                        result = canUpgrade;
+                    }
+                }
+        );
+    };
+
+    /**
+     * The method invoked when a tower is being confirmed for upgrade.
+     * <p>
+     * Note: If the upgrade is successful, resources will be automatically deducted from the currently active player.
+     * Either way, the player will not be directly notified of the result.
+     */
+    protected EventHandler<ArenaTowerEventArgs> onConfirmUpgradeTower = (sender, args) -> {
+        if (args.subject != this) return;
+
+        // Only successful if the player has enough resources
+        if (ArenaManager.getActivePlayer().hasResources(upgradeCost)) {
+            ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+
+            register.ARENA_TOWER_UPGRADE_START.invoke(this,
+                    new ArenaTowerEventArgs() {
+                        { subject = Tower.this; }
+                    }
+            );
+
+            ArenaManager.getActivePlayer().spendResources(upgradeCost);
+            System.out.println(String.format("%s is being upgraded", getDisplayName()));
+            upgrade();
+
+            register.ARENA_TOWER_UPGRADE_END.invoke(this,
+                    new ArenaTowerEventArgs() {
+                        { subject = Tower.this; }
+                    }
+            );
+        }
+
+        System.out.println(String.format("not enough resource to upgrade %s", getDisplayName()));
+    };
+
+    /**
+     * Constructs a newly allocated {@link Tower} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
@@ -115,6 +168,10 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
      */
     public Tower(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
         super(storage, imageView, x, y);
+
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_TOWER_UPGRADE_CHECK.subscribe(onCheckUpgradeTower);
+        register.ARENA_TOWER_UPGRADE_CONFIRM.subscribe(onConfirmUpgradeTower);
     }
 
     /**
@@ -160,49 +217,6 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     public final int getUpgradeCost() { return upgradeCost; }
 
     /**
-     * Determines whether the tower can be upgraded via the currently active player.
-     * @return Whether the tower can be upgraded.
-     */
-    public boolean canUpgrade() {
-        return ArenaManager.getActivePlayer().hasResources(upgradeCost);
-    }
-
-    /**
-     * Attempts to upgrade the tower via the currently active player.
-     * Spends resources from the player if successful.
-     * 
-     * Automatically broadcasts the {@link ArenaEventRegister#ARENA_TOWER_UPGRADE_START} and
-     * {@link ArenaEventRegister#ARENA_TOWER_UPGRADE_END} events.
-     * 
-     * @return Whether the upgrade is successful.
-     */
-    public final boolean tryUpgrade() {
-        if (canUpgrade()) {
-            ArenaEventRegister register = ArenaManager.getActiveEventRegister();
-
-            register.ARENA_TOWER_UPGRADE_START.invoke(this,
-                    new ArenaTowerEventArgs() {
-                        { subject = Tower.this; }
-                    }
-            );
-
-            ArenaManager.getActivePlayer().spendResources(upgradeCost);
-            System.out.println(String.format("%s is being upgraded", getDisplayName()));
-            upgrade();
-
-            register.ARENA_TOWER_UPGRADE_END.invoke(this,
-                    new ArenaTowerEventArgs() {
-                        { subject = Tower.this; }
-                    }
-            );
-
-            return true;
-        }
-        System.out.println(String.format("not enough resource to upgrade %s", getDisplayName()));
-        return false;
-    }
-
-    /**
      * Upgrades the tower.
      */
     protected void upgrade() {
@@ -210,8 +224,10 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     }
 
     /**
-     * Generates a new projectile based on the tower.
-     * It will be automatically added to the arena via events, so only a new object declaration is required.
+     * Generates a new projectile based on the tower and primary target.
+     * 
+     * Note that creating a new {@link ArenaObject} will automatically add it to the {@link ArenaObjectStorage}.
+     * 
      * @param primaryTarget The target that the projectile will hit.
      */
     protected abstract void generateProjectile(Monster primaryTarget);

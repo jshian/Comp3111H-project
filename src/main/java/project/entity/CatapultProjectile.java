@@ -8,6 +8,9 @@ import project.Geometry;
 import project.arena.ArenaInstance;
 import project.query.ArenaObjectStorage;
 
+/**
+ * Projectile created by {@link Catapult}.
+ */
 @Entity
 public class CatapultProjectile extends Projectile {
 
@@ -17,7 +20,7 @@ public class CatapultProjectile extends Projectile {
     private short splashRadius;
 
     /**
-     * Constructs a newly allocated {@link CatapultProjectile} object.
+     * Constructs a newly allocated {@link CatapultProjectile} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param tower The tower from which this projectile originates.

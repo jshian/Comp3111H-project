@@ -129,7 +129,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     /**
-     * Constructs a newly allocated {@link Monster} object.
+     * Constructs a newly allocated {@link Monster} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
@@ -161,9 +161,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public final int getResourceValue() { return resourceValue; }
 
     /**
-     * Reduces the health of the monster.
-     * 
-     * Automatically broadcasts the {@link ArenaEventRegister#ARENA_OBJECT_REMOVE} event if the monster has died.
+     * Reduces the health of the monster, and removes it from the arena if it dies.
      * 
      * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
      */

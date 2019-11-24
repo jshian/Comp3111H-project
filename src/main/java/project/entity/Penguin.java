@@ -28,7 +28,7 @@ public class Penguin extends Monster {
     }
     
     /**
-     * Constructs a newly allocated {@link Penguin} object.
+     * Constructs a newly allocated {@link Penguin} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.

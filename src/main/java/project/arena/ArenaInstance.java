@@ -160,8 +160,7 @@ public final class ArenaInstance {
     /**
      * The method invoked when the next frame has finished processing.
      * 
-     * Broadcasts the {@link ArenaEventRegister#ARENA_GAME_OVER} event if a monster has
-     * reached the end-zone.
+     * Invokes the game over event if a monster has reached the end-zone.
      */
     private EventHandler<EventArgs> onEndNextFrame = (sender, args) -> {
         ArenaObjectRectangleSelector selector = new ArenaObjectRectangleSelector(ArenaManager.END_X, ArenaManager.END_Y, (short) 0, (short) 0);

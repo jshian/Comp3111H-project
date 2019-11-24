@@ -1,12 +1,9 @@
 package project.entity;
 
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import javafx.scene.image.Image;
-
-import javafx.scene.image.ImageView;
-import project.UIController;
-import project.arena.ArenaInstance;
 import project.query.ArenaObjectStorage;
 
 /**
@@ -24,7 +21,7 @@ public class BasicTower extends Tower {
     }
 
     /**
-     * Constructs a newly allocated {@link BasicTower} object.
+     * Constructs a newly allocated {@link BasicTower} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.

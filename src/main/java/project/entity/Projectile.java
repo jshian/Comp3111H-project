@@ -16,7 +16,7 @@ import project.event.eventargs.ArenaObjectEventArgs;
 import project.query.ArenaObjectStorage;
 
 /**
- * Projectiles are shot by a Tower towards Monsters and deal damage on contact. They disappear when they reach their target.
+ * Projectiles are shot by a {@link Tower} towards a {@link Monster} and deal damage on contact. They disappear when they reach their target.
  * Projectiles do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
@@ -77,7 +77,6 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     protected boolean hasReachedTarget = false;
 
     // Define onNextFrame before constructor
-    // Automatically broadcasts {@link ArenaEventRegister#ARENA_OBJECT_REMOVE} when the target has been reached.
     {
         onNextFrame = (sender, args) -> {
             short targetX, targetY;
@@ -115,7 +114,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     }
 
     /**
-     * Constructs a newly allocated {@link Projjectile} object.
+     * Constructs a newly allocated {@link Projjectile} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param tower The tower from which this projectile originates.

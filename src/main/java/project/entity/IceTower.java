@@ -1,14 +1,9 @@
 package project.entity;
 
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import javafx.scene.image.Image;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
-import project.UIController;
-import project.arena.ArenaInstance;
-import project.arena.Coordinates;
 import project.query.ArenaObjectStorage;
 
 /**
@@ -36,7 +31,7 @@ public class IceTower extends Tower {
     private final int maxSlowDownTime = 100;
 
     /**
-     * Constructs a newly allocated {@link IceTower} object.
+     * Constructs a newly allocated {@link IceTower} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
@@ -49,22 +44,6 @@ public class IceTower extends Tower {
         this.projectileSpeed = 10;
         this.slowDownTime = 10;
         this.buildValue = getBuildingCost();
-        this.upgradeCost = 10;
-    }
-
-    /**
-     * Constructor of ice tower.
-     * @param arena The arena to attach the tower to.
-     * @param coordinates The coordinates of ice tower.
-     * @param imageView The image view of ice tower.
-     */
-    public IceTower(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
-        super(arena, coordinates, imageView);
-        this.attackPower = 0;
-        this.buildValue = 15;
-        this.maxRange = 50;
-        this.slowDownTime = 10;
-        this.projectileSpeed = 10;
         this.upgradeCost = 10;
     }
 
@@ -89,12 +68,8 @@ public class IceTower extends Tower {
         new IceProjectile(storage, imageView, this, primaryTarget, (short) 0, (short) 0);
     }
 
-    /**
-     * Accesses the information of tower.
-     * @return the information of tower.
-     */
     @Override
-    public String getInformation() {
+    public String getDisplayDetails() {
         return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,
             this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }

@@ -82,12 +82,6 @@ public final class ArenaManager {
     private static ArenaInstance activeArenaInstance;
 
     /**
-     * Copy of an arena instance to facilitate undisturbed saving of the game.
-     * Each object within will be automatically unsubscribed from all {@link ArenaEvent}s.
-     */
-    private static ArenaInstance shadowArenaInstance;
-
-    /**
      * Constructs a newly allocated {@link ArenaManager} object.
      */
     private ArenaManager() {
@@ -98,19 +92,6 @@ public final class ArenaManager {
         assert END_X >= 0 && END_X <= ARENA_WIDTH;
         assert END_Y >= 0 && END_Y <= ARENA_HEIGHT;
     }
-
-    /**
-     * Archives the currently active event register, setting the active instance to a new one.
-     */
-    private static void archive() {
-        activeEventRegister = new ArenaEventRegister();
-    }
-
-    // TODO
-    public static void save() {}
-
-    // TODO
-    public static void load() {}
 
     /**
      * Enum of available {@link Tower} types for the arena.
@@ -180,6 +161,63 @@ public final class ArenaManager {
      * @return The active arena instance.
      */
     public static ArenaInstance getActiveArenaInstance() { return activeArenaInstance; }
+
+    // TODO
+    public static void load() {}
+
+    // TODO
+    // First disconnect the currently active event register such that nextFrame will be called on a new register, effectively deactiving the old instance.
+    // Then create shadow instance by deep copying (the new objects will be automatically connected to the new event register), and save it using a different thread.
+    public static void save() {}
+
+    /**
+     * Returns the maximum number of grids in the x-direction.
+     * @return The maximum number of grids in the x-direction.
+     */
+    public short getMaxHorizontalGrids() {
+        return (short) (ARENA_WIDTH / GRID_WIDTH);
+    }
+
+    /**
+     * Returns the maximum number of grids in the y-direction.
+     * @return The maximum number of grids in the y-direction.
+     */
+    public short getMaxVerticalGrids() {
+        return (short) (ARENA_HEIGHT / GRID_HEIGHT);
+    }
+
+    /**
+     * Returns the x-position of the starting grid.
+     * @return The x-position of the starting grid.
+     */
+    public short getStartingGridXPos() {
+        return (short) ((STARTING_X / GRID_WIDTH) * GRID_WIDTH);
+    }
+
+      /**
+     * Returns the y-position of the starting grid.
+     * @return The y-position of the starting grid.
+     */
+    public short getStartingGridYPos() {
+        return (short) ((STARTING_Y / GRID_HEIGHT) * GRID_HEIGHT);
+    }
+
+    /**
+     * Returns the x-position of the end grid.
+     * @return The x-position of the end grid.
+     */
+    public short getEndridXPos() {
+        return (short) ((END_X / GRID_WIDTH) * GRID_WIDTH);
+    }
+
+      /**
+     * Returns the y-position of the end grid.
+     * @return The y-position of the end grid.
+     */
+    public short getEndGridYPos() {
+        return (short) ((END_Y / GRID_HEIGHT) * GRID_HEIGHT);
+    }
+
 
     /**
      * Sets the active player.

@@ -1,15 +1,10 @@
 package project.entity;
 
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import javafx.scene.image.Image;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
 import project.Player;
-import project.UIController;
-import project.arena.ArenaInstance;
-import project.arena.Coordinates;
 import project.controller.ArenaManager;
 import project.query.ArenaObjectStorage;
 
@@ -38,7 +33,7 @@ public class LaserTower extends Tower{
     private int shootingCost = 2;
 
     /**
-     * Constructs a newly allocated {@link LaserTower} object.
+     * Constructs a newly allocated {@link LaserTower} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
@@ -83,12 +78,8 @@ public class LaserTower extends Tower{
         new LaserProjectile(storage, imageView, this, primaryTarget, (short) 0, (short) 0);
     }
 
-    /**
-     * Accesses the information of tower.
-     * @return the information of tower.
-     */
     @Override
-    public String getInformation() {
+    public String getDisplayDetails() {
         return String.format("Shooting Cost: %d\nAttack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.shootingCost,
             this.attackPower, this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }

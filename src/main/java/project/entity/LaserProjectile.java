@@ -10,11 +10,14 @@ import project.Geometry;
 import project.arena.ArenaInstance;
 import project.query.ArenaObjectStorage;
 
+/**
+ * Projectile created by {@link LaserTower}.
+ */
 @Entity
 public class LaserProjectile extends Projectile {
 
     /**
-     * Constructs a newly allocated {@link LaserProjectile} object.
+     * Constructs a newly allocated {@link LaserProjectile} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param tower The tower from which this projectile originates.

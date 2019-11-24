@@ -20,7 +20,8 @@ import project.event.eventargs.ArenaObjectEventArgs;
 
 /**
  * Manages the storage of objects in the {@link ArenaInstance}.
- * @see ArenaObject
+ * 
+ * Add or remove objects from this storage by invoking the events in {@link ArenaManager#getActiveEventRegister()}.
  */
 @Entity
 public final class ArenaObjectStorage {

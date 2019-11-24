@@ -3,16 +3,14 @@ package project.entity;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import javafx.scene.image.Image;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
 import project.Geometry;
 import project.UIController;
 import project.arena.ArenaInstance;
-import project.arena.Coordinates;
 import project.query.ArenaObjectStorage;
 
 /**
@@ -35,7 +33,7 @@ public class Catapult extends Tower {
     private final short splashRadius = 25;
 
     /**
-     * Constructs a newly allocated {@link Catapult} object.
+     * Constructs a newly allocated {@link Catapult} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
@@ -71,7 +69,7 @@ public class Catapult extends Tower {
     }
 
     @Override
-    public void generateProjectile(){
+    public void generateProjectile() {
         if(!isReload()) {
             LinkedList<ArenaObject> selectList = new LinkedList<>();
             Coordinates targetCoordinates = selectMonster(arena.getMonsters(), selectList);
@@ -160,12 +158,8 @@ public class Catapult extends Tower {
         return target;
     }
 
-    /**
-     * Accesses the information of tower.
-     * @return the information of tower.
-     */
     @Override
-    public String getInformation() {
+    public String getDisplayDetails() {
         return String.format("Attack Power: %d\nSplash Radius: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,
             this.splashRadius, this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }

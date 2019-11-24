@@ -1,7 +1,6 @@
 package project.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -41,10 +40,7 @@ public abstract class ArenaObject {
     protected EventHandler<EventArgs> onNextFrame = null;
     
     /**
-     * Constructs a newly allocated {@link ArenaObject} object.
-     * 
-     * Automatically broadcasts the {@link ArenaEventRegister#ARENA_OBJECT_ADD} event.
-     * 
+     * Constructs a newly allocated {@link ArenaObject} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
@@ -88,8 +84,7 @@ public abstract class ArenaObject {
      * Updates the position of the object within the same storage,
      * while also updating the position of the bound ImageView.
      * 
-     * Automatically broadcasts the {@link ArenaEventRegister#ARENA_OBJECT_MOVE_START}
-     * and {@link ArenaEventRegister#ARENA_OBJECT_MOVE_END} events.
+     * In addition, the {@link ArenaObjectStorage} is updated accordingly.
      * 
      * @param x The x-coordinate of the new position.
      * @param y The y-coordinate of the new position.
