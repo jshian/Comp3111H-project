@@ -193,7 +193,7 @@ public class UIController {
         if (grids[0][0] != null) return; //created already
 
         short maxV = ArenaManager.getMaxVerticalGrids();
-        short maxH = ArenaManager.getMaxHorizontalGrids()
+        short maxH = ArenaManager.getMaxHorizontalGrids();
 
         for (short i = 0; i < maxV; i++)
             for (short j = 0; j < maxH; j++) {
@@ -273,14 +273,17 @@ public class UIController {
     	Label[] labels = {labelBasicTower, labelIceTower, labelCatapult, labelLaserTower};
     	for (Label l : labels) {
     	    dragLabelEvent(l);
-    	}
+        }
+        
+        short maxV = ArenaManager.getMaxVerticalGrids();
+        short maxH = ArenaManager.getMaxHorizontalGrids();
 
-    	for (short i = 0; i < MAX_V_NUM_GRID; i++) {
-            for (short j = 0; j < MAX_H_NUM_GRID; j++) {
+    	for (short i = 0; i < maxV; i++) {
+            for (short j = 0; j < maxH; j++) {
             	Label target = grids[i][j];
 
-            	short x = (short) (j * GRID_WIDTH);
-            	short y = (short) (i * GRID_HEIGHT);
+            	short x = (short) (j * ArenaManager.GRID_WIDTH);
+            	short y = (short) (i * ArenaManager.GRID_HEIGHT);
             	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
@@ -441,16 +444,16 @@ public class UIController {
         if (paneArena.getChildren().contains(vb)) {
             paneArena.getChildren().remove(vb);
         }
-        Coordinates coor = new Coordinates((short) (center.getX() - GRID_WIDTH/2), (short) (center.getY() - GRID_HEIGHT/2));
+        Coordinates coor = new Coordinates((short) (center.getX() - ArenaManager.GRID_WIDTH/2), (short) (center.getY() - ArenaManager.GRID_HEIGHT/2));
 
         vb = new VBox(15);
         vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
         vb.setBackground(new Background(new BackgroundFill(Color.rgb(255,255,255, 0.7), new CornerRadii(5), Insets.EMPTY)));
         vb.setAlignment(Pos.CENTER);
-        vb.setMinWidth(GRID_WIDTH * 2);
-        vb.setMinHeight(GRID_HEIGHT * 2);
-        double positionX = (coor.getX() > paneArena.getWidth()/2) ? coor.getX()-GRID_HEIGHT*2 : coor.getX()+GRID_HEIGHT;
-        double positionY = (coor.getY() >= paneArena.getWidth()-GRID_HEIGHT) ? coor.getY()-GRID_HEIGHT : coor.getY();
+        vb.setMinWidth(ArenaManager.GRID_WIDTH * 2);
+        vb.setMinHeight(ArenaManager.GRID_HEIGHT * 2);
+        double positionX = (coor.getX() > paneArena.getWidth()/2) ? coor.getX()-ArenaManager.GRID_HEIGHT*2 : coor.getX()+ArenaManager.GRID_HEIGHT;
+        double positionY = (coor.getY() >= paneArena.getWidth()-ArenaManager.GRID_HEIGHT) ? coor.getY()-ArenaManager.GRID_HEIGHT : coor.getY();
         vb.setLayoutX(positionX);
         vb.setLayoutY(positionY);
         Button upgradeBtn = new Button("upgrade");
