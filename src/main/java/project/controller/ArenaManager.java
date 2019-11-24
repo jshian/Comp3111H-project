@@ -161,20 +161,28 @@ public final class ArenaManager {
      * @return The active arena instance.
      */
     public static ArenaInstance getActiveArenaInstance() { return activeArenaInstance; }
-
+    
     // TODO
-    public static void load() {}
+    /**
+     * Loads an arena instance.
+     * @param arenaInstance The arena instance. If <code>null</codel>, generates a new instance.
+     */
+    public static void load(@Nullable ArenaInstance arenaInstance) {
+
+    }
 
     // TODO
     // First disconnect the currently active event register such that nextFrame will be called on a new register, effectively deactiving the old instance.
     // Then create shadow instance by deep copying (the new objects will be automatically connected to the new event register), and save it using a different thread.
-    public static void save() {}
+    public static void save() {
+        
+    }
 
     /**
      * Returns the maximum number of grids in the x-direction.
      * @return The maximum number of grids in the x-direction.
      */
-    public short getMaxHorizontalGrids() {
+    public static short getMaxHorizontalGrids() {
         return (short) (ARENA_WIDTH / GRID_WIDTH);
     }
 
@@ -182,7 +190,7 @@ public final class ArenaManager {
      * Returns the maximum number of grids in the y-direction.
      * @return The maximum number of grids in the y-direction.
      */
-    public short getMaxVerticalGrids() {
+    public static short getMaxVerticalGrids() {
         return (short) (ARENA_HEIGHT / GRID_HEIGHT);
     }
 
@@ -190,7 +198,7 @@ public final class ArenaManager {
      * Returns the x-position of the starting grid.
      * @return The x-position of the starting grid.
      */
-    public short getStartingGridXPos() {
+    public static short getStartingGridXPos() {
         return (short) ((STARTING_X / GRID_WIDTH) * GRID_WIDTH);
     }
 
@@ -198,7 +206,7 @@ public final class ArenaManager {
      * Returns the y-position of the starting grid.
      * @return The y-position of the starting grid.
      */
-    public short getStartingGridYPos() {
+    public static short getStartingGridYPos() {
         return (short) ((STARTING_Y / GRID_HEIGHT) * GRID_HEIGHT);
     }
 
@@ -206,7 +214,7 @@ public final class ArenaManager {
      * Returns the x-position of the end grid.
      * @return The x-position of the end grid.
      */
-    public short getEndridXPos() {
+    public static short getEndGridXPos() {
         return (short) ((END_X / GRID_WIDTH) * GRID_WIDTH);
     }
 
@@ -214,10 +222,9 @@ public final class ArenaManager {
      * Returns the y-position of the end grid.
      * @return The y-position of the end grid.
      */
-    public short getEndGridYPos() {
+    public static short getEndGridYPos() {
         return (short) ((END_Y / GRID_HEIGHT) * GRID_HEIGHT);
     }
-
 
     /**
      * Sets the active player.

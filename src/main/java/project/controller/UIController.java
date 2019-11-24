@@ -90,7 +90,8 @@ public class UIController {
     /**
      * the grids on arena.
      */
-    private Label grids[][] = new Label[MAX_V_NUM_GRID][MAX_H_NUM_GRID];
+    private Label grids[][] = new Label[ArenaManager.getMaxVerticalGrids()][ArenaManager.getMaxHorizontalGrids()];
+    
     /**
      * Play the game. Build towers are allowed.
      */
@@ -189,32 +190,35 @@ public class UIController {
      */
     @FXML
     public void createArena() {
-        if (grids[0][0] != null)
-            return; //created already
-        for (short i = 0; i < MAX_V_NUM_GRID; i++)
-            for (short j = 0; j < MAX_H_NUM_GRID; j++) {
+        if (grids[0][0] != null) return; //created already
+
+        short maxV = ArenaManager.getMaxVerticalGrids();
+        short maxH = ArenaManager.getMaxHorizontalGrids()
+
+        for (short i = 0; i < maxV; i++)
+            for (short j = 0; j < maxH; j++) {
                 Label newLabel = new Label();
-                if (j == MAX_H_NUM_GRID - 1 && i == 0) {
-                    Image image1 = new Image("/end-zone.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                if (j == maxH - 1 && i == 0) {
+                    Image image1 = new Image("/end-zone.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true);
                     BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));
                 } else if (j == 0 && i == 0) {
-                    Image image1 = new Image("/show-up.png", GRID_WIDTH, GRID_HEIGHT, true, true);
+                    Image image1 = new Image("/show-up.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true);
                     BackgroundImage backgroundImage1 = new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));
-//                } else if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MAX_V_NUM_GRID - 1))
+//                } else if (j % 2 == 0 || i == ((j + 1) / 2 % 2) * (MaxV - 1))
 //                    newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 //                else
 //                    newLabel.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
                 } else {
                     newLabel.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
                 }
-                newLabel.setLayoutX(j * GRID_WIDTH);
-                newLabel.setLayoutY(i * GRID_HEIGHT);
-                newLabel.setMinWidth(GRID_WIDTH);
-                newLabel.setMaxWidth(GRID_WIDTH);
-                newLabel.setMinHeight(GRID_HEIGHT);
-                newLabel.setMaxHeight(GRID_HEIGHT);
+                newLabel.setLayoutX(j * ArenaManager.GRID_WIDTH);
+                newLabel.setLayoutY(i * ArenaManager.GRID_HEIGHT);
+                newLabel.setMinWidth(ArenaManager.GRID_WIDTH);
+                newLabel.setMaxWidth(ArenaManager.GRID_WIDTH);
+                newLabel.setMinHeight(ArenaManager.GRID_HEIGHT);
+                newLabel.setMaxHeight(ArenaManager.GRID_HEIGHT);
                 newLabel.setStyle("-fx-border-color: black;");
                 grids[i][j] = newLabel;
                 paneArena.getChildren().addAll(newLabel);
