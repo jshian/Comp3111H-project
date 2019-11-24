@@ -1,17 +1,8 @@
 package project.controller;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.security.InvalidParameterException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import project.Player;
 import project.arena.ArenaInstance;
 import project.entity.BasicTower;
 import project.entity.Catapult;
@@ -70,14 +61,20 @@ public final class ArenaManager {
     static int WAVE_INTERVAL = 50;
 
     /**
-     * The active event manager.
+     * The active player.
      */
-    private static ArenaEventManager activeEventManager = new ArenaEventManager();
+    @Nullable
+    private static Player activePlayer = null;
 
     /**
-     * The active scalar field manager.
+     * The active event register.
      */
-    private static ArenaScalarFieldManager activeScalarFieldManager = new ArenaScalarFieldManager();
+    private static ArenaEventRegister activeEventRegister = new ArenaEventRegister();
+
+    /**
+     * The active scalar field register.
+     */
+    private static ArenaScalarFieldRegister activeScalarFieldRegister = new ArenaScalarFieldRegister();
 
     /**
      * The active arena instance.
@@ -103,10 +100,10 @@ public final class ArenaManager {
     }
 
     /**
-     * Archives the currently active event manager, setting the active instance to a new one.
+     * Archives the currently active event register, setting the active instance to a new one.
      */
     private static void archive() {
-        activeEventManager = new ArenaEventManager();
+        activeEventRegister = new ArenaEventRegister();
     }
 
     // TODO
@@ -122,27 +119,29 @@ public final class ArenaManager {
         /**
          * {@link BasicTower}
          */
-        BASIC (BasicTower.class),
+        BASIC (BasicTower.class, BasicTower.getBuildingCost()),
 
         /**
          * {@link Catapult}
          */
-        CATAPULT (Catapult.class),
+        CATAPULT (Catapult.class, Catapult.getBuildingCost()),
 
         /**
          * {@link IceTower}
          */
-        ICE (IceTower.class),
+        ICE (IceTower.class, IceTower.getBuildingCost()),
 
         /**
          * {@link LaserTower}
          */
-        LASER (LaserTower.class);
+        LASER (LaserTower.class, LaserTower.getBuildingCost());
 
         private final Class<? extends Tower> towerType;
+        private final int buildingCost;
 
-        TowerType(Class<? extends Tower> towerType) {
+        TowerType(Class<? extends Tower> towerType, int buildingCost) {
             this.towerType = towerType;
+            this.buildingCost = buildingCost;
         }
 
         /**
@@ -150,33 +149,42 @@ public final class ArenaManager {
          * @return The tower type.
          */
         public Class<? extends Tower> getTowerType() { return towerType; }
+
+        /**
+         * Returns the building cost.
+         * @return The building cost.
+         */
+        public int getBuildingCost() { return buildingCost; }
     }
 
     /**
-     * Returns the cost to build a tower of some type.
-     * @param type The tower type.
-     * @return The building cost of the specified tower type.
+     * Returns the active player.
+     * @return The active player.
      */
-    public static int getTowerBuildingCost(TowerType type) {
-        return type.getTowerType().getBuildingCost();
-    }
+    public static Player getActivePlayer() { return activePlayer; }
 
     /**
-     * Returns the active event manager.
-     * @return The active event manager.
+     * Returns the active event register.
+     * @return The active event register.
      */
-    public static ArenaEventManager getActiveEventManager() { return activeEventManager; }
+    public static ArenaEventRegister getActiveEventRegister() { return activeEventRegister; }
 
     /**
-     * Returns the active scalar field manager.
-     * @return The active scalar field manager.
+     * Returns the active scalar field register.
+     * @return The active scalar field register.
      */
-    public static ArenaScalarFieldManager getActiveScalarFieldManager() { return activeScalarFieldManager; }
+    public static ArenaScalarFieldRegister getActiveScalarFieldRegister() { return activeScalarFieldRegister; }
 
     /**
      * Returns the active arena instance.
      * @return The active arena instance.
      */
     public static ArenaInstance getActiveArenaInstance() { return activeArenaInstance; }
+
+    /**
+     * Sets the active player.
+     * @param player The new active player.
+     */
+    public static Player setActivePlayer(Player player) { return activePlayer; }
 
 }

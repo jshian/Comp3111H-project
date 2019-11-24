@@ -4,13 +4,14 @@ import javax.persistence.Entity;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.ArenaObject;
 import project.entity.Monster;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
-import project.event.eventsets.ArenaObjectIOEvent;
+import project.event.eventargs.ArenaTowerEventArgs;
 
 @Entity
 public class Player {
@@ -20,7 +21,18 @@ public class Player {
     private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
-     * The method invoked when an {@link ArenaObject} is removed.
+     * The method invoked when an {@link ArenaObject} is being added.
+     */
+    private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+
+        if (subject instanceof Tower) {
+            spendResources(((Tower) subject).getBuildValue());
+        }
+    };
+
+    /**
+     * The method invoked when an {@link ArenaObject} is being removed.
      */
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
@@ -29,7 +41,7 @@ public class Player {
             receiveResources(((Tower) subject).getBuildValue() / 2);
         }
         if (subject instanceof Monster) {
-            receiveResources(((Monster) subject).getResources());
+            receiveResources(((Monster) subject).getResourceValue());
         }
     };
 
@@ -42,7 +54,10 @@ public class Player {
         this.name = name;
         this.resources.set(resource);
 
-        ArenaManager.getActiveEventManager().OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_TOWER_UPGRADE_START.subscribe(onStartTowerUpgrade);
     }
 
     /**

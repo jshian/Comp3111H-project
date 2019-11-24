@@ -3,12 +3,11 @@ package project.entity;
 import javax.persistence.Entity;
 
 import javafx.scene.image.Image;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javafx.scene.image.ImageView;
 import project.UIController;
 import project.arena.ArenaInstance;
-import project.arena.Coordinates;
+import project.query.ArenaObjectStorage;
 
 /**
  * Basic tower has no any special ability.
@@ -17,58 +16,28 @@ import project.arena.Coordinates;
 public class BasicTower extends Tower {
 
     /**
-     * Finds the initial building cost of the tower.
+     * Returns the initial building cost of the tower.
      * @return The initial building cost of the tower.
      */
-    public static int findInitialBuildingCost() {
+    public static int getBuildingCost() {
         return 10;
     }
 
     /**
-     * Constructor of basic tower.
-     * @param arena The arena to attach the tower to.
-     * @param coordinates The coordinate of basic tower.
+     * Constructs a newly allocated {@link BasicTower} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param x The x-coordinate of the object within the storage.
+     * @param y The y-coordinate of the object within the storage.
      */
-    public BasicTower(ArenaInstance arena, Coordinates coordinates){
-        super(arena, coordinates);
+    public BasicTower(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
+        super(storage, imageView, x, y);
         this.attackPower = 10;
-        this.buildValue = findInitialBuildingCost();
-        this.maxShootingRange = 65;
+        this.maxRange = 65;
         this.projectileSpeed = 5;
-        this.upgradeCost = 10;
-        this.imageView = new ImageView(new Image("/basicTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-        this.coordinates.bindByImage(this.imageView);
-    }
-
-    /**
-     * Constructor of basic tower.
-     * @param arena The arena to attach the tower to.
-     * @param coordinates The coordinates of the tower.
-     * @param imageView The image view of the tower.
-     */
-    public BasicTower(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
-        super(arena, coordinates, imageView);
-        this.attackPower = 10;
-        this.buildValue = 10;
-        this.maxShootingRange = 65;
-        this.projectileSpeed = 5;
+        this.buildValue = getBuildingCost();
         this.upgradeCost = 10;
     }
-
-    /**
-     * @see Tower#Tower(ArenaInstance, Tower)
-     */
-    public BasicTower(ArenaInstance arena, BasicTower other) {
-        super(arena, other);
-    }
-
-    @Override
-    public BasicTower deepCopy(ArenaInstance arena) {
-        return new BasicTower(arena, this);
-    }
-
-    @Override
-    protected String getClassName() { return "Basic Tower"; }
 
     @Override
     protected void upgrade() {
@@ -81,16 +50,7 @@ public class BasicTower extends Tower {
     }
 
     @Override
-    public Projectile generateProjectile(){
-        if(!isReload()) {
-            for (Monster m : arena.getMonsters()) {
-                if (isValidTarget(m)) {
-                    this.hasAttack = true;
-                    this.counter = this.reload;
-                    return arena.createProjectile(this, m, (short) 0, (short) 0);
-                }
-            }
-        }
-        return null;
+    public void generateProjectile(Monster primaryTarget) {
+        new BasicProjectile(storage, imageView, this, primaryTarget, (short) 0, (short) 0);
     }
 }

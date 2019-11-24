@@ -3,12 +3,11 @@ package project.field;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-import project.controller.ArenaEventManager;
+import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
-import project.event.eventsets.ArenaObjectIOEvent;
 import project.query.ArenaObjectGridSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
@@ -20,7 +19,7 @@ import project.query.ArenaObjectStorage.StoredType;
 public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
     
     /**
-     * The method invoked when an {@link ArenaObject} is added.
+     * The method invoked when an {@link ArenaObject} is being added.
      */
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
@@ -29,7 +28,7 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
     };
 
     /**
-     * The method invoked when an {@link ArenaObject} is removed.
+     * The method invoked when an {@link ArenaObject} is being removed.
      */
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
@@ -41,9 +40,9 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
      * Constructs a newly allocated {@link MonsterDistanceToEndField} object.
      */
     public MonsterDistanceToEndField() {
-        ArenaEventManager manager = ArenaManager.getActiveEventManager();
-        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.ADD, onAddObject);
-        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
     }
 
     /**

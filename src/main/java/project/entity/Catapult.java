@@ -13,6 +13,7 @@ import project.Geometry;
 import project.UIController;
 import project.arena.ArenaInstance;
 import project.arena.Coordinates;
+import project.query.ArenaObjectStorage;
 
 /**
  * Catapult can attack many monsters at the same time and has high shooting range.
@@ -21,10 +22,10 @@ import project.arena.Coordinates;
 public class Catapult extends Tower {
 
     /**
-     * Finds the initial building cost of the tower.
+     * Returns the initial building cost of the tower.
      * @return The initial building cost of the tower.
      */
-    public static int findInitialBuildingCost() {
+    public static int getBuildingCost() {
         return 20;
     }
 
@@ -34,79 +35,43 @@ public class Catapult extends Tower {
     private final short splashRadius = 25;
 
     /**
-     * The least reload time Catapult can have which default is 2 frame.
+     * Constructs a newly allocated {@link Catapult} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param x The x-coordinate of the object within the storage.
+     * @param y The y-coordinate of the object within the storage.
      */
-    private final int minReloadTime = 2;
-
-    /**
-     * Constructor of catapult.
-     * @param arena The arena to attach the catapult to.
-     * @param coordinates The coordinate of catapult.
-     */
-    public Catapult(ArenaInstance arena, Coordinates coordinates){
-        super(arena, coordinates);
+    public Catapult(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
+        super(storage, imageView, x, y);
         this.attackPower = 25;
-        this.buildValue = findInitialBuildingCost();
-        this.minShootingRange = 50;
-        this.maxShootingRange = 150;
-        this.reload = 20;
-        this.counter = 0;
+        this.minRange = 50;
+        this.maxRange = 150;
         this.projectileSpeed = 50;
-        this.upgradeCost = 20;
-        this.imageView = new ImageView(new Image("/catapult.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-        this.coordinates.bindByImage(this.imageView);
-    }
-
-    /**
-     * Constructor of catapult.
-     * @param arena The arena to attach the catapult to.
-     * @param coordinates The coordinate of catapult.
-     * @param imageView The image view of catapult.
-     */
-    public Catapult(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
-        super(arena, coordinates, imageView);
-        this.attackPower = 25;
-        this.buildValue = 20;
-        this.minShootingRange = 50;
-        this.maxShootingRange = 150;
         this.reload = 20;
-        this.counter = 0;
-        this.projectileSpeed = 50;
+        this.buildValue = getBuildingCost();
         this.upgradeCost = 20;
     }
 
     /**
-     * @see Tower#Tower(ArenaInstance, Tower)
+     * Returns the splash radius of catapult.
+     * @return The splash radius of catapult.
      */
-    public Catapult(ArenaInstance arena, Catapult other) {
-        super(arena, other);
+    public short getSplashRadius() {
+        return splashRadius;
     }
-
-    @Override
-    public Catapult deepCopy(ArenaInstance arena) {
-        return new Catapult(arena, this);
-    }
-
-    @Override
-    protected String getClassName() { return "Catapult"; }
 
     @Override
     protected void upgrade() {
         super.upgrade();
-        if (this.reload <= minReloadTime) {
-            this.reload = minReloadTime;
+        if (this.reload <= minReload) {
+            this.reload = minReload;
         } else {
             this.reload -= 1;
         }
     }
 
-    /**
-     * Generates a projectile that attacks the target of the tower.
-     * The target coordinates is set such that the splash effect hits the monster that is closest to the end-zone and in shooting range; and hits the most monsters.
-     * @return The projectile that attacks the target of the tower, or <code>null</code> if either there is no valid target or the tower is reloading.
-     */
     @Override
-    public Projectile generateProjectile(){
+    public void generateProjectile(){
         if(!isReload()) {
             LinkedList<ArenaObject> selectList = new LinkedList<>();
             Coordinates targetCoordinates = selectMonster(arena.getMonsters(), selectList);
@@ -202,14 +167,6 @@ public class Catapult extends Tower {
     @Override
     public String getInformation() {
         return String.format("Attack Power: %d\nSplash Radius: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,
-            this.splashRadius, this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
-    }
-
-    /**
-     * Accesses the splash radius of catapult.
-     * @return The splash radius of catapult.
-     */
-    public short getSplashRadius() {
-        return splashRadius;
+            this.splashRadius, this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }
 }

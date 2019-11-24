@@ -10,6 +10,8 @@ import project.Player;
 import project.UIController;
 import project.arena.ArenaInstance;
 import project.arena.Coordinates;
+import project.controller.ArenaManager;
+import project.query.ArenaObjectStorage;
 
 /**
  * LaserTower consume resources to attack monster.
@@ -23,75 +25,40 @@ public class LaserTower extends Tower{
     static final int LASER_DISPLAY_DURATION = 2;
 
     /**
-     * Finds the initial building cost of the tower.
+     * Returns the initial building cost of the tower.
      * @return The initial building cost of the tower.
      */
-    public static int findInitialBuildingCost() {
+    public static int getBuildingCost() {
         return 20;
     }
 
     /**
      * The consumption of resources by laser tower each time it shoots.
      */
-    private int shootingCost = 1;
+    private int shootingCost = 2;
 
     /**
-     * Constructor of laser tower.
-     * The max shooting range of laser tower refers to the range that will start attack but not the damage range.
-     * @param arena The arena to attach the tower to.
-     * @param coordinates The coordinates of laser tower.
+     * Constructs a newly allocated {@link LaserTower} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param x The x-coordinate of the object within the storage.
+     * @param y The y-coordinate of the object within the storage.
      */
-    public LaserTower(ArenaInstance arena, Coordinates coordinates){
-        super(arena, coordinates);
+    public LaserTower(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
+        super(storage, imageView, x, y);
         this.attackPower = 30;
-        this.buildValue = findInitialBuildingCost();
-        this.maxShootingRange = 100;
+        this.maxRange = 100;
         this.projectileSpeed = Integer.MAX_VALUE;
-        this.shootingCost = 2;
-        this.upgradeCost = 10;
-        this.imageView = new ImageView(new Image("/laserTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-        this.coordinates.bindByImage(this.imageView);
-    }
-
-    /**
-     * Constructor of laser tower.
-     * The max shooting range of laser tower refers to the range that will start attack but not the damage range.
-     * @param arena The arena to attach the tower to.
-     * @param coordinates The coordinates of laser tower.
-     * @param imageView The image view of laser tower.
-     */
-    public LaserTower(ArenaInstance arena, Coordinates coordinates, ImageView imageView) {
-        super(arena, coordinates, imageView);
-        this.attackPower = 30;
-        this.buildValue = 20;
-        this.maxShootingRange = 100;
-        this.projectileSpeed = Integer.MAX_VALUE;
-        this.shootingCost = 2;
+        this.buildValue = getBuildingCost();
         this.upgradeCost = 10;
     }
 
     /**
-     * @see Tower#Tower(ArenaInstance, Tower)
-     */
-    public LaserTower(ArenaInstance arena, LaserTower other) {
-        super(arena, other);
-        this.shootingCost = other.shootingCost;
-    }
-
-    @Override
-    public LaserTower deepCopy(ArenaInstance arena) {
-        return new LaserTower(arena, this);
-    }
-
-    @Override
-    protected String getClassName() { return "Laser Tower"; }
-
-    /**
-     * Laser tower consume player's resource to attack monster.
-     * @param player The player who build the tower.
+     * Laser tower consume currently active player's resource to attack monster.
      * @return true if player has enough resources to attack, false otherwise.
      */
-    private boolean consumeResource(Player player){
+    private boolean consumeResource(){
+        Player player = ArenaManager.getActivePlayer();
         if (player.hasResources(shootingCost)) {
             player.spendResources(shootingCost);
             return true;
@@ -109,23 +76,11 @@ public class LaserTower extends Tower{
         }
     }
 
-    /**
-     * Generates a projectile that attacks the target of the tower.
-     * @return Always <code>null</code> because the ray generated isn't a projectile.
-     */
     @Override
-    public Projectile generateProjectile(){
-        if(!isReload()) {
-            for (Monster m : arena.getMonsters()) {
-                if (isValidTarget(m)) {
-                    if (!consumeResource(arena.getPlayer())) return null;
-                    hasAttack = true;
-                    this.counter = this.reload;
-                    return arena.createProjectile(this, m, (short) 0, (short) 0);
-                }
-            }
-        }
-        return null;
+    public void generateProjectile(Monster primaryTarget) {
+        if (!consumeResource()) return; // Cannot fire if there are not enough resources
+
+        new LaserProjectile(storage, imageView, this, primaryTarget, (short) 0, (short) 0);
     }
 
     /**
@@ -135,7 +90,7 @@ public class LaserTower extends Tower{
     @Override
     public String getInformation() {
         return String.format("Shooting Cost: %d\nAttack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.shootingCost,
-            this.attackPower, this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
+            this.attackPower, this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }
 }
 

@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import project.UIController;
 import project.arena.ArenaInstance;
 import project.arena.Coordinates;
+import project.query.ArenaObjectStorage;
 
 /**
  * IceTower slow down the speed of monster without damage.
@@ -17,17 +18,12 @@ import project.arena.Coordinates;
 public class IceTower extends Tower {
 
     /**
-     * Finds the initial building cost of the tower.
+     * Returns the initial building cost of the tower.
      * @return The initial building cost of the tower.
      */
-    public static int findInitialBuildingCost() {
+    public static int getBuildingCost() {
         return 15;
     }
-
-    /**
-     * The maximum slow down duration of the tower.
-     */
-    private final int maxSlowDownTime = 100;
 
     /**
      * The current slow down duration of ice tower. It cannot go beyond {@link #maxSlowDownTime}.
@@ -35,20 +31,25 @@ public class IceTower extends Tower {
     private int slowDownTime = 1;
 
     /**
-     * Constructor of ice tower.
-     * @param arena The arena to attach the tower to.
-     * @param coordinates The coordinates of ice tower.
+     * The maximum slow down duration of the tower.
      */
-    public IceTower(ArenaInstance arena, Coordinates coordinates){
-        super(arena, coordinates);
+    private final int maxSlowDownTime = 100;
+
+    /**
+     * Constructs a newly allocated {@link IceTower} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param x The x-coordinate of the object within the storage.
+     * @param y The y-coordinate of the object within the storage.
+     */
+    public IceTower(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
+        super(storage, imageView, x, y);
         this.attackPower = 0;
-        this.buildValue = findInitialBuildingCost();
-        this.maxShootingRange = 50;
-        this.slowDownTime = 10;
+        this.maxRange = 50;
         this.projectileSpeed = 10;
+        this.slowDownTime = 10;
+        this.buildValue = getBuildingCost();
         this.upgradeCost = 10;
-        this.imageView = new ImageView(new Image("/iceTower.png", UIController.GRID_WIDTH, UIController.GRID_HEIGHT, true, true));
-        this.coordinates.bindByImage(this.imageView);
     }
 
     /**
@@ -61,27 +62,17 @@ public class IceTower extends Tower {
         super(arena, coordinates, imageView);
         this.attackPower = 0;
         this.buildValue = 15;
-        this.maxShootingRange = 50;
+        this.maxRange = 50;
         this.slowDownTime = 10;
         this.projectileSpeed = 10;
         this.upgradeCost = 10;
     }
 
     /**
-     * @see Tower#Tower(ArenaInstance, Tower)
+     * Returns the slow down time of tower.
+     * @return the slow down time of tower.
      */
-    public IceTower(ArenaInstance arena, IceTower other) {
-        super(arena, other);
-        this.slowDownTime = other.slowDownTime;
-    }
-
-    @Override
-    public IceTower deepCopy(ArenaInstance arena) {
-        return new IceTower(arena, this);
-    }
-
-    @Override
-    protected String getClassName() { return "Ice Tower"; }
+    public final int getSlowDownTime() { return slowDownTime; }
 
     @Override
     protected void upgrade() {
@@ -94,24 +85,9 @@ public class IceTower extends Tower {
     }
 
     @Override
-    public Projectile generateProjectile(){
-        if(!isReload()) {
-            for (Monster m : arena.getMonsters()) {
-                if (isValidTarget(m)) {
-                    this.hasAttack = true;
-                    this.counter = this.reload;
-                    return arena.createProjectile(this, m, (short) 0, (short) 0);
-                }
-            }
-        }
-        return null;
+    public void generateProjectile(Monster primaryTarget) {
+        new IceProjectile(storage, imageView, this, primaryTarget, (short) 0, (short) 0);
     }
-
-    /**
-     * Accesses the slow down time of tower.
-     * @return the slow down time of tower.
-     */
-    public final int getSlowDownTime() { return slowDownTime; }
 
     /**
      * Accesses the information of tower.
@@ -120,6 +96,6 @@ public class IceTower extends Tower {
     @Override
     public String getInformation() {
         return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,
-            this.reload,this.minShootingRange,this.maxShootingRange,this.upgradeCost,this.buildValue);
+            this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }
 }

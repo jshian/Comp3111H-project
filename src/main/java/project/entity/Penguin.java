@@ -1,54 +1,47 @@
 package project.entity;
 
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
-import project.arena.ArenaInstance;
-import project.arena.Coordinates;
+import project.query.ArenaObjectStorage;
 
 /**
  * Penguin has the ability to regenerate.
  */
 @Entity
 public class Penguin extends Monster {
+
     /**
      * The regeneration rate of the Penguin in terms of health per frame.
      */
-    private static double REGENERATION_RATE = 0.1;
+    protected double regenerationRate;
+
+    // Penguin can regenerate health every frame
+    {
+        onNextFrame = (sender, args) -> {
+            moveMonsterOneFrame();
+            updateStatusEffects();
+
+            this.health.set(getHealth() + regenerationRate);
+        };
+    }
     
     /**
-     * @see Monster#Monster(ArenaInstance, Coordinates, Coordinates, ImageView, double)
+     * Constructs a newly allocated {@link Penguin} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param x The x-coordinate of the object within the storage.
+     * @param y The y-coordinate of the object within the storage.
+     * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public Penguin(ArenaInstance arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
-        super(arena, start, destination, imageView, difficulty);
+    public Penguin(ArenaObjectStorage storage, ImageView imageView, short x, short y, double difficulty) {
+        super(storage, imageView, x, y, difficulty);
         this.maxHealth = 7.5 + 3 * difficulty;
-        this.maxSpeed = 3 + 0.3 * Math.log10(difficulty);
+        this.baseSpeed = 3 + 0.3 * Math.log10(difficulty);
         this.health.set(this.maxHealth);
-        this.speed = this.maxSpeed;
-        this.resources = (int) (difficulty * 1.25);
+        this.speed = this.baseSpeed;
+        this.resourceValue = (int) (difficulty * 1.25);
+        this.regenerationRate = maxHealth * 0.05;
     }
-
-    /**
-     * @see Monster#Monster(ArenaInstance, Monster)
-     */
-    public Penguin(ArenaInstance arena, Penguin other) {
-        super(arena, other);
-    }
-    
-    @Override
-    public Penguin deepCopy(ArenaInstance arena) {
-        return new Penguin(arena, this);
-    }
-
-    // Interface implementation
-    @Override
-    public void nextFrame() {
-        super.nextFrame();
-        this.health.set(getHealth() + REGENERATION_RATE);
-    }
-    
-    @Override
-    public String getClassName() { return "Penguin"; }
 }

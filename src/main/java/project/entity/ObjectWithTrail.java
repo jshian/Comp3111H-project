@@ -11,6 +11,6 @@ interface ObjectWithTrail {
      * Returns the positions that the object has passed through during the previous frame.
      * @return The positions that the object has passed through during the previous frame.
      */
-    abstract LinkedList<ArenaObject.ArenaObjectPositionInfo> getTrail();
+    abstract LinkedList<ArenaObjectPositionInfo> getTrail();
 
 }

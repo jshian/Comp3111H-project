@@ -17,9 +17,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringExpression;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -31,14 +33,14 @@ import project.Player;
 import project.UIController;
 import project.arena.ArenaObjectFactory.MonsterType;
 import project.arena.ArenaObjectFactory.TowerType;
+import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.ArenaObject;
+import project.entity.Monster;
 import project.event.EventHandler;
 import project.event.EventManager;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
-import project.event.eventsets.ArenaEvent;
-import project.event.eventsets.ArenaObjectIOEvent;
 import project.query.ArenaObjectRectangleSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
@@ -127,16 +129,27 @@ public final class ArenaInstance {
     private ArenaObjectStorage arenaObjectStorage;
 
     /**
-     * The method invoked when an {@link ArenaObject} is added.
+     * The method invoked when an {@link ArenaObject} is being added.
      */
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         ArenaObject subject = args.subject;
+        ImageView imageView = subject.getImageView();
 
-        paneArena.getChildren().add(subject.getImageView());
+        paneArena.getChildren().add(imageView);
+
+        if (subject instanceof Monster) {
+            Tooltip tp = new Tooltip();
+            StringExpression str = Bindings.format(((Monster) subject).getDisplayDetails());
+            tp.textProperty().bind(str);
+    
+            imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+            imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+            imageView.setOnMouseExited(e -> tp.hide());
+        }
     };
 
     /**
-     * The method invoked when an {@link ArenaObject} is removed.
+     * The method invoked when an {@link ArenaObject} is being removed.
      */
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
@@ -146,12 +159,15 @@ public final class ArenaInstance {
 
     /**
      * The method invoked when the next frame has finished processing.
+     * 
+     * Broadcasts the {@link ArenaEventRegister#ARENA_GAME_OVER} event if a monster has
+     * reached the end-zone.
      */
-    private EventHandler<EventArgs> onNextFrameEnd = (sender, args) -> {
-        ArenaObjectRectangleSelector selector = new ArenaObjectRectangleSelector(ArenaManager.END_X, ArenaManager.END_Y, (short) 0);
+    private EventHandler<EventArgs> onEndNextFrame = (sender, args) -> {
+        ArenaObjectRectangleSelector selector = new ArenaObjectRectangleSelector(ArenaManager.END_X, ArenaManager.END_Y, (short) 0, (short) 0);
         LinkedList<ArenaObject> result = arenaObjectStorage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
-        if (result.size() > 0) {
-            ArenaManager.getActiveEventManager().ARENA.invoke(ArenaEvent.GAME_OVER, this, new EventArgs());
+        if (!result.isEmpty()) {
+            ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.invoke(this, new EventArgs());
         }
     };
 
@@ -171,9 +187,10 @@ public final class ArenaInstance {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
         
-        ArenaManager.getActiveEventManager().OBJECT_IO.subscribe(ArenaObjectIOEvent.ADD, onAddObject);
-        ArenaManager.getActiveEventManager().OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
-        ArenaManager.getActiveEventManager().ARENA.subscribe(ArenaEvent.NEXT_FRAME_END, onNextFrameEnd);
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
     }
     
     /**

@@ -3,12 +3,15 @@ package project.controller;
 import project.field.MonsterDistanceToEndField;
 import project.field.MonsterAttacksToEndField;
 
-public final class ArenaScalarFieldManager {
+/**
+ * List of scalar fields for the arena.
+ */
+public final class ArenaScalarFieldRegister {
 
     /**
-     * Constructs a newly allocated {@link ArenaScalarFieldManager} object.
+     * Constructs a newly allocated {@link ArenaScalarFieldRegister} object.
      */
-    ArenaScalarFieldManager() {}
+    ArenaScalarFieldRegister() {}
 
     /**
      * The scalar field where the value on each point equals the minimum distance

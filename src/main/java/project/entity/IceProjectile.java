@@ -1,11 +1,10 @@
 package project.entity;
 
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
-import project.arena.ArenaInstance;
+import project.query.ArenaObjectStorage;
 
 @Entity
 public class IceProjectile extends Projectile {
@@ -15,7 +14,13 @@ public class IceProjectile extends Projectile {
     private int slowDownTime;
 
     /**
-     * @see Projectile#Projectile(ArenaObjectStorage, ImageView, Tower, Monster, short, short)
+     * Constructs a newly allocated {@link IceProjectile} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param tower The tower from which this projectile originates.
+     * @param target The monster that the projectile will pursue.
+     * @param deltaX The x-offset from the targeted monster where the projectile will land.
+     * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
     public IceProjectile(ArenaObjectStorage storage, ImageView imageView, IceTower tower, Monster target, short deltaX, short deltaY) {
         super(storage, imageView, tower, target, deltaX, deltaY);
@@ -31,9 +36,6 @@ public class IceProjectile extends Projectile {
     @Override
     protected void damageTarget() {
         super.damageTarget();
-
-        if (!target.hasDied()) {
-            target.addStatusEffect(new StatusEffect(StatusEffect.EffectType.Slow, slowDownTime));
-        }
+        target.addStatusEffect(new StatusEffect(StatusEffect.EffectType.Slow, slowDownTime));
     }
 }

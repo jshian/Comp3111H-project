@@ -1,27 +1,23 @@
 package project.entity;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.control.Tooltip;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import javafx.scene.image.ImageView;
-import project.arena.ArenaInstance;
-import project.arena.Coordinates;
+
 import project.arena.Grid;
-import project.controller.ArenaScalarField;
+import project.controller.ArenaManager;
+import project.event.eventargs.ArenaObjectEventArgs;
+import project.field.ArenaScalarField;
+import project.query.ArenaObjectStorage;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
@@ -30,7 +26,7 @@ import project.controller.ArenaScalarField;
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
 @Entity
-public abstract class Monster extends ArenaComparableObject implements InformativeObject, ObjectWithTarget, ObjectWithTrail {
+public abstract class Monster extends ArenaObject implements Comparable<Monster>, InformativeObject, ObjectWithTarget, ObjectWithTrail {
 
     /**
      * ID for storage using Java Persistence API
@@ -42,12 +38,8 @@ public abstract class Monster extends ArenaComparableObject implements Informati
     /**
      * The scalar field used to determine the movement of the monster via gradient descent.
      */
-    protected ArenaScalarField<?> gradientDescentField;
-
-    /**
-     * The maximum health of the monster.
-     */
-    protected double maxHealth = 1;
+    @Transient
+    protected ArenaScalarField<?> gradientDescentField = ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END;
 
     /**
      * The current health of the monster. It cannot go beyond {@link #maxHealth}.
@@ -57,14 +49,19 @@ public abstract class Monster extends ArenaComparableObject implements Informati
     protected SimpleDoubleProperty health = new SimpleDoubleProperty(1);
 
     /**
-     * The maximum number of pixels the monster can travel per frame.
+     * The maximum health of the monster.
      */
-    protected double maxSpeed = 1;
+    protected double maxHealth = 1;
 
     /**
-     * The current speed of the monster. It cannot go beyond {@link #maxSpeed}.
+     * The current speed of the monster.
      */
     protected double speed = 1;
+
+    /**
+     * The number of pixels the monster can normally travel per frame.
+     */
+    protected double baseSpeed = 1;
 
     /**
      * The non-integral portion of the movement during each frame is accumulated here.
@@ -73,20 +70,9 @@ public abstract class Monster extends ArenaComparableObject implements Informati
     protected double unusedMovement = 0;
 
     /**
-     * A linked list containing a reference to the coordinates that the monster has passed through in the previous frame.
-     */
-    protected LinkedList<Coordinates> prevCoordinates = new LinkedList<>();
-
-    /**
-     * The location which the monster tries to reach.
-     */
-    @OneToOne
-    protected Coordinates destination;
-
-    /**
      * The amount of resources granted to the player on kill.
      */
-    protected int resources = 0;
+    protected int resourceValue = 0;
 
     /**
      * A linked list of references to each status effect that is active against the monster.
@@ -95,49 +81,32 @@ public abstract class Monster extends ArenaComparableObject implements Informati
     protected LinkedList<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
-     * Constructor for the Monster class.
-     * @param arena The arena the monster is attached to.
-     * @param start The starting location of the monster.
-     * @param destination The destination of the monster. It will try to move there.
-     * @param imageView The ImageView that displays the monster.
-     * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
+     * A linked list containing a reference to the positions that the monster has passed through in the previous frame.
      */
-    public Monster(ArenaInstance arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
-        if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
-        
-        this.imageView = imageView;
-        this.arena = arena;
-        this.coordinates = new Coordinates(start);
-        this.destination = new Coordinates(destination);
+    @OneToMany
+    protected LinkedList<ArenaObjectPositionInfo> trail = new LinkedList<>();
 
-        this.coordinates.bindByImage(this.imageView);
-        hoverMonsterEvent(this.arena);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final double getSpeed() { return speed; }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void nextFrame() {
-        // Move monster
-        prevCoordinates.clear();
+    protected void moveMonsterOneFrame() {
+        trail.clear();
         unusedMovement += speed;
+
+        short x = getX();
+        short y = getY();
         while (unusedMovement >= 1) {
-            Coordinates nextCoordinates = findNextCoordinates();
-            if (nextCoordinates != null) {
-                prevCoordinates.add(nextCoordinates);
-                coordinates.update(nextCoordinates);
+            ArenaScalarField<?>.ScalarFieldPoint nextPosition = gradientDescentField.descendTaxicab(x, y);
+            if (nextPosition != null) {
+                x = nextPosition.getX();
+                y = nextPosition.getY();
+                trail.add(new ArenaObjectPositionInfo(imageView, x, y));
             }
 
             unusedMovement--;
         }
 
+        updatePosition(x, y);
+    }
+
+    protected void updateStatusEffects() {
         // Update status effects
         boolean isSlowed = false;
         for (StatusEffect se : statusEffects) {
@@ -146,95 +115,105 @@ public abstract class Monster extends ArenaComparableObject implements Informati
             }
             se.countDown();
         }
-        if (isSlowed) speed = maxSpeed * StatusEffect.SLOW_MULTIPLIER;
-        else speed = maxSpeed;
+        if (isSlowed) speed = baseSpeed * StatusEffect.SLOW_MULTIPLIER;
+        else speed = baseSpeed;
         statusEffects.removeIf(x -> x.getDuration() <= 0);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final int compareTo(Monster other) { return Integer.compare(this.distanceToDestination(), other.distanceToDestination()); }
+    // Define onNextFrame before constructor
+    {
+        onNextFrame = (sender, args) -> {
+            moveMonsterOneFrame();
+            updateStatusEffects();
+        };
+    }
 
     /**
-     * Gets the class name of the monster.
-     * @return The class name of the monster.
+     * Constructs a newly allocated {@link Monster} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param x The x-coordinate of the object within the storage.
+     * @param y The y-coordinate of the object within the storage.
+     * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public abstract String getClassName();
+    public Monster(ArenaObjectStorage storage, ImageView imageView, short x, short y, double difficulty) {
+        super(storage, imageView, x, y);
+
+        if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
+    }
 
     /**
-     * Accesses the health of the monster.
-     * @return The health of the monster.
+     * Returns the current speed of the monster.
+     * @return The current speed of the monster.
+     */
+    public final double getSpeed() { return speed; }
+
+    /**
+     * Returns the current health of the monster.
+     * @return The current health of the monster.
      */
     public final double getHealth() { return health.get(); }
-
-    /**
-     * Sets the health of the monster.
-     * @param value The new health of the monster.
-     */
-    protected final void setHealth(double value) { this.health.set(value); }
-
-    /**
-     * Accesses the coordinates that the monster has passed through in the previous frame.
-     * @return A linked list containing a reference to the coordinates that the monster has passed through in the previous frame.
-     */
-    public final LinkedList<Coordinates> getPrevCoordinates() { return prevCoordinates; }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.
      * @return The amount of resources granted to the player by the monster on death.
      */
-    public final int getResources() { return resources; }
-
-    /**
-     * Accesses the status effects of the monster.
-     * @return The status effects of the monster.
-     */
-    public final LinkedList<StatusEffect> getStatusEffects() { return statusEffects; }
+    public final int getResourceValue() { return resourceValue; }
 
     /**
      * Reduces the health of the monster.
+     * 
+     * Automatically broadcasts the {@link ArenaEventRegister#ARENA_OBJECT_REMOVE} event if the monster has died.
+     * 
      * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
      */
     public final void takeDamage(double amount) {
         if (amount <= 0) return;
         this.health.set(getHealth() - amount);
+
+        // Remove monster from arena if dead
+        if (health.get() <= 0) {
+            ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
+                    new ArenaObjectEventArgs() {
+                        { subject = Monster.this; }
+                    }
+            );
+        }
     }
 
+    /**
+     * Accesses the status effects of the monster.
+     * @return An iterator for the status effects of the monster.
+     */
+    public final Iterator<StatusEffect> getStatusEffects() { return statusEffects.iterator(); }
     /**
      * Adds a status effect to the monster.
      * @param statusEffect The status effect to add.
      */
     public final void addStatusEffect(StatusEffect statusEffect) { this.statusEffects.add(statusEffect); }
 
-    /**
-     * Determines whether the monster has died.
-     * @return Whether the monster has died.
-     */
-    public final boolean hasDied() { return getHealth() <= 0; }
-
-    /**
-     * Finds the next coordinates to move to.
-     * @return The next coordinates to move to.
-     */
-    public Coordinates findNextCoordinates() { return arena.findNextTowardsEnd_prioritizeMovement(coordinates); }
-
-    /**
-     * Finds the number of pixels the monster has to travel to reach its destination.
-     * @return The number of pixels the monster has to travel to reach its destination.
-     */
-    public final short distanceToDestination() { return arena.getDistanceToEndZone(coordinates); }
-
-    /**
-     * show monster hp when mouse is hover over the monster.
-     */
-    protected void hoverMonsterEvent(ArenaInstance arena) {
-        Tooltip tp = new Tooltip();
-        tp.textProperty().bind(Bindings.format("hp: %.2f", health));
-
-        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
-        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
-        imageView.setOnMouseExited(e -> tp.hide());
+    @Override
+    public final int compareTo(Monster o) {
+        return Double.compare(getMovementDistanceToDestination(), o.getMovementDistanceToDestination());
     }
+
+    @Override
+    public LinkedList<ArenaObjectPositionInfo> getTrail() { return trail; }
+
+    @Override
+    public short getTargetLocationX() { return ArenaManager.END_X; }
+
+    @Override
+    public short getTargetLocationY() { return ArenaManager.END_Y; }
+
+    @Override
+    public double getMovementDistanceToDestination() {
+        return ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END.getValueAt(getX(), getY());
+    }
+
+    @Override
+    public String getDisplayName() { return getClass().getSimpleName(); }
+    
+    @Override
+    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", health, maxHealth); }
 }

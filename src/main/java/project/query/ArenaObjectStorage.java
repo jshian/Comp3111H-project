@@ -9,18 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import project.controller.ArenaEventManager;
+import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
-import project.entity.ArenaComparableObject;
 import project.entity.ArenaObject;
 import project.entity.Monster;
 import project.entity.Projectile;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
-import project.event.eventargs.ArenaObjectMoveEventArgs;
-import project.event.eventsets.ArenaObjectIOEvent;
-import project.event.eventsets.ArenaObjectMoveEvent;
 
 /**
  * Manages the storage of objects in the {@link ArenaInstance}.
@@ -104,7 +100,7 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Enum of the stored types of {@link ArenaComparableObject} inside the storage.
+     * Enum of the stored types of comparable {@link ArenaObject} inside the storage.
      */
     public enum StoredComparableType {
 
@@ -114,17 +110,21 @@ public final class ArenaObjectStorage {
         MONSTER (Monster.class);
         
 
-        private final Class<? extends ArenaComparableObject> clazz;
+        private final Class<?> clazz;
 
-        StoredComparableType(Class<? extends ArenaComparableObject> clazz) {
+        StoredComparableType(Class<?> clazz) {
             this.clazz = clazz;
         }
 
         /**
          * Returns the class of the supported object type.
+         * @param <T> The type of comparable {@link ArenaObject}.
          * @return The class of the supported object type.
          */
-        public Class<? extends ArenaComparableObject> getObjectClass() { return clazz; }
+        @SuppressWarnings("unchecked")
+        public <T extends ArenaObject & Comparable <T>> Class<T> getObjectClass() {
+            return (Class<T>) clazz;
+        }
     }
 
     /**
@@ -145,7 +145,7 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * The method invoked when an {@link ArenaObject} is added.
+     * The method invoked when an {@link ArenaObject} is being added.
      */
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         ArenaObject subject = args.subject;
@@ -177,7 +177,7 @@ public final class ArenaObjectStorage {
     };
 
     /**
-     * The method invoked when an {@link ArenaObject} is removed.
+     * The method invoked when an {@link ArenaObject} is being removed.
      */
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
@@ -209,30 +209,37 @@ public final class ArenaObjectStorage {
     };
 
     /**
-     * The method invoked when an {@link ArenaObject} is moved.
+     * The method invoked when an {@link ArenaObject} is scheduled to be moved.
      */
-    private EventHandler<ArenaObjectMoveEventArgs> onMoveObject = (sender, args) -> {
+    private EventHandler<ArenaObjectEventArgs> onStartMoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
-        short oldX = args.originalPosition.getX();
-        short oldY = args.originalPosition.getY();
-        short newX = args.newPosition.getX();
-        short newY = args.newPosition.getY();
+        short x = subject.getX();
+        short y = subject.getY();
 
         // Remove from position-based index
-        LinkedList<ArenaObject> xList_old = objectsAtX.get(oldX);
+        LinkedList<ArenaObject> xList_old = objectsAtX.get(x);
         assert (xList_old.contains(subject));
         xList_old.remove(subject);
 
-        LinkedList<ArenaObject> yList_old = objectsAtY.get(oldY);
+        LinkedList<ArenaObject> yList_old = objectsAtY.get(y);
         assert (yList_old.contains(subject));
         yList_old.remove(subject);
+    };
+
+    /**
+     * The method invoked when an {@link ArenaObject} has been moved.
+     */
+    private EventHandler<ArenaObjectEventArgs> onEndMoveObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+        short x = subject.getX();
+        short y = subject.getY();
 
         // Add to position-based index
-        LinkedList<ArenaObject> xList_new = objectsAtX.get(newX);
+        LinkedList<ArenaObject> xList_new = objectsAtX.get(x);
         assert (!xList_new.contains(subject));
         xList_new.add(subject);
 
-        LinkedList<ArenaObject> yList_new = objectsAtY.get(newY);
+        LinkedList<ArenaObject> yList_new = objectsAtY.get(y);
         assert (!yList_new.contains(subject));
         yList_new.add(subject);
     };
@@ -241,10 +248,11 @@ public final class ArenaObjectStorage {
      * Constructs a newly allocated {@link ArenaObjectStorage} object.
      */
     public ArenaObjectStorage() {
-        ArenaEventManager manager = ArenaManager.getActiveEventManager();
-        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.ADD, onAddObject);
-        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
-        manager.OBJECT_MOVE.subscribe(ArenaObjectMoveEvent.MOVE, onMoveObject);
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
+        register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
     }
 
     /**
@@ -264,7 +272,7 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Returns the index for a supported object type.
+     * Returns the index for a supported {@link ArenaObject} type.
      * @param type The supported object type.
      * @return The index for a supported object type.
      */
@@ -279,13 +287,14 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Returns the index for a supported object type.
-     * @param type The supported object type.
-     * @return The index for a supported object type.
+     * Returns the index for a supported compoarable {@link ArenaObject} type.
+     * @param type The supported comparable object type.
+     * @return The index for a supported comparable object type.
      */
-    LinkedList<? extends ArenaComparableObject> getIndexFor(StoredComparableType type) {
+    @SuppressWarnings("unchecked")
+    <T extends ArenaObject & Comparable <T>> LinkedList<T> getIndexFor(StoredComparableType type) {
         switch (type) {
-            case MONSTER: return monsters;
+            case MONSTER: return (LinkedList<T>) monsters;
         }
 
         return null;
@@ -295,7 +304,7 @@ public final class ArenaObjectStorage {
      * Returns every stored {@link ArenaObject}.
      * @return Every stored {@link ArenaObject}.
      */
-    LinkedList<ArenaObject> getAllObjects() {
+    private LinkedList<ArenaObject> getAllObjects() {
         LinkedList<ArenaObject> result = new LinkedList<>();
 
         for (StoredType type : EnumSet.allOf(StoredType.class)) {
@@ -306,11 +315,11 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Returns every stored {@link ArenaComparableObject}.
-     * @return Every stored {@link ArenaComparableObject}.
+     * Returns every stored comparable {@link ArenaObject}.
+     * @return Every stored comparable {@link ArenaObject}.
      */
-    LinkedList<ArenaComparableObject> getComparableObjects() {
-        LinkedList<ArenaComparableObject> result = new LinkedList<>();
+    private LinkedList<ArenaObject> getComparableObjects() {
+        LinkedList<ArenaObject> result = new LinkedList<>();
 
         for (StoredComparableType type : EnumSet.allOf(StoredComparableType.class)) {
             result.addAll(getIndexFor(type));
@@ -320,10 +329,10 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Returns the fraction of {@link ArenaObject}s that are {@link ArenaComparableObject}s.
-     * @return The fraction of {@link ArenaObject}s that are {@link ArenaComparableObject}s.
+     * Returns the fraction of {@link ArenaObject}s that are {@link ComparableArenaObject}s.
+     * @return The fraction of {@link ArenaObject}s that are {@link ComparableArenaObject}s.
      */
-    float getComparableFraction() { return ((float) monsters.size()) / (towers.size() + monsters.size()); }
+    float getComparableFraction() { return ((float) getComparableObjects().size()) / (getAllObjects().size()); }
 
     /**
      * Runs a query on the storage.
@@ -349,25 +358,27 @@ public final class ArenaObjectStorage {
 
     /**
      * Runs a sorted query on the storage.
+     * @param <T> The type of comparable {@link ArenaObject}.
      * @param selector The selector for the query.
-     * @param types The types of {@link ArenaComparableObject} to select.
+     * @param type The type of comparable {@link ArenaObject} to select.
      * @param option The sorting option.
      * @return The query result.
      */
-    public PriorityQueue<ArenaComparableObject> getSortedQueryResult(ArenaObjectSortedSelector selector, EnumSet<StoredComparableType> types, SortOption option) {
-        ArenaObjectSortedQuery query = new ArenaObjectSortedQuery(selector);
-        return query.run(this, types, option);
+    public <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedQueryResult(ArenaObjectSortedSelector<T> selector, StoredComparableType type, SortOption option) {
+        ArenaObjectSortedQuery<T> query = new ArenaObjectSortedQuery<>(selector);
+        return query.run(this, type, option);
     }
 
     /**
      * Runs a sorted query on the storage.
+     * @param <T> The type of comparable {@link ArenaObject}.
      * @param selectors The list of selectors for the query.
-     * @param types The types of {@link ArenaComparableObject} to select.
+     * @param type The type of comparable {@link ArenaObject} to select.
      * @param option The sorting option.
      * @return The query result.
      */
-    public PriorityQueue<ArenaComparableObject> getSortedQueryResult(LinkedList<ArenaObjectSortedSelector> selectors, EnumSet<StoredComparableType> types, SortOption option) {
-        ArenaObjectSortedQuery query = new ArenaObjectSortedQuery(selectors);
-        return query.run(this, types, option);
+    public <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedQueryResult(LinkedList<ArenaObjectSortedSelector<T>> selectors, StoredComparableType type, SortOption option) {
+        ArenaObjectSortedQuery<T> query = new ArenaObjectSortedQuery<>(selectors);
+        return query.run(this, type, option);
     }
 }

@@ -3,14 +3,12 @@ package project.field;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-import project.controller.ArenaEventManager;
+import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
-import project.event.eventargs.ArenaTowerUpgradeArgs;
-import project.event.eventsets.ArenaObjectIOEvent;
-import project.event.eventsets.ArenaTowerChangeEvent;
+import project.event.eventargs.ArenaTowerEventArgs;
 import project.query.ArenaObjectGridSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
@@ -24,14 +22,14 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
     private class TowerAttacksPerFrameField extends ArenaScalarField<Float> {
 
         /**
-         * Increments the value at each point on the scalar field within a defined hollow circle.
+         * Increments the value at each point on the scalar field within a defined circular ring.
          * @param amount The increment amount.
-         * @param centerX The center x-coordinate of the circle.
-         * @param centerY The center y-coordinate of the circle.
-         * @param minRadius The minimum radius of the circle.
-         * @param maxRadius The maximum radius of the circle.
+         * @param centerX The center x-coordinate of the ring.
+         * @param centerY The center y-coordinate of the ring.
+         * @param minRadius The minimum radius of the ring.
+         * @param maxRadius The maximum radius of the ring.
          */
-        private void incrementHollowCircle(Float amount, short centerX, short centerY, short minRadius, short maxRadius) {
+        private void incrementRing(Float amount, short centerX, short centerY, short minRadius, short maxRadius) {
             short leftX = (short) (centerX - maxRadius);
             short topY = (short) (centerY - maxRadius);
     
@@ -39,13 +37,13 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
             short effectiveHeight = (short) (maxRadius - Math.max(0, - topY) - Math.max(0, topY + maxRadius - ArenaManager.ARENA_HEIGHT));
     
             short startX = (short) Math.max(0, leftX);
-            short endX_intermediate = (short) (startX + maxRadius - minRadius);
-            short startX_intermediate = (short) (endX_intermediate + minRadius + minRadius);
+            short endX_intermediate = (short) Math.min(startX + effectiveWidth, startX + maxRadius - minRadius);
+            short startX_intermediate = (short) Math.min(startX + effectiveWidth, endX_intermediate + minRadius + minRadius);
             short endX = (short) (startX + effectiveWidth);
     
             short startY = (short) Math.max(0, topY);
-            short endY_intermediate = (short) (startY + maxRadius - minRadius);
-            short startY_intermediate = (short) (endY_intermediate + minRadius + minRadius);
+            short endY_intermediate = (short) Math.min(startY + effectiveHeight, startY + maxRadius - minRadius);
+            short startY_intermediate = (short) Math.min(startY + effectiveHeight, endY_intermediate + minRadius + minRadius);
             short endY = (short) (startY + effectiveHeight);
     
             // Determine outer loop to minimize code jumping.
@@ -96,38 +94,101 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
     private TowerAttacksPerFrameField towerAttacksPerFrameField = new TowerAttacksPerFrameField();
 
     /**
-     * The method invoked when an {@link ArenaObject} is added.
+     * The method invoked when an {@link ArenaObject} is being added.
      */
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
             Tower tower = (Tower) args.subject;
-            towerAttacksPerFrameField.incrementHollowCircle(1f / tower.getReload(), tower.getX(), tower.getY(), tower.getMinShootingRange(), tower.getMaxShootingRange());
+            towerAttacksPerFrameField.incrementRing(
+                    1f / tower.getReload(),
+                    tower.getX(),
+                    tower.getY(),
+                    tower.getMinRange(),
+                    tower.getMaxRange()
+            );
 
             recalculate();
         }
     };
 
     /**
-     * The method invoked when an {@link ArenaObject} is removed.
+     * The method invoked when an {@link ArenaObject} is being removed.
      */
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
             Tower tower = (Tower) args.subject;
-            towerAttacksPerFrameField.incrementHollowCircle(-1f / tower.getReload(), tower.getX(), tower.getY(), tower.getMinShootingRange(), tower.getMaxShootingRange());
+            towerAttacksPerFrameField.incrementRing(
+                    -1f / tower.getReload(),
+                    tower.getX(),
+                    tower.getY(),
+                    tower.getMinRange(),
+                    tower.getMaxRange()
+            );
             
             recalculate();
         }
     };
 
     /**
-     * The method invoked when a {@link Tower} is upgraded.
+     * The method invoked when an {@link ArenaObject} is scheduled to be moved.
      */
-    private EventHandler<ArenaTowerUpgradeArgs> onTowerUpgrade = (sender, args) -> {
-        Tower originalTower = args.originalTower;
-        towerAttacksPerFrameField.incrementHollowCircle(-1f / originalTower.getReload(), originalTower.getX(), originalTower.getY(), originalTower.getMinShootingRange(), originalTower.getMaxShootingRange());
+    private EventHandler<ArenaObjectEventArgs> onStartMoveObject = (sender, args) -> {
+        if (args.subject instanceof Tower) {
+            Tower tower = (Tower) args.subject;
+            towerAttacksPerFrameField.incrementRing(
+                    -1f / tower.getReload(),
+                    tower.getX(),
+                    tower.getY(),
+                    tower.getMinRange(),
+                    tower.getMaxRange()
+            );
+        }
+    };
 
-        Tower newTower = args.newTower;
-        towerAttacksPerFrameField.incrementHollowCircle(1f / newTower.getReload(), newTower.getX(), newTower.getY(), newTower.getMinShootingRange(), newTower.getMaxShootingRange());
+    /**
+     * The method invoked when an {@link ArenaObject} has been moved.
+     */
+    private EventHandler<ArenaObjectEventArgs> onEndMoveObject = (sender, args) -> {
+        if (args.subject instanceof Tower) {
+            Tower tower = (Tower) args.subject;
+            towerAttacksPerFrameField.incrementRing(
+                    1f / tower.getReload(),
+                    tower.getX(),
+                    tower.getY(),
+                    tower.getMinRange(),
+                    tower.getMaxRange()
+            );
+
+            recalculate();
+        }
+    };
+
+    /**
+     * The method invoked when a {@link Tower} is scheduled to be upgraded.
+     */
+    private EventHandler<ArenaTowerEventArgs> onStartUpgradeTower = (sender, args) -> {
+        Tower tower = args.subject;
+        towerAttacksPerFrameField.incrementRing(
+                -1f / tower.getReload(),
+                tower.getX(),
+                tower.getY(),
+                tower.getMinRange(),
+                tower.getMaxRange()
+        );
+    };
+
+    /**
+     * The method invoked when a {@link Tower} has been upgraded.
+     */
+    private EventHandler<ArenaTowerEventArgs> onEndUpgradeTower = (sender, args) -> {
+        Tower tower = args.subject;
+        towerAttacksPerFrameField.incrementRing(
+                1f / tower.getReload(),
+                tower.getX(),
+                tower.getY(),
+                tower.getMinRange(),
+                tower.getMaxRange()
+        );
 
         recalculate();
     };
@@ -136,10 +197,13 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
      * Constructs a newly allocated {@link MonsterAttacksToEndField} object.
      */
     public MonsterAttacksToEndField() {
-        ArenaEventManager manager = ArenaManager.getActiveEventManager();
-        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.ADD, onAddObject);
-        manager.OBJECT_IO.subscribe(ArenaObjectIOEvent.REMOVE, onRemoveObject);
-        manager.TOWER_CHANGE.subscribe(ArenaTowerChangeEvent.UPGRADE, onTowerUpgrade);
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
+        register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
+        register.ARENA_TOWER_UPGRADE_START.subscribe(onStartUpgradeTower);
+        register.ARENA_TOWER_UPGRADE_END.subscribe(onEndUpgradeTower);
     }
 
     /**

@@ -1,14 +1,16 @@
 package project.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javafx.scene.image.ImageView;
+import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.event.EventHandler;
+import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
-import project.event.eventsets.ArenaEvent;
 import project.query.ArenaObjectStorage;
 
 /**
@@ -30,35 +32,37 @@ public abstract class ArenaObject {
     /**
      * The position of the object within the storage.
      */
-    protected ArenaObjectPositionInfo position;
+    protected ArenaObjectPositionInfo positionInfo;
 
     /**
      * The method invoked when the next frame is called.
      */
     @Nullable
     protected EventHandler<EventArgs> onNextFrame = null;
-
-    /**
-     * Whether the object sends and receives events.
-     */
-    protected boolean isActive;
     
     /**
      * Constructs a newly allocated {@link ArenaObject} object.
+     * 
+     * Automatically broadcasts the {@link ArenaEventRegister#ARENA_OBJECT_ADD} event.
+     * 
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
-     * @param isActive Whether the object is active.
      */
-    public ArenaObject(ArenaObjectStorage storage, ImageView imageView, short x, short y, boolean isActive) {
+    public ArenaObject(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
         this.storage = storage;
         this.imageView = imageView;
-        this.position = new ArenaObjectPositionInfo(imageView, x, y);
-        this.isActive = isActive;
+        this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
 
-        if (isActive) {
-            if (onNextFrame != null) ArenaManager.getActiveEventManager().ARENA.subscribe(ArenaEvent.NEXT_FRAME, onNextFrame);
+        ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD.invoke(this,
+                new ArenaObjectEventArgs() {
+                    { subject = ArenaObject.this; }
+                }
+        );
+
+        if (onNextFrame != null) {
+            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
         }
     }
 
@@ -72,22 +76,40 @@ public abstract class ArenaObject {
      * Returns the x-coordinate of the object within the storage.
      * @return The x-coordinate of the object within the storage.
      */
-    public final short getX() { return position.getX(); }
+    public final short getX() { return positionInfo.getX(); }
 
     /**
      * Returns the y-coordinate of the object within the storage.
      * @return The y-coordinate of the object within the storage.
      */
-    public final short getY() { return position.getY(); }
+    public final short getY() { return positionInfo.getY(); }
 
     /**
      * Updates the position of the object within the same storage,
      * while also updating the position of the bound ImageView.
+     * 
+     * Automatically broadcasts the {@link ArenaEventRegister#ARENA_OBJECT_MOVE_START}
+     * and {@link ArenaEventRegister#ARENA_OBJECT_MOVE_END} events.
+     * 
      * @param x The x-coordinate of the new position.
      * @param y The y-coordinate of the new position.
      * @throws IllegalArgumentException If the position is out of bounds.
      */
-    protected final void updatePosition(short x, short y) throws IllegalArgumentException {
-        this.position.setPosition(x, y);
+    public final void updatePosition(short x, short y) throws IllegalArgumentException {
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+
+        register.ARENA_OBJECT_MOVE_START.invoke(this,
+                new ArenaObjectEventArgs() {
+                    { subject = ArenaObject.this; }
+                }
+        );
+
+        this.positionInfo.setPosition(x, y);
+
+        register.ARENA_OBJECT_MOVE_END.invoke(this,
+                new ArenaObjectEventArgs() {
+                    { subject = ArenaObject.this; }
+                }
+        );
     }
 }

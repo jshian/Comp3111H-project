@@ -1,6 +1,6 @@
 package project.entity;
 
-import java.util.function.Supplier;
+import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,14 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
 import project.Geometry;
-import project.controller.ArenaEventManager;
 import project.controller.ArenaManager;
 import project.event.eventargs.ArenaObjectEventArgs;
-import project.event.eventsets.ArenaObjectIOEvent;
 import project.query.ArenaObjectStorage;
 
 /**
@@ -82,6 +77,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     protected boolean hasReachedTarget = false;
 
     // Define onNextFrame before constructor
+    // Automatically broadcasts {@link ArenaEventRegister#ARENA_OBJECT_REMOVE} when the target has been reached.
     {
         onNextFrame = (sender, args) -> {
             short targetX, targetY;
@@ -100,7 +96,8 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
                 hasReachedTarget = true;
                 damageTarget();
 
-                ArenaManager.getActiveEventManager().OBJECT_IO.invoke(ArenaObjectIOEvent.REMOVE, this,
+                // Remove projectile from arena once it has reached target
+                ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
                         new ArenaObjectEventArgs() {
                             { subject = Projectile.this; }
                         }
@@ -118,46 +115,25 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     }
 
     /**
-     * Constructor for the Projectile class.
+     * Constructs a newly allocated {@link Projjectile} object.
      * @param storage The storage to add the object to.
      * @param imageView The ImageView to bound the object to.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
-     * @param isActive Whether the object is active.
      */
-    public Projectile(ArenaObjectStorage storage, ImageView imageView, Tower tower, Monster target, short deltaX, short deltaY, boolean isActive) {
-        super(storage, imageView, tower.getX(), tower.getY(), isActive);
+    public Projectile(ArenaObjectStorage storage, ImageView imageView, Tower tower, Monster target, short deltaX, short deltaY) {
+        super(storage, imageView, tower.getX(), tower.getY());
         this.target = target;
         this.deltaX = deltaX;
         this.deltaY = deltaY;
         this.speed = tower.getProjectileSpeed();
         this.damage = tower.getAttackPower();
-    }
 
-    // Interface implementation
-    @Override
-    public short getTargetLocationX() { return target.getX(); }
-
-    @Override
-    public short getTargetLocationY() { return target.getY(); }
-
-    @Override
-    public double getMovementDistanceToDestination() {
-        return Geometry.findEuclideanDistance(getX(), getY(), target.getX(), target.getY());
-    }
-
-    /**
-     * Damages the target of the projectile.
-     */
-    protected void damageTarget() {
-        if (!target.hasDied()) {
-            target.takeDamage(damage);
-            //TODO: Move to tower
-            System.out.println(String.format("%s@(%d, %d) -> %s@(%d, %d)", getTowerClassName(), origin.getX(), origin.getY()
-                                , target.getClassName(), target.getX(), target.getY()));
-        }
+        System.out.println(String.format("%s@(%d, %d) -> %s@(%d, %d)",
+                tower.getDisplayName(), origin.getX(), origin.getY(), 
+                target.getDisplayName(), target.getX(), target.getY()));
     }
 
     /**
@@ -171,4 +147,22 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      * @return The speed of the projectile.
      */
     public final double getSpeed() { return speed; }
+
+    /**
+     * Damages the target, and possibly other {@link Monster}s.
+     */
+    protected void damageTarget() {
+        target.takeDamage(damage);
+    }
+
+    @Override
+    public short getTargetLocationX() { return target.getX(); }
+
+    @Override
+    public short getTargetLocationY() { return target.getY(); }
+
+    @Override
+    public double getMovementDistanceToDestination() {
+        return Geometry.findEuclideanDistance(getX(), getY(), target.getX(), target.getY());
+    }
 }

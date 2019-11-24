@@ -9,29 +9,29 @@ import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
- * A class that selects the {@link ArenaObject}s inside a defined rectangle (including the boundary) within the arena.
+ * A class that selects the {@link ArenaObject}s inside a defined circular ring (including the boundary) within the arena.
  */
-public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
+public class ArenaObjectRingSelector implements ArenaObjectSelector {
 
     /**
-     * Minimum x-coordinate of the rectangle.
+     * Center x-coordinate of the ring.
      */
-    protected final short leftX;
+    protected final short centerX;
 
     /**
-     * Minimum y-coordinate of the rectangle.
+     * Center y-coordinate of the ring.
      */
-    protected final short topY;
+    protected final short centerY;
 
     /**
-     * Length of the rectangle in the x-direction.
+     * Minimum radius of the ring.
      */
-    protected final short width;
+    protected final short minRadius;
 
     /**
-     * Length of the rectangle in the y-direction.
+     * Minimum radius of the ring.
      */
-    protected final short height;
+    protected final short maxRadius;
 
     /**
      * The effective minimum x-coordinate of the selection based on the boundary of the arena.
@@ -64,20 +64,23 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
     protected final short effectiveHeight;
 
     /**
-     * Constructs a newly allocated {@link ArenaObjectRectangleSelector} object.
-     * @param leftX The minimum x-coordinate of the rectangle.
-     * @param topY The minimum y-coordinate of the rectangle.
-     * @param width The x-length of the rectangle.
-     * @param height The y-length of the rectangle.
+     * Constructs a newly allocated {@link ArenaObjectRingSelector} object.
+     * @param centerX The center x-coordinate of the ring.
+     * @param centerY The center y-coordinate of the ring.
+     * @param minRadius The minimum radius of the ring.
+     * @param maxRadius The maximum radius of the ring.
      */
-    public ArenaObjectRectangleSelector(short leftX, short topY, short width, short height) {
-        this.leftX = leftX;
-        this.topY = topY;
-        this.width = width;
-        this.height = height;
+    public ArenaObjectRingSelector(short centerX, short centerY, short minRadius, short maxRadius) {
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.minRadius = minRadius;
+        this.maxRadius = maxRadius;
 
-        this.effectiveWidth = (short) (width - Math.max(0, - leftX) - Math.max(0, leftX + width - ArenaManager.ARENA_WIDTH));
-        this.effectiveHeight = (short) (height - Math.max(0, - topY) - Math.max(0, topY + height - ArenaManager.ARENA_HEIGHT));
+        short leftX = (short) (centerX - maxRadius);
+        short topY = (short) (centerY - maxRadius);
+
+        this.effectiveWidth = (short) (maxRadius - Math.max(0, - leftX) - Math.max(0, leftX + maxRadius - ArenaManager.ARENA_WIDTH));
+        this.effectiveHeight = (short) (maxRadius - Math.max(0, - topY) - Math.max(0, topY + maxRadius - ArenaManager.ARENA_HEIGHT));
 
         this.startX = (short) Math.max(0, leftX); assert startX >= 0;
         this.endX = (short) (startX + effectiveWidth); assert endX <= ArenaManager.ARENA_WIDTH;
@@ -93,7 +96,8 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
         // Out of bounds (== 0 means a point search)
         if (effectiveWidth < 0 || effectiveHeight < 0) return 0;
 
-        return ((float) ((effectiveWidth + 1) * (effectiveHeight + 1))) / ((ArenaManager.ARENA_WIDTH + 1) * (ArenaManager.ARENA_HEIGHT + 1));
+        // Ratio of area of circle inscribed inside a square over area of the square == PI / 4
+        return ((float) Math.PI / 4 * ((effectiveWidth + 1) * (effectiveHeight + 1)) / ((ArenaManager.ARENA_WIDTH + 1) * (ArenaManager.ARENA_HEIGHT + 1)));
     }
 
     @Override
@@ -104,7 +108,13 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
 
         // Out of bounds (== 0 means a point search)
         if (effectiveWidth < 0 || effectiveHeight < 0) return result;
+
+        // Additional filter that tests whether object is inside circle
+        filters.add(new ArenaObjectPropertySelector<ArenaObject>(ArenaObject.class, o -> {
+            return isInSelection(o);
+        }));
         
+        // Determine whether to access through x- or y- index based on number of accesses.
         if (effectiveWidth < effectiveHeight) {
             ArrayList<LinkedList<ArenaObject>> index = storage.getXIndex();
 
@@ -128,12 +138,11 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
 
     @Override
     public boolean isInSelection(ArenaObject o) {
-        short x = o.getX();
-        if (x < startX || x > endX) return false;
+        short distX = (short) (o.getX() - centerX);
+        short distY = (short) (o.getY() - centerY);
 
-        short y = o.getY();
-        if (y < startY || y > endY) return false;
+        int distSquared = distX * distX + distY * distY;
 
-        return true;
+        return (distSquared >= minRadius * minRadius && distSquared <= maxRadius * maxRadius);
     }
 } 

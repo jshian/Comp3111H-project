@@ -7,9 +7,9 @@ import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
- * Class that performs selection on an {@link ArenaObjectStorage}.
+ * Interface for classes that perform selection on an {@link ArenaObjectStorage}.
  */
-abstract class ArenaObjectSelector {
+interface ArenaObjectSelector {
 
     /**
      * Estimates the selectivity of the selection on a storage, disregarding the type filter.
@@ -31,10 +31,11 @@ abstract class ArenaObjectSelector {
     /**
      * Returns whether an object passes through a set of filters.
      * @param o The object to test.
+     * @param types The types of {@link ArenaObject} to select.
      * @param filters The set of filters.
      * @return Whether an object passes through all of the filters.
      */
-    protected final boolean isAllSatisfied(ArenaObject o, EnumSet<StoredType> types,
+    default boolean isAllSatisfied(ArenaObject o, EnumSet<StoredType> types,
             LinkedList<ArenaObjectSelector> filters) {
 
         boolean satisfiesType = false;

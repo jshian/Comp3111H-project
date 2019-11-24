@@ -1,12 +1,10 @@
 package project.entity;
 
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
-import project.arena.ArenaInstance;
-import project.arena.Coordinates;
+import project.query.ArenaObjectStorage;
 
 /**
  * Unicorn is the Monster with the most health.
@@ -14,29 +12,19 @@ import project.arena.Coordinates;
 @Entity
 public class Unicorn extends Monster {
     /**
-     * @see Monster#Monster(ArenaInstance, Coordinates, Coordinates, ImageView, double)
+     * Constructs a newly allocated {@link Unicorn} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param x The x-coordinate of the object within the storage.
+     * @param y The y-coordinate of the object within the storage.
+     * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public Unicorn(ArenaInstance arena, Coordinates start, Coordinates destination, ImageView imageView, double difficulty) {
-        super(arena, start, destination, imageView, difficulty);
+    public Unicorn(ArenaObjectStorage storage, ImageView imageView, short x, short y, double difficulty) {
+        super(storage, imageView, x, y, difficulty);
         this.maxHealth = 10 + 1 * difficulty;
-        this.maxSpeed = 2 + 0.2 * Math.log10(difficulty);
+        this.baseSpeed = 2 + 0.2 * Math.log10(difficulty);
         this.health.set(this.maxHealth);
-        this.speed = this.maxSpeed;
-        this.resources = (int) (difficulty * 1);
+        this.speed = this.baseSpeed;
+        this.resourceValue = (int) (difficulty * 1);
     }
-
-    /**
-     * @see Monster#Monster(ArenaInstance, Monster)
-     */
-    public Unicorn(ArenaInstance arena, Unicorn other) {
-        super(arena, other);
-    }
-    
-    @Override
-    public Unicorn deepCopy(ArenaInstance arena) {
-        return new Unicorn(arena, this);
-    }
-
-    @Override
-    public String getClassName() { return "Unicorn"; }
 }

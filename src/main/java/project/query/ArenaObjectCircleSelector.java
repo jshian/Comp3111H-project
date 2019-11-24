@@ -3,19 +3,15 @@ package project.query;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 
 import project.controller.ArenaManager;
-import project.entity.ArenaComparableObject;
 import project.entity.ArenaObject;
-import project.query.ArenaObjectStorage.StoredComparableType;
-import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
  * A class that selects the {@link ArenaObject}s inside a defined circle (including the boundary) within the arena.
  */
-public class ArenaObjectCircleSelector extends ArenaObjectSortedSelector {
+public class ArenaObjectCircleSelector implements ArenaObjectSelector {
 
     /**
      * Center x-coordinate of the circle.
@@ -89,7 +85,7 @@ public class ArenaObjectCircleSelector extends ArenaObjectSortedSelector {
     }
 
     @Override
-    float estimateSelectivity(ArenaObjectStorage storage) {
+    public float estimateSelectivity(ArenaObjectStorage storage) {
         // Out of bounds (== 0 means a point search)
         if (effectiveWidth < 0 || effectiveHeight < 0) return 0;
 
@@ -98,7 +94,7 @@ public class ArenaObjectCircleSelector extends ArenaObjectSortedSelector {
     }
 
     @Override
-    LinkedList<ArenaObject> select(ArenaObjectStorage storage,
+    public LinkedList<ArenaObject> select(ArenaObjectStorage storage,
             EnumSet<StoredType> types, LinkedList<ArenaObjectSelector> filters) {
 
         LinkedList<ArenaObject> result = new LinkedList<>();
@@ -108,10 +104,7 @@ public class ArenaObjectCircleSelector extends ArenaObjectSortedSelector {
 
         // Additional filter that tests whether object is inside circle
         filters.add(new ArenaObjectPropertySelector<ArenaObject>(ArenaObject.class, o -> {
-            short distX = (short) (o.getX() - centerX);
-            short distY = (short) (o.getY() - centerY);
-
-            return (distX * distX + distY * distY <= radius * radius);
+            return isInSelection(o);
         }));
         
         // Determine whether to access through x- or y- index based on number of accesses.
@@ -137,52 +130,10 @@ public class ArenaObjectCircleSelector extends ArenaObjectSortedSelector {
     }
 
     @Override
-    PriorityQueue<ArenaComparableObject> select(ArenaObjectStorage storage,
-            EnumSet<StoredComparableType> types, LinkedList<ArenaObjectSortedSelector> filters, SortOption option) {
-        
-        PriorityQueue<ArenaComparableObject> result = createPriorityQueue(option);
+    public boolean isInSelection(ArenaObject o) {
+        short distX = (short) (o.getX() - centerX);
+        short distY = (short) (o.getY() - centerY);
 
-        // Out of bounds (== 0 means a point search)
-        if (effectiveWidth < 0 || effectiveHeight < 0) return result;
-
-        // Additional filter that tests whether object is inside circle
-        filters.add(new ArenaObjectPropertySelector<ArenaObject>(ArenaObject.class, o -> {
-            short distX = (short) (o.getX() - centerX);
-            short distY = (short) (o.getY() - centerY);
-
-            return (distX * distX + distY * distY <= radius * radius);
-        }));
-        
-        // Determine whether to access through x- or y- index based on number of accesses.
-        if (effectiveWidth < effectiveHeight) {
-            ArrayList<LinkedList<ArenaObject>> index = storage.getXIndex();
-
-            for (short x = startX; x <= endX; x++) {
-                for (ArenaObject o : index.get(x)) {
-                    if (isComparableAndAllSatisfied(o, types, filters)) result.add((ArenaComparableObject) o);
-                }
-            }
-        } else {
-            ArrayList<LinkedList<ArenaObject>> index = storage.getYIndex();
-
-            for (short y = startY; y <= endY; y++) {
-                for (ArenaObject o : index.get(y)) {
-                    if (isComparableAndAllSatisfied(o, types, filters)) result.add((ArenaComparableObject) o);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    @Override
-    boolean isInSelection(ArenaObject o) {
-        short x = o.getX();
-        if (x < startX || x > endX) return false;
-
-        short y = o.getY();
-        if (y < startY || y > endY) return false;
-
-        return true;
+        return (distX * distX + distY * distY <= radius * radius);
     }
 } 

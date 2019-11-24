@@ -2,20 +2,25 @@ package project.entity;
 
 import java.util.PriorityQueue;
 
+import javafx.scene.image.ImageView;
+
 import javax.persistence.Entity;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
-import javafx.scene.image.ImageView;
 import project.Geometry;
 import project.arena.ArenaInstance;
-import project.arena.Coordinates;
+import project.query.ArenaObjectStorage;
 
 @Entity
 public class LaserProjectile extends Projectile {
 
     /**
-     * @see Projectile#Projectile(ArenaObjectStorage, ImageView, Tower, Monster, short, short)
+     * Constructs a newly allocated {@link LaserProjectile} object.
+     * @param storage The storage to add the object to.
+     * @param imageView The ImageView to bound the object to.
+     * @param tower The tower from which this projectile originates.
+     * @param target The monster that the projectile will pursue.
+     * @param deltaX The x-offset from the targeted monster where the projectile will land.
+     * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
     public LaserProjectile(ArenaObjectStorage storage, ImageView imageView, LaserTower tower, Monster target, short deltaX, short deltaY) {
         super(storage, imageView, tower, target, deltaX, deltaY);
