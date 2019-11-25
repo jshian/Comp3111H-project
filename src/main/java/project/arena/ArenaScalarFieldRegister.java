@@ -1,4 +1,4 @@
-package project.controller;
+package project.arena;
 
 import project.field.MonsterDistanceToEndField;
 import project.field.MonsterAttacksToEndField;

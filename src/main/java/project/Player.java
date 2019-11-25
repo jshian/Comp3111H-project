@@ -4,15 +4,13 @@ import javax.persistence.Entity;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import project.controller.ArenaEventRegister;
+import project.arena.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.ArenaObject;
 import project.entity.Monster;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
-import project.event.eventargs.ArenaTowerEventArgs;
-import project.event.eventargs.BooleanResultEventArgs;
 
 @Entity
 public class Player {
@@ -47,15 +45,6 @@ public class Player {
     };
 
     /**
-     * The method invoked when a result is returned from checking whether a tower could be upgraded.
-     */
-    private EventHandler<BooleanResultEventArgs> onGetCheckTowerUpgradeResult = (sender, args) -> {
-        if (args.recipient != this) return;
-
-        //TODO
-    };
-
-    /**
      * Constructs a newly allocated {@link Player} object.
      * @param name The name of the player.
      * @param resource The amount of resources the player has.
@@ -67,7 +56,6 @@ public class Player {
         ArenaEventRegister register = ArenaManager.getActiveEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
-        register.ARENA_TOWER_UPGRADE_CHECK_RESULT.subscribe(onGetCheckTowerUpgradeResult);
     }
 
     /**

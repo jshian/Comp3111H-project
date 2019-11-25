@@ -1,11 +1,12 @@
 package project.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.PostLoad;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javafx.scene.image.ImageView;
-import project.controller.ArenaEventRegister;
+import project.arena.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
@@ -26,7 +27,7 @@ public abstract class ArenaObject {
     /**
      * The ImageView that the object is bound to.
      */
-    protected ImageView imageView;
+    protected ImageView imageView = getDefaultImage();
 
     /**
      * The position of the object within the storage.
@@ -42,13 +43,11 @@ public abstract class ArenaObject {
     /**
      * Constructs a newly allocated {@link ArenaObject} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
-     * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public ArenaObject(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
+    public ArenaObject(ArenaObjectStorage storage, short x, short y) {
         this.storage = storage;
-        this.imageView = imageView;
         this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
 
         ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD.invoke(this,
@@ -66,19 +65,19 @@ public abstract class ArenaObject {
      * Returns the ImageView that the object is bound to.
      * @return The ImageView that the object is bound to.
      */
-    public final ImageView getImageView() { return imageView; }
+    public ImageView getImageView() { return imageView; }
 
     /**
      * Returns the x-coordinate of the object within the storage.
      * @return The x-coordinate of the object within the storage.
      */
-    public final short getX() { return positionInfo.getX(); }
+    public short getX() { return positionInfo.getX(); }
 
     /**
      * Returns the y-coordinate of the object within the storage.
      * @return The y-coordinate of the object within the storage.
      */
-    public final short getY() { return positionInfo.getY(); }
+    public short getY() { return positionInfo.getY(); }
 
     /**
      * Updates the position of the object within the same storage,
@@ -90,7 +89,7 @@ public abstract class ArenaObject {
      * @param y The y-coordinate of the new position.
      * @throws IllegalArgumentException If the position is out of bounds.
      */
-    public final void updatePosition(short x, short y) throws IllegalArgumentException {
+    public void updatePosition(short x, short y) throws IllegalArgumentException {
         ArenaEventRegister register = ArenaManager.getActiveEventRegister();
 
         register.ARENA_OBJECT_MOVE_START.invoke(this,
@@ -106,5 +105,20 @@ public abstract class ArenaObject {
                     { subject = ArenaObject.this; }
                 }
         );
+    }
+
+    /**
+     * Returns the default image of the object.
+     * @return The default image of the object.
+     */
+    protected abstract ImageView getDefaultImage();
+
+    /**
+     * Loads the image view when it is generated from the database.
+     */
+    @PostLoad
+    protected void loadImage() {
+        imageView = getDefaultImage();
+        this.positionInfo = new ArenaObjectPositionInfo(imageView, getX(), getY());
     }
 }

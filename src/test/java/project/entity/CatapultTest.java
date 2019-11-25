@@ -1,4 +1,4 @@
-package project.arena.towers;
+package project.entity;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;

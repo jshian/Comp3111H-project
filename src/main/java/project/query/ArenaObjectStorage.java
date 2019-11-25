@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import project.controller.ArenaEventRegister;
+import project.arena.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.ArenaObject;
 import project.entity.Monster;

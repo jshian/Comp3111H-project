@@ -24,15 +24,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import project.UIController.GameMode;
 import project.arena.ArenaInstance;
-import project.arena.ArenaObjectFactory.MonsterType;
-import project.arena.Coordinates;
-import project.arena.Grid;
-import project.arena.monsters.Fox;
-import project.arena.monsters.Monster;
-import project.arena.monsters.Penguin;
-import project.arena.monsters.Unicorn;
+import project.controller.UIController;
+import project.entity.*;
 import project.arena.towers.BuildTower;
 
 /**

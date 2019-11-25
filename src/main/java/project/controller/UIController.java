@@ -25,9 +25,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import project.arena.ArenaInstance;
-import project.arena.Grid;
 import project.controller.ArenaManager.TowerType;
+import project.entity.BasicTower;
+import project.entity.Catapult;
+import project.entity.IceTower;
+import project.entity.LaserTower;
+import project.entity.Tower;
+import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
+import project.event.eventargs.EventArgs;
+import project.query.ArenaObjectStorage;
 
 
 public class UIController {
@@ -88,6 +95,16 @@ public class UIController {
     private Timeline timeline = new Timeline();
 
     /**
+     * The method invoked when the game is over.
+     */
+    private EventHandler<EventArgs> onGameover = (sender, args) -> {
+        System.out.println("Gameover");
+        mode = GameMode.end;
+        enableGameButton();
+        showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
+    };
+
+    /**
      * the grids on arena.
      */
     private Label grids[][] = new Label[ArenaManager.getMaxVerticalGrids()][ArenaManager.getMaxHorizontalGrids()];
@@ -113,9 +130,9 @@ public class UIController {
      */
     @FXML
     private void pause() {
-        if (this.mode == GameMode.simulate) {
+        if (mode == GameMode.simulate) {
             buttonSimulate.setDisable(false);
-        } else if (this.mode == GameMode.play) {
+        } else if (mode == GameMode.play) {
             buttonPlay.setDisable(false);
         }
         buttonNextFrame.setDisable(false);
@@ -123,35 +140,27 @@ public class UIController {
     }
 
     /**
-     * Save the game
-     */
-    @FXML
-    private void save() {
-        // TODO: save the game
-    }
-
-    /**
      * Load the game
      */
     private void load() {
-        // TODO: load the game
-        // TODO: load arena instead of creating a new one.
-        ArenaInstance arena = new ArenaInstance(remainingResources, paneArena);
-
         resetGame();
     }
 
     /**
      * Run the game.
-     * @param mode specify the mode of the game.
+     * @param gameMode specify the mode of the game.
      */
-    private void run(GameMode mode) {
-        if (this.mode == GameMode.end)
+    private void run(GameMode gameMode) {
+        if (mode == GameMode.end)
             resetGame();
 
-        this.mode = mode;
+        mode = gameMode;
         disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> nextFrame()));
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
+            if (mode != GameMode.end) {
+                ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.invoke(this, new EventArgs());
+            }
+        }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -163,8 +172,9 @@ public class UIController {
         timeline.stop();
         paneArena.getChildren().removeAll(paneArena.getChildren());
         paneArena.getChildren().addAll(initialArena().getChildren());
-        arena = new ArenaInstance(remainingResources, paneArena);
-        this.mode = GameMode.normal;
+        ArenaManager.load(new ArenaInstance(remainingResources, paneArena));
+        ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+        mode = GameMode.normal;
     }
 
     /**
@@ -232,7 +242,8 @@ public class UIController {
             }
         });
 
-        arena = new ArenaInstance(remainingResources, paneArena);
+        ArenaManager.load(new ArenaInstance(remainingResources, paneArena));
+        ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
         setDragLabel();
     }
 
@@ -248,22 +259,6 @@ public class UIController {
             }
         }
         return newPane;
-    }
-
-    /**
-     * A function that shows next Frame of the game.
-     */
-    @FXML
-    private void nextFrame() {
-        if (this.mode != GameMode.end) {
-            boolean gameOver = arena.nextFrame();
-            if (gameOver) {
-                System.out.println("Gameover");
-                mode = GameMode.end;
-                enableGameButton();
-                showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
-            }
-        }
     }
 
     /**
@@ -284,7 +279,6 @@ public class UIController {
 
             	short x = (short) (j * ArenaManager.GRID_WIDTH);
             	short y = (short) (i * ArenaManager.GRID_HEIGHT);
-            	Coordinates c = new Coordinates(x, y);
 
                 target.setOnDragOver(e -> {
                     if(mode != GameMode.simulate && mode != GameMode.end) {
@@ -300,7 +294,7 @@ public class UIController {
                         } else if (source.equals(labelLaserTower)) {
                             type = TowerType.LASER;
                         }
-                        if (arena.canBuildTower(c, type)) {
+                        if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
                             target.setStyle("-fx-border-color: blue;");
                         } else {
                             target.setStyle("-fx-border-color: red;");
@@ -332,11 +326,18 @@ public class UIController {
                             // not enough resources
                             showAlert("Not enough resources", "Do not have enough resources to build " + type + "!");
 
-                        } else if (arena.canBuildTower(c, type)) {
-                            Tower t = arena.buildTower(c, type);
+                        } else if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
+                            Tower newTower = null;
+                            ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getStorage();
+                            switch (type) {
+                                case BASIC: newTower = new BasicTower(storage, x, y); break;
+                                case ICE: newTower = new IceTower(storage, x, y); break;
+                                case CATAPULT: newTower = new Catapult(storage, x, y); break;
+                                case LASER: newTower = new LaserTower(storage, x, y); break;
+                            }
 
-                            if (t != null) {
-                                setTowerEvent(t);
+                            if (newTower != null) {
+                                setTowerEvent(newTower);
                                 e.setDropCompleted(true);
                             }
                         }
@@ -354,13 +355,14 @@ public class UIController {
      * @param t a tower in the arena.
      */
     private void setTowerEvent(Tower t) {
-        Coordinates center = Grid.findGridCenter(new Coordinates(t.getX(), t.getY()));
+        short gridCenterX = (short) ((t.getX() / ArenaManager.GRID_WIDTH) * ArenaManager.GRID_WIDTH);
+        short gridCenterY = (short) ((t.getY() / ArenaManager.GRID_HEIGHT) * ArenaManager.GRID_HEIGHT);
 
         ImageView iv = t.getImageView();
 
         iv.setOnMouseEntered(e -> {
-            drawTowerCircle(center, t);
-            tp = new Tooltip(t.getInformation());
+            drawTowerCircle(gridCenterX, gridCenterY, t);
+            tp = new Tooltip(t.getDisplayDetails());
             tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7);
         });
         iv.setOnMouseMoved(e -> tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7));
@@ -371,7 +373,7 @@ public class UIController {
 
         iv.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                showTowerVBox(center, t);
+                showTowerVBox(gridCenterX, gridCenterY, t);
             }
         });
 
@@ -379,20 +381,21 @@ public class UIController {
 
     /**
      * Draw circle to show the shooting range of tower.
-     * @param center center coordinate of tower.
+     * @param centerX x-coordinate of tower center.
+     * @param centerY y-coordinate of tower center.
      * @param t the tower that need to show shooting range.
      */
-    private void drawTowerCircle(Coordinates center, Tower t) {
+    private void drawTowerCircle(short centerX, short centerY, Tower t) {
         ImageView iv = t.getImageView();
         // display shooting range
         towerCircle = new Circle();
-        towerCircle.setCenterX(center.getX());
-        towerCircle.setCenterY(center.getY());
+        towerCircle.setCenterX(centerX);
+        towerCircle.setCenterY(centerY);
         // set StrokeWidth to simulate a ring (for catapult).
-        double avgOfRangeAndLimit = (t.getMaxShootingRange() + t.getMinShootingRange()) / 2;
+        double avgOfRangeAndLimit = (t.getMaxRange() + t.getMinRange()) / 2;
         towerCircle.setRadius(avgOfRangeAndLimit);
         towerCircle.setFill(Color.TRANSPARENT);
-        towerCircle.setStrokeWidth(t.getMaxShootingRange() - t.getMinShootingRange());
+        towerCircle.setStrokeWidth(t.getMaxRange() - t.getMinRange());
         towerCircle.setStroke(Color.rgb(0,101,255,0.4));
         paneArena.getChildren().add(paneArena.getChildren().indexOf(iv), towerCircle);
     }
@@ -437,14 +440,16 @@ public class UIController {
 
     /**
      * Display the VBox that perform upgrade/destroy of a tower.
-     * @param center center coordinate of tower.
+     * @param centerX x-coordinate of tower center.
+     * @param centerY y-coordinate of tower center.
      * @param t the tower that need to upgrade/destroy.
      */
-    private void showTowerVBox(Coordinates center, Tower t) {
+    private void showTowerVBox(short centerX, short centerY, Tower t) {
         if (paneArena.getChildren().contains(vb)) {
             paneArena.getChildren().remove(vb);
         }
-        Coordinates coor = new Coordinates((short) (center.getX() - ArenaManager.GRID_WIDTH/2), (short) (center.getY() - ArenaManager.GRID_HEIGHT/2));
+        short coorX = (short) (centerX - ArenaManager.GRID_WIDTH/2);
+        short coorY = (short) (centerY - ArenaManager.GRID_HEIGHT/2);
 
         vb = new VBox(15);
         vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
@@ -452,8 +457,8 @@ public class UIController {
         vb.setAlignment(Pos.CENTER);
         vb.setMinWidth(ArenaManager.GRID_WIDTH * 2);
         vb.setMinHeight(ArenaManager.GRID_HEIGHT * 2);
-        double positionX = (coor.getX() > paneArena.getWidth()/2) ? coor.getX()-ArenaManager.GRID_HEIGHT*2 : coor.getX()+ArenaManager.GRID_HEIGHT;
-        double positionY = (coor.getY() >= paneArena.getWidth()-ArenaManager.GRID_HEIGHT) ? coor.getY()-ArenaManager.GRID_HEIGHT : coor.getY();
+        double positionX = (coorX > paneArena.getWidth()/2) ? coorX-ArenaManager.GRID_HEIGHT*2 : coorX+ArenaManager.GRID_HEIGHT;
+        double positionY = (coorY >= paneArena.getWidth()-ArenaManager.GRID_HEIGHT) ? coorY-ArenaManager.GRID_HEIGHT : coorY;
         vb.setLayoutX(positionX);
         vb.setLayoutY(positionY);
         Button upgradeBtn = new Button("upgrade");
@@ -461,7 +466,7 @@ public class UIController {
         vb.getChildren().addAll(upgradeBtn, destroyBtn);
 
         upgradeBtn.setOnAction(e2 -> {
-            arena.upgradeTower(t);
+            t.tryUpgrade();
             paneArena.getChildren().remove(vb);
         });
         destroyBtn.setOnAction(e2 -> {

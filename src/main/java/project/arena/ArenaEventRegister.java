@@ -1,4 +1,4 @@
-package project.controller;
+package project.arena;
 
 import project.event.*;
 import project.event.eventargs.*;
@@ -6,9 +6,7 @@ import project.event.eventargs.*;
 /**
  * List of events for the arena.
  * <p>
- * Each object is responsible for calling and receiving events for the program to function as a whole.
- * <p>
- * General rule: Use events to shuttle information between the boundary, control and entity layers.
+ * General rule: Use events for broadcasting, not one-to-one commands.
  */
 public final class ArenaEventRegister {
 
@@ -51,21 +49,6 @@ public final class ArenaEventRegister {
      * An {@link ArenaObject} of any type has been moved to another location within the arena.
      */
     public final EventManager<ArenaObjectEventArgs> ARENA_OBJECT_MOVE_END = new EventManager<>();
-
-    /**
-     * A {@link Tower} of any type is being checked whether it can be upgraded.
-     */
-    public final EventManager<ArenaTowerEventArgs> ARENA_TOWER_UPGRADE_CHECK = new EventManager<>();
-
-    /**
-     * A {@link Tower} of any type has finished checking whether it can be upgraded, and is returning a result.
-     */
-    public final EventManager<BooleanResultEventArgs> ARENA_TOWER_UPGRADE_CHECK_RESULT = new EventManager<>();
-
-    /**
-     * A {@link Tower} of any type is being confirmed for upgrade.
-     */
-    public final EventManager<ArenaTowerEventArgs> ARENA_TOWER_UPGRADE_CONFIRM = new EventManager<>();
 
     /**
      * A {@link Tower} of any type is scheduled to be upgraded in the arena.

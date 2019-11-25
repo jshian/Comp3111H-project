@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import project.controller.UIController;
+
 public class MainApplication extends Application {
 
     @Override

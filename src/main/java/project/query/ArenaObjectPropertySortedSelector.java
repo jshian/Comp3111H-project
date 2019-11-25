@@ -10,7 +10,6 @@ import project.query.ArenaObjectStorage.SortOption;
 
 /**
  * A class that selects the {@link ArenaObject}s based on their properties.
- * Note that any object that is not an instance of the specified type will be discarded.
  * @param <T> The type of comparable {@link ArenaObject} that is selected.
  */
 public class ArenaObjectPropertySortedSelector<T extends ArenaObject & Comparable<T>>

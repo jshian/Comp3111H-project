@@ -28,19 +28,22 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+
 import project.Geometry;
 import project.Player;
-import project.UIController;
-import project.arena.ArenaObjectFactory.MonsterType;
-import project.arena.ArenaObjectFactory.TowerType;
-import project.controller.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.ArenaObject;
+import project.entity.Fox;
 import project.entity.Monster;
+import project.entity.Penguin;
+import project.entity.Unicorn;
 import project.event.EventHandler;
 import project.event.EventManager;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
+import project.field.ArenaScalarField;
+import project.query.ArenaObjectGridSelector;
+import project.query.ArenaObjectPropertySelector;
 import project.query.ArenaObjectRectangleSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
@@ -54,17 +57,36 @@ import project.query.ArenaObjectStorage.StoredType;
 public final class ArenaInstance {
 
     /**
-     * The player of the game.
+     * The player attached to the arena.
      */
     @NotNull
     @OneToOne
     private Player player;
 
     /**
-     * The arena of the game.
+     * The register of {@link EventManager}s attached to the arena.
+     */
+    @Transient
+    private ArenaEventRegister eventRegister = new ArenaEventRegister();
+
+    /**
+     * The register of (@link ArenaScalarField}s attached to the arena.
+     */
+    @Transient
+    private ArenaScalarFieldRegister scalarFieldRegister = new ArenaScalarFieldRegister();
+
+    /**
+     * The UI attached to the arena.
      */
     @Transient
     private AnchorPane paneArena;
+
+    /**
+     * The storage of {@link ArenaObject}s attached to this arena.
+     */
+    @NotNull
+    @OneToOne
+    private ArenaObjectStorage storage;
 
     /**
      * The current frame number of the arena since the game began.
@@ -80,53 +102,6 @@ public final class ArenaInstance {
      * Contains a reference to line, circle, and monster explosion on the arena.
      */
     private HashMap<Node, Integer> toRemove = new HashMap<>();
-
-    /**
-     * make a deep copy of another HashMap.
-     * @param other the HashMap to be copied.
-     * @return the deep copied HashMap.
-     */
-    private HashMap<Node, Integer> copyToRemove(HashMap<Node, Integer> other) {
-        HashMap<Node, Integer> newHashMap = new HashMap<>();
-        for (HashMap.Entry<Node, Integer> entry : other.entrySet()) {
-            Node key = entry.getKey();
-            if (key instanceof Line) {
-                Line old = (Line) key;
-                Line n = new Line(old.getStartX(), old.getStartY(), old.getEndX(), old.getEndY());
-                n.setStroke(old.getStroke());
-                n.setStrokeWidth(old.getStrokeWidth());
-                newHashMap.put(n, entry.getValue());
-            } else if (key instanceof Circle) {
-                Circle old = (Circle) key;
-                Circle n = new Circle();
-                n.setCenterX(old.getCenterX());
-                n.setCenterY(old.getCenterY());
-                n.setRadius(old.getRadius());
-                n.setFill(old.getFill());
-                newHashMap.put(n, entry.getValue());
-            } else if (key instanceof ImageView) {
-                ImageView old = (ImageView) key;
-                ImageView n = new ImageView(old.getImage());
-                n.setX(old.getX());
-                n.setY(old.getY());
-                newHashMap.put(n, entry.getValue());
-            }
-        }
-        return newHashMap;
-    }
-
-    /**
-     * The factory to create the objects in the arena.
-     */
-    @Transient
-    private ArenaObjectFactory arenaObjectFactory = new ArenaObjectFactory(this);
-
-    /**
-     * The objects stored in this arena.
-     */
-    @NotNull
-    @OneToOne
-    private ArenaObjectStorage arenaObjectStorage;
 
     /**
      * The method invoked when an {@link ArenaObject} is being added.
@@ -158,13 +133,44 @@ public final class ArenaInstance {
     };
 
     /**
+     * remove laser, circle and explosion that generate a few frames ago.
+     */
+    private void remove() {
+        List<Node> list = new ArrayList<>();
+        for(Map.Entry<Node, Integer> entry : toRemove.entrySet()) {
+            Node key = entry.getKey();
+            Integer value = entry.getValue();
+            if (value > 0 ) {
+                entry.setValue(--value);
+            }else {
+                list.add(key);
+            }
+        }
+        for(Node n:list){
+            toRemove.remove(n);
+            paneArena.getChildren().remove(n);
+        }
+    }
+
+    /**
      * The method invoked when the next frame has finished processing.
-     * 
+     * <p>
      * Invokes the game over event if a monster has reached the end-zone.
      */
     private EventHandler<EventArgs> onEndNextFrame = (sender, args) -> {
+        remove();
+        // add callback from monsters to add explosion
+        // ImageView explosion = new ImageView(new Image("/collision.png", ArenaManager.GRID_WIDTH / 8
+        //         , ArenaManager.GRID_WIDTH / 8, true, true));
+        // c.bindByImage(explosion);
+        // paneArena.getChildren().add(explosion);
+        // toRemove.put(explosion, Monster.DEATH_DISPLAY_DURATION);
+
+        if (currentFrame % ArenaManager.WAVE_INTERVAL == 0) spawnWave();
+        currentFrame++;
+
         ArenaObjectRectangleSelector selector = new ArenaObjectRectangleSelector(ArenaManager.END_X, ArenaManager.END_Y, (short) 0, (short) 0);
-        LinkedList<ArenaObject> result = arenaObjectStorage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
+        LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
         if (!result.isEmpty()) {
             ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.invoke(this, new EventArgs());
         }
@@ -191,73 +197,98 @@ public final class ArenaInstance {
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
         register.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
     }
+
+    /**
+     * Returns the player attached to the arena.
+     * @return The player attached to the arena.
+     */
+    public Player getPlayer() { return player; }
+
+    /**
+     * Returns the event register attached to the arena.
+     * @return The event register attached to the arena.
+     */
+    public ArenaEventRegister getEventRegister() { return eventRegister; }
+
+    /**
+     * Returns the scalar field register attached to the arena.
+     * @return The scalar field register attached to the arena.
+     */
+    public ArenaScalarFieldRegister getScalarFieldRegister() { return scalarFieldRegister; }
     
     /**
      * Returns the storage of the arena.
      * @return The storage of the arena.
      */
-    public ArenaObjectStorage getArenaObjectStorage() { return arenaObjectStorage; }
+    public ArenaObjectStorage getStorage() { return storage; }
 
     /**
-     * Find the player who are playing now.
-     * @return The player who are playing.
-     */
-    public Player getPlayer() { return player; }
-
-    /**
-     * Find the pane of the arena
-     * @return the pane of the arena
+     * Returns the UI attached to the arena.
+     * @return The UI attached to the arena.
      */
     public AnchorPane getPane() { return paneArena; }
 
     /**
      * Determines whether a Tower can be built at the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
-     * @param type type of the tower.
+     * Does not take into account constraints that are not related to location.
+     * @param x The x-coordinate of the pixel.
+     * @param y The y-coordinate of the pixel.
      * @return Whether a Tower can be built at the grid where the specified pixel is located.
      */
-    public boolean canBuildTower(Coordinates coordinates, TowerType type)
+    public boolean canBuildTowerAt(short x, short y)
     {
-        boolean empty = findObjectsInGrid(coordinates, EnumSet.of(TypeFilter.Tower, TypeFilter.Monster)).isEmpty();
-        if (!empty) return false;
+        ArenaObjectGridSelector gridSelector = new ArenaObjectGridSelector(x, y);
+        LinkedList<ArenaObject> objectsInGrid = storage.getQueryResult(gridSelector, EnumSet.of(StoredType.TOWER, StoredType.MONSTER));
+        if (!objectsInGrid.isEmpty()) return false;
 
-        short gridX = Grid.findGridCenterX(coordinates);
-        short gridY = Grid.findGridCenterY(coordinates);
-        if (Geometry.isAt(gridX, gridY, STARTING_COORDINATES.getX(), STARTING_COORDINATES.getY())
-            || Geometry.isAt(gridX, gridY, END_COORDINATES.getX(), END_COORDINATES.getY())
-            || !hasResources(type) || !hasRoute(coordinates))
+        short gridXPos = (short) (x / ArenaManager.GRID_WIDTH);
+        if (gridXPos == ArenaManager.getStartingGridXPos() || gridXPos == ArenaManager.getEndGridXPos()) {
             return false;
-        return true;
+        }
+
+        short gridYPos = (short) (y / ArenaManager.GRID_HEIGHT);
+        if (gridYPos == ArenaManager.getStartingGridYPos() || gridXPos == ArenaManager.getEndGridYPos()) {
+            return false;
+        }
+        
+        return hasRoute(x, y);
     }
 
     /**
      * Determines whether some monster cannot go to end-zone after building a tower.
-     * @param coordinates The coordinates of tower to be built.
+     * @param x The x-coordinate of tower to be built.
+     * @param y The y-coordinate of tower to be built.
      * @return true if all monster can go to end-zone after building a tower, false otherwise.
      */
-    private boolean hasRoute(Coordinates coordinates) {
-        Grid gridToBeBuilt = arenaObjectStorage.getGrid(coordinates);
+    private boolean hasRoute(short x, short y) {
+        short gridXPos = (short) (x / ArenaManager.GRID_WIDTH);
+        short gridYPos = (short) (y / ArenaManager.GRID_HEIGHT);
 
-        boolean[][] noTower = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
-        boolean[][] visited = new boolean[UIController.MAX_H_NUM_GRID][UIController.MAX_H_NUM_GRID];
+        boolean[][] noTower = new boolean[ArenaManager.getMaxHorizontalGrids()][ArenaManager.getMaxVerticalGrids()];
+        boolean[][] visited = new boolean[ArenaManager.getMaxHorizontalGrids()][ArenaManager.getMaxVerticalGrids()];
         for (short i = 0; i < noTower.length; i++) {
             for (short j = 0; j < noTower[0].length; j++) {
-                noTower[i][j] = findObjectsInGrid(Grid.findGridCenter(i,j), EnumSet.of(TypeFilter.Tower)).isEmpty();
+                ArenaObjectGridSelector gridSelector = new ArenaObjectGridSelector(x, y);
+                LinkedList<ArenaObject> towersInGrid = storage.getQueryResult(gridSelector, EnumSet.of(StoredType.TOWER));
+                noTower[i][j] = towersInGrid.isEmpty();
+                
                 visited[i][j] = false;
             }
         }
-        noTower[gridToBeBuilt.getXPos()][gridToBeBuilt.getYPos()] = false;
-        gridDFS(noTower, visited, Grid.findGridXPos(END_COORDINATES), Grid.findGridYPos(END_COORDINATES));
+        noTower[gridXPos][gridYPos] = false;
+        gridDFS(noTower, visited, ArenaManager.getEndGridXPos(), ArenaManager.getEndGridYPos());
 
-        ArrayList<Grid> hasMonster = new ArrayList<>();
-        hasMonster.add(new Grid((short) 0,(short) 0));
-        for (Monster m : getMonsters()) {
-            Coordinates c = new Coordinates(m.getX(), m.getY());
-            hasMonster.add(arenaObjectStorage.getGrid(c));
+        // { xPos, yPos }
+        LinkedList<short[]> hasMonster = new LinkedList<>();
+        hasMonster.add(new short[] { 0, 0 });
+        for (ArenaObject m : storage.getQueryResult(new ArenaObjectPropertySelector<>(Monster.class, o -> true), EnumSet.of(StoredType.MONSTER))) {
+            short monsterGridXPos = (short) (m.getX() / ArenaManager.GRID_WIDTH);
+            short monsterGridYPos = (short) (m.getY() / ArenaManager.GRID_HEIGHT);
+            hasMonster.add(new short[] { monsterGridXPos, monsterGridYPos });
         }
 
-        for (Grid g : hasMonster) {
-            if (!visited[g.getXPos()][g.getYPos()])
+        for (short[] g : hasMonster) {
+            if (!visited[g[0]][g[1]])
                 return false;
         }
         return true;
@@ -285,216 +316,85 @@ public final class ArenaInstance {
     }
 
     /**
-     * Builds a Tower at the grid where a specified pixel is located.
-     * @param coordinates The coordinates of the pixel.
-     * @param type specify the class of tower.
-     * @return the tower being built, or null if not enough resources
+     * Types of monsters that can be spawned.
      */
-    public @Nullable Tower buildTower(Coordinates coordinates, TowerType type)
-    {
-        Coordinates center = Grid.findGridCenter(coordinates);
-        Tower t = arenaObjectFactory.createTower(type, center);
-        int cost = t.getBuildValue();
-
-        if (player.hasResources(cost)) {
-            player.spendResources(cost);
-            addObject(t);
-            return t;
-        } else {
-            return null;
-        }
-    }
+    enum MonsterType { FOX, PENGUIN, UNICORN; }
 
     /**
-     * Upgrade the tower at the grid where a specified pixel is located.
-     * @param t the tower to be upgrade
-     * @return true if upgrade is successful, false if player don't have enough resources.
+     * Spawns a wave of {@link Monster}s at the starting position of the arena.
      */
-    public boolean upgradeTower(Tower t) {
-        if (t.canUpgrade(player)) {
-            arenaScalarFields.processRemoveTower(t, true);
-            t.tryUpgrade(player);
-            arenaScalarFields.processAddTower(t, false);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Spawns a wave of Monsters at the starting position of the arena.
-     */
-    public void spawnWave()
+    private void spawnWave()
     {
         int spawnCount = (int) (1 + difficulty * 0.2 + 2 * Math.random());
         for (int i = 0; i < spawnCount; i++) {
             double randomNumber = Math.random();
             if (randomNumber < 1/3.0)
-                generateMonster(MonsterType.Fox);
+                generateMonster(MonsterType.FOX);
             else if (randomNumber < 2/3.0)
-                generateMonster(MonsterType.Penguin);
+                generateMonster(MonsterType.PENGUIN);
             else
-                generateMonster(MonsterType.Unicorn);
+                generateMonster(MonsterType.UNICORN);
         }
 
         difficulty += 1;
     }
 
     /**
-     * Generate a monster to the arena.
+     * Generate a {@link Monster} to the arena.
      * @param type specify the type of the monster.
      * @return the monster being generated.
      */
-    public Monster generateMonster(MonsterType type)
+    private void generateMonster(MonsterType type)
     {
         // Create some randomness of spawn location
-        short startX = (short) (STARTING_COORDINATES.getX() + Math.random() * UIController.GRID_WIDTH / 2);
+        short startX = (short) (ArenaManager.STARTING_X + Math.random() * ArenaManager.GRID_WIDTH / 2);
         if (startX < 0) startX = 0;
-        if (startX >= UIController.ARENA_WIDTH) startX = UIController.ARENA_WIDTH;
-        short startY = (short) (STARTING_COORDINATES.getY() + Math.random() * UIController.GRID_HEIGHT / 2);
+        if (startX >= ArenaManager.ARENA_WIDTH) startX = ArenaManager.ARENA_WIDTH;
+        short startY = (short) (ArenaManager.STARTING_Y + Math.random() * ArenaManager.GRID_HEIGHT / 2);
         if (startY < 0) startY = 0;
-        if (startY >= UIController.ARENA_HEIGHT) startY = UIController.ARENA_HEIGHT;
-        Coordinates start = new Coordinates(startX, startY);
+        if (startY >= ArenaManager.ARENA_HEIGHT) startY = ArenaManager.ARENA_HEIGHT;
 
-        // The end zone is always the same
-        Coordinates destination = Grid.findGridCenter(END_COORDINATES);
+        Monster m = null;
+        switch (type) {
+            case FOX: m = new Fox(storage, startX, startY, difficulty);
+            case PENGUIN: m = new Penguin(storage, startX, startY, difficulty);
+            case UNICORN: m = new Unicorn(storage, startX, startY, difficulty);
+        }
+        assert m != null;
 
-        Monster m = arenaObjectFactory.createMonster(type, start, destination, difficulty);
-        addObject(m);
-        System.out.println(String.format("%s:%.2f generated", type, m.getHealth()));
-
-        return m;
+        System.out.println(String.format("%s:%.2f generated", m.getDisplayName(), m.getHealth()));
     }
 
     /**
-     * remove laser, circle and explosion that generate a few frames ago.
+     * Draws a ray from one point to another point, extending beyond it towards the edge of the arena.
+     * @param sourceX The x-coordinate of the source point.
+     * @param sourceY The y-coordinate of the source point.
+     * @param targetX The x-coordinate of the target point.
+     * @param targetY The y-coordinate of the target point.
+     * @param duration The duration in number of frames that the ray will remain on the arena.
      */
-    private void remove() {
-        List<Node> list = new ArrayList<>();
-        for(Map.Entry<Node, Integer> entry : toRemove.entrySet()) {
-            Node key = entry.getKey();
-            Integer value = entry.getValue();
-            if (value > 0 ) {
-                entry.setValue(--value);
-            }else {
-                list.add(key);
-            }
-        }
-        for(Node n:list){
-            toRemove.remove(n);
-            paneArena.getChildren().remove(n);
-        }
-    }
-
-    /**
-     * process next frame for all objects in the arena.
-     */
-    private void nextFrameForAllObjects() {
-        ArrayList<ArenaObject> objectsToBeAdded = new ArrayList<>();
-        ArrayList<ArenaObject> objectsToBeRemoved = new ArrayList<>();
-
-        // update projectile
-        for (Projectile p : getProjectiles()) {
-            ArenaObject toRemove = objectNextFrame(p)[1];
-            if (toRemove != null) {
-                objectsToBeRemoved.add(toRemove);
-            }
-        }
-
-        // towers attack monsters
-        for (Tower t : getTowers()) {
-            ArenaObject toAdd = objectNextFrame(t)[0];
-            if (toAdd != null) {
-                objectsToBeAdded.add(toAdd);
-            }
-        }
-
-        // update monsters
-        for (Monster m : getMonsters()) {
-            ArenaObject toRemove = objectNextFrame(m)[1];
-            if (toRemove != null) {
-                objectsToBeRemoved.add(toRemove);
-            }
-        }
-
-        // remove objects
-        for (ArenaObject e : objectsToBeRemoved) {
-            if (e instanceof Projectile) {
-                removeObject(e);
-            } else if (e instanceof Monster) { // turn dead monster to explosion
-                removeObject(e);
-                Coordinates c = new Coordinates(e.getX(), e.getY());
-                ImageView explosion = new ImageView(new Image("/collision.png", UIController.GRID_WIDTH
-                        , UIController.GRID_WIDTH, true, true));
-                c.bindByImage(explosion);
-                paneArena.getChildren().add(explosion);
-                toRemove.put(explosion, LASER_DURATION);
-            }
-        }
-
-        // add objects
-        for (ArenaObject e : objectsToBeAdded) {
-            if (e instanceof Projectile) {
-                addObject(e);
-            }
-        }
-    }
-
-    /**
-     * Updates the arena by one frame.
-     * @return true if game over, false otherwise.
-     */
-    public boolean nextFrame() {
-
-
-        // Now update currentState
-        remove();
-        nextFrameForAllObjects();
-        if (currentFrame % WAVE_INTERVAL == 0)
-            spawnWave();
-        currentFrame++;
-
-        return false;
-    }
-
-    /**
-     * Draws a ray from one object to another object, extending towards the edge of the arena.
-     * @param source The origin of the ray.
-     * @param target The target of the ray.
-     */
-    public void drawRay(ArenaObject source, ArenaObject target) {
-        drawRay(new Coordinates(source.getX(), source.getY()), new Coordinates(target.getX(), target.getY()));
-    }
-
-    /**
-     * Draws a ray from one point to another point, extending towards the edge of the arena.
-     * @param source The origin of the ray.
-     * @param target The target of the ray.
-     */
-    public void drawRay(Coordinates source, Coordinates target) {
-        Point2D edgePt = Geometry.intersectBox(source.getX(), source.getY(), target.getX(), target.getY(),
-                                                    0, 0, UIController.ARENA_WIDTH, UIController.ARENA_HEIGHT);
+    public void drawRay(short sourceX, short sourceY, short targetX, short targetY, int duration) {
+        Point2D edgePt = Geometry.intersectBox(sourceX, sourceY, targetX, targetY,
+                                                    0, 0, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT);
         
-        Line ray = new Line(source.getX(), source.getY(), edgePt.getX(), edgePt.getY());
+        Line ray = new Line(sourceX, sourceY, edgePt.getX(), edgePt.getY());
         ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
         ray.setStrokeWidth(3);
-        toRemove.put(ray, LASER_DURATION);
         paneArena.getChildren().add(ray);
+        toRemove.put(ray, duration);
     }
 
     /**
-     * Draw a circle in a specific center and radius.
-     * @param source The center coordinates og the circle.
-     * @param damageRange The radius of the circle.
+     * Draws a specific circle at a specific location..
+     * @param sourceX The x-coordinate of the circle center.
+     * @param sourceY The y-coordinate of the circle center.
+     * @param radius The radius of the circle.
+     * @param duration The duration in number of frames that the circle will remain on the arena.
      */
-    public void drawCircle(Coordinates source, short damageRange){
-        Circle circle = new Circle();
-        circle.setCenterX(source.getX());
-        circle.setCenterY(source.getY());
-        circle.setRadius(damageRange);
+    public void drawCircle(short centerX, short centerY, short radius, int duration) {
+        Circle circle = new Circle(centerX, centerY, radius);
         circle.setFill(Color.rgb(128, 64, 0));
         paneArena.getChildren().add(circle);
-        toRemove.put(circle,1);
+        toRemove.put(circle, duration);
     }
 }

@@ -2,18 +2,15 @@ package project.entity;
 
 import java.util.PriorityQueue;
 
-import javafx.scene.image.ImageView;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import project.controller.ArenaEventRegister;
+import project.Geometry;
+import project.arena.ArenaEventRegister;
 import project.controller.ArenaManager;
-import project.event.EventHandler;
 import project.event.eventargs.ArenaTowerEventArgs;
-import project.event.eventargs.BooleanResultEventArgs;
 import project.query.ArenaObjectRingSortedSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.SortOption;
@@ -108,70 +105,13 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     }
 
     /**
-     * The method invoked when a tower is being checked whether it can be upgraded.
-     */
-    protected EventHandler<ArenaTowerEventArgs> onCheckUpgradeTower = (sender, args) -> {
-        if (args.subject != this) return;
-
-        // Whether the player has enough resources
-        boolean canUpgrade = ArenaManager.getActivePlayer().hasResources(upgradeCost);
-
-        ArenaManager.getActiveEventRegister().ARENA_TOWER_UPGRADE_CHECK_RESULT.invoke(this,
-                new BooleanResultEventArgs() {
-                    {
-                        recipient = sender;
-                        result = canUpgrade;
-                    }
-                }
-        );
-    };
-
-    /**
-     * The method invoked when a tower is being confirmed for upgrade.
-     * <p>
-     * Note: If the upgrade is successful, resources will be automatically deducted from the currently active player.
-     * Either way, the player will not be directly notified of the result.
-     */
-    protected EventHandler<ArenaTowerEventArgs> onConfirmUpgradeTower = (sender, args) -> {
-        if (args.subject != this) return;
-
-        // Only successful if the player has enough resources
-        if (ArenaManager.getActivePlayer().hasResources(upgradeCost)) {
-            ArenaEventRegister register = ArenaManager.getActiveEventRegister();
-
-            register.ARENA_TOWER_UPGRADE_START.invoke(this,
-                    new ArenaTowerEventArgs() {
-                        { subject = Tower.this; }
-                    }
-            );
-
-            ArenaManager.getActivePlayer().spendResources(upgradeCost);
-            System.out.println(String.format("%s is being upgraded", getDisplayName()));
-            upgrade();
-
-            register.ARENA_TOWER_UPGRADE_END.invoke(this,
-                    new ArenaTowerEventArgs() {
-                        { subject = Tower.this; }
-                    }
-            );
-        }
-
-        System.out.println(String.format("not enough resource to upgrade %s", getDisplayName()));
-    };
-
-    /**
      * Constructs a newly allocated {@link Tower} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
-     * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public Tower(ArenaObjectStorage storage, ImageView imageView, short x, short y) {
-        super(storage, imageView, x, y);
-
-        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
-        register.ARENA_TOWER_UPGRADE_CHECK.subscribe(onCheckUpgradeTower);
-        register.ARENA_TOWER_UPGRADE_CONFIRM.subscribe(onConfirmUpgradeTower);
+    public Tower(ArenaObjectStorage storage, short x, short y) {
+        super(storage, x, y);
     }
 
     /**
@@ -193,28 +133,79 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     public short getMaxRange() { return maxRange; }
 
     /**
+     * Returns whether a specified point is within range of the tower.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @return Whether the specified point is within range of the tower.
+     */
+    protected boolean isInRange(short x, short y) {
+        double euclideanDistance = Geometry.findEuclideanDistance(getX(), getY(), x, y);
+        return minRange <= euclideanDistance && euclideanDistance <= maxRange;
+    }
+
+    /**
      * Returns the projectile speed of the tower.
      * @return The projectile speed of the tower.
      */
-    public final int getProjectileSpeed() { return projectileSpeed; }
+    public int getProjectileSpeed() { return projectileSpeed; }
 
     /**
      * Returns the reload time of the tower.
      * @return The reload time of the tower.
      */
-    public final int getReload() { return reload; }
+    public int getReload() { return reload; }
 
     /**
      * Returns the cumulative building cost of the tower.
      * @return The cumulative building cost of the tower.
      */
-    public final int getBuildValue() { return buildValue; }
+    public int getBuildValue() { return buildValue; }
 
     /**
      * Returns the upgrade cost of the tower.
      * @return The upgrade cost of the tower.
      */
-    public final int getUpgradeCost() { return upgradeCost; }
+    public int getUpgradeCost() { return upgradeCost; }
+
+    /**
+     * Returns whether the tower can be upgraded.
+     * @return Whether the tower can be upgraded.
+     */
+    public boolean canUpgrade() {
+        // Whether the player has enough resources
+        return ArenaManager.getActivePlayer().hasResources(upgradeCost);
+    }
+
+    /**
+     * Attempts to upgrade the tower.
+     * @return Whether the tower was successfully upgraded.
+     */
+    public boolean tryUpgrade() {
+        if (canUpgrade()) {
+            ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+
+            register.ARENA_TOWER_UPGRADE_START.invoke(this,
+                    new ArenaTowerEventArgs() {
+                        { subject = Tower.this; }
+                    }
+            );
+
+            ArenaManager.getActivePlayer().spendResources(upgradeCost);
+            System.out.println(String.format("%s is being upgraded", getDisplayName()));
+            upgrade();
+
+            register.ARENA_TOWER_UPGRADE_END.invoke(this,
+                    new ArenaTowerEventArgs() {
+                        { subject = Tower.this; }
+                    }
+            );
+
+            return true;
+        } else {
+            System.out.println(String.format("not enough resource to upgrade %s", getDisplayName()));
+            return false;
+        }
+    }
 
     /**
      * Upgrades the tower.

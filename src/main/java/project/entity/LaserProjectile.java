@@ -1,14 +1,18 @@
 package project.entity;
 
-import java.util.PriorityQueue;
+import java.util.EnumSet;
+import java.util.LinkedList;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
 import project.Geometry;
-import project.arena.ArenaInstance;
+import project.controller.ArenaManager;
+import project.query.ArenaObjectPropertySelector;
 import project.query.ArenaObjectStorage;
+import project.query.ArenaObjectStorage.StoredType;
 
 /**
  * Projectile created by {@link LaserTower}.
@@ -17,33 +21,41 @@ import project.query.ArenaObjectStorage;
 public class LaserProjectile extends Projectile {
 
     /**
+     * The display duration of the laser beam.
+     * Damage is still only applied on the first frame.
+     */
+    private static int LASER_DISPLAY_DURATION = 2;
+
+    /**
      * Constructs a newly allocated {@link LaserProjectile} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
-     * @param imageView The ImageView to bound the object to.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
-    public LaserProjectile(ArenaObjectStorage storage, ImageView imageView, LaserTower tower, Monster target, short deltaX, short deltaY) {
-        super(storage, imageView, tower, target, deltaX, deltaY);
+    public LaserProjectile(ArenaObjectStorage storage, LaserTower tower, Monster target, short deltaX, short deltaY) {
+        super(storage, tower, target, deltaX, deltaY);
     }
 
     @Override
-    public void nextFrame() {
-        arena.drawRay(origin, new Coordinates(target.getX(), target.getY()));
+    public void damageTarget() {
+        // Don't call super method to prevent double hitting
+        // super()
 
-        PriorityQueue<Monster> monsters = arena.getMonsters();
-        for (Monster m : monsters) {
+        ArenaManager.getActiveArenaInstance().drawRay(origin.getX(), origin.getY(), getX(), getY(), LASER_DISPLAY_DURATION);
+
+        ArenaObjectPropertySelector<Monster> selector = new ArenaObjectPropertySelector<>(Monster.class, o -> true);
+        LinkedList<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
+        for (ArenaObject m : monsters) {
             if (Geometry.isInRay(m.getX(),m.getY(), origin.getX(),origin.getY(),target.getX(),target.getY(), 3)) {
-                if (!target.hasDied()) {
-                    m.takeDamage(this.damage);
-                    System.out.println(String.format("Laser Tower@(%d,%d) -> %s@(%d,%d)", getX(), getY()
-                            , m.getClassName(), m.getX(), m.getY()));
-                }
+                ((Monster) m).takeDamage(damage);
             }
         }
+    }
 
-        hasReachedTarget = true; // Hitscan
+    @Override
+    protected ImageView getDefaultImage() {
+        return new ImageView(new Image("/laserProjectile.png", ArenaManager.GRID_WIDTH / 4, ArenaManager.GRID_HEIGHT / 4, true, true));
     }
 }

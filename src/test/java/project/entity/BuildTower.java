@@ -1,4 +1,4 @@
-package project.arena.towers;
+package project.entity;
 
 import org.junit.Assert;
 import org.junit.Test;

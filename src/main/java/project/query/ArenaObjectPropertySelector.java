@@ -10,7 +10,7 @@ import project.query.ArenaObjectStorage.StoredType;
 /**
  * A class that selects the {@link ArenaObject}s based on their properties.
  * Note that any object that is not an instance of the specified type will be discarded.
- * @param <T> The type of {@link ArenaObject that is selected.
+ * @param <T> The type of {@link ArenaObject} that is selected.
  */
 public class ArenaObjectPropertySelector<T extends ArenaObject> implements ArenaObjectSelector {
 

@@ -3,7 +3,7 @@ package project.field;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-import project.controller.ArenaEventRegister;
+import project.arena.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.Tower;
 import project.event.EventHandler;
@@ -212,7 +212,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
     private void recalculate() {
         final float MOVEMENT_COST = 0.001f; // To avoid getting stuck
         
-        ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getArenaObjectStorage();
+        ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getStorage();
 
         // Reset values
         setAll(Float.POSITIVE_INFINITY);

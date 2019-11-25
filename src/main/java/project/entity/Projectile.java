@@ -1,7 +1,5 @@
 package project.entity;
 
-import javafx.scene.image.ImageView;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -71,11 +69,6 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      */
     protected double unusedMovement = 0;
 
-    /**
-     * Whether the projectile has reached the target location.
-     */
-    protected boolean hasReachedTarget = false;
-
     // Define onNextFrame before constructor
     {
         onNextFrame = (sender, args) -> {
@@ -92,7 +85,6 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     
             if (getMovementDistanceToDestination() <= potentialDistanceTravelled) {
                 updatePosition(targetX, targetY);
-                hasReachedTarget = true;
                 damageTarget();
 
                 // Remove projectile from arena once it has reached target
@@ -116,14 +108,13 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     /**
      * Constructs a newly allocated {@link Projjectile} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
-     * @param imageView The ImageView to bound the object to.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
-    public Projectile(ArenaObjectStorage storage, ImageView imageView, Tower tower, Monster target, short deltaX, short deltaY) {
-        super(storage, imageView, tower.getX(), tower.getY());
+    public Projectile(ArenaObjectStorage storage, Tower tower, Monster target, short deltaX, short deltaY) {
+        super(storage, tower.getX(), tower.getY());
         this.target = target;
         this.deltaX = deltaX;
         this.deltaY = deltaY;
@@ -139,13 +130,13 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      * Returns the damage dealt by the projectile.
      * @return The damage dealt by the projectile.
      */
-    public final double getDamage() { return damage; }
+    public double getDamage() { return damage; }
 
     /**
      * Returns the speed of the projectile.
      * @return The speed of the projectile.
      */
-    public final double getSpeed() { return speed; }
+    public double getSpeed() { return speed; }
 
     /**
      * Damages the target, and possibly other {@link Monster}s.

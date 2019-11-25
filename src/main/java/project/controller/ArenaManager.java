@@ -3,7 +3,9 @@ package project.controller;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import project.Player;
+import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
+import project.arena.ArenaScalarFieldRegister;
 import project.entity.BasicTower;
 import project.entity.Catapult;
 import project.entity.IceTower;
@@ -58,23 +60,7 @@ public final class ArenaManager {
     /**
      * Interval between {@link Monster} spawning, in terms of number of frames.
      */
-    static int WAVE_INTERVAL = 50;
-
-    /**
-     * The active player.
-     */
-    @Nullable
-    private static Player activePlayer = null;
-
-    /**
-     * The active event register.
-     */
-    private static ArenaEventRegister activeEventRegister = new ArenaEventRegister();
-
-    /**
-     * The active scalar field register.
-     */
-    private static ArenaScalarFieldRegister activeScalarFieldRegister = new ArenaScalarFieldRegister();
+    public static int WAVE_INTERVAL = 50;
 
     /**
      * The active arena instance.
@@ -142,19 +128,19 @@ public final class ArenaManager {
      * Returns the active player.
      * @return The active player.
      */
-    public static Player getActivePlayer() { return activePlayer; }
+    public static Player getActivePlayer() { return activeArenaInstance.getPlayer(); }
 
     /**
      * Returns the active event register.
      * @return The active event register.
      */
-    public static ArenaEventRegister getActiveEventRegister() { return activeEventRegister; }
+    public static ArenaEventRegister getActiveEventRegister() { return activeArenaInstance.getEventRegister(); }
 
     /**
      * Returns the active scalar field register.
      * @return The active scalar field register.
      */
-    public static ArenaScalarFieldRegister getActiveScalarFieldRegister() { return activeScalarFieldRegister; }
+    public static ArenaScalarFieldRegister getActiveScalarFieldRegister() { return activeArenaInstance.getScalarFieldRegister(); }
 
     /**
      * Returns the active arena instance.
@@ -165,15 +151,16 @@ public final class ArenaManager {
     // TODO
     /**
      * Loads an arena instance.
-     * @param arenaInstance The arena instance. If <code>null</codel>, generates a new instance.
+     * @param arenaInstance The arena instance.
      */
-    public static void load(@Nullable ArenaInstance arenaInstance) {
-
+    public static void load(ArenaInstance arenaInstance) {
+        
     }
 
     // TODO
-    // First disconnect the currently active event register such that nextFrame will be called on a new register, effectively deactiving the old instance.
-    // Then create shadow instance by deep copying (the new objects will be automatically connected to the new event register), and save it using a different thread.
+    // Create a shadow instance of the currently active arena instance (deep copy).
+    // As it is not accessible from outside, it will not receive any events.
+    // You can use another thread safely at this point.
     public static void save() {
         
     }
@@ -225,11 +212,4 @@ public final class ArenaManager {
     public static short getEndGridYPos() {
         return (short) ((END_Y / GRID_HEIGHT) * GRID_HEIGHT);
     }
-
-    /**
-     * Sets the active player.
-     * @param player The new active player.
-     */
-    public static Player setActivePlayer(Player player) { return activePlayer; }
-
 }

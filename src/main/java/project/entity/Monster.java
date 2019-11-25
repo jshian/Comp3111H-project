@@ -11,9 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.image.ImageView;
 
-import project.arena.Grid;
 import project.controller.ArenaManager;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.field.ArenaScalarField;
@@ -27,6 +25,11 @@ import project.query.ArenaObjectStorage;
  */
 @Entity
 public abstract class Monster extends ArenaObject implements Comparable<Monster>, InformativeObject, ObjectWithTarget, ObjectWithTrail {
+
+    /**
+     * The display duration of the death animation.
+     */
+    public static int DEATH_DISPLAY_DURATION = 5;
 
     /**
      * ID for storage using Java Persistence API
@@ -131,13 +134,12 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * Constructs a newly allocated {@link Monster} object and adds it to the {@link ArenaObjectStorage}.
      * @param storage The storage to add the object to.
-     * @param imageView The ImageView to bound the object to.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public Monster(ArenaObjectStorage storage, ImageView imageView, short x, short y, double difficulty) {
-        super(storage, imageView, x, y);
+    public Monster(ArenaObjectStorage storage, short x, short y, double difficulty) {
+        super(storage, x, y);
 
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
     }
@@ -146,26 +148,26 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * Returns the current speed of the monster.
      * @return The current speed of the monster.
      */
-    public final double getSpeed() { return speed; }
+    public double getSpeed() { return speed; }
 
     /**
      * Returns the current health of the monster.
      * @return The current health of the monster.
      */
-    public final double getHealth() { return health.get(); }
+    public double getHealth() { return health.get(); }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.
      * @return The amount of resources granted to the player by the monster on death.
      */
-    public final int getResourceValue() { return resourceValue; }
+    public int getResourceValue() { return resourceValue; }
 
     /**
      * Reduces the health of the monster, and removes it from the arena if it dies.
      * 
      * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
      */
-    public final void takeDamage(double amount) {
+    public void takeDamage(double amount) {
         if (amount <= 0) return;
         this.health.set(getHealth() - amount);
 
@@ -183,7 +185,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * Accesses the status effects of the monster.
      * @return An iterator for the status effects of the monster.
      */
-    public final Iterator<StatusEffect> getStatusEffects() { return statusEffects.iterator(); }
+    public Iterator<StatusEffect> getStatusEffects() { return statusEffects.iterator(); }
     /**
      * Adds a status effect to the monster.
      * @param statusEffect The status effect to add.
@@ -191,7 +193,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public final void addStatusEffect(StatusEffect statusEffect) { this.statusEffects.add(statusEffect); }
 
     @Override
-    public final int compareTo(Monster o) {
+    public int compareTo(Monster o) {
         return Double.compare(getMovementDistanceToDestination(), o.getMovementDistanceToDestination());
     }
 

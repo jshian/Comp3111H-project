@@ -1,4 +1,4 @@
-package project.arena;
+package project.entity;
 
 import org.junit.Rule;
 import org.junit.Test;

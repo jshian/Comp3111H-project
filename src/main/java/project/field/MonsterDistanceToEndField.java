@@ -3,7 +3,7 @@ package project.field;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-import project.controller.ArenaEventRegister;
+import project.arena.ArenaEventRegister;
 import project.controller.ArenaManager;
 import project.entity.Tower;
 import project.event.EventHandler;
@@ -49,7 +49,7 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
      * Recalculates the entire scalar field.
      */
     private void recalculate() {
-        ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getArenaObjectStorage();
+        ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getStorage();
 
         // Reset values
         setAll(Integer.MAX_VALUE);
