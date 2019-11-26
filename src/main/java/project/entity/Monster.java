@@ -139,10 +139,18 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public Monster() {}
 
     /**
-     * Setup tooltip to display hp of monster.
+     * initialise healthProperty from health when initialising from jpa.
      */
     @PostLoad
-    public void loadTooltip() {
+    public void setHealthProperty() {
+        this.healthProperty.set(health);
+        setupTooltip();
+    }
+
+    /**
+     * Setup tooltip to display hp of monster.
+     */
+    public void setupTooltip() {
         // Set up tooltip
         Tooltip tp = new Tooltip();
         tp.textProperty().bind(Bindings.format("%s", getDisplayDetails()));
@@ -162,7 +170,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
 
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
 
-        loadTooltip();
+        setupTooltip();
     }
 
     /**
@@ -234,21 +242,4 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     
     @Override
     public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty, maxHealth); }
-
-    // getDisplayDetails() return a String, it doesn't change,
-    // so even you called Bindings.format(getDisplayDetails), the bindings won't change when hp is reduced.
-    // you need an additional function to return the StringExpression for .bind()
-    /**
-     * get the StringExpression that display hp of monster in real time.
-     * @return the StringExpression that display hp of monster in real time.
-     */
-    public StringExpression getDisplayDetailsExpression() { return Bindings.format("HP: %.2f / %.2f", healthProperty, maxHealth); }
-
-    /**
-     * initialise healthProperty from health when initialising from jpa.
-     */
-    @PostLoad
-    public void setHealthProperty() {
-        healthProperty.set(health);
-    }
 }

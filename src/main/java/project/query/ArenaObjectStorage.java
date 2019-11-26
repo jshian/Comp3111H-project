@@ -255,12 +255,15 @@ public final class ArenaObjectStorage {
     /**
      * Default constructor.
      */
-    public ArenaObjectStorage() {
-//        ArenaEventRegister register = arenaInstance.getEventRegister();
-//        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
-//        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
-//        register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
-//        register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
+    public ArenaObjectStorage() {}
+
+    @PostLoad
+    public void registerMoves() {
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
+        register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
     }
 
     /**
