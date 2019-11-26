@@ -41,6 +41,11 @@ public class StatusEffect {
     private int duration;
 
     /**
+     * Default constructor.
+     */
+    public StatusEffect() {}
+
+    /**
      * Default constructor for StatusEffect class.
      * @param effectType The type of effect.
      * @param duration The duration of the effect in number of frames, which should be greater than zero.

@@ -18,6 +18,11 @@ public class IceProjectile extends Projectile {
     private int slowDownTime;
 
     /**
+     * Default constructor.
+     */
+    public IceProjectile() {}
+
+    /**
      * Constructs a newly allocated {@link IceProjectile} object and adds it to the currently active arena.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.

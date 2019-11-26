@@ -28,7 +28,12 @@ public class Penguin extends Monster {
             this.health = this.healthProperty.get();
         };
     }
-    
+
+    /**
+     * Default constructor.
+     */
+    public Penguin() {}
+
     /**
      * Constructs a newly allocated {@link Penguin} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.

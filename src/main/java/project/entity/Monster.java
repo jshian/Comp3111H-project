@@ -134,6 +134,24 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     /**
+     * Default constructor.
+     */
+    public Monster() {}
+
+    /**
+     * Setup tooltip to display hp of monster.
+     */
+    @PostLoad
+    public void loadTooltip() {
+        // Set up tooltip
+        Tooltip tp = new Tooltip();
+        tp.textProperty().bind(Bindings.format("%s", getDisplayDetails()));
+        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseExited(e -> tp.hide());
+    }
+
+    /**
      * Constructs a newly allocated {@link Monster} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
@@ -144,12 +162,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
 
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
 
-        // Set up tooltip
-        Tooltip tp = new Tooltip();
-        tp.textProperty().bind(Bindings.format("%s", getDisplayDetails()));
-        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
-        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
-        imageView.setOnMouseExited(e -> tp.hide());
+        loadTooltip();
     }
 
     /**

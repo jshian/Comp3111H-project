@@ -52,7 +52,7 @@ public class Player {
     };
 
     /**
-     * Default constructor of {@link Player} object.
+     * Default constructor.
      */
     public Player() {}
 

@@ -119,6 +119,25 @@ public final class ArenaInstance {
     };
 
     /**
+     * Default constructor.
+     */
+    public ArenaInstance() {}
+
+    /**
+     * load object after initialise from jpa.
+     */
+    @PostLoad
+    public void loadArenaInstance() {
+        eventRegister = new ArenaEventRegister();
+        eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        eventRegister.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
+
+        player.attachToArena(this);
+        scalarFieldRegister = new ArenaScalarFieldRegister(this); // Scalar fields may be based on objects on the arena
+    }
+
+    /**
      * Constructs a newly allocated {@link ArenaInstance} object and attaches a player to it.
      * @param player The player of the arena.
      */

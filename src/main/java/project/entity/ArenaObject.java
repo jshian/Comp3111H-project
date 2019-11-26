@@ -49,6 +49,19 @@ public abstract class ArenaObject {
     @Transient
     @Nullable
     protected EventHandler<EventArgs> onNextFrame = null;
+
+    /**
+     * Default constructor.
+     */
+    public ArenaObject() {}
+
+    /**
+     * bind imageView after loading.
+     */
+    @PostLoad
+    public void loadArenaObject() {
+        this.positionInfo.bindImage(imageView);
+    }
     
     /**
      * Constructs a newly allocated {@link ArenaObject} object and adds it to the currently active arena.

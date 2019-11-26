@@ -23,6 +23,19 @@ public final class ArenaObjectPositionInfo {
     private IntegerProperty y = new SimpleIntegerProperty();
 
     /**
+     * Default constructor.
+     */
+    public ArenaObjectPositionInfo() {}
+
+    /**
+     * bind an ImageView to the object.
+     */
+    public void bindImage(ImageView imageView) {
+        imageView.xProperty().bind(Bindings.add(this.x, - imageView.getImage().getWidth() / 2));
+        imageView.yProperty().bind(Bindings.add(this.y, - imageView.getImage().getHeight() / 2));
+    }
+
+    /**
      * Constructs a newly allocated {@link ArenaObjectPositionInfo} object.
      * @param imageView The ImageView to bound the object's position to.
      * @param x The x-coordinate to store.
@@ -31,9 +44,7 @@ public final class ArenaObjectPositionInfo {
      */
     ArenaObjectPositionInfo(ImageView imageView, short x, short y) throws IllegalArgumentException {
         setPosition(x, y);
-
-        imageView.xProperty().bind(Bindings.add(this.x, - imageView.getImage().getWidth() / 2));
-        imageView.yProperty().bind(Bindings.add(this.y, - imageView.getImage().getHeight() / 2));
+        bindImage(imageView);
     }
 
     /**

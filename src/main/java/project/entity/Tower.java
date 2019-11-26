@@ -103,6 +103,11 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     }
 
     /**
+     * Default constructor.
+     */
+    public Tower() {}
+
+    /**
      * Constructs a newly allocated {@link Tower} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.

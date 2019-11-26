@@ -253,6 +253,17 @@ public final class ArenaObjectStorage {
     };
 
     /**
+     * Default constructor.
+     */
+    public ArenaObjectStorage() {
+        ArenaEventRegister register = arenaInstance.getEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
+        register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
+    }
+
+    /**
      * Constructs a newly allocated {@link ArenaObjectStorage} object and attaches it to an arena instance.
      * @param arenaInstance The arena instance.
      */

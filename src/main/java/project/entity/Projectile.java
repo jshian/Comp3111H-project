@@ -100,7 +100,12 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     }
 
     /**
-     * Constructs a newly allocated {@link Projjectile} object and adds it to the currently active arena.
+     * Default constructor.
+     */
+    public Projectile() {}
+
+    /**
+     * Constructs a newly allocated {@link Projectile} object and adds it to the currently active arena.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.

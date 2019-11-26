@@ -26,6 +26,11 @@ public class LaserProjectile extends Projectile {
     private static int LASER_DISPLAY_DURATION = 2;
 
     /**
+     * Default constructor.
+     */
+    public LaserProjectile() {}
+
+    /**
      * Constructs a newly allocated {@link LaserProjectile} object and adds it to the currently active arena.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.

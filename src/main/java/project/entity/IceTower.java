@@ -32,6 +32,11 @@ public class IceTower extends Tower {
     private final int maxSlowDownTime = 100;
 
     /**
+     * Default constructor.
+     */
+    public IceTower() {}
+
+    /**
      * Constructs a newly allocated {@link IceTower} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
