@@ -19,13 +19,13 @@ class SpringApplicationTests {
     @Autowired
     private Transaction transaction;
 
-    @Test
-    void add() {
-        transaction.begin();
-        Player p = new Player("tk", 0);
-        session.save(p);
-        transaction.commit();
-    }
+//    @Test
+//    void add() {
+//        transaction.begin();
+//        Player p = new Player("tk", 0);
+//        session.save(p);
+//        transaction.commit();
+//    }
 
     @Test
     void load() {
@@ -33,7 +33,9 @@ class SpringApplicationTests {
         Query query = session.createQuery("from Player");
         // unchecked
         List<Player> list = query.list();
-        System.out.println(list);
+        for (Player p : list) {
+            System.out.println(p.getName() + " " + p.getResourcesProperty());
+        }
         transaction.commit();
     }
 

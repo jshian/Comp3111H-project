@@ -26,7 +26,7 @@ public class Player {
     /**
      * Name of the player.
      */
-    private String name;
+    private String name = "";
 
     /**
      * Resources that the player has.
@@ -50,6 +50,11 @@ public class Player {
             receiveResources(((Monster) subject).getResourceValue());
         }
     };
+
+    /**
+     * Default constructor of {@link Player} object.
+     */
+    public Player() {}
 
     /**
      * Constructs a newly allocated {@link Player} object.
