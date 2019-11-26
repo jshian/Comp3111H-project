@@ -83,9 +83,6 @@ public class MonsterTester extends JavaFXTester {
             m.health.set(50);
             assertEquals(m.getHealth(), 50, MAX_ERROR);
             assertTrue(trackedMonsterHasDied); // Dead monster is no longer on the arena
-
-            // Already called on death
-            // m.dispose();
         }
         
         {
@@ -120,8 +117,6 @@ public class MonsterTester extends JavaFXTester {
     
             m.onNextFrame.handleEvent(this, new EventArgs());
             assertTrue(originalSpeed == m.getSpeed()); // Monster should not be slowed
-
-            m.dispose();
         }
     }
 
@@ -202,8 +197,6 @@ public class MonsterTester extends JavaFXTester {
         newHealth = p.getHealth();
         p.onNextFrame.handleEvent(this, new EventArgs());
         assertTrue(p.getHealth() > newHealth); // Health should regenerate
-
-        p.dispose();
     }
 
     @Test
