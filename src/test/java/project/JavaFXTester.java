@@ -57,18 +57,6 @@ public class JavaFXTester extends ApplicationTest {
 	}
 
 	/**
-	 * Removes an object from the currently active arena.
-	 * @param o The object to remove.
-	 */
-	protected final void removeObjectFromArena(ArenaObject o) {
-		ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
-				new ArenaObjectEventArgs() {
-					{ subject = o; }
-				}
-		);
-	}
-
-	/**
 	 * Simulates the next frame of the game.
 	 */
 	protected final void simulateNextFrame() {

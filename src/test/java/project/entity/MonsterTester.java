@@ -83,6 +83,9 @@ public class MonsterTester extends JavaFXTester {
             m.health.set(50);
             assertEquals(m.getHealth(), 50, MAX_ERROR);
             assertTrue(trackedMonsterHasDied); // Dead monster is no longer on the arena
+
+            // Already called on death
+            // m.dispose();
         }
         
         {
@@ -117,6 +120,8 @@ public class MonsterTester extends JavaFXTester {
     
             m.onNextFrame.handleEvent(this, new EventArgs());
             assertTrue(originalSpeed == m.getSpeed()); // Monster should not be slowed
+
+            m.dispose();
         }
     }
 
@@ -127,7 +132,7 @@ public class MonsterTester extends JavaFXTester {
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, 1);
             assertTrue(f.getHealth() > 0); // Health on generation should be greater than zero
-            removeObjectFromArena(f);
+            f.dispose();
         }
 
         // Test pathfinding...
@@ -197,6 +202,8 @@ public class MonsterTester extends JavaFXTester {
         newHealth = p.getHealth();
         p.onNextFrame.handleEvent(this, new EventArgs());
         assertTrue(p.getHealth() > newHealth); // Health should regenerate
+
+        p.dispose();
     }
 
     @Test
@@ -218,6 +225,10 @@ public class MonsterTester extends JavaFXTester {
 
             // Unicorn has the most health
             assertTrue("Health test failed for i = " + i, u.maxHealth > f.maxHealth && u.maxHealth > p.maxHealth);
+
+            f.dispose();
+            p.dispose();
+            u.dispose();
         }
     }
 }
