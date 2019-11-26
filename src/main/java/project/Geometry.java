@@ -2,6 +2,8 @@ package project;
 
 import java.util.LinkedList;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import math.geom2d.Box2D;
 import math.geom2d.Point2D;
 import math.geom2d.line.LinearShape2D;
@@ -69,7 +71,7 @@ public final class Geometry {
      * @return The Point2D object representing the intersection point between the ray and the box that is closest to (x, y). If not found, returns <code>null</code>.
      * @throws UnsupportedOperationException If the two points are the same, or either box width and box height is not greater than zero.
      */
-    public static javafx.geometry.Point2D intersectBox(int x0, int y0, int x, int y, int boxMinX, int boxMinY, int boxWidth, int boxHeight) throws UnsupportedOperationException {
+    public static javafx.geometry.@Nullable Point2D intersectBox(int x0, int y0, int x, int y, int boxMinX, int boxMinY, int boxWidth, int boxHeight) throws UnsupportedOperationException {
         if (x0 == x && y0 == y) throw new UnsupportedOperationException("Undefined line because the two points are the same.");
         if (boxWidth <= 0) throw new UnsupportedOperationException("The box width should be greater than zero.");
         if (boxHeight <= 0) throw new UnsupportedOperationException("The box height should be greater than zero.");

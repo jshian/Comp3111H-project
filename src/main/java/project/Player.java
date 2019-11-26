@@ -1,25 +1,69 @@
 package project;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import project.arena.ArenaEventRegister;
+import project.controller.ArenaManager;
+import project.entity.ArenaObject;
+import project.entity.Monster;
+import project.entity.Tower;
+import project.event.EventHandler;
+import project.event.eventargs.ArenaObjectEventArgs;
 
 @Entity
 public class Player {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
     // Attribute
-    private final String name;
+    private String name;
+    @Transient
     private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
-     * Constructor of player
-     * @param name the name of player
-     * @param resource the amount of resources player has.
+     * The method invoked when an {@link ArenaObject} is being added.
+     */
+    @Transient
+    private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+
+        if (subject instanceof Tower) {
+            spendResources(((Tower) subject).getBuildValue());
+        }
+    };
+
+    /**
+     * The method invoked when an {@link ArenaObject} is being removed.
+     */
+    @Transient
+    private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+
+        if (subject instanceof Tower) {
+            receiveResources(((Tower) subject).getBuildValue() / 2);
+        }
+        if (subject instanceof Monster) {
+            receiveResources(((Monster) subject).getResourceValue());
+        }
+    };
+
+    /**
+     * Constructs a newly allocated {@link Player} object.
+     * @param name The name of the player.
+     * @param resource The amount of resources the player has.
      */
     public Player(String name, int resource) {
         this.name = name;
         this.resources.set(resource);
+
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
     }
 
     /**

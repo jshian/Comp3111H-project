@@ -2,11 +2,15 @@ plugins {
 	id 'java'
 	id 'jacoco'
 	id 'application'
-	id 'org.openjfx.javafxplugin' version '0.0.7' apply false
     id "org.checkerframework" version '0.4.8'
+	id 'org.openjfx.javafxplugin' version '0.0.7' apply false
 	id 'eclipse'
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
+group = 'com.game'
+version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -34,6 +38,12 @@ jar {
 
 mainClassName = 'project.Main'
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -55,7 +65,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     // testFX - https://github.com/TestFX/TestFX
-    testCompile group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
+    testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.15-alpha'
 
     // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api/2.2
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
@@ -65,6 +75,23 @@ dependencies {
 
     // https://mvnrepository.com/artifact/math.geom2d/javaGeom/0.11.1
     compile group: 'math.geom2d', name: 'javaGeom', version: '0.11.1'
+
+    // https://search.maven.org/artifact/org.jadira.cloning/cloning/3.1.0.CR10/jar
+    implementation 'org.jadira.cloning:cloning:3.1.0.CR10'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    //runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jacoco {
