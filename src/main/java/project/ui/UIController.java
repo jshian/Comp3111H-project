@@ -33,7 +33,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
-import project.Geometry;
+
 import project.Player;
 import project.control.ArenaManager;
 import project.entity.ArenaObjectFactory;
@@ -42,6 +42,7 @@ import project.entity.ArenaObjectFactory.TowerType;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
+import project.util.Geometry;
 
 
 public class UIController {
