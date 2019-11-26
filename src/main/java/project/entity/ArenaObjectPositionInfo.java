@@ -5,22 +5,18 @@ import javafx.beans.property.IntegerProperty;
 import javafx.scene.image.ImageView;
 import project.controller.ArenaManager;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Represents the position of an {@link ArenaObject}.
  */
 @Entity
+@Access(AccessType.PROPERTY)
 public final class ArenaObjectPositionInfo {
 
     /**
      * ID for storage using Java Persistence API
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private IntegerProperty x;
     private IntegerProperty y;
@@ -73,6 +69,7 @@ public final class ArenaObjectPositionInfo {
      * Returns the x-coordinate of the object.
      * @return The x-coordinate of the object.
      */
+    @Column(name = "x")
     public short getX() {
         return (short) x.get();
     }
@@ -81,7 +78,48 @@ public final class ArenaObjectPositionInfo {
      * Returns the y-coordinate of the object.
      * @return The y-coordinate of the object.
      */
+    @Column(name = "y")
     public short getY() {
         return (short) y.get();
+    }
+
+    /**
+     * Returns the id of the object.
+     * @return The id of the object.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public int getId() {
+        return id;
+    }
+
+    // setters below is used for hibernate.
+    /**
+     * Sets the id of the object within the same storage.
+     * @param id The id of the object.
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * Sets the x-coordinate of the object within the same storage,
+     * while also updating the position of the bound ImageView.
+     * @param x x-coordinate of the object.
+     */
+    public void setX(int x) {
+        assertValidPosition((short)x, (short)1);
+        this.x.set(x);
+    }
+
+    /**
+     * Sets the y-coordinate of the object within the same storage,
+     * while also updating the position of the bound ImageView.
+     * @param y y-coordinate of the object.
+     */
+    public void setY(int y) {
+        assertValidPosition((short)1, (short)y);
+        this.y.set(y);
     }
 }
