@@ -2,8 +2,9 @@ package project.entity;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.ImageView;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 
 import javax.persistence.*;
 
@@ -18,8 +19,8 @@ public final class ArenaObjectPositionInfo {
      * ID for storage using Java Persistence API
      */
     private Integer id;
-    private IntegerProperty x;
-    private IntegerProperty y;
+    private IntegerProperty x = new SimpleIntegerProperty();
+    private IntegerProperty y = new SimpleIntegerProperty();
 
     /**
      * Constructs a newly allocated {@link ArenaObjectPositionInfo} object.

@@ -5,8 +5,7 @@ import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
-import project.controller.ArenaManager;
-import project.query.ArenaObjectStorage;
+import project.control.ArenaManager;
 
 /**
  * IceTower slow down the speed of monster without damage.
@@ -33,13 +32,12 @@ public class IceTower extends Tower {
     private final int maxSlowDownTime = 100;
 
     /**
-     * Constructs a newly allocated {@link IceTower} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link IceTower} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public IceTower(ArenaObjectStorage storage, short x, short y) {
-        super(storage, x, y);
+    public IceTower(short x, short y) {
+        super(x, y);
         this.attackPower = 0;
         this.maxRange = 50;
         this.projectileSpeed = 10;

@@ -5,8 +5,7 @@ import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
-import project.controller.ArenaManager;
-import project.query.ArenaObjectStorage;
+import project.control.ArenaManager;
 
 /**
  * Projectile created by {@link BasicTower}.
@@ -15,15 +14,14 @@ import project.query.ArenaObjectStorage;
 public class BasicProjectile extends Projectile {
 
     /**
-     * Constructs a newly allocated {@link BasicProjectile} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link BasicProjectile} object and adds it to the currently active arena.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
-    public BasicProjectile(ArenaObjectStorage storage, BasicTower tower, Monster target, short deltaX, short deltaY) {
-        super(storage, tower, target, deltaX, deltaY);
+    public BasicProjectile(BasicTower tower, Monster target, short deltaX, short deltaY) {
+        super(tower, target, deltaX, deltaY);
     }
 
     @Override

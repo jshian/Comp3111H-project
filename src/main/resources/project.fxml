@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane alignment="center" hgap="10" maxHeight="480.0" minHeight="480.0" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.controller.UIController">
+<GridPane alignment="center" hgap="10" maxHeight="480.0" minHeight="480.0" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.ui.UIController">
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>

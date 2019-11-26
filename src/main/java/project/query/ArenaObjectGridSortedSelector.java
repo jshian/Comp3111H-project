@@ -1,6 +1,6 @@
 package project.query;
 
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.entity.ArenaObject;
 
 /**
@@ -16,9 +16,7 @@ public class ArenaObjectGridSortedSelector<T extends ArenaObject & Comparable<T>
      * @param y The y-coordinate of the point.
      */
     public ArenaObjectGridSortedSelector(short x, short y) {
-        super(  (short) ((x / ArenaManager.GRID_WIDTH) * ArenaManager.GRID_WIDTH),
-                (short) ((y / ArenaManager.GRID_HEIGHT) * ArenaManager.GRID_HEIGHT),
-                ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT);
+        super(ArenaManager.getGridLeftXFromCoor(x), ArenaManager.getGridTopYFromCoor(y), ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT);
     }
 
 }

@@ -8,11 +8,7 @@ import java.util.PriorityQueue;
 import javax.persistence.Entity;
 
 import project.Player;
-import project.controller.ArenaManager;
-import project.query.ArenaObjectRingSortedSelector;
-import project.query.ArenaObjectStorage;
-import project.query.ArenaObjectStorage.SortOption;
-import project.query.ArenaObjectStorage.StoredComparableType;
+import project.control.ArenaManager;
 
 /**
  * LaserTower consume resources to attack monster.
@@ -38,34 +34,13 @@ public class LaserTower extends Tower{
      */
     private int shootingCost = 2;
 
-    // LaserTower consumes resources each time it fires
-    {
-        onNextFrame = (sender, args) -> {
-            ArenaObjectRingSortedSelector<Monster> selector = new ArenaObjectRingSortedSelector<>(getX(), getY(), minRange, maxRange);
-            PriorityQueue<Monster> validTargets = storage.getSortedQueryResult(selector, StoredComparableType.MONSTER, SortOption.ASCENDING);
-
-            if (!validTargets.isEmpty()) {
-                if (counter <= 0) {
-                    // Target the monster with the shortest path to end zone
-                    if (consumeResource()) {
-                        ArenaObjectFactory.createProjectile(this, validTargets.peek(), (short) 0, (short) 0);
-                    }
-                    counter = reload;
-                }
-            }
-
-            counter--;
-        };
-    }
-
     /**
-     * Constructs a newly allocated {@link LaserTower} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link LaserTower} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public LaserTower(ArenaObjectStorage storage, short x, short y) {
-        super(storage, x, y);
+    public LaserTower(short x, short y) {
+        super(x, y);
         this.attackPower = 30;
         this.maxRange = 100;
         this.projectileSpeed = Integer.MAX_VALUE;
@@ -93,6 +68,14 @@ public class LaserTower extends Tower{
             this.attackPower = maxAttackPower;
         } else {
             this.attackPower += 5;
+        }
+    }
+
+    // Laser tower consume currently active player's resource to attack monster.
+    @Override
+    protected void shoot(PriorityQueue<Monster> validTargets) {
+        if (consumeResource()) {
+            super.shoot(validTargets);
         }
     }
 

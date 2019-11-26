@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import project.controller.UIController;
+import project.ui.UIController;
 
 public class MainApplication extends Application {
 
@@ -20,7 +20,6 @@ public class MainApplication extends Application {
         UIController appController = (UIController)loader.getController();
         appController.createArena();
     }
-
 
     public static void main(String[] args) {
         launch(args);

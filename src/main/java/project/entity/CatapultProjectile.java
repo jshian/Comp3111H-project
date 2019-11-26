@@ -8,9 +8,8 @@ import java.util.LinkedList;
 
 import javax.persistence.Entity;
 
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.query.ArenaObjectCircleSelector;
-import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
@@ -31,15 +30,14 @@ public class CatapultProjectile extends Projectile {
     private short splashRadius;
 
     /**
-     * Constructs a newly allocated {@link CatapultProjectile} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link CatapultProjectile} object and adds it to the currently active arena.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
-    public CatapultProjectile(ArenaObjectStorage storage, Catapult tower, Monster target, short deltaX, short deltaY) {
-        super(storage, tower, target, deltaX, deltaY);
+    public CatapultProjectile(Catapult tower, Monster target, short deltaX, short deltaY) {
+        super(tower, target, deltaX, deltaY);
         this.splashRadius = tower.getSplashRadius();
     }
 
@@ -56,7 +54,7 @@ public class CatapultProjectile extends Projectile {
         // Don't call super method to prevent double hitting
         // super()
 
-        ArenaManager.getActiveArenaInstance().drawCircle(getX(), getY(), splashRadius, SPLASH_DISPLAY_DURATION);
+        ArenaManager.getActiveUIController().drawCircle(getX(), getY(), splashRadius, SPLASH_DISPLAY_DURATION);
 
         ArenaObjectCircleSelector selector = new ArenaObjectCircleSelector(getX(), getY(), splashRadius);
         LinkedList<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));

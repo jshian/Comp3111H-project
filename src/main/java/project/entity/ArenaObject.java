@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javafx.scene.image.ImageView;
 import project.arena.ArenaEventRegister;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
@@ -51,13 +51,12 @@ public abstract class ArenaObject {
     protected EventHandler<EventArgs> onNextFrame = null;
     
     /**
-     * Constructs a newly allocated {@link ArenaObject} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link ArenaObject} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public ArenaObject(ArenaObjectStorage storage, short x, short y) {
-        this.storage = storage;
+    public ArenaObject(short x, short y) {
+        this.storage = ArenaManager.getActiveObjectStorage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
 
         ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD.invoke(this,

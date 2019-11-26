@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.StoredType;
 

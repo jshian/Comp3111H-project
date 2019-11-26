@@ -67,7 +67,7 @@ class ArenaObjectSortedQuery<T extends ArenaObject & Comparable<T>> {
         ArenaObjectSortedSelector<T> minSelector = null;
         for (ArenaObjectSortedSelector<T> selector : selectors) {
             float selectivity = selector.estimateSelectivity(storage);
-            if (selectivity > minSelectivity) {
+            if (selectivity < minSelectivity) {
                 minSelectivity = selectivity;
                 minSelector = selector;
             }

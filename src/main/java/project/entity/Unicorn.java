@@ -5,8 +5,7 @@ import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
-import project.controller.ArenaManager;
-import project.query.ArenaObjectStorage;
+import project.control.ArenaManager;
 
 /**
  * Unicorn is the Monster with the most health.
@@ -14,15 +13,14 @@ import project.query.ArenaObjectStorage;
 @Entity
 public class Unicorn extends Monster {
     /**
-     * Constructs a newly allocated {@link Unicorn} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link Unicorn} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public Unicorn(ArenaObjectStorage storage, short x, short y, double difficulty) {
-        super(storage, x, y, difficulty);
-        this.maxHealth = 10 + 1 * difficulty;
+    public Unicorn(short x, short y, double difficulty) {
+        super(x, y, difficulty);
+        this.maxHealth = 10 + 3 * difficulty;
         this.baseSpeed = 2 + 0.2 * Math.log10(difficulty);
         this.healthProperty.set(this.maxHealth);
         this.health = this.healthProperty.get();

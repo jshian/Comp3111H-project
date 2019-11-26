@@ -70,7 +70,7 @@ class ArenaObjectQuery {
         ArenaObjectSelector minSelector = null;
         for (ArenaObjectSelector selector : selectors) {
             float selectivity = selector.estimateSelectivity(storage);
-            if (selectivity > minSelectivity) {
+            if (selectivity < minSelectivity) {
                 minSelectivity = selectivity;
                 minSelector = selector;
             }

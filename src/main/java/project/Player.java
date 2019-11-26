@@ -2,13 +2,14 @@ package project;
 
 import javax.persistence.*;
 
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import project.arena.ArenaEventRegister;
-import project.controller.ArenaManager;
+import project.arena.ArenaInstance;
 import project.entity.ArenaObject;
 import project.entity.Monster;
-import project.entity.Tower;
+import project.entity.Projectile;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 
@@ -22,7 +23,6 @@ public class Player {
 
     // Attribute
     private String name;
-    @Transient
     private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
@@ -44,10 +44,7 @@ public class Player {
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
-        if (subject instanceof Tower) {
-            receiveResources(((Tower) subject).getBuildValue() / 2);
-        }
-        if (subject instanceof Monster) {
+        if (sender instanceof Projectile && subject instanceof Monster) {
             receiveResources(((Monster) subject).getResourceValue());
         }
     };
@@ -60,9 +57,14 @@ public class Player {
     public Player(String name, int resource) {
         this.name = name;
         this.resources.set(resource);
+    }
 
-        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
-        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+    /**
+     * Attaches the player to an arena instance so that it can receive events.
+     * @param arenaInstance The arena instanceto attach to.
+     */
+    public void attachToArena(ArenaInstance arenaInstance) {
+        ArenaEventRegister register = arenaInstance.getEventRegister();
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
     }
 
@@ -103,11 +105,11 @@ public class Player {
     }
 
     public void spendResources(int amount) {
-        resources.set(Math.max(0,  resources.get() - amount));
+        Platform.runLater(() -> resources.set(Math.max(0, resources.get() - amount)));
     }
 
     public void receiveResources(int amount) {
-        resources.set(resources.get() + amount);
+        Platform.runLater(() -> resources.set(resources.get() + amount));
     }
 
 }
