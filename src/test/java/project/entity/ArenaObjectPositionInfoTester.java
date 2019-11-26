@@ -10,8 +10,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 
 /**
  * Tests the {@link Coordinates} class.
@@ -24,7 +25,7 @@ public class ArenaObjectPositionInfoTester {
 	public void testConstructor() {
 		Class<?>[] constructorArgTypes = { ImageView.class, short.class, short.class };
 
-		ImageView iv = new ImageView();
+		ImageView iv = new ImageView(new Image("/collision.png", 1, 1, true, true));
 
 		// Boundary Cases
 		{
@@ -53,15 +54,15 @@ public class ArenaObjectPositionInfoTester {
 		// Typical Cases
 		{
 			Random rng = new Random();
-			int NUM_RANDOM_CASES = 50;
+			int NUM_RANDOM_CASES = 100;
 
 			for (int i = 0; i < NUM_RANDOM_CASES; i++) {
 				short x = (short) (rng.nextDouble() * ArenaManager.ARENA_WIDTH);
 				short y = (short) (rng.nextDouble() * ArenaManager.ARENA_HEIGHT);
 
 				ArenaObjectPositionInfo c = new ArenaObjectPositionInfo(iv, x, y);
-				assertEquals(c.getX(), x);
-				assertEquals(c.getY(), y);
+				assertEquals("x test failed for x = " + x, c.getX(), x);
+				assertEquals("y test failed for y = " + x, c.getY(), y);
 			}
 	
 			assertExceptionThrown_constructor(IllegalArgumentException.class, ArenaObjectPositionInfo.class, constructorArgTypes, new Object[] { iv, (short) -215, (short) 0 });

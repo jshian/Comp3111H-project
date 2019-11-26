@@ -9,9 +9,8 @@ import javafx.scene.image.ImageView;
 import javax.persistence.Entity;
 
 import project.Geometry;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.query.ArenaObjectPropertySelector;
-import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
@@ -27,15 +26,14 @@ public class LaserProjectile extends Projectile {
     private static int LASER_DISPLAY_DURATION = 2;
 
     /**
-     * Constructs a newly allocated {@link LaserProjectile} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link LaserProjectile} object and adds it to the currently active arena.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
-    public LaserProjectile(ArenaObjectStorage storage, LaserTower tower, Monster target, short deltaX, short deltaY) {
-        super(storage, tower, target, deltaX, deltaY);
+    public LaserProjectile(LaserTower tower, Monster target, short deltaX, short deltaY) {
+        super(tower, target, deltaX, deltaY);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class LaserProjectile extends Projectile {
         // Don't call super method to prevent double hitting
         // super()
 
-        ArenaManager.getActiveArenaInstance().drawRay(origin.getX(), origin.getY(), getX(), getY(), LASER_DISPLAY_DURATION);
+        ArenaManager.getActiveUIController().drawRay(origin.getX(), origin.getY(), getX(), getY(), LASER_DISPLAY_DURATION);
 
         ArenaObjectPropertySelector<Monster> selector = new ArenaObjectPropertySelector<>(Monster.class, o -> true);
         LinkedList<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));

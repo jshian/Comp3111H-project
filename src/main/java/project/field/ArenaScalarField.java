@@ -1,11 +1,11 @@
 package project.field;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import project.controller.ArenaManager;
+import project.arena.ArenaInstance;
+import project.control.ArenaManager;
 import project.entity.ArenaObjectPositionInfo;
 
 /**
@@ -13,7 +13,13 @@ import project.entity.ArenaObjectPositionInfo;
  */
 public class ArenaScalarField<T extends Number & Comparable<T>> {
 
-    private Object[][] values = new Object[ArenaManager.ARENA_WIDTH][ArenaManager.ARENA_HEIGHT];
+    private Object[][] values = new Object[ArenaManager.ARENA_WIDTH + 1][ArenaManager.ARENA_HEIGHT + 1];
+
+    /**
+     * Constructs a newly allocated {@link ArenaScalarField} object and attaches it to an arena instance.
+     * @param arenaInstance The arena instance.
+     */
+    ArenaScalarField(ArenaInstance arenaInstance) {}
 
     /**
      * Represents a point on an {@link ArenaScalarField}.
@@ -67,7 +73,11 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param value The new value.
      */
     protected final void setAll(T value) {
-        Arrays.fill(values, value);
+        for (int x = 0; x < values.length; x++) {
+            for (int y = 0; y < values[x].length; y++) {
+                values[x][y] = value;
+            }
+        }
     }
 
     /**
@@ -113,6 +123,8 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      */
     public @Nullable ScalarFieldPoint descendTaxicab(short x, short y) {
         ArenaObjectPositionInfo.assertValidPosition(x, y);
+        
+        if (getTaxicabNeighbours(x, y) == null) return null;
 
         T lowestCost = getValueAt(x, y);
         ScalarFieldPoint lowestCostNeighbour = null;

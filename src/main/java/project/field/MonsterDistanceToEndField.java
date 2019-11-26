@@ -4,7 +4,8 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 
 import project.arena.ArenaEventRegister;
-import project.controller.ArenaManager;
+import project.arena.ArenaInstance;
+import project.control.ArenaManager;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
@@ -23,7 +24,7 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
      */
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
-            recalculate();
+            recalculate(ArenaManager.getActiveObjectStorage());
         }
     };
 
@@ -32,25 +33,29 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
      */
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
-            recalculate();
+            recalculate(ArenaManager.getActiveObjectStorage());
         }
     };
 
     /**
-     * Constructs a newly allocated {@link MonsterDistanceToEndField} object.
+     * Constructs a newly allocated {@link MonsterDistanceToEndField} object and attaches it to an arena instance.
+     * @param arenaInstance The arena instance.
      */
-    public MonsterDistanceToEndField() {
-        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+    public MonsterDistanceToEndField(ArenaInstance arenaInstance) {
+        super(arenaInstance);
+        
+        recalculate(arenaInstance.getStorage());
+        
+        ArenaEventRegister register = arenaInstance.getEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
     }
 
     /**
      * Recalculates the entire scalar field.
+     * @param storage The storage to base the calculation on.
      */
-    private void recalculate() {
-        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
-
+    private void recalculate(ArenaObjectStorage storage) {
         // Reset values
         setAll(Integer.MAX_VALUE);
 

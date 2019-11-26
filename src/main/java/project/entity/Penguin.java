@@ -5,8 +5,7 @@ import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
-import project.controller.ArenaManager;
-import project.query.ArenaObjectStorage;
+import project.control.ArenaManager;
 
 /**
  * Penguin has the ability to regenerate.
@@ -25,20 +24,19 @@ public class Penguin extends Monster {
             moveMonsterOneFrame();
             updateStatusEffects();
 
-            this.health.set(getHealth() + regenerationRate);
+            this.health.set(Math.min(getHealth() + regenerationRate, maxHealth));
         };
     }
     
     /**
-     * Constructs a newly allocated {@link Penguin} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link Penguin} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public Penguin(ArenaObjectStorage storage, short x, short y, double difficulty) {
-        super(storage, x, y, difficulty);
-        this.maxHealth = 7.5 + 3 * difficulty;
+    public Penguin(short x, short y, double difficulty) {
+        super(x, y, difficulty);
+        this.maxHealth = 7.5 + 2.5 * difficulty;
         this.baseSpeed = 3 + 0.3 * Math.log10(difficulty);
         this.health.set(this.maxHealth);
         this.speed = this.baseSpeed;

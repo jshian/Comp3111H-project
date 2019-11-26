@@ -10,12 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
-
-import project.controller.ArenaManager;
+import javafx.scene.control.Tooltip;
+import project.control.ArenaManager;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.field.ArenaScalarField;
-import project.query.ArenaObjectStorage;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
@@ -132,16 +132,22 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     /**
-     * Constructs a newly allocated {@link Monster} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link Monster} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public Monster(ArenaObjectStorage storage, short x, short y, double difficulty) {
-        super(storage, x, y);
+    public Monster(short x, short y, double difficulty) {
+        super(x, y);
 
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
+        
+        // Set up tooltip
+        Tooltip tp = new Tooltip();
+        tp.textProperty().bind(Bindings.format("%s", getDisplayDetails()));
+        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseExited(e -> tp.hide());
     }
 
     /**
@@ -215,5 +221,5 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public String getDisplayName() { return getClass().getSimpleName(); }
     
     @Override
-    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", health, maxHealth); }
+    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", health.get(), maxHealth); }
 }

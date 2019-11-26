@@ -5,13 +5,11 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+
 import org.testfx.framework.junit.ApplicationTest;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -23,16 +21,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+
 import project.arena.ArenaInstance;
-import project.controller.ArenaManager;
-import project.controller.UIController;
-import project.controller.UIController.GameMode;
-import project.entity.*;
-import project.entity.ArenaObjectFactory.MonsterType;
+import project.control.ArenaManager;
+import project.entity.ArenaObject;
 import project.entity.ArenaObjectFactory.TowerType;
+import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
+import project.ui.UIController;
 
 /**
  * Base class to inherit from when testing objects that make use of JavaFX objects.
@@ -60,54 +57,6 @@ public class JavaFXTester extends ApplicationTest {
 	}
 
 	/**
-	 * Adds a tower to the currently active arena.
-     * @param type The type of tower to create.
-     * @param x The x-coordinate of the center of the tower.
-     * @param y The y-coordinate of the center of the tower.
-	 * @return The newly-created Tower object.
-	 */
-	protected final Tower addTowerToArena(TowerType type, short x, short y) {
-		return ArenaObjectFactory.createTower(type, x, y);
-	}
-
-	/**
-	 * Adds a tower to the currently active arena.
-     * @param tower The tower from which this projectile originates.
-     * @param target The monster that the projectile will pursue.
-     * @param deltaX The x-offset from the targeted monster where the projectile will land.
-     * @param deltaY The y-offset from the targeted monster where the projectile will land.
-	 * @return The newly-created Projectile object.
-	 */
-	protected final Projectile addProjectileToArena(Tower tower, Monster target, short deltaX, short deltaY) {
-		return ArenaObjectFactory.createProjectile(tower, target, deltaX, deltaY);
-	}
-
-	/**
-	 * Adds a monster to the currently active arena.
-     * @param type The type of monster to create.
-     * @param x The x-coordinate of the monster.
-     * @param y The x-coordinate of the monster.
-     * @param difficulty The difficulty of the monster.
-	 * @param isInvulnerable Whether the monster should be invulnerable.
-	 * @return The newly-created Monster object.
-	 */
-	protected final Monster addMonsterToArena(MonsterType type, short x, short y, double difficulty, boolean isInvulnerable) {
-		Monster m = ArenaObjectFactory.createMonster(type, x, y, difficulty);
-
-		if (isInvulnerable) {
-			try {
-				Method method_setHealth = Monster.class.getDeclaredMethod("setHealth", double.class);
-				method_setHealth.setAccessible(true);
-				method_setHealth.invoke(m, Double.POSITIVE_INFINITY);
-			} catch (Exception ex) {
-				fail("An unexpected error has occurred");
-			}
-		}
-
-		return m;
-	}
-
-	/**
 	 * Removes an object from the currently active arena.
 	 * @param o The object to remove.
 	 */
@@ -123,9 +72,13 @@ public class JavaFXTester extends ApplicationTest {
 	 * Simulates the next frame of the game.
 	 */
 	protected final void simulateNextFrame() {
-		interact(() -> {
-			ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.invoke(this, new EventArgs());
-		});
+		try {
+			Method method_nextFrame = UIController.class.getDeclaredMethod("nextFrame");
+			method_nextFrame.setAccessible(true);
+			method_nextFrame.invoke(appController);
+		} catch (Exception e) {
+			fail("An unexpected error has occurred");
+		}
 	}
 
 	/**
@@ -134,48 +87,40 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param speedMultiplier The rate at which to speed up the game.
 	 */
 	protected final void simulateGameNoSpawning(double speedMultiplier) {
-		// Similar to Arena.run
+		EventHandler<EventArgs> onNextFrame = (sender, args) -> {
+			try {
+				Field field_currentFrame = ArenaInstance.class.getDeclaredField("currentFrame");
+				field_currentFrame.setAccessible(true);
+	
+				ArenaInstance arena = ArenaManager.getActiveArenaInstance();
+				field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1);
+			} catch (Exception e) {
+				fail("An unexpected error has occurred");
+			}
+		};
+		
+		EventHandler<EventArgs> onGameover = (sender, args) -> {
+			notify();
+		};
+
+		ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
+		ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+
 		try {
 			Field field_mode = UIController.class.getDeclaredField("mode");
 			field_mode.setAccessible(true);
-			if (field_mode.get(appController) == GameMode.END) {
-				Method method_resetGame = UIController.class.getDeclaredMethod("resetGame");
-				method_resetGame.setAccessible(true);
-				method_resetGame.invoke(appController);
-			}
+			
+			Method method_play = UIController.class.getDeclaredMethod("play");
+			method_play.setAccessible(true);
+			method_play.invoke(appController);
 
-			field_mode.set(appController, GameMode.SIMULATE);
-
-			Method method_disableGameButton = UIController.class.getDeclaredMethod("disableGameButton");
-			method_disableGameButton.setAccessible(true);
-			method_disableGameButton.invoke(appController);
-
-			Field field_timeline = UIController.class.getDeclaredField("timeline");
-			field_timeline.setAccessible(true);
-			Timeline timeline = (Timeline) field_timeline.get(appController);
-
-			Method method_nextFrame = UIController.class.getDeclaredMethod("nextFrame");
-			method_nextFrame.setAccessible(true);
-
-			Field field_currentFrame = ArenaInstance.class.getDeclaredField("currentFrame");
-			field_currentFrame.setAccessible(true);
-
-			timeline = new Timeline(new KeyFrame(Duration.seconds(0.2 / speedMultiplier), e -> {
-				try {
-					field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1); // Moves currentFrame back so monsters never spawn
-					method_nextFrame.invoke(appController);
-				} catch (Exception ex) {
-					fail("An unexpected error has occurred");
-				}
-			}));
-			timeline.setCycleCount(Timeline.INDEFINITE);
-			timeline.play();
-			field_timeline.set(appController, timeline);
-
-			while (field_mode.get(arena) != GameMode.NORMAL) {}	// Wait until finished
+			wait();
 		} catch (Exception e) {
 			fail("An unexpected error has occurred");
 		}
+
+		ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
+		ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.unsubscribe(onGameover);
 	}
 
 	/**
@@ -185,10 +130,7 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param y The y-position of the grid.
 	 */
 	protected final void simulateBuildTowerGrid(TowerType type, short xPos, short yPos) {
-		simulateBuildTower(type,
-				(short) ((xPos + 0.5) * ArenaManager.GRID_WIDTH),
-				(short) ((yPos + 0.5) * ArenaManager.GRID_HEIGHT)
-		);
+		simulateBuildTower(type, ArenaManager.getGridCenterXFromPos(xPos), ArenaManager.getGridCenterYFromPos(yPos));
 	}
 
 	/**
@@ -198,7 +140,7 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param y The y-coordinate inside the paneArena.
 	 */
 	protected final void simulateBuildTower(TowerType type, short x, short y) {
-		Label l = (Label)currentScene.lookup("#label" + type.name());
+		Label l = (Label)currentScene.lookup("#label" + type.getDefaultName());
 		Bounds labelBound = l.localToScreen(l.getLayoutBounds());
 		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
 		Bounds paneBound = b.localToScreen(b.getLayoutBounds());
@@ -216,8 +158,8 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param y The y-coordinate inside the paneArena.
 	 */
 	protected final boolean hasTower(TowerType type, short x, short y) {
-		short leftX = (short) (x / ArenaManager.GRID_WIDTH);
-		short topY = (short) (y / ArenaManager.GRID_HEIGHT);
+		short leftX = ArenaManager.getGridLeftXFromCoor(x);
+		short topY = ArenaManager.getGridTopYFromCoor(y);
 
 		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
 		for (Node n : b.getChildren()) {

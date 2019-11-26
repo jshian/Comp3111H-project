@@ -2,15 +2,16 @@ package project.entity;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.ImageView;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 
 /**
  * Represents the position of an {@link ArenaObject}.
  */
 public final class ArenaObjectPositionInfo {
-    private IntegerProperty x;
-    private IntegerProperty y;
+    private IntegerProperty x = new SimpleIntegerProperty();
+    private IntegerProperty y = new SimpleIntegerProperty();
 
     /**
      * Constructs a newly allocated {@link ArenaObjectPositionInfo} object.

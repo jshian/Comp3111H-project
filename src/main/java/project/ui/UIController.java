@@ -1,10 +1,18 @@
-package project.controller;
+package project.ui;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,18 +31,17 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.util.Duration;
-import project.arena.ArenaInstance;
-import project.controller.ArenaManager.TowerType;
-import project.entity.BasicTower;
-import project.entity.Catapult;
-import project.entity.IceTower;
-import project.entity.LaserTower;
+import project.Geometry;
+import project.Player;
+import project.control.ArenaManager;
+import project.entity.ArenaObjectFactory;
 import project.entity.Tower;
+import project.entity.ArenaObjectFactory.TowerType;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
-import project.query.ArenaObjectStorage;
 
 
 public class UIController {
@@ -66,9 +73,41 @@ public class UIController {
     private Label remainingResources;
 
     /**
+     * The player of the arena.
+     */
+    private Player player;
+
+    /**
+     * Contains a reference to line, circle, and monster explosion on the arena.
+     * These nodes are temporary and will be removed after a certain period.
+     */
+    private HashMap<Node, Integer> temporaryNodes = new HashMap<>();
+
+    /**
      * An enum to show game state.
      */
-    public static enum GameMode {NORMAL, SIMULATE, PLAY, END};
+    public static enum GameMode {
+        /**
+         * The stage before the game is run.
+         */
+        NORMAL,
+
+        /**
+         * The game is being run in simulate mode.
+         */
+        SIMULATE,
+
+        /**
+         * The game is being run in play node.
+         */
+        PLAY,
+
+        /**
+         * The game has ended.
+         */
+        END;
+    };
+
     /**
      * the game state.
      */
@@ -95,6 +134,11 @@ public class UIController {
     private Timeline timeline = new Timeline();
 
     /**
+     * the grids on arena.
+     */
+    private Label grids[][] = new Label[ArenaManager.getMaxVerticalGrids()][ArenaManager.getMaxHorizontalGrids()];
+
+    /**
      * The method invoked when the game is over.
      */
     private EventHandler<EventArgs> onGameover = (sender, args) -> {
@@ -103,97 +147,6 @@ public class UIController {
         enableGameButton();
         showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
     };
-
-    /**
-     * the grids on arena.
-     */
-    private Label grids[][] = new Label[ArenaManager.getMaxVerticalGrids()][ArenaManager.getMaxHorizontalGrids()];
-    
-    /**
-     * Play the game. Build towers are allowed.
-     */
-    @FXML
-    private void play() {
-        run(GameMode.PLAY);
-    }
-
-    /**
-     * Simulate the game. Build towers are not allowed.
-     */
-    @FXML
-    private void simulate() {
-        run(GameMode.SIMULATE);
-    }
-
-    /**
-     * Pause the game.
-     */
-    @FXML
-    private void pause() {
-        if (mode == GameMode.SIMULATE) {
-            buttonSimulate.setDisable(false);
-        } else if (mode == GameMode.PLAY) {
-            buttonPlay.setDisable(false);
-        }
-        buttonNextFrame.setDisable(false);
-        timeline.pause();
-    }
-
-    /**
-     * Load the game
-     */
-    private void load() {
-        resetGame();
-    }
-
-    /**
-     * Run the game.
-     * @param gameMode specify the mode of the game.
-     */
-    private void run(GameMode gameMode) {
-        if (mode == GameMode.END)
-            resetGame();
-
-        mode = gameMode;
-        disableGameButton();
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
-            if (mode != GameMode.END) {
-                ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.invoke(this, new EventArgs());
-            }
-        }));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-    }
-
-    /**
-     * Reset the game.
-     */
-    private void resetGame() {
-        timeline.stop();
-        paneArena.getChildren().removeAll(paneArena.getChildren());
-        paneArena.getChildren().addAll(initialArena().getChildren());
-        ArenaManager.load(new ArenaInstance(remainingResources, paneArena));
-        ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
-        mode = GameMode.NORMAL;
-    }
-
-    /**
-     * Disable "next frame", "simulate" and "play" button.
-     */
-    private void disableGameButton() {
-        buttonNextFrame.setDisable(true);
-        buttonPlay.setDisable(true);
-        buttonSimulate.setDisable(true);
-    }
-
-    /**
-     * Enable "next frame", "simulate" and "play" button.
-     */
-    private void enableGameButton() {
-        buttonNextFrame.setDisable(false);
-        buttonPlay.setDisable(false);
-        buttonSimulate.setDisable(false);
-    }
 
     /**
      * A function that create the Arena
@@ -242,9 +195,135 @@ public class UIController {
             }
         });
 
-        ArenaManager.load(new ArenaInstance(remainingResources, paneArena));
-        ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+        setupNewGame();
         setDragLabel();
+    }
+    
+    /**
+     * Sets up a new game.
+     */
+    private void setupNewGame() {
+        player = new Player("name", 200);
+        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        ArenaManager.loadNew(this, player);
+        ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+    }
+
+    /**
+     * Runs the next frame.
+     */
+    @FXML
+    private void nextFrame() {
+        if (mode != GameMode.END) {
+            LinkedList<Node> nodesToRemove = new LinkedList<>();
+            for (Map.Entry<Node, Integer> entry : temporaryNodes.entrySet()) {
+                Node key = entry.getKey();
+                Integer value = entry.getValue();
+                if (value > 0) {
+                    entry.setValue(--value);
+                } else {
+                    nodesToRemove.add(key);
+                }
+            }
+            for (Node n : nodesToRemove){
+                temporaryNodes.remove(n);
+                removeFromPane(n);
+            }
+
+            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.invoke(this, new EventArgs());
+        }
+    }
+
+    /**
+     * Play the game. Build towers are allowed.
+     */
+    @FXML
+    private void play() {
+        run(GameMode.PLAY);
+    }
+
+    /**
+     * Simulate the game. Build towers are not allowed.
+     */
+    @FXML
+    private void simulate() {
+        run(GameMode.SIMULATE);
+    }
+
+    /**
+     * Pause the game.
+     */
+    @FXML
+    private void pause() {
+        if (mode == GameMode.SIMULATE) {
+            buttonSimulate.setDisable(false);
+        } else if (mode == GameMode.PLAY) {
+            buttonPlay.setDisable(false);
+        }
+        buttonNextFrame.setDisable(false);
+        timeline.pause();
+    }
+
+    /**
+     * Load the game
+     */
+    @FXML
+    private void load() {
+        // TODO
+        resetGame();
+    }
+
+    /**
+     * Saves the game.
+     */
+    @FXML
+    private void save() {
+        // TODO
+        ArenaManager.save(player);
+    }
+
+    /**
+     * Run the game.
+     * @param gameMode specify the mode of the game.
+     */
+    private void run(GameMode gameMode) {
+        if (mode == GameMode.END)
+            resetGame();
+
+        mode = gameMode;
+        disableGameButton();
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> nextFrame()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    /**
+     * Reset the game.
+     */
+    private void resetGame() {
+        timeline.stop();
+        paneArena.getChildren().removeAll(paneArena.getChildren());
+        paneArena.getChildren().addAll(initialArena().getChildren());
+        setupNewGame();
+        mode = GameMode.NORMAL;
+    }
+
+    /**
+     * Disable "next frame", "simulate" and "play" button.
+     */
+    private void disableGameButton() {
+        buttonNextFrame.setDisable(true);
+        buttonPlay.setDisable(true);
+        buttonSimulate.setDisable(true);
+    }
+
+    /**
+     * Enable "next frame", "simulate" and "play" button.
+     */
+    private void enableGameButton() {
+        buttonNextFrame.setDisable(false);
+        buttonPlay.setDisable(false);
+        buttonSimulate.setDisable(false);
     }
 
     /**
@@ -277,27 +356,27 @@ public class UIController {
             for (short j = 0; j < maxH; j++) {
             	Label target = grids[i][j];
 
-            	short x = (short) (j * ArenaManager.GRID_WIDTH);
-            	short y = (short) (i * ArenaManager.GRID_HEIGHT);
+                short x = ArenaManager.getGridCenterXFromPos(j);
+            	short y = ArenaManager.getGridCenterYFromPos(i);
 
                 target.setOnDragOver(e -> {
                     if(mode != GameMode.SIMULATE && mode != GameMode.END) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                         Object source = e.getGestureSource();
                         TowerType type = null;
-                        if (source.equals(labelBasicTower)) {
-                            type = TowerType.BASIC;
-                        } else if (source.equals(labelIceTower)) {
-                            type = TowerType.ICE;
-                        } else if (source.equals(labelCatapult)) {
-                            type = TowerType.CATAPULT;
-                        } else if (source.equals(labelLaserTower)) {
-                            type = TowerType.LASER;
-                        }
-                        if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
-                            target.setStyle("-fx-border-color: blue;");
-                        } else {
-                            target.setStyle("-fx-border-color: red;");
+                        
+                        if (source.equals(labelBasicTower)) type = TowerType.BASIC;
+                        else if (source.equals(labelIceTower)) type = TowerType.ICE;
+                        else if (source.equals(labelCatapult)) type = TowerType.CATAPULT;
+                        else if (source.equals(labelLaserTower)) type = TowerType.LASER;
+                        
+                        if (type != null) {
+                            if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y)
+                                    && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
+                                target.setStyle("-fx-border-color: blue;");
+                            } else {
+                                target.setStyle("-fx-border-color: red;");
+                            }
                         }
                     }
             		e.consume();
@@ -310,33 +389,22 @@ public class UIController {
 
             	target.setOnDragDropped(e -> {
             	    if (mode != GameMode.SIMULATE && mode != GameMode.END) {
-                        TowerType type = null;
                         Object source = e.getGestureSource();
-                        if (source.equals(labelBasicTower)) {
-                            type = TowerType.BASIC;
-                        } else if (source.equals(labelIceTower)) {
-                            type = TowerType.ICE;
-                        } else if (source.equals(labelCatapult)) {
-                            type = TowerType.CATAPULT;
-                        } else if (source.equals(labelLaserTower)) {
-                            type = TowerType.LASER;
-                        }
+                        TowerType type = null;
+                        
+                        if (source.equals(labelBasicTower)) type = TowerType.BASIC;
+                        else if (source.equals(labelIceTower)) type = TowerType.ICE;
+                        else if (source.equals(labelCatapult)) type = TowerType.CATAPULT;
+                        else if (source.equals(labelLaserTower)) type = TowerType.LASER;
 
-                        if (type.getBuildingCost() > ArenaManager.getActivePlayer().getResources()) {
-                            // not enough resources
-                            showAlert("Not enough resources", "Do not have enough resources to build " + type + "!");
-
-                        } else if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
-                            Tower newTower = null;
-                            ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
-                            switch (type) {
-                                case BASIC: newTower = new BasicTower(storage, x, y); break;
-                                case ICE: newTower = new IceTower(storage, x, y); break;
-                                case CATAPULT: newTower = new Catapult(storage, x, y); break;
-                                case LASER: newTower = new LaserTower(storage, x, y); break;
-                            }
-
-                            if (newTower != null) {
+                        if (type != null) {
+                            if (!ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
+                                // not enough resources
+                                showAlert("Not enough resources", "Do not have enough resources to build " + type.getDefaultName() + "!");
+    
+                            } else if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
+                                player.spendResources(type.getBuildingCost());
+                                Tower newTower = ArenaObjectFactory.createTower(type, x, y);
                                 setTowerEvent(newTower);
                                 e.setDropCompleted(true);
                             }
@@ -355,13 +423,10 @@ public class UIController {
      * @param t a tower in the arena.
      */
     private void setTowerEvent(Tower t) {
-        short gridCenterX = (short) ((t.getX() / ArenaManager.GRID_WIDTH) * ArenaManager.GRID_WIDTH);
-        short gridCenterY = (short) ((t.getY() / ArenaManager.GRID_HEIGHT) * ArenaManager.GRID_HEIGHT);
-
         ImageView iv = t.getImageView();
 
         iv.setOnMouseEntered(e -> {
-            drawTowerCircle(gridCenterX, gridCenterY, t);
+            drawTowerCircle(t);
             tp = new Tooltip(t.getDisplayDetails());
             tp.show(t.getImageView(), e.getScreenX()+8, e.getScreenY()+7);
         });
@@ -373,7 +438,7 @@ public class UIController {
 
         iv.setOnMouseClicked(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
-                showTowerVBox(gridCenterX, gridCenterY, t);
+                showTowerVBox(t);
             }
         });
 
@@ -381,16 +446,15 @@ public class UIController {
 
     /**
      * Draw circle to show the shooting range of tower.
-     * @param centerX x-coordinate of tower center.
-     * @param centerY y-coordinate of tower center.
      * @param t the tower that need to show shooting range.
      */
-    private void drawTowerCircle(short centerX, short centerY, Tower t) {
+    private void drawTowerCircle(Tower t) {
         ImageView iv = t.getImageView();
+
         // display shooting range
         towerCircle = new Circle();
-        towerCircle.setCenterX(centerX);
-        towerCircle.setCenterY(centerY);
+        towerCircle.setCenterX(t.getX());
+        towerCircle.setCenterY(t.getY());
         // set StrokeWidth to simulate a ring (for catapult).
         double avgOfRangeAndLimit = (t.getMaxRange() + t.getMinRange()) / 2;
         towerCircle.setRadius(avgOfRangeAndLimit);
@@ -428,7 +492,7 @@ public class UIController {
         l.setOnDragDetected(e -> {
             if (mode != GameMode.SIMULATE) {
                 Dragboard db = l.startDragAndDrop(TransferMode.ANY);
-
+                
                 ClipboardContent content = new ClipboardContent();
                 content.putString(l.getText());
                 db.setContent(content);
@@ -440,16 +504,14 @@ public class UIController {
 
     /**
      * Display the VBox that perform upgrade/destroy of a tower.
-     * @param centerX x-coordinate of tower center.
-     * @param centerY y-coordinate of tower center.
      * @param t the tower that need to upgrade/destroy.
      */
-    private void showTowerVBox(short centerX, short centerY, Tower t) {
+    private void showTowerVBox(Tower t) {
         if (paneArena.getChildren().contains(vb)) {
             paneArena.getChildren().remove(vb);
         }
-        short coorX = (short) (centerX - ArenaManager.GRID_WIDTH/2);
-        short coorY = (short) (centerY - ArenaManager.GRID_HEIGHT/2);
+        short coorX = (short) (t.getX() - ArenaManager.GRID_WIDTH/2);
+        short coorY = (short) (t.getY() - ArenaManager.GRID_HEIGHT/2);
 
         vb = new VBox(15);
         vb.setStyle("-fx-padding: 5px; -fx-text-alignment: center;");
@@ -470,6 +532,7 @@ public class UIController {
             paneArena.getChildren().remove(vb);
         });
         destroyBtn.setOnAction(e2 -> {
+            player.receiveResources(t.getBuildValue() / 2);
             ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
                     new ArenaObjectEventArgs() {
                         { subject = t; }
@@ -494,6 +557,70 @@ public class UIController {
         alert.setContentText(content);
         alert.show();
         return alert;
+    }
+
+    /**
+     * Adds a node to the {@link AnchorPane).
+     * @param iv The node to add.
+     */
+    public void addToPane(Node n) {
+        Platform.runLater(() -> paneArena.getChildren().add(n));
+    }
+
+    /**
+     * Removes an node from the {@link AnchorPane).
+     * @param iv The node to remove.
+     */
+    public void removeFromPane(Node n) {
+        Platform.runLater(() -> paneArena.getChildren().remove(n));
+    }
+
+    /**
+     * Draws an image at a specified point.
+     * @param img The image.
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @param duration The duration in number of frames that the image will remain on the arena.
+     */
+    public void drawImage(Image img, short x, short y, int duration) {
+        ImageView iv = new ImageView(img);
+        iv.setX(x);
+        iv.setY(y);
+        addToPane(iv);
+        temporaryNodes.put(iv, duration);
+    }
+
+    /**
+     * Draws a ray from one point to another point, extending beyond it towards the edge of the arena.
+     * @param sourceX The x-coordinate of the source point.
+     * @param sourceY The y-coordinate of the source point.
+     * @param targetX The x-coordinate of the target point.
+     * @param targetY The y-coordinate of the target point.
+     * @param duration The duration in number of frames that the ray will remain on the arena.
+     */
+    public void drawRay(short sourceX, short sourceY, short targetX, short targetY, int duration) {
+        Point2D edgePt = Geometry.intersectBox(sourceX, sourceY, targetX, targetY,
+                                                    0, 0, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT);
+        
+        Line ray = new Line(sourceX, sourceY, edgePt.getX(), edgePt.getY());
+        ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
+        ray.setStrokeWidth(3);
+        addToPane(ray);
+        temporaryNodes.put(ray, duration);
+    }
+
+    /**
+     * Draws a specific circle at a specific location.
+     * @param sourceX The x-coordinate of the circle center.
+     * @param sourceY The y-coordinate of the circle center.
+     * @param radius The radius of the circle.
+     * @param duration The duration in number of frames that the circle will remain on the arena.
+     */
+    public void drawCircle(short centerX, short centerY, short radius, int duration) {
+        Circle circle = new Circle(centerX, centerY, radius);
+        circle.setFill(Color.rgb(128, 64, 0));
+        addToPane(circle);
+        temporaryNodes.put(circle, duration);
     }
 }
 

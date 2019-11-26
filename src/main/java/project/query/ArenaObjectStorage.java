@@ -10,7 +10,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import project.arena.ArenaEventRegister;
-import project.controller.ArenaManager;
+import project.arena.ArenaInstance;
+import project.control.ArenaManager;
 import project.entity.ArenaObject;
 import project.entity.Monster;
 import project.entity.Projectile;
@@ -246,10 +247,11 @@ public final class ArenaObjectStorage {
     };
 
     /**
-     * Constructs a newly allocated {@link ArenaObjectStorage} object.
+     * Constructs a newly allocated {@link ArenaObjectStorage} object and attaches it to an arena instance.
+     * @param arenaInstance The arena instance.
      */
-    public ArenaObjectStorage() {
-        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+    public ArenaObjectStorage(ArenaInstance arenaInstance) {
+        ArenaEventRegister register = arenaInstance.getEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
         register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);

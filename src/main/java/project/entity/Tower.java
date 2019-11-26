@@ -9,10 +9,9 @@ import javax.persistence.Id;
 
 import project.Geometry;
 import project.arena.ArenaEventRegister;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.event.eventargs.ArenaTowerEventArgs;
 import project.query.ArenaObjectRingSortedSelector;
-import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredComparableType;
 
@@ -71,7 +70,7 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     /**
      * The cumulative building cost of the tower, which increases as the tower is upgraded.
      */
-    protected int buildValue = getBuildingCost();
+    protected int buildValue;
 
     /**
      * Returns the initial building cost of the tower.
@@ -94,24 +93,24 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
 
             if (!validTargets.isEmpty()) {
                 if (counter <= 0) {
-                    // Target the monster with the shortest path to end zone
-                    ArenaObjectFactory.createProjectile(this, validTargets.peek(), (short) 0, (short) 0);
+                    shoot(validTargets);
                     counter = reload;
+                } else {
+                    counter--;
                 }
             }
-
-            counter--;
         };
     }
 
     /**
-     * Constructs a newly allocated {@link Tower} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link Tower} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public Tower(ArenaObjectStorage storage, short x, short y) {
-        super(storage, x, y);
+    public Tower(short x, short y) {
+        super(x, y);
+
+        buildValue = getBuildingCost();
     }
 
     /**
@@ -214,6 +213,14 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
         buildValue += upgradeCost;
     }
 
+    /**
+     * Shoots a projectile.
+     * @param validTargets The valid targets that the tower can shoot at.
+     */
+    protected void shoot(PriorityQueue<Monster> validTargets) {
+        // Target the monster with the shortest path to end zone
+        ArenaObjectFactory.createProjectile(this, validTargets.peek(), (short) 0, (short) 0);
+    }
 
     @Override
     public String getDisplayName() { return getClass().getSimpleName(); }

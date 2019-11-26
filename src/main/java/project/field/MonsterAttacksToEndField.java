@@ -4,7 +4,8 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 
 import project.arena.ArenaEventRegister;
-import project.controller.ArenaManager;
+import project.arena.ArenaInstance;
+import project.control.ArenaManager;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
@@ -89,9 +90,14 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                 }
             }
         }
+
+        private TowerAttacksPerFrameField(ArenaInstance arenaInstance) {
+            super(arenaInstance);
+            setAll(0f);
+        }
     }
 
-    private TowerAttacksPerFrameField towerAttacksPerFrameField = new TowerAttacksPerFrameField();
+    private TowerAttacksPerFrameField towerAttacksPerFrameField;
 
     /**
      * The method invoked when an {@link ArenaObject} is being added.
@@ -107,7 +113,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     tower.getMaxRange()
             );
 
-            recalculate();
+            recalculate(ArenaManager.getActiveObjectStorage());
         }
     };
 
@@ -125,7 +131,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     tower.getMaxRange()
             );
             
-            recalculate();
+            recalculate(ArenaManager.getActiveObjectStorage());
         }
     };
 
@@ -159,7 +165,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     tower.getMaxRange()
             );
 
-            recalculate();
+            recalculate(ArenaManager.getActiveObjectStorage());
         }
     };
 
@@ -190,14 +196,20 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                 tower.getMaxRange()
         );
 
-        recalculate();
+        recalculate(ArenaManager.getActiveObjectStorage());
     };
 
     /**
-     * Constructs a newly allocated {@link MonsterAttacksToEndField} object.
+     * Constructs a newly allocated {@link MonsterAttacksToEndField} object and attaches it to an arena instance.
+     * @param arenaInstance The arena instance.
      */
-    public MonsterAttacksToEndField() {
-        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+    public MonsterAttacksToEndField(ArenaInstance arenaInstance) {
+        super(arenaInstance);
+
+        towerAttacksPerFrameField = new TowerAttacksPerFrameField(arenaInstance);
+        recalculate(arenaInstance.getStorage());
+
+        ArenaEventRegister register = arenaInstance.getEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
         register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
@@ -208,11 +220,10 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
 
     /**
      * Recalculates the entire scalar field.
+     * @param storage The storage to base the calculation on.
      */
-    private void recalculate() {
+    private void recalculate(ArenaObjectStorage storage) {
         final float MOVEMENT_COST = 0.001f; // To avoid getting stuck
-        
-        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
 
         // Reset values
         setAll(Float.POSITIVE_INFINITY);

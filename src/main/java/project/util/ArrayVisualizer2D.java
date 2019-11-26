@@ -11,12 +11,12 @@ import javax.swing.JLabel;
  * Helper class to visualize numerical arrays.
  * For debugging only.
  */
-public final class ScalarFieldVisualizer {
+public final class ArrayVisualizer2D {
     private static double[][] openArray;
 
     private static JFrame openFrame;
 
-    private ScalarFieldVisualizer() { }
+    private ArrayVisualizer2D() { }
 
     private static void display(BufferedImage img) {
         if (openFrame != null) openFrame.dispose();
@@ -38,6 +38,31 @@ public final class ScalarFieldVisualizer {
         frame.setVisible(true);
 
         openFrame = frame;
+    }
+
+    /**
+     * Visualizes an array of booleans as a heat map. Colors range from blue (smallest value) to red (largest value).
+     * @param arr The array to visualize.
+     */
+    public static void visualizeBooleanArray(boolean[][] arr) {
+        int width = arr.length;
+        double[][] doubles = new double[width][];
+
+        // Get max and min values
+        for (int i = 0; i < width; i++) {
+            int height = arr[i].length;
+            doubles[i] = new double[height];
+
+            for (int j = 0; j < height; j++) {
+                if (arr[i][j]) {
+                    doubles[i][j] = Double.POSITIVE_INFINITY;
+                } else {
+                    doubles[i][j] = Double.NEGATIVE_INFINITY;
+                }
+            }
+        }
+        
+        visualizeDoubleArray(doubles);
     }
 
     /**

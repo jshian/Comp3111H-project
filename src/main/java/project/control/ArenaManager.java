@@ -1,15 +1,11 @@
-package project.controller;
+package project.control;
 
 import project.Player;
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
 import project.arena.ArenaScalarFieldRegister;
-import project.entity.BasicTower;
-import project.entity.Catapult;
-import project.entity.IceTower;
-import project.entity.LaserTower;
-import project.entity.Tower;
 import project.query.ArenaObjectStorage;
+import project.ui.UIController;
 
 /**
  * Manager of the arena.
@@ -62,6 +58,11 @@ public final class ArenaManager {
     public static int WAVE_INTERVAL = 50;
 
     /**
+     * The active UI controller.
+     */
+    private static UIController activeUIController;
+
+    /**
      * The active arena instance.
      */
     private static ArenaInstance activeArenaInstance;
@@ -79,49 +80,10 @@ public final class ArenaManager {
     }
 
     /**
-     * Enum of available {@link Tower} types for the arena.
+     * Returns the active UI controller.
+     * @return The active UI controller.
      */
-    enum TowerType {
-        /**
-         * {@link BasicTower}
-         */
-        BASIC (BasicTower.class, BasicTower.getBuildingCost()),
-
-        /**
-         * {@link Catapult}
-         */
-        CATAPULT (Catapult.class, Catapult.getBuildingCost()),
-
-        /**
-         * {@link IceTower}
-         */
-        ICE (IceTower.class, IceTower.getBuildingCost()),
-
-        /**
-         * {@link LaserTower}
-         */
-        LASER (LaserTower.class, LaserTower.getBuildingCost());
-
-        private final Class<? extends Tower> towerType;
-        private final int buildingCost;
-
-        TowerType(Class<? extends Tower> towerType, int buildingCost) {
-            this.towerType = towerType;
-            this.buildingCost = buildingCost;
-        }
-
-        /**
-         * Returns the tower type.
-         * @return The tower type.
-         */
-        public Class<? extends Tower> getTowerType() { return towerType; }
-
-        /**
-         * Returns the building cost.
-         * @return The building cost.
-         */
-        public int getBuildingCost() { return buildingCost; }
-    }
+    public static UIController getActiveUIController() { return activeUIController; }
 
     /**
      * Returns the active arena instance.
@@ -153,20 +115,36 @@ public final class ArenaManager {
      */
     public static ArenaObjectStorage getActiveObjectStorage() { return activeArenaInstance.getStorage(); }
     
+    /**
+     * Loads a brand new arena instance.
+     * @param ui The UI controller of the arena instance.
+     * @param player The player of the arena instance.
+     */
+    public static void loadNew(UIController ui, Player player) {
+        activeUIController = ui;
+        activeArenaInstance = new ArenaInstance(player);
+    }
+
     // TODO
     /**
      * Loads an arena instance.
+     * @param ui The UI controller of the arena instance.
+     * @param player The player of the arena instance.
      * @param arenaInstance The arena instance.
      */
-    public static void load(ArenaInstance arenaInstance) {
-        
+    public static void load(UIController ui, Player player, ArenaInstance arenaInstance) {
+        activeUIController = ui;
     }
 
     // TODO
     // Create a shadow instance of the currently active arena instance (deep copy).
     // As it is not accessible from outside, it will not receive any events.
     // You can use another thread safely at this point.
-    public static void save() {
+    /**
+     * Saves the currently active arena instance.
+     * @param player The player of the arena instance.
+     */
+    public static void save(Player player) {
         
     }
 
@@ -191,7 +169,7 @@ public final class ArenaManager {
      * @return The x-position of the starting grid.
      */
     public static short getStartingGridXPos() {
-        return (short) ((STARTING_X / GRID_WIDTH) * GRID_WIDTH);
+        return (short) Math.min(STARTING_X / GRID_WIDTH, getMaxHorizontalGrids() - 1);
     }
 
       /**
@@ -199,7 +177,7 @@ public final class ArenaManager {
      * @return The y-position of the starting grid.
      */
     public static short getStartingGridYPos() {
-        return (short) ((STARTING_Y / GRID_HEIGHT) * GRID_HEIGHT);
+        return (short) Math.min(STARTING_Y / GRID_HEIGHT, getMaxVerticalGrids() - 1);
     }
 
     /**
@@ -207,14 +185,86 @@ public final class ArenaManager {
      * @return The x-position of the end grid.
      */
     public static short getEndGridXPos() {
-        return (short) ((END_X / GRID_WIDTH) * GRID_WIDTH);
+        return (short) Math.min(END_X / GRID_WIDTH, getMaxHorizontalGrids() - 1);
     }
 
-      /**
+    /**
      * Returns the y-position of the end grid.
      * @return The y-position of the end grid.
      */
     public static short getEndGridYPos() {
-        return (short) ((END_Y / GRID_HEIGHT) * GRID_HEIGHT);
+        return (short) Math.min(END_Y / GRID_HEIGHT, getMaxVerticalGrids() - 1);
+    }
+
+    /**
+     * Returns the x-position of the grid containing a point.
+     * @param x The x-coordinate of the point.
+     * @return The x-position of the grid containing a point.
+     */
+    public static short getGridXPosFromCoor(short x) {
+        return (short) Math.min(x / GRID_WIDTH, getMaxHorizontalGrids() - 1);
+    }
+
+    /**
+     * Returns the y-position of the grid containing a point.
+     * @param x The y-coordinate of the point.
+     * @return The y-position of the grid containing a point.
+     */
+    public static short getGridYPosFromCoor(short y) {
+        return (short) Math.min(y / GRID_HEIGHT, getMaxVerticalGrids() - 1);
+    }
+
+    /**
+     * Returns the x-coordinate of the left edge of the grid containing a point.
+     * @param x The x-coordinate of the point.
+     * @return The x-coordinate of the left edge of the grid containing a point.
+     */
+    public static short getGridLeftXFromCoor(short x) {
+        return (short) (getGridXPosFromCoor(x) * GRID_WIDTH);
+    }
+
+    /**
+     * Returns the x-coordinate of the center of the grid containing a point.
+     * @param x The x-coordinate of the point.
+     * @return The x-coordinate of the center of the grid containing a point.
+     */
+    public static short getGridCenterXFromCoor(short x) {
+        return (short) ((getGridXPosFromCoor(x) + 0.5) * GRID_WIDTH);
+    }
+
+    /**
+     * Returns the x-coordinate of the center of a grid.
+     * @param xPos The x-position of the grid.
+     * @return The x-coordinate of the center of the gridt.
+     */
+    public static short getGridCenterXFromPos(short xPos) {
+        return (short) ((xPos + 0.5) * GRID_WIDTH);
+    }
+
+    /**
+     * Returns the y-coordinate of the top edge of the grid containing a point.
+     * @param y The y-coordinate of the point.
+     * @return The y-coordinate of the top edge of the grid containing a point.
+     */
+    public static short getGridTopYFromCoor(short y) {
+        return (short) (getGridXPosFromCoor(y) * GRID_HEIGHT);
+    }
+
+    /**
+     * Returns the y-coordinate of the center of the grid containing a point.
+     * @param y The y-coordinate of the point.
+     * @return The y-coordinate of the center of the grid containing a point.
+     */
+    public static short getGridCenterYFromCoor(short y) {
+        return (short) ((getGridXPosFromCoor(y) + 0.5) * GRID_HEIGHT);
+    }
+
+    /**
+     * Returns the y-coordinate of the center of a grid.
+     * @param yPos The y-position of the grid.
+     * @return The y-coordinate of the center of the gridt.
+     */
+    public static short getGridCenterYFromPos(short yPos) {
+        return (short) ((yPos + 0.5) * GRID_HEIGHT);
     }
 }

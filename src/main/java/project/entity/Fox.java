@@ -5,8 +5,7 @@ import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
-import project.controller.ArenaManager;
-import project.query.ArenaObjectStorage;
+import project.control.ArenaManager;
 
 /**
  * Fox is the fastest Monster. It also tries to follow the path where it receives the minimum number of attacks from Towers.
@@ -20,14 +19,13 @@ public class Fox extends Monster {
     }
 
     /**
-     * Constructs a newly allocated {@link Fox} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link Fox} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
      */
-    public Fox(ArenaObjectStorage storage, short x, short y, double difficulty) {
-        super(storage, x, y, difficulty);
+    public Fox(short x, short y, double difficulty) {
+        super(x, y, difficulty);
         this.maxHealth = 5 + 2 * difficulty;
         this.baseSpeed = 5 + 0.5 * Math.log10(difficulty);
         this.health.set(this.maxHealth);

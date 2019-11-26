@@ -9,9 +9,8 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import project.Geometry;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.event.eventargs.ArenaObjectEventArgs;
-import project.query.ArenaObjectStorage;
 
 /**
  * Projectiles are shot by a {@link Tower} towards a {@link Monster} and deal damage on contact. They disappear when they reach their target.
@@ -106,15 +105,14 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     }
 
     /**
-     * Constructs a newly allocated {@link Projjectile} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link Projjectile} object and adds it to the currently active arena.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.
      * @param deltaY The y-offset from the targeted monster where the projectile will land.
      */
-    public Projectile(ArenaObjectStorage storage, Tower tower, Monster target, short deltaX, short deltaY) {
-        super(storage, tower.getX(), tower.getY());
+    public Projectile(Tower tower, Monster target, short deltaX, short deltaY) {
+        super(tower.getX(), tower.getY());
         this.target = target;
         this.deltaX = deltaX;
         this.deltaY = deltaY;

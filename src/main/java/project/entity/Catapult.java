@@ -11,12 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 import project.Geometry;
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 import project.query.ArenaObjectCircleSelector;
-import project.query.ArenaObjectRingSortedSelector;
-import project.query.ArenaObjectStorage;
-import project.query.ArenaObjectStorage.SortOption;
-import project.query.ArenaObjectStorage.StoredComparableType;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
@@ -54,69 +50,13 @@ public class Catapult extends Tower {
      */
     protected short targetLocationY;
 
-    // Catapult tries to hit the most monsters at once
-    {
-        onNextFrame = (sender, args) -> {
-            ArenaObjectRingSortedSelector<Monster> selector = new ArenaObjectRingSortedSelector<>(getX(), getY(), minRange, maxRange);
-            PriorityQueue<Monster> validTargets = storage.getSortedQueryResult(selector, StoredComparableType.MONSTER, SortOption.ASCENDING);
-
-            if (!validTargets.isEmpty()) {
-                if (counter <= 0) {
-
-                    LinkedList<Monster> closestTargets = new LinkedList<>();
-                    int closestDistance = (int) validTargets.peek().getMovementDistanceToDestination();
-    
-                    while (closestDistance == (int) validTargets.peek().getMovementDistanceToDestination()) {
-                        closestTargets.add(validTargets.poll());
-                    }
-    
-                    Monster target = closestTargets.peek();
-                    for (Monster m :closestTargets) {//every nearest monster as a center of a circle
-                        int count=0;//count number of monster in the circle
-            
-                        for (short i = (short) (m.getX()-splashRadius); i < m.getX()+splashRadius; i++) {//square width
-                            for (short j = (short) (m.getY()-splashRadius); j < m.getY()+splashRadius; j++) {//square length
-                                if (i < 0 || i > ArenaManager.ARENA_WIDTH) continue;
-                                if (j < 0 || j > ArenaManager.ARENA_HEIGHT) continue;
-            
-                                if (Geometry.isInCircle(i,j,m.getX(),m.getY(),splashRadius)){//splash radius in current point
-                                    LinkedList<ArenaObject> monInCircle = storage.getQueryResult(
-                                            new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));  
-
-                                    if(count < monInCircle.size()){
-                                        monstersInSplashRange.clear();
-                                        count=monInCircle.size();
-                                        target = m;
-                                        targetLocationX = i;
-                                        targetLocationY = j;
-                                        for (ArenaObject o : monInCircle) {
-                                            monstersInSplashRange.add((Monster) o);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    short deltaX = (short) (targetLocationX - target.getX());
-                    short deltaY = (short) (targetLocationY - target.getY());
-                    ArenaObjectFactory.createProjectile(this, target, deltaX, deltaY);
-                    counter = reload;
-                }
-            }
-
-            counter--;
-        };
-    }
-
     /**
-     * Constructs a newly allocated {@link Catapult} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link Catapult} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public Catapult(ArenaObjectStorage storage, short x, short y) {
-        super(storage, x, y);
+    public Catapult(short x, short y) {
+        super(x, y);
         this.attackPower = 25;
         this.minRange = 50;
         this.maxRange = 150;
@@ -142,6 +82,49 @@ public class Catapult extends Tower {
         } else {
             this.reload -= 1;
         }
+    }
+
+    // Catapult tries to hit the most targets in range of the main target
+    @Override
+    protected void shoot(PriorityQueue<Monster> validTargets) {
+        LinkedList<Monster> closestTargets = new LinkedList<>();
+        int closestDistance = (int) validTargets.peek().getMovementDistanceToDestination();
+
+        while (closestDistance == (int) validTargets.peek().getMovementDistanceToDestination()) {
+            closestTargets.add(validTargets.poll());
+        }
+
+        Monster target = closestTargets.peek();
+        for (Monster m :closestTargets) {//every nearest monster as a center of a circle
+            int count=0;//count number of monster in the circle
+
+            for (short i = (short) (m.getX()-splashRadius); i < m.getX()+splashRadius; i++) {//square width
+                for (short j = (short) (m.getY()-splashRadius); j < m.getY()+splashRadius; j++) {//square length
+                    if (i < 0 || i > ArenaManager.ARENA_WIDTH) continue;
+                    if (j < 0 || j > ArenaManager.ARENA_HEIGHT) continue;
+
+                    if (Geometry.isInCircle(i,j,m.getX(),m.getY(),splashRadius)){//splash radius in current point
+                        LinkedList<ArenaObject> monInCircle = storage.getQueryResult(
+                                new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));  
+
+                        if(count < monInCircle.size()){
+                            monstersInSplashRange.clear();
+                            count=monInCircle.size();
+                            target = m;
+                            targetLocationX = i;
+                            targetLocationY = j;
+                            for (ArenaObject o : monInCircle) {
+                                monstersInSplashRange.add((Monster) o);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        short deltaX = (short) (targetLocationX - target.getX());
+        short deltaY = (short) (targetLocationY - target.getY());
+        ArenaObjectFactory.createProjectile(this, target, deltaX, deltaY);
     }
 
     @Override

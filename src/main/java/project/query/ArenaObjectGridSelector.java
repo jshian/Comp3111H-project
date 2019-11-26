@@ -1,6 +1,6 @@
 package project.query;
 
-import project.controller.ArenaManager;
+import project.control.ArenaManager;
 
 /**
  * A class that selects the {@link ArenaObject}s inside a grid within the arena that contains a defined point.
@@ -13,9 +13,7 @@ public class ArenaObjectGridSelector extends ArenaObjectRectangleSelector {
      * @param y The y-coordinate of the point.
      */
     public ArenaObjectGridSelector(short x, short y) {
-        super(  (short) ((x / ArenaManager.GRID_WIDTH) * ArenaManager.GRID_WIDTH),
-                (short) ((y / ArenaManager.GRID_HEIGHT) * ArenaManager.GRID_HEIGHT),
-                ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT);
+        super(ArenaManager.getGridLeftXFromCoor(x), ArenaManager.getGridTopYFromCoor(y), ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT);
     }
 
 }

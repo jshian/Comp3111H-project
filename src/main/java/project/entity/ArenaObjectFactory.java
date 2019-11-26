@@ -1,10 +1,7 @@
 package project.entity;
 
-import project.controller.ArenaManager;
-import project.query.ArenaObjectStorage;
-
 /**
- * Singleton that creates {@link ArenaObject}s in the currently active {@link ArenaInstance}.
+ * Singleton that creates {@link ArenaObject}s in the currently active arena.
  */
 public final class ArenaObjectFactory {
 
@@ -16,26 +13,46 @@ public final class ArenaObjectFactory {
     /**
      * An enum of supported {@link Tower} types.
      */
-    public static enum TowerType {
+    public enum TowerType {
         /**
          * The {@link BasicTower}.
          */
-        BASIC,
+        BASIC (BasicTower.class.getSimpleName(), BasicTower.getBuildingCost()),
 
         /**
          * The {@link Catapult}.
          */
-        CATAPULT,
+        CATAPULT (Catapult.class.getSimpleName(), Catapult.getBuildingCost()),
 
         /**
          * The {@link IceTower}.
          */
-        ICE,
+        ICE (IceTower.class.getSimpleName(), IceTower.getBuildingCost()),
 
         /**
          * The {@link LaserTower}.
          */
-        LASER
+        LASER (LaserTower.class.getSimpleName(), LaserTower.getBuildingCost());
+
+        private final String defaultName;
+        private final int buildingCost;
+
+        private TowerType(String defaultName, int buildingCost) {
+            this.defaultName = defaultName;
+            this.buildingCost = buildingCost;
+        }
+
+        /**
+         * Returns the default name of the tower type.
+         * @return The default name of the tower type.
+         */
+        public String getDefaultName() { return defaultName; }
+
+        /**
+         * Returns the building cost of the tower type.
+         * @return The building cost of the tower type.
+         */
+        public int getBuildingCost() { return buildingCost; }
     }
 
     /**
@@ -46,13 +63,11 @@ public final class ArenaObjectFactory {
      * @return The newly-created Tower object.
      */
     public static Tower createTower(TowerType type, short x, short y) {
-        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
-
         switch (type) {
-            case BASIC: return new BasicTower(storage, x, y);
-            case CATAPULT: return new Catapult(storage, x, y);
-            case ICE: return new IceTower(storage, x, y);
-            case LASER: return new LaserTower(storage, x, y);
+            case BASIC: return new BasicTower(x, y);
+            case CATAPULT: return new Catapult(x, y);
+            case ICE: return new IceTower(x, y);
+            case LASER: return new LaserTower(x, y);
         }
 
         throw new IllegalArgumentException("The Tower type must be specified");
@@ -67,16 +82,14 @@ public final class ArenaObjectFactory {
      * @return The newly-created Projectile object.
      */
     public static Projectile createProjectile(Tower tower, Monster target, short deltaX, short deltaY) {
-        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
-
         if (tower instanceof BasicTower) {
-            return new BasicProjectile(storage, (BasicTower) tower, target, deltaX, deltaY);
+            return new BasicProjectile((BasicTower) tower, target, deltaX, deltaY);
         } else if (tower instanceof IceTower) {
-            return new IceProjectile(storage, (IceTower) tower, target, deltaX, deltaY);
+            return new IceProjectile((IceTower) tower, target, deltaX, deltaY);
         } else if (tower instanceof Catapult) {
-            return new CatapultProjectile(storage, (Catapult) tower, target, deltaX, deltaY);
+            return new CatapultProjectile((Catapult) tower, target, deltaX, deltaY);
         } else if (tower instanceof LaserTower) {
-            return new LaserProjectile(storage, (LaserTower) tower, target, deltaX, deltaY);
+            return new LaserProjectile((LaserTower) tower, target, deltaX, deltaY);
         } else {
             throw new IllegalArgumentException("Unknown Tower type or tower is null");
         }
@@ -86,7 +99,7 @@ public final class ArenaObjectFactory {
     /**
      * An enum of supported {@link Monster} types.
      */
-    public static enum MonsterType {
+    public enum MonsterType {
         /**
          * The {@link Fox}.
          */
@@ -112,12 +125,10 @@ public final class ArenaObjectFactory {
      * @return The newly-created Monster object.
      */
     public static Monster createMonster(MonsterType type, short x, short y, double difficulty) {
-        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
-
         switch (type) {
-            case FOX: return new Fox(storage, x, y, difficulty);
-            case PENGUIN: return new Penguin(storage, x, y, difficulty);
-            case UNICORN: return new Unicorn(storage, x, y, difficulty);
+            case FOX: return new Fox(x, y, difficulty);
+            case PENGUIN: return new Penguin(x, y, difficulty);
+            case UNICORN: return new Unicorn(x, y, difficulty);
         }
 
         throw new IllegalArgumentException("The Monster type must be specified");

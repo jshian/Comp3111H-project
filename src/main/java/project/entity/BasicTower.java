@@ -5,8 +5,7 @@ import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
-import project.controller.ArenaManager;
-import project.query.ArenaObjectStorage;
+import project.control.ArenaManager;
 
 /**
  * Basic tower has no any special ability.
@@ -23,13 +22,12 @@ public class BasicTower extends Tower {
     }
 
     /**
-     * Constructs a newly allocated {@link BasicTower} object and adds it to the {@link ArenaObjectStorage}.
-     * @param storage The storage to add the object to.
+     * Constructs a newly allocated {@link BasicTower} object and adds it to the currently active arena.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
-    public BasicTower(ArenaObjectStorage storage, short x, short y) {
-        super(storage, x, y);
+    public BasicTower(short x, short y) {
+        super(x, y);
         this.attackPower = 10;
         this.maxRange = 65;
         this.projectileSpeed = 5;
