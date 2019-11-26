@@ -1,6 +1,9 @@
 package project;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -16,9 +19,11 @@ import project.event.eventargs.ArenaObjectEventArgs;
 @Entity
 public class Player {
 
+    /**
+     * ID for storage using Java Persistence API
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
 
     // Attribute
@@ -26,21 +31,8 @@ public class Player {
     private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
-     * The method invoked when an {@link ArenaObject} is being added.
-     */
-    @Transient
-    private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
-        ArenaObject subject = args.subject;
-
-        if (subject instanceof Tower) {
-            spendResources(((Tower) subject).getBuildValue());
-        }
-    };
-
-    /**
      * The method invoked when an {@link ArenaObject} is being removed.
      */
-    @Transient
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 

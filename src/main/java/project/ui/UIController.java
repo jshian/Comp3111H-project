@@ -267,6 +267,7 @@ public class UIController {
     /**
      * Load the game.
      */
+    @FXML
     private void load() {
         // TODO
         resetGame();
@@ -279,14 +280,6 @@ public class UIController {
     private void save() {
         // TODO
         ArenaManager.save(player);
-    }
-
-    /**
-     * run the game by one frame.
-     */
-    @FXML
-    private void nextFrame() {
-
     }
 
     /**
