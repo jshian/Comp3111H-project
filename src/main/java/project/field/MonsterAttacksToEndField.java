@@ -212,7 +212,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
     private void recalculate() {
         final float MOVEMENT_COST = 0.001f; // To avoid getting stuck
         
-        ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getStorage();
+        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
 
         // Reset values
         setAll(Float.POSITIVE_INFINITY);

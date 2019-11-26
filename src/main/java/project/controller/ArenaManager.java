@@ -1,7 +1,5 @@
 package project.controller;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import project.Player;
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
@@ -11,6 +9,7 @@ import project.entity.Catapult;
 import project.entity.IceTower;
 import project.entity.LaserTower;
 import project.entity.Tower;
+import project.query.ArenaObjectStorage;
 
 /**
  * Manager of the arena.
@@ -125,6 +124,12 @@ public final class ArenaManager {
     }
 
     /**
+     * Returns the active arena instance.
+     * @return The active arena instance.
+     */
+    public static ArenaInstance getActiveArenaInstance() { return activeArenaInstance; }
+
+    /**
      * Returns the active player.
      * @return The active player.
      */
@@ -146,7 +151,7 @@ public final class ArenaManager {
      * Returns the active arena instance.
      * @return The active arena instance.
      */
-    public static ArenaInstance getActiveArenaInstance() { return activeArenaInstance; }
+    public static ArenaObjectStorage getActiveObjectStorage() { return activeArenaInstance.getStorage(); }
     
     // TODO
     /**

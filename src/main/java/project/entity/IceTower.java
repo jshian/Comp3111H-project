@@ -65,11 +65,6 @@ public class IceTower extends Tower {
     }
 
     @Override
-    public void generateProjectile(Monster primaryTarget) {
-        new IceProjectile(storage, this, primaryTarget, (short) 0, (short) 0);
-    }
-
-    @Override
     public String getDisplayDetails() {
         return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,
             this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);

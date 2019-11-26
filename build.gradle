@@ -55,7 +55,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     // testFX - https://github.com/TestFX/TestFX
-    testCompile group: 'org.testfx', name: 'testfx-junit', version : '4.0.15-alpha'
+    testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.15-alpha'
 
     // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api/2.2
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
@@ -65,6 +65,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/math.geom2d/javaGeom/0.11.1
     compile group: 'math.geom2d', name: 'javaGeom', version: '0.11.1'
+
+    // https://search.maven.org/artifact/org.jadira.cloning/cloning/3.1.0.CR10/jar
+    implementation 'org.jadira.cloning:cloning:3.1.0.CR10'
 }
 
 jacoco {

@@ -48,11 +48,6 @@ public class BasicTower extends Tower {
     }
 
     @Override
-    public void generateProjectile(Monster primaryTarget) {
-        new BasicProjectile(storage, this, primaryTarget, (short) 0, (short) 0);
-    }
-
-    @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/basicTower.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true));
     }

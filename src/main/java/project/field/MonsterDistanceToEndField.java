@@ -49,7 +49,7 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
      * Recalculates the entire scalar field.
      */
     private void recalculate() {
-        ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getStorage();
+        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
 
         // Reset values
         setAll(Integer.MAX_VALUE);

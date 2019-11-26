@@ -25,9 +25,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import project.arena.ArenaInstance;
+import project.controller.ArenaManager;
 import project.controller.UIController;
+import project.controller.UIController.GameMode;
 import project.entity.*;
-import project.arena.towers.BuildTower;
+import project.entity.ArenaObjectFactory.MonsterType;
+import project.entity.ArenaObjectFactory.TowerType;
+import project.event.eventargs.ArenaObjectEventArgs;
+import project.event.eventargs.EventArgs;
 
 /**
  * Base class to inherit from when testing objects that make use of JavaFX objects.
@@ -39,8 +44,6 @@ public class JavaFXTester extends ApplicationTest {
 	protected Stage primaryStage;
 	protected Scene currentScene;
 	protected UIController appController;
-
-	public static enum TowerType { BasicTower, Catapult, IceTower, LaserTower }
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -57,49 +60,39 @@ public class JavaFXTester extends ApplicationTest {
 	}
 
 	/**
-	 * Accesses the arena that is currently loaded.
-	 * @return The arena that is currently loaded.
+	 * Adds a tower to the currently active arena.
+     * @param type The type of tower to create.
+     * @param x The x-coordinate of the center of the tower.
+     * @param y The y-coordinate of the center of the tower.
+	 * @return The newly-created Tower object.
 	 */
-	protected final ArenaInstance getCurrentArena() {
-		ArenaInstance arena = null;
-
-		try {
-			Field f = UIController.class.getDeclaredField("arena");
-			f.setAccessible(true);
-			arena = (ArenaInstance) f.get(this.appController);
-		} catch (Exception e) {
-			fail("An unexpected error has occurred");
-		}
-
-		return arena;
+	protected final Tower addTowerToArena(TowerType type, short x, short y) {
+		return ArenaObjectFactory.createTower(type, x, y);
 	}
 
 	/**
-	 * Adds a monster to the arena that is currently loaded.
-	 * @param monsterType The type of the monster.
-     * @param start The starting location of the monster.
-     * @param destination The destination of the monster. It will try to move there.
-     * @param difficulty The difficulty of the monster, which should be at least equal to <code>1</code>.
-	 * @param isInvulnerable Whether the monster should be invulnerable.
+	 * Adds a tower to the currently active arena.
+     * @param tower The tower from which this projectile originates.
+     * @param target The monster that the projectile will pursue.
+     * @param deltaX The x-offset from the targeted monster where the projectile will land.
+     * @param deltaY The y-offset from the targeted monster where the projectile will land.
+	 * @return The newly-created Projectile object.
 	 */
-	protected final void addMonsterToArena(MonsterType monsterType, Coordinates start, Coordinates end, double difficulty, boolean isInvulnerable) {
-		final ArenaInstance arena = getCurrentArena();
-		ImageView iv = null;
-		Monster m = null;
-		switch (monsterType) {
-			case Fox:
-				iv = new ImageView(new Image("/fox.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-				m = new Fox(arena, start, end, iv, difficulty);
-				break;
-			case Penguin:
-				iv = new ImageView(new Image("/penguin.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-				m = new Penguin(arena, start, end, iv, difficulty);
-				break;
-			case Unicorn: default:
-				iv = new ImageView(new Image("/unicorn.png", UIController.GRID_WIDTH / 4, UIController.GRID_HEIGHT / 4, true, true));
-				m = new Unicorn(arena, start, end, iv, difficulty);
-				break;
-		}
+	protected final Projectile addProjectileToArena(Tower tower, Monster target, short deltaX, short deltaY) {
+		return ArenaObjectFactory.createProjectile(tower, target, deltaX, deltaY);
+	}
+
+	/**
+	 * Adds a monster to the currently active arena.
+     * @param type The type of monster to create.
+     * @param x The x-coordinate of the monster.
+     * @param y The x-coordinate of the monster.
+     * @param difficulty The difficulty of the monster.
+	 * @param isInvulnerable Whether the monster should be invulnerable.
+	 * @return The newly-created Monster object.
+	 */
+	protected final Monster addMonsterToArena(MonsterType type, short x, short y, double difficulty, boolean isInvulnerable) {
+		Monster m = ArenaObjectFactory.createMonster(type, x, y, difficulty);
 
 		if (isInvulnerable) {
 			try {
@@ -111,14 +104,28 @@ public class JavaFXTester extends ApplicationTest {
 			}
 		}
 
-		final Monster finalMonster = m;
-		
-		interact(new Runnable() {
-            @Override
-            public void run() {
-				getCurrentArena().addObject(finalMonster);
-            }
-        });
+		return m;
+	}
+
+	/**
+	 * Removes an object from the currently active arena.
+	 * @param o The object to remove.
+	 */
+	protected final void removeObjectFromArena(ArenaObject o) {
+		ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
+				new ArenaObjectEventArgs() {
+					{ subject = o; }
+				}
+		);
+	}
+
+	/**
+	 * Simulates the next frame of the game.
+	 */
+	protected final void simulateNextFrame() {
+		interact(() -> {
+			ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.invoke(this, new EventArgs());
+		});
 	}
 
 	/**
@@ -127,19 +134,17 @@ public class JavaFXTester extends ApplicationTest {
 	 * @param speedMultiplier The rate at which to speed up the game.
 	 */
 	protected final void simulateGameNoSpawning(double speedMultiplier) {
-		final ArenaInstance arena = getCurrentArena();
-
 		// Similar to Arena.run
 		try {
 			Field field_mode = UIController.class.getDeclaredField("mode");
 			field_mode.setAccessible(true);
-			if (field_mode.get(arena) == GameMode.end) {
+			if (field_mode.get(appController) == GameMode.END) {
 				Method method_resetGame = UIController.class.getDeclaredMethod("resetGame");
 				method_resetGame.setAccessible(true);
 				method_resetGame.invoke(appController);
 			}
 
-			field_mode.set(arena, GameMode.simulate);
+			field_mode.set(appController, GameMode.SIMULATE);
 
 			Method method_disableGameButton = UIController.class.getDeclaredMethod("disableGameButton");
 			method_disableGameButton.setAccessible(true);
@@ -167,28 +172,32 @@ public class JavaFXTester extends ApplicationTest {
 			timeline.play();
 			field_timeline.set(appController, timeline);
 
-			while (field_mode.get(arena) != GameMode.normal) {}	// Wait until finished
+			while (field_mode.get(arena) != GameMode.NORMAL) {}	// Wait until finished
 		} catch (Exception e) {
 			fail("An unexpected error has occurred");
 		}
 	}
 
 	/**
-	 * Simulate the action to build tower on specific {@link Grid}.
+	 * Simulate the action to build tower on specific grid.
 	 * @param type The type of the tower.
-	 * @param xPos The x-position of the grid.
-	 * @param yPos The y-position of the grid.
+	 * @param x The x-position of the grid.
+	 * @param y The y-position of the grid.
 	 */
-	protected final void simulateBuildTower(BuildTower.TowerType type, short xPos, short yPos) {
-		simulateBuildTower(type, Grid.findGridCenter(xPos, yPos));
+	protected final void simulateBuildTowerGrid(TowerType type, short xPos, short yPos) {
+		simulateBuildTower(type,
+				(short) ((xPos + 0.5) * ArenaManager.GRID_WIDTH),
+				(short) ((yPos + 0.5) * ArenaManager.GRID_HEIGHT)
+		);
 	}
 
 	/**
 	 * Simulate the action to build tower on specific coordinates.
 	 * @param type The type of the tower.
-	 * @param coordinates The coordinates inside the paneArena.
+	 * @param x The x-coordinate inside the paneArena.
+	 * @param y The y-coordinate inside the paneArena.
 	 */
-	protected final void simulateBuildTower(TowerType type, Coordinates coordinates) {
+	protected final void simulateBuildTower(TowerType type, short x, short y) {
 		Label l = (Label)currentScene.lookup("#label" + type.name());
 		Bounds labelBound = l.localToScreen(l.getLayoutBounds());
 		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
@@ -197,37 +206,30 @@ public class JavaFXTester extends ApplicationTest {
 		double sceneY = paneBound.getMinY();
 
 		drag(labelBound.getMinX()+1, labelBound.getMinY()+1, MouseButton.PRIMARY);
-		dropTo(sceneX+coordinates.getX(), sceneY+coordinates.getY());
-	}
-
-	/**
-	 * Test if there is a tower with specific tower type in specific {@link Grid}.
-	 * @param type The type of the tower.
-	 * @param xPos The x-position of the grid.
-	 * @param yPos The y-position of the grid.
-	 */
-	protected final void hasTower(BuildTower.TowerType type, short xPos, short yPos) {
-		simulateBuildTower(type, Grid.findGridCenter(xPos, yPos));
+		dropTo(sceneX+x, sceneY+y);
 	}
 
 	/**
 	 * Test if there is a tower with specific tower type in the grid containing the specified coordinates.
 	 * @param type The type of the tower.
-	 * @param coordinates The coordinates inside the paneArena.
+	 * @param x The x-coordinate inside the paneArena.
+	 * @param y The y-coordinate inside the paneArena.
 	 */
-	protected final boolean hasTower(TowerType type, Coordinates coordinates) {
-		Coordinates topLeft = Grid.findGridTopLeft(coordinates);
+	protected final boolean hasTower(TowerType type, short x, short y) {
+		short leftX = (short) (x / ArenaManager.GRID_WIDTH);
+		short topY = (short) (y / ArenaManager.GRID_HEIGHT);
+
 		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
 		for (Node n : b.getChildren()) {
 			if (n instanceof ImageView) {
-				if (((ImageView) n).getX() == topLeft.getX() && ((ImageView) n).getX() == topLeft.getY()) {
+				if (((ImageView) n).getX() == leftX && ((ImageView) n).getY() == topY) {
 					Image img = ((ImageView) n).getImage();
 					Image compare = null;
 					switch(type) {
-						case BasicTower: compare = new Image("/basicTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
-						case Catapult: compare = new Image("/catapult.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
-						case IceTower: compare = new Image("/iceTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
-						case LaserTower: compare = new Image("/laserTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+						case BASIC: compare = new Image("/basicTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+						case CATAPULT: compare = new Image("/catapult.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+						case ICE: compare = new Image("/iceTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
+						case LASER: compare = new Image("/laserTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
 					}
 					boolean equal = true;
 					for (int i = 0; i < img.getHeight(); i++)

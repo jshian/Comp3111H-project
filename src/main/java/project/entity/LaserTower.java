@@ -3,11 +3,16 @@ package project.entity;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.PriorityQueue;
+
 import javax.persistence.Entity;
 
 import project.Player;
 import project.controller.ArenaManager;
+import project.query.ArenaObjectRingSortedSelector;
 import project.query.ArenaObjectStorage;
+import project.query.ArenaObjectStorage.SortOption;
+import project.query.ArenaObjectStorage.StoredComparableType;
 
 /**
  * LaserTower consume resources to attack monster.
@@ -32,6 +37,26 @@ public class LaserTower extends Tower{
      * The consumption of resources by laser tower each time it shoots.
      */
     private int shootingCost = 2;
+
+    // LaserTower consumes resources each time it fires
+    {
+        onNextFrame = (sender, args) -> {
+            ArenaObjectRingSortedSelector<Monster> selector = new ArenaObjectRingSortedSelector<>(getX(), getY(), minRange, maxRange);
+            PriorityQueue<Monster> validTargets = storage.getSortedQueryResult(selector, StoredComparableType.MONSTER, SortOption.ASCENDING);
+
+            if (!validTargets.isEmpty()) {
+                if (counter <= 0) {
+                    // Target the monster with the shortest path to end zone
+                    if (consumeResource()) {
+                        ArenaObjectFactory.createProjectile(this, validTargets.peek(), (short) 0, (short) 0);
+                    }
+                    counter = reload;
+                }
+            }
+
+            counter--;
+        };
+    }
 
     /**
      * Constructs a newly allocated {@link LaserTower} object and adds it to the {@link ArenaObjectStorage}.
@@ -69,13 +94,6 @@ public class LaserTower extends Tower{
         } else {
             this.attackPower += 5;
         }
-    }
-
-    @Override
-    public void generateProjectile(Monster primaryTarget) {
-        if (!consumeResource()) return; // Cannot fire if there are not enough resources
-
-        new LaserProjectile(storage,  this, primaryTarget, (short) 0, (short) 0);
     }
 
     @Override

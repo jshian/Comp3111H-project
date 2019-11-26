@@ -6,15 +6,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
@@ -22,7 +18,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -41,7 +36,6 @@ import project.event.EventHandler;
 import project.event.EventManager;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
-import project.field.ArenaScalarField;
 import project.query.ArenaObjectGridSelector;
 import project.query.ArenaObjectPropertySelector;
 import project.query.ArenaObjectRectangleSelector;

@@ -95,7 +95,7 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
             if (!validTargets.isEmpty()) {
                 if (counter <= 0) {
                     // Target the monster with the shortest path to end zone
-                    generateProjectile(validTargets.peek());
+                    ArenaObjectFactory.createProjectile(this, validTargets.peek(), (short) 0, (short) 0);
                     counter = reload;
                 }
             }
@@ -214,14 +214,6 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
         buildValue += upgradeCost;
     }
 
-    /**
-     * Generates a new projectile based on the tower and primary target.
-     * 
-     * Note that creating a new {@link ArenaObject} will automatically add it to the {@link ArenaObjectStorage}.
-     * 
-     * @param primaryTarget The target that the projectile will hit.
-     */
-    protected abstract void generateProjectile(Monster primaryTarget);
 
     @Override
     public String getDisplayName() { return getClass().getSimpleName(); }

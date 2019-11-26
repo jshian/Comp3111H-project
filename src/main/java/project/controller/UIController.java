@@ -68,11 +68,11 @@ public class UIController {
     /**
      * An enum to show game state.
      */
-    static enum GameMode {normal, simulate, play, end};
+    public static enum GameMode {NORMAL, SIMULATE, PLAY, END};
     /**
      * the game state.
      */
-    static GameMode mode = GameMode.normal;
+    static GameMode mode = GameMode.NORMAL;
 
     /**
      * circle that shows shooting range of tower.
@@ -99,7 +99,7 @@ public class UIController {
      */
     private EventHandler<EventArgs> onGameover = (sender, args) -> {
         System.out.println("Gameover");
-        mode = GameMode.end;
+        mode = GameMode.END;
         enableGameButton();
         showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
     };
@@ -114,7 +114,7 @@ public class UIController {
      */
     @FXML
     private void play() {
-        run(GameMode.play);
+        run(GameMode.PLAY);
     }
 
     /**
@@ -122,7 +122,7 @@ public class UIController {
      */
     @FXML
     private void simulate() {
-        run(GameMode.simulate);
+        run(GameMode.SIMULATE);
     }
 
     /**
@@ -130,9 +130,9 @@ public class UIController {
      */
     @FXML
     private void pause() {
-        if (mode == GameMode.simulate) {
+        if (mode == GameMode.SIMULATE) {
             buttonSimulate.setDisable(false);
-        } else if (mode == GameMode.play) {
+        } else if (mode == GameMode.PLAY) {
             buttonPlay.setDisable(false);
         }
         buttonNextFrame.setDisable(false);
@@ -151,13 +151,13 @@ public class UIController {
      * @param gameMode specify the mode of the game.
      */
     private void run(GameMode gameMode) {
-        if (mode == GameMode.end)
+        if (mode == GameMode.END)
             resetGame();
 
         mode = gameMode;
         disableGameButton();
         timeline = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
-            if (mode != GameMode.end) {
+            if (mode != GameMode.END) {
                 ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.invoke(this, new EventArgs());
             }
         }));
@@ -174,7 +174,7 @@ public class UIController {
         paneArena.getChildren().addAll(initialArena().getChildren());
         ArenaManager.load(new ArenaInstance(remainingResources, paneArena));
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
-        mode = GameMode.normal;
+        mode = GameMode.NORMAL;
     }
 
     /**
@@ -281,7 +281,7 @@ public class UIController {
             	short y = (short) (i * ArenaManager.GRID_HEIGHT);
 
                 target.setOnDragOver(e -> {
-                    if(mode != GameMode.simulate && mode != GameMode.end) {
+                    if(mode != GameMode.SIMULATE && mode != GameMode.END) {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                         Object source = e.getGestureSource();
                         TowerType type = null;
@@ -309,7 +309,7 @@ public class UIController {
             	});
 
             	target.setOnDragDropped(e -> {
-            	    if (mode != GameMode.simulate && mode != GameMode.end) {
+            	    if (mode != GameMode.SIMULATE && mode != GameMode.END) {
                         TowerType type = null;
                         Object source = e.getGestureSource();
                         if (source.equals(labelBasicTower)) {
@@ -328,7 +328,7 @@ public class UIController {
 
                         } else if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
                             Tower newTower = null;
-                            ArenaObjectStorage storage = ArenaManager.getActiveArenaInstance().getStorage();
+                            ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
                             switch (type) {
                                 case BASIC: newTower = new BasicTower(storage, x, y); break;
                                 case ICE: newTower = new IceTower(storage, x, y); break;
@@ -426,7 +426,7 @@ public class UIController {
         l.setOnMouseExited(e -> tp.hide());
 
         l.setOnDragDetected(e -> {
-            if (mode != GameMode.simulate) {
+            if (mode != GameMode.SIMULATE) {
                 Dragboard db = l.startDragAndDrop(TransferMode.ANY);
 
                 ClipboardContent content = new ClipboardContent();

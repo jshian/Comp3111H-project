@@ -4,17 +4,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import project.JavaFXTester;
-import project.arena.Coordinates;
+import project.entity.ArenaObjectFactory.TowerType;
 
 public class BuildTower extends JavaFXTester {
 
     @Test
     public void testBuildTower() {
-        Coordinates c = new Coordinates((short)50, (short)50);
+        short x = 50, y = 50;
 
-        simulateBuildTower(TowerType.BasicTower, c);
-        simulateBuildTower(TowerType.Catapult, c);
-        Assert.assertTrue(hasTower(TowerType.BasicTower, c));
-        Assert.assertTrue(!hasTower(TowerType.Catapult, c));
+        simulateBuildTower(TowerType.BASIC, x, y);
+        simulateBuildTower(TowerType.CATAPULT, x, y);
+        Assert.assertTrue(hasTower(TowerType.BASIC, x, y));
+        Assert.assertTrue(!hasTower(TowerType.CATAPULT, x, y));
     }
 }

@@ -42,17 +42,17 @@ public class Catapult extends Tower {
     /**
      * Temporary list that includes the list of monsters that will be inside the splash radius.
      */
-    protected LinkedList<Monster> selectList = new LinkedList<Monster>(); 
+    protected LinkedList<Monster> monstersInSplashRange = new LinkedList<Monster>(); 
 
     /**
-     * Temporary short that is the x-coordinate of the target location.
+     * Temporary short that is the x-coordinate of the target location (NOT always the location of the target monster).
      */
-    protected short targetX;
+    protected short targetLocationX;
 
     /**
-     * Temporary short that is the y-coordinate of the target location.
+     * Temporary short that is the y-coordinate of the target location (NOT always the location of the target monster).
      */
-    protected short targetY;
+    protected short targetLocationY;
 
     // Catapult tries to hit the most monsters at once
     {
@@ -84,13 +84,13 @@ public class Catapult extends Tower {
                                             new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));  
 
                                     if(count < monInCircle.size()){
-                                        selectList.clear();
+                                        monstersInSplashRange.clear();
                                         count=monInCircle.size();
                                         target = m;
-                                        targetX = i;
-                                        targetY = j;
+                                        targetLocationX = i;
+                                        targetLocationY = j;
                                         for (ArenaObject o : monInCircle) {
-                                            selectList.add((Monster) o);
+                                            monstersInSplashRange.add((Monster) o);
                                         }
                                     }
                                 }
@@ -98,7 +98,9 @@ public class Catapult extends Tower {
                         }
                     }
 
-                    generateProjectile(target);
+                    short deltaX = (short) (targetLocationX - target.getX());
+                    short deltaY = (short) (targetLocationY - target.getY());
+                    ArenaObjectFactory.createProjectile(this, target, deltaX, deltaY);
                     counter = reload;
                 }
             }
@@ -140,14 +142,6 @@ public class Catapult extends Tower {
         } else {
             this.reload -= 1;
         }
-    }
-
-    @Override
-    public void generateProjectile(Monster primaryTarget) {
-        short deltaX = (short) (targetX - primaryTarget.getX());
-        short deltaY = (short) (targetY - primaryTarget.getY());
-
-        new CatapultProjectile(storage, this, primaryTarget, deltaX, deltaY);
     }
 
     @Override
