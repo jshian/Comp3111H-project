@@ -95,25 +95,49 @@ public final class ArenaManager {
      * Returns the active player.
      * @return The active player.
      */
-    public static Player getActivePlayer() { return activeArenaInstance.getPlayer(); }
+    public static Player getActivePlayer() {
+        if (getActiveArenaInstance() == null) {
+            throw new NullPointerException("The ArenaManager has not set up an active arena yet");
+        }
+
+        return activeArenaInstance.getPlayer();
+    }
 
     /**
      * Returns the active event register.
      * @return The active event register.
      */
-    public static ArenaEventRegister getActiveEventRegister() { return activeArenaInstance.getEventRegister(); }
+    public static ArenaEventRegister getActiveEventRegister() {
+        if (getActiveArenaInstance() == null) {
+            throw new NullPointerException("The ArenaManager has not set up an active arena yet");
+        }
+
+        return activeArenaInstance.getEventRegister();
+    }
 
     /**
      * Returns the active scalar field register.
      * @return The active scalar field register.
      */
-    public static ArenaScalarFieldRegister getActiveScalarFieldRegister() { return activeArenaInstance.getScalarFieldRegister(); }
+    public static ArenaScalarFieldRegister getActiveScalarFieldRegister() {
+        if (getActiveArenaInstance() == null) {
+            throw new NullPointerException("The ArenaManager has not set up an active arena yet");
+        }
+
+        return activeArenaInstance.getScalarFieldRegister();
+    }
 
     /**
      * Returns the active arena instance.
      * @return The active arena instance.
      */
-    public static ArenaObjectStorage getActiveObjectStorage() { return activeArenaInstance.getStorage(); }
+    public static ArenaObjectStorage getActiveObjectStorage() {
+        if (getActiveArenaInstance() == null) {
+            throw new NullPointerException("The ArenaManager has not set up an active arena yet");
+        }
+        
+        return activeArenaInstance.getStorage();
+    }
     
     /**
      * Loads a brand new arena instance.

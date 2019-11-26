@@ -46,10 +46,6 @@ public abstract class ArenaObject {
      * @param y The y-coordinate of the object within the storage.
      */
     public ArenaObject(short x, short y) {
-        if (ArenaManager.getActiveArenaInstance() == null) {
-            throw new NullPointerException("The ArenaManager has not set up an active arena yet");
-        }
-
         this.storage = ArenaManager.getActiveObjectStorage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
 
