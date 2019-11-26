@@ -48,6 +48,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     @Transient
     protected SimpleDoubleProperty healthProperty = new SimpleDoubleProperty(1);
 
+    // use a redundant variable to store hp in jpa so that don't need to add getter/setter for all fields.
     /**
      * The current health of monster with type double. It is only used for saving.
      */
