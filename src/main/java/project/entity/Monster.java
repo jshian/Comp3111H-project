@@ -14,7 +14,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Tooltip;
 import project.control.ArenaManager;
-import project.event.eventargs.ArenaObjectEventArgs;
 import project.field.ArenaScalarField;
 
 /**
@@ -174,17 +173,13 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
      */
     public void takeDamage(double amount) {
-        if (amount <= 0) return;
+        if (health.get() <= 0) return; // Already dead
+        if (amount <= 0) return; // No damage dealt
+
         this.health.set(getHealth() - amount);
 
         // Remove monster from arena if dead
-        if (health.get() <= 0) {
-            ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
-                    new ArenaObjectEventArgs() {
-                        { subject = Monster.this; }
-                    }
-            );
-        }
+        if (health.get() <= 0) dispose();
     }
 
     /**

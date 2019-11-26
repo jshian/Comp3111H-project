@@ -26,7 +26,6 @@ import project.query.ArenaObjectPropertySelector;
 import project.query.ArenaObjectRectangleSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
-import project.util.ArrayVisualizer2D;
 
 /**
  * The area where most of the action takes place in the game.

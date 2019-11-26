@@ -8,10 +8,10 @@ import javafx.scene.image.ImageView;
 
 import javax.persistence.Entity;
 
-import project.Geometry;
 import project.control.ArenaManager;
 import project.query.ArenaObjectPropertySelector;
 import project.query.ArenaObjectStorage.StoredType;
+import project.util.Geometry;
 
 /**
  * Projectile created by {@link LaserTower}.

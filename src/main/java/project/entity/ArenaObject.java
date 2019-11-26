@@ -46,6 +46,10 @@ public abstract class ArenaObject {
      * @param y The y-coordinate of the object within the storage.
      */
     public ArenaObject(short x, short y) {
+        if (ArenaManager.getActiveArenaInstance() == null) {
+            throw new NullPointerException("The ArenaManager has not set up an active arena yet");
+        }
+
         this.storage = ArenaManager.getActiveObjectStorage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
 
@@ -103,6 +107,22 @@ public abstract class ArenaObject {
                 new ArenaObjectEventArgs() {
                     { subject = ArenaObject.this; }
                 }
+        );
+    }
+
+    /**
+     * Removes the object from the active arena.
+     * Override this if the object has to unsubscribe from events other than {@link ArenaEventRegister#ARENA_NEXT_FRAME}.
+     */
+    public void dispose() {
+        if (onNextFrame != null) {
+            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
+        }
+        
+        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
+            new ArenaObjectEventArgs() {
+                { subject = ArenaObject.this; }
+            }
         );
     }
 
