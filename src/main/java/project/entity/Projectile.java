@@ -8,9 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import project.Geometry;
 import project.control.ArenaManager;
-import project.event.eventargs.ArenaObjectEventArgs;
+import project.util.Geometry;
 
 /**
  * Projectiles are shot by a {@link Tower} towards a {@link Monster} and deal damage on contact. They disappear when they reach their target.
@@ -87,11 +86,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
                 damageTarget();
 
                 // Remove projectile from arena once it has reached target
-                ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
-                        new ArenaObjectEventArgs() {
-                            { subject = Projectile.this; }
-                        }
-                );
+                dispose();
             } else {
                 double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), targetX, targetY);
                 short newX = (short) (getX() + (short) (potentialDistanceTravelled * Math.cos(angleFromTarget)));

@@ -5,11 +5,11 @@ import java.util.PriorityQueue;
 import org.junit.Assert;
 import org.junit.Test;
 
-import project.Geometry;
 import project.JavaFXTester;
 import project.entity.Monster;
 import project.entity.ArenaObjectFactory.MonsterType;
 import project.entity.ArenaObjectFactory.TowerType;
+import project.util.Geometry;
 
 /**
  * Tests the {@link Catapult} class.

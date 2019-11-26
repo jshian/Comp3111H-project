@@ -7,13 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import project.Geometry;
 import project.arena.ArenaEventRegister;
 import project.control.ArenaManager;
 import project.event.eventargs.ArenaTowerEventArgs;
 import project.query.ArenaObjectRingSortedSelector;
 import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredComparableType;
+import project.util.Geometry;
 
 /**
  * Towers is added by player to stop monster moving to the end zone.

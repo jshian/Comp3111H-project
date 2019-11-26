@@ -10,10 +10,10 @@ import javafx.scene.image.ImageView;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
-import project.Geometry;
 import project.control.ArenaManager;
 import project.query.ArenaObjectCircleSelector;
 import project.query.ArenaObjectStorage.StoredType;
+import project.util.Geometry;
 
 /**
  * Catapult can attack many monsters at the same time and has high shooting range.
