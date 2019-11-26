@@ -11,8 +11,8 @@ plugins {
 
 group = 'com.game'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 if (JavaVersion.current() > org.gradle.api.JavaVersion.VERSION_1_10) {
     println('Current JavaVersion: "' + JavaVersion.current() + '"');

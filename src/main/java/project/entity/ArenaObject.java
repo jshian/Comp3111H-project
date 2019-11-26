@@ -28,21 +28,25 @@ public abstract class ArenaObject {
     /**
      * The storage where the object is located within.
      */
+    @ManyToOne
     protected ArenaObjectStorage storage;
 
     /**
      * The ImageView that the object is bound to.
      */
+    @Transient
     protected ImageView imageView = getDefaultImage();
 
     /**
      * The position of the object within the storage.
      */
+    @OneToOne
     protected ArenaObjectPositionInfo positionInfo;
 
     /**
      * The method invoked when the next frame is called.
      */
+    @Transient
     @Nullable
     protected EventHandler<EventArgs> onNextFrame = null;
     

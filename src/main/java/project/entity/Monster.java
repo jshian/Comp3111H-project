@@ -4,13 +4,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringExpression;
 import javafx.beans.property.SimpleDoubleProperty;
 
 import project.controller.ArenaManager;
@@ -50,7 +47,13 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * When this is not greater than zero, the monster is considered dead.
      * @see #hasDied()
      */
-    protected SimpleDoubleProperty health = new SimpleDoubleProperty(1);
+    @Transient
+    protected SimpleDoubleProperty healthProperty = new SimpleDoubleProperty(1);
+
+    /**
+     * The current health of monster with type double. It is only used for saving.
+     */
+    protected double health = healthProperty.get();
 
     /**
      * The maximum health of the monster.
@@ -155,7 +158,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * Returns the current health of the monster.
      * @return The current health of the monster.
      */
-    public double getHealth() { return health.get(); }
+    public double getHealth() { return healthProperty.get(); }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.
@@ -170,10 +173,11 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      */
     public void takeDamage(double amount) {
         if (amount <= 0) return;
-        this.health.set(getHealth() - amount);
+        this.healthProperty.set(getHealth() - amount);
+        this.health = healthProperty.get();
 
         // Remove monster from arena if dead
-        if (health.get() <= 0) {
+        if (healthProperty.get() <= 0) {
             ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
                     new ArenaObjectEventArgs() {
                         { subject = Monster.this; }
@@ -216,5 +220,22 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public String getDisplayName() { return getClass().getSimpleName(); }
     
     @Override
-    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", health, maxHealth); }
+    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty, maxHealth); }
+
+    // getDisplayDetails() return a String, it doesn't change,
+    // so even you called Bindings.format(getDisplayDetails), the bindings won't change when hp is reduced.
+    // you need an additional function to return the StringExpression for .bind()
+    /**
+     * get the StringExpression that display hp of monster in real time.
+     * @return the StringExpression that display hp of monster in real time.
+     */
+    public StringExpression getDisplayDetailsExpression() { return Bindings.format("HP: %.2f / %.2f", healthProperty, maxHealth); }
+
+    /**
+     * initialise healthProperty from health when initialising from jpa.
+     */
+    @PostLoad
+    public void setHealthProperty() {
+        healthProperty.set(health);
+    }
 }

@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-class DemoApplicationTests {
+class SpringApplicationTests {
     @Autowired
     private Session session;
 

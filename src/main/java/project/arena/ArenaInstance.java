@@ -105,6 +105,7 @@ public final class ArenaInstance {
     /**
      * The method invoked when an {@link ArenaObject} is being added.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         ArenaObject subject = args.subject;
         ImageView imageView = subject.getImageView();
@@ -113,8 +114,7 @@ public final class ArenaInstance {
 
         if (subject instanceof Monster) {
             Tooltip tp = new Tooltip();
-            StringExpression str = Bindings.format(((Monster) subject).getDisplayDetails());
-            tp.textProperty().bind(str);
+            tp.textProperty().bind(((Monster) subject).getDisplayDetailsExpression());
     
             imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
             imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
@@ -125,6 +125,7 @@ public final class ArenaInstance {
     /**
      * The method invoked when an {@link ArenaObject} is being removed.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
@@ -156,6 +157,7 @@ public final class ArenaInstance {
      * <p>
      * Invokes the game over event if a monster has reached the end-zone.
      */
+    @Transient
     private EventHandler<EventArgs> onEndNextFrame = (sender, args) -> {
         remove();
         // add callback from monsters to add explosion
@@ -191,6 +193,17 @@ public final class ArenaInstance {
         resourceLabel.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         this.paneArena = paneArena;
         
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
+    }
+
+    /**
+     * Constructor of the Arena class. Bind the label to resources.
+     */
+    public ArenaInstance() {
+
         ArenaEventRegister register = ArenaManager.getActiveEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);

@@ -25,7 +25,7 @@ public class Penguin extends Monster {
             moveMonsterOneFrame();
             updateStatusEffects();
 
-            this.health.set(getHealth() + regenerationRate);
+            this.healthProperty.set(getHealth() + regenerationRate);
         };
     }
     
@@ -40,7 +40,8 @@ public class Penguin extends Monster {
         super(storage, x, y, difficulty);
         this.maxHealth = 7.5 + 3 * difficulty;
         this.baseSpeed = 3 + 0.3 * Math.log10(difficulty);
-        this.health.set(this.maxHealth);
+        this.healthProperty.set(this.maxHealth);
+        this.health = this.healthProperty.get();
         this.speed = this.baseSpeed;
         this.resourceValue = (int) (difficulty * 1.25);
         this.regenerationRate = maxHealth * 0.05;
