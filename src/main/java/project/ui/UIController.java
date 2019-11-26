@@ -204,7 +204,7 @@ public class UIController {
      */
     private void setupNewGame() {
         player = new Player("name", 200);
-        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesPropertyProperty()));
         ArenaManager.loadNew(this, player);
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }

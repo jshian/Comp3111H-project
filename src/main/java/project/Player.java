@@ -1,9 +1,6 @@
 package project;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -26,13 +23,26 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // Attribute
+    /**
+     * Name of the player.
+     */
     private String name;
-    private IntegerProperty resources = new SimpleIntegerProperty(0);
+
+    /**
+     * Resources that the player has.
+     */
+    @Transient
+    private IntegerProperty resourcesProperty = new SimpleIntegerProperty(0);
+
+    /**
+     * Resources that player has with type Integer. Used in jpa only.
+     */
+    private Integer resources = 0;
 
     /**
      * The method invoked when an {@link ArenaObject} is being removed.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
@@ -48,7 +58,8 @@ public class Player {
      */
     public Player(String name, int resource) {
         this.name = name;
-        this.resources.set(resource);
+        this.resourcesProperty.set(resource);
+        this.resources = this.resourcesProperty.get();
     }
 
     /**
@@ -70,16 +81,16 @@ public class Player {
      * get the amount of resources of player.
      * @return the amount of resources of player.
      */
-    public int getResources() {
-        return resources.get();
+    public int getResourcesProperty() {
+        return resourcesProperty.get();
     }
 
     /**
      * get resources Property of player.
      * @return resources Property of player.
      */
-    public IntegerProperty resourcesProperty() {
-        return resources;
+    public IntegerProperty resourcesPropertyProperty() {
+        return resourcesProperty;
     }
 
     /**
@@ -89,19 +100,41 @@ public class Player {
      */
     public boolean hasResources(int cost)
     {
-        if (cost > resources.get()) {
+        if (cost > resourcesProperty.get()) {
             return false;
         } else {
             return true;
         }
     }
 
+    /**
+     * Reduce resources of player.
+     * @param amount amount of resources to reduce.
+     */
     public void spendResources(int amount) {
-        Platform.runLater(() -> resources.set(Math.max(0, resources.get() - amount)));
+        Platform.runLater(() -> {
+            resourcesProperty.set(Math.max(0, resourcesProperty.get() - amount));
+            resources = resourcesProperty.get();
+        });
     }
 
+    /**
+     * Increase resources of player.
+     * @param amount amount of resources to increase.
+     */
     public void receiveResources(int amount) {
-        Platform.runLater(() -> resources.set(resources.get() + amount));
+        Platform.runLater(() -> {
+            resourcesProperty.set(resourcesProperty.get() + amount);
+            resources = resourcesProperty.get();
+        });
+    }
+
+    /**
+     * Load resourcesProperty from resources. Used for jpa.
+     */
+    @PostLoad
+    public void loadResources() {
+        resourcesProperty.set(resources);
     }
 
 }
