@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
  * Status effects can modify the stats of {@link Monster}s.
  * Note, when applied, status effects only start to take effect and count down on the next frame.
  */
-@Entity
+@Entity(name="StatusEffect")
 public class StatusEffect {
     /**
      * ID for storage using Java Persistence API

@@ -11,7 +11,7 @@ import javax.persistence.*;
 /**
  * Represents the position of an {@link ArenaObject}.
  */
-@Entity
+@Entity(name="ArenaObjectPositionInfo")
 @Access(AccessType.PROPERTY)
 public final class ArenaObjectPositionInfo {
 

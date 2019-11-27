@@ -15,7 +15,7 @@ import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.ui.UIController;
 
-@Entity
+@Entity(name="Player")
 public class Player {
 
     /**

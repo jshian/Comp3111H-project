@@ -30,7 +30,7 @@ import project.query.ArenaObjectStorage.StoredType;
  * {@link Monster}s spawn at the starting position and try to reach the end-zone.
  * {@link Tower}s reside on the arena and fire {@link Projectile}s at enemies in range.
  */
-@Entity
+@Entity(name="ArenaInstance")
 public final class ArenaInstance {
 
     /**
@@ -169,7 +169,7 @@ public final class ArenaInstance {
      * @return The scalar field register attached to the arena.
      */
     public ArenaScalarFieldRegister getScalarFieldRegister() { return scalarFieldRegister; }
-    
+
     /**
      * Returns the storage of the arena.
      * @return The storage of the arena.

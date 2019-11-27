@@ -15,7 +15,7 @@ import project.query.ArenaObjectStorage;
 /**
  * Represents an object that exists in an {@link ArenaObjectStorage}.
  */
-@Entity
+@Entity(name="ArenaObject")
 public abstract class ArenaObject {
 
     /**
@@ -151,5 +151,9 @@ public abstract class ArenaObject {
     protected void loadArenaObject() {
         imageView = getDefaultImage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, getX(), getY());
+    }
+
+    public ArenaObjectPositionInfo getPositionInfo() {
+        return positionInfo;
     }
 }

@@ -83,12 +83,14 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * A linked list of references to each status effect that is active against the monster.
      */
     @OneToMany
+    @JoinTable(name="MonsterStatusEffects")
     protected List<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
      * A linked list containing a reference to the positions that the monster has passed through in the previous frame.
      */
     @OneToMany
+    @JoinTable(name="MonsterTrail")
     protected List<ArenaObjectPositionInfo> trail = new LinkedList<>();
 
     protected void moveMonsterOneFrame() {

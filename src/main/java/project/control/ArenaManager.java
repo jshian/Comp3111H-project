@@ -1,7 +1,6 @@
 package project.control;
 
 import project.Player;
-import project.SpringApplication;
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
 import project.arena.ArenaScalarFieldRegister;
@@ -171,8 +170,7 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void save(Player player) {
-        SpringApplication.main(new String[]{});
-        SpringApplication.test();
+        Manager.save(activeArenaInstance, player);
     }
 
     /**

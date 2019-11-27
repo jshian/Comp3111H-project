@@ -19,7 +19,7 @@ import project.event.eventargs.ArenaObjectEventArgs;
  * 
  * Add or remove objects from this storage by invoking the events in {@link ArenaManager#getActiveEventRegister()}.
  */
-@Entity
+@Entity(name="ArenaObjectStorage")
 public final class ArenaObjectStorage {
 
     /**
@@ -55,18 +55,21 @@ public final class ArenaObjectStorage {
      * Index for each {@link Tower} on the arena.
      */
     @OneToMany
+    @JoinTable(name="ArenaObjectStorageTowers")
     private List<Tower> towers = new LinkedList<>();
 
     /**
      * Index for each {@link Projectile} on the arena.
      */
     @OneToMany
+    @JoinTable(name="ArenaObjectStorageProjectiles")
     private List<Projectile> projectiles = new LinkedList<>();
 
     /**
      * Index for each {@link Monster} on the arena.
      */
     @OneToMany
+    @JoinTable(name="ArenaObjectStorageMonsters")
     private List<Monster> monsters = new LinkedList<>();
 
     /**
@@ -403,5 +406,17 @@ public final class ArenaObjectStorage {
     public <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedQueryResult(LinkedList<ArenaObjectSortedSelector<T>> selectors, StoredComparableType type, SortOption option) {
         ArenaObjectSortedQuery<T> query = new ArenaObjectSortedQuery<>(selectors);
         return query.run(this, type, option);
+    }
+
+    public List<Tower> getTowers() {
+        return towers;
+    }
+
+    public List<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
+    public List<Monster> getMonsters() {
+        return monsters;
     }
 }
