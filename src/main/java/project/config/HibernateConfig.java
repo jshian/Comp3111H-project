@@ -15,9 +15,12 @@ public class HibernateConfig {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
-
+    /**
+     * access the session needed for hibernate.
+     * @return the session needed for hibernate.
+     */
     @Bean
-    protected Session getSession() {
+    public Session getSession() {
         return entityManagerFactory.unwrap(SessionFactory.class).openSession();
     }
 
