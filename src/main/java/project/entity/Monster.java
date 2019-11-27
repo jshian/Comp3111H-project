@@ -142,8 +142,10 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * initialise healthProperty from health when initialising from jpa.
      */
+    @Override
     @PostLoad
-    public void setHealthProperty() {
+    public void loadArenaObject() {
+        super.loadArenaObject();
         this.healthProperty.set(health);
         setupTooltip();
     }

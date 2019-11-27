@@ -54,14 +54,6 @@ public abstract class ArenaObject {
      * Default constructor.
      */
     public ArenaObject() {}
-
-    /**
-     * bind imageView after loading.
-     */
-    @PostLoad
-    public void loadArenaObject() {
-        this.positionInfo.bindImage(imageView);
-    }
     
     /**
      * Constructs a newly allocated {@link ArenaObject} object and adds it to the currently active arena.
@@ -155,7 +147,7 @@ public abstract class ArenaObject {
      * Loads the image view when it is generated from the database.
      */
     @PostLoad
-    protected void loadImage() {
+    protected void loadArenaObject() {
         imageView = getDefaultImage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, getX(), getY());
     }

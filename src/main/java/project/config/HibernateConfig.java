@@ -21,6 +21,10 @@ public class HibernateConfig {
         return entityManagerFactory.unwrap(SessionFactory.class).openSession();
     }
 
+    /**
+     * access the transaction needed for hibernate.
+     * @return the transaction needed for hibernate.
+     */
     @Bean
     public Transaction getTransaction(){
         return getSession().getTransaction();
