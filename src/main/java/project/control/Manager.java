@@ -65,6 +65,7 @@ public class Manager {
     }
 
     public static void save(ArenaInstance arenaInstance) {
+        SpringApplication.main(new String[]{});
         if(entityManager == null) return;
 
         removeAll();
@@ -104,6 +105,7 @@ public class Manager {
     }
 
     public static ArenaInstance load() {
+        SpringApplication.main(new String[]{});
         if(entityManager == null) return null;
 
         ArenaInstance a = null;
