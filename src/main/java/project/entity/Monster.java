@@ -179,7 +179,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
         this.health.set(getHealth() - amount);
 
         // Remove monster from arena if dead
-        if (health.get() <= 0) dispose(attacker);
+        if (health.get() <= 0) ArenaObjectFactory.removeObject(attacker, this);
     }
 
     /**

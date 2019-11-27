@@ -86,7 +86,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
                 damageTarget();
 
                 // Remove projectile from arena once it has reached target
-                dispose(this);
+                ArenaObjectFactory.removeObject(this, this);
             } else {
                 double angleFromTarget = Geometry.findAngleFrom(getX(), getY(), targetX, targetY);
                 short newX = (short) (getX() + (short) (potentialDistanceTravelled * Math.cos(angleFromTarget)));

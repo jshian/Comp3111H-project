@@ -16,9 +16,14 @@ public final class ArenaObjectFactory {
     /**
      * Adds an {@link ArenaObject} to the currently active arena on the creator's behalf.
      * @param creator The object which creates the ArenaObject object.
-     * @param o The object to add.
+     * @param o The object to be added.
+     * @throws IllegalStateException If the object is already attached to an arena.
      */
-    private static void addToArena(Object creator, ArenaObject o) {
+    private static void addToArena(Object creator, ArenaObject o) throws IllegalStateException {
+        if (!o.subscribeEvents()) {
+            throw new IllegalStateException("The object is already attached to an arena");
+        }
+
         ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD.invoke(creator,
                 new ArenaObjectEventArgs() {
                     { subject = o; }
@@ -162,5 +167,23 @@ public final class ArenaObjectFactory {
         }
 
         throw new IllegalArgumentException("The Monster type must be specified");
+    }
+
+    /**
+     * Removes an {@link ArenaObject} from the currently active arena on the disposer's behalf.
+     * @param disposer The object which removes the ArenaObject object.
+     * @param o The object to be removed.
+     * @throws IllegalStateException If the object is not attached to an arena.
+     */
+    public static void removeObject(Object disposer, ArenaObject o) throws IllegalStateException {
+        if (!o.unsubscribeEvents()) {
+            throw new IllegalStateException("The object is not attached to an arena");
+        }
+        
+        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(disposer,
+            new ArenaObjectEventArgs() {
+                { subject = o; }
+            }
+        );
     }
 }

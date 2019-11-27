@@ -531,7 +531,7 @@ public class UIController {
             paneArena.getChildren().remove(vb);
         });
         destroyBtn.setOnAction(e2 -> {
-            t.dispose(UIController.this);
+            ArenaObjectFactory.removeObject(UIController.this, t);
             paneArena.getChildren().remove(vb);
         });
 

@@ -48,25 +48,33 @@ public abstract class ArenaObject {
     public ArenaObject(short x, short y) {
         this.storage = ArenaManager.getActiveObjectStorage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
-
-        subscribeEvents();
     }
 
     /**
-     * Subscribes the object to each event.
+     * Subscribes the object to each event, only meant to be called by {@link ArenaObjectFactory}.
+     * @return <code>true</code> iff the object was not originally subscribed to each event.
      */
-    protected void subscribeEvents() {
+    boolean subscribeEvents() {
+        boolean success = true;
+
         if (onNextFrame != null) {
-            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
+            success = success && ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
         }
+
+        return success;
     }
     /**
-     * Unsubscribes the object from each event.
+     * Unsubscribes the object from each event only meant to be called by {@link ArenaObjectFactory}.
+     * @return <code>true</code> iff the object was originally subscribed to each event.
      */
-    protected void unsubscribeEvents() {
+    boolean unsubscribeEvents() {
+        boolean success = true;
+
         if (onNextFrame != null) {
-            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
+            success = success && ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
         }
+
+        return success;
     }
 
     /**
@@ -112,20 +120,6 @@ public abstract class ArenaObject {
                 new ArenaObjectEventArgs() {
                     { subject = ArenaObject.this; }
                 }
-        );
-    }
-
-    /**
-     * Removes the object from the active arena on the disposer's behalf.
-     * @param disposer The object which disposes this object.
-     */
-    public void dispose(Object disposer) {
-        unsubscribeEvents();
-        
-        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(disposer,
-            new ArenaObjectEventArgs() {
-                { subject = ArenaObject.this; }
-            }
         );
     }
 
