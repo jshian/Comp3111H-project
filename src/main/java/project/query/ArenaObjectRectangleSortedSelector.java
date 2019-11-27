@@ -41,6 +41,7 @@ public class ArenaObjectRectangleSortedSelector<T extends ArenaObject & Comparab
 
             for (short x = startX; x <= endX; x++) {
                 for (ArenaObject o : index.get(x)) {
+                    if (o.getY() < startY || o.getY() > endY) continue;
                     if (isComparableAndAllSatisfied(o, type, filters)) result.add((T) o);
                 }
             }
@@ -49,6 +50,7 @@ public class ArenaObjectRectangleSortedSelector<T extends ArenaObject & Comparab
 
             for (short y = startY; y <= endY; y++) {
                 for (ArenaObject o : index.get(y)) {
+                    if (o.getX() < startX || o.getX() > endX) continue;
                     if (isComparableAndAllSatisfied(o, type, filters)) result.add((T) o);
                 }
             }

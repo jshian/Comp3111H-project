@@ -1,5 +1,7 @@
 package project.entity;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import org.junit.Assert;
@@ -9,6 +11,7 @@ import project.JavaFXTester;
 import project.entity.Monster;
 import project.entity.ArenaObjectFactory.MonsterType;
 import project.entity.ArenaObjectFactory.TowerType;
+import project.util.CollectionComparator;
 import project.util.Geometry;
 
 /**
@@ -31,11 +34,13 @@ public class CatapultTest extends JavaFXTester {
             m.speed = 0;
         }
 
-        simulateNextFrame();
-        Assert.assertEquals(catapult.monstersInSplashRange.size(), 1);
-        Assert.assertEquals(catapult.monstersInSplashRange.peek(), m3);
-        for (Monster m :catapult.monstersInSplashRange) {
-            Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
+        {
+            simulateNextFrame();
+            LinkedList<Monster> answer = new LinkedList<>(); answer.add(m3);
+            Assert.assertTrue(CollectionComparator.isElementSetEqual(catapult.monstersInSplashRange, answer));
+            for (Monster m :catapult.monstersInSplashRange) {
+                Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
+            }
         }
 
         //test shoot monster with nearest but not most monsters
@@ -47,11 +52,13 @@ public class CatapultTest extends JavaFXTester {
             m.speed = 0;
         }
 
-        simulateNextFrame();
-        Assert.assertEquals(catapult.monstersInSplashRange.size(), 1);
-        Assert.assertEquals(catapult.monstersInSplashRange.peek(), m3);
-        for (Monster m :catapult.monstersInSplashRange) {
-            Assert.assertTrue(Geometry.isInCircle(m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
+        {
+            simulateNextFrame();
+            LinkedList<Monster> answer = new LinkedList<>(); answer.add(m3);
+            Assert.assertTrue(CollectionComparator.isElementSetEqual(catapult.monstersInSplashRange, answer));
+            for (Monster m :catapult.monstersInSplashRange) {
+                Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
+            }
         }
 
         //test shoot monster with same nearest but most monster
@@ -63,12 +70,13 @@ public class CatapultTest extends JavaFXTester {
             m.speed = 0;
         }
 
-        simulateNextFrame();
-        Assert.assertEquals(catapult.monstersInSplashRange.size(), 2);
-        Assert.assertEquals(catapult.monstersInSplashRange.get(0), m3);
-        Assert.assertEquals(catapult.monstersInSplashRange.get(1), m6);
-        for (Monster m :catapult.monstersInSplashRange) {
-            Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
+        {
+            simulateNextFrame();
+            LinkedList<Monster> answer = new LinkedList<>(); answer.add(m3); answer.add(m6);
+            Assert.assertTrue(CollectionComparator.isElementSetEqual(catapult.monstersInSplashRange, answer));
+            for (Monster m :catapult.monstersInSplashRange) {
+                Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
+            }
         }
     }
 }
