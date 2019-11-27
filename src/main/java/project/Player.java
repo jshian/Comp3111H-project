@@ -10,8 +10,10 @@ import project.arena.ArenaInstance;
 import project.entity.ArenaObject;
 import project.entity.Monster;
 import project.entity.Projectile;
+import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
+import project.ui.UIController;
 
 @Entity
 public class Player {
@@ -25,6 +27,10 @@ public class Player {
      */
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
+
+        if (sender instanceof UIController && subject instanceof Tower) {
+            receiveResources(((Tower) subject).getBuildValue() / 2);
+        }
 
         if (sender instanceof Projectile && subject instanceof Monster) {
             receiveResources(((Monster) subject).getResourceValue());

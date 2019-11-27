@@ -59,7 +59,7 @@ public class CatapultProjectile extends Projectile {
         ArenaObjectCircleSelector selector = new ArenaObjectCircleSelector(getX(), getY(), splashRadius);
         LinkedList<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
         for (ArenaObject m : monsters) {
-            ((Monster) m).takeDamage(damage);
+            ((Monster) m).takeDamage(damage, this);
         }
     }
 

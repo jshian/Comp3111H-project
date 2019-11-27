@@ -24,10 +24,8 @@ import javafx.stage.Stage;
 
 import project.arena.ArenaInstance;
 import project.control.ArenaManager;
-import project.entity.ArenaObject;
 import project.entity.ArenaObjectFactory.TowerType;
 import project.event.EventHandler;
-import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
 import project.ui.UIController;
 

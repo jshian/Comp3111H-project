@@ -169,17 +169,17 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
 
     /**
      * Reduces the health of the monster, and removes it from the arena if it dies.
-     * 
      * @param amount The amount by which to reduce. If amount is not greater than <code>0</code> then nothing happens.
+     * @param attacker The object which damaged the monster.
      */
-    public void takeDamage(double amount) {
+    public void takeDamage(double amount, Object attacker) {
         if (health.get() <= 0) return; // Already dead
         if (amount <= 0) return; // No damage dealt
 
         this.health.set(getHealth() - amount);
 
         // Remove monster from arena if dead
-        if (health.get() <= 0) dispose();
+        if (health.get() <= 0) dispose(attacker);
     }
 
     /**
