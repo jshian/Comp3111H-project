@@ -22,7 +22,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     /**
      * Represents the position from which the projectile is fired.

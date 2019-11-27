@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.*;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringExpression;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Tooltip;
 import project.control.ArenaManager;
@@ -32,7 +31,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     /**
      * The scalar field used to determine the movement of the monster via gradient descent.

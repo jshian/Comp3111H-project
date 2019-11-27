@@ -25,7 +25,7 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     /**
      * The maximum attack power of the tower.
