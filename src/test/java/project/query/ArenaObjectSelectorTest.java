@@ -25,7 +25,7 @@ import project.query.ArenaObjectStorage.StoredType;
 /**
  * Tests the classes that implement {@link ArenaObjectSelector} and {@link ArenaObjectSortedSelector}.
  */
-public class ArenaObjectSelectorTester extends JavaFXTester {
+public class ArenaObjectSelectorTest extends JavaFXTester {
 
     private <T> boolean isElementSetEqual(LinkedList<T> l1, LinkedList<T> l2) {
         return new HashSet<T>(l1).equals(new HashSet<T>(l2));

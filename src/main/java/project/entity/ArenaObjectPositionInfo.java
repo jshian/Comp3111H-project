@@ -49,11 +49,11 @@ public final class ArenaObjectPositionInfo {
      */
     public static void assertValidPosition(short x, short y) throws IllegalArgumentException {
         if (x < 0 || x > ArenaManager.ARENA_WIDTH) {
-            throw new IllegalArgumentException(String.format("The parameter 'x' is out of bounds."));
+            throw new IllegalArgumentException(String.format("The parameter 'x' is out of bounds. Value: %d", x));
         }
 
         if (y < 0 || y > ArenaManager.ARENA_HEIGHT) {
-            throw new IllegalArgumentException(String.format("The parameter 'y' is out of bounds."));
+            throw new IllegalArgumentException(String.format("The parameter 'y' is out of bounds. Value: %d", y));
         }
     }
 

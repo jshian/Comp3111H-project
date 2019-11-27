@@ -20,7 +20,7 @@ import project.query.ArenaObjectStorage.StoredType;
 /**
  * Tests the {@link ArenaObjectQuery} and {@link ArenaObjectSortedQuery} classes.
  */
-public class ArenaObjectQueryTester extends JavaFXTester {
+public class ArenaObjectQueryTest extends JavaFXTester {
 
     DummySelector selectedSelector = null;
 
@@ -88,29 +88,29 @@ public class ArenaObjectQueryTester extends JavaFXTester {
             assertTrue(q1.selectors.isEmpty());
 
             ArenaObjectQuery q2 = new ArenaObjectQuery(s1);
-            assertTrue(q2.selectors.size() == 1);
+            assertEquals(q2.selectors.size(), 1);
 
             LinkedList<ArenaObjectSelector> l = new LinkedList<>(); l.add(s1); l.add(s3);
             ArenaObjectQuery q3 = new ArenaObjectQuery(l);
-            assertTrue(q3.selectors.size() == 2);
+            assertEquals(q3.selectors.size(), 2);
         }
 
         // Test query sequence
         {
             ArenaObjectQuery q = new ArenaObjectQuery();
-            q.restrict(s1); assertTrue(q.selectors.size() == 1);
-            q.restrict(s3); assertTrue(q.selectors.size() == 2);
-            q.restrict(s1); assertTrue(q.selectors.size() == 2); // No duplicates
-            q.restrict(s2); assertTrue(q.selectors.size() == 3);
+            q.restrict(s1); assertEquals(q.selectors.size(), 1);
+            q.restrict(s3); assertEquals(q.selectors.size(), 2);
+            q.restrict(s1); assertEquals(q.selectors.size(), 2); // No duplicates
+            q.restrict(s2); assertEquals(q.selectors.size(), 3);
             q.run(storage, EnumSet.noneOf(StoredType.class));
             assertEquals(selectedSelector, s1);
             
             ArenaObjectSortedQuery<Monster> sq = new ArenaObjectSortedQuery<>();
-            sq.restrict(ss3); assertTrue(sq.selectors.size() == 1);
-            sq.restrict(ss3); assertTrue(sq.selectors.size() == 1); // No duplicates
-            sq.restrict(ss2); assertTrue(sq.selectors.size() == 2);
-            sq.restrict(ss2); assertTrue(sq.selectors.size() == 2); // No duplicates
-            sq.restrict(ss1); assertTrue(sq.selectors.size() == 3);
+            sq.restrict(ss3); assertEquals(sq.selectors.size(), 1);
+            sq.restrict(ss3); assertEquals(sq.selectors.size(), 1); // No duplicates
+            sq.restrict(ss2); assertEquals(sq.selectors.size(), 2);
+            sq.restrict(ss2); assertEquals(sq.selectors.size(), 2); // No duplicates
+            sq.restrict(ss1); assertEquals(sq.selectors.size(), 3);
             sq.run(storage, StoredComparableType.MONSTER, SortOption.ASCENDING);
             assertEquals(selectedSortedSelector, ss1);
         }

@@ -21,7 +21,7 @@ import project.event.eventargs.EventArgs;
 /**
  * Tests the derived classes of {@link Monster} including {@link Fox}, {@link Penguin} and {@link Unicorn}.
  */
-public class MonsterTester extends JavaFXTester {
+public class MonsterTest extends JavaFXTester {
 
     static final double MAX_ERROR = 0.0001;
 
@@ -127,7 +127,7 @@ public class MonsterTester extends JavaFXTester {
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1);
             assertTrue(f.getHealth() > 0); // Health on generation should be greater than zero
-            f.dispose(this);
+            ArenaObjectFactory.removeObject(this, f);
         }
 
         // Test pathfinding...
@@ -219,9 +219,9 @@ public class MonsterTester extends JavaFXTester {
             // Unicorn has the most health
             assertTrue("Health test failed for i = " + i, u.maxHealth > f.maxHealth && u.maxHealth > p.maxHealth);
 
-            f.dispose(this);
-            p.dispose(this);
-            u.dispose(this);
+            ArenaObjectFactory.removeObject(this, f);
+            ArenaObjectFactory.removeObject(this, p);
+            ArenaObjectFactory.removeObject(this, u);
         }
     }
 }

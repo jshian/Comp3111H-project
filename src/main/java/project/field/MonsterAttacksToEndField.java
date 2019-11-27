@@ -55,12 +55,12 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     short deltaX = (short) (x - centerX);
     
                     short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaX * deltaX);
-                    short inner_startY = (short) (centerY - flooredMaxSqrt);
-                    short inner_endY = (short) (centerY + flooredMaxSqrt);
+                    short inner_startY = (short) Math.max(0, centerY - flooredMaxSqrt);
+                    short inner_endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMaxSqrt);
     
                     short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaX * deltaX);
-                    short inner_endY_intermediate = (short) (centerY - flooredMinSqrt);
-                    short inner_startY_intermediate = (short) (centerY + flooredMinSqrt);
+                    short inner_endY_intermediate = (short) Math.max(0, centerY - flooredMinSqrt);
+                    short inner_startY_intermediate = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMinSqrt);
     
                     for (short y = inner_startY; y <= inner_endY_intermediate; y++) {
                         setValueAt(x, y, getValueAt(x, y) + amount);
@@ -77,12 +77,12 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     short deltaY = (short) (y - centerY);
     
                     short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaY * deltaY);
-                    short inner_startX = (short) (centerX - flooredMaxSqrt);
-                    short inner_endX = (short) (centerX + flooredMaxSqrt);
+                    short inner_startX = (short) Math.max(0, centerX - flooredMaxSqrt);
+                    short inner_endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMaxSqrt);
     
                     short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaY * deltaY);
-                    short inner_endX_intermediate = (short) (centerX - flooredMinSqrt);
-                    short inner_startX_intermediate = (short) (centerX + flooredMinSqrt);
+                    short inner_endX_intermediate = (short) Math.max(0, centerX - flooredMinSqrt);
+                    short inner_startX_intermediate = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMinSqrt);
     
                     for (short x = inner_startX; x <= inner_endX_intermediate; x++) {
                         setValueAt(x, y, getValueAt(x, y) + amount);
