@@ -80,12 +80,22 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
         this.minRadius = minRadius;
         this.maxRadius = maxRadius;
 
-        this.startX = (short) Math.max(0, centerX - maxRadius);
-        this.endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + maxRadius);
-        this.effectiveWidth = (short) (endX - startX);
+        if (centerX - maxRadius < 0) this.startX = 0;
+        else if (centerX - maxRadius > ArenaManager.ARENA_WIDTH) this.startX = ArenaManager.ARENA_WIDTH;
+        else this.startX = (short) (centerX - maxRadius);
 
-        this.startY = (short) Math.max(0, centerY - maxRadius);
-        this.endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + maxRadius);
+        if (centerY - maxRadius < 0) this.startY = 0;
+        else if (centerY - maxRadius > ArenaManager.ARENA_HEIGHT) this.startY = ArenaManager.ARENA_HEIGHT;
+        else this.startY = (short) (centerY - maxRadius);
+
+        if (centerX + maxRadius < 0) this.endX = 0;
+        else if (centerX + maxRadius > ArenaManager.ARENA_WIDTH) this.endX = ArenaManager.ARENA_WIDTH;
+        else this.endX = (short) (centerX + maxRadius);
+        this.effectiveWidth = (short) (endX - startX);
+        
+        if (centerY + maxRadius < 0) this.endY = 0;
+        else if (centerY + maxRadius > ArenaManager.ARENA_HEIGHT) this.endY = ArenaManager.ARENA_HEIGHT;
+        else this.endY = (short) (centerY + maxRadius);
         this.effectiveHeight = (short) (endY - startY);
     }
 

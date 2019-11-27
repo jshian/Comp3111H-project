@@ -30,7 +30,10 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
          * @param minRadius The minimum radius of the ring.
          * @param maxRadius The maximum radius of the ring.
          */
-        private void incrementRing(Float amount, short centerX, short centerY, short minRadius, short maxRadius) {
+        private void incrementRing(Float amount, short centerX, short centerY, short minRadius, short maxRadius) 
+        {
+            assert minRadius >= 0 && maxRadius >= 0 && minRadius <= maxRadius;
+
             short startX = (short) Math.max(0, centerX - maxRadius);
             short endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + maxRadius);
             short effectiveWidth = (short) (endX - startX);
@@ -40,25 +43,25 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
             short effectiveHeight = (short) (endY - startY);
     
             short endX_intermediate = (short) Math.max(0, Math.min(endX, centerX - minRadius));
-            short startX_intermediate = (short) Math.min(endX_intermediate, centerX + minRadius);
+            short startX_intermediate = (short) Math.max(0, Math.min(endX_intermediate, centerX + minRadius));
             if (endX_intermediate == startX_intermediate) startX_intermediate++;
     
             short endY_intermediate = (short) Math.max(0, Math.min(endY, centerY - minRadius));
-            short startY_intermediate = (short) Math.min(endY_intermediate, centerY + minRadius);
+            short startY_intermediate = (short) Math.max(0, Math.min(endY_intermediate, centerY + minRadius));
             if (endY_intermediate == startY_intermediate) startY_intermediate++;
     
-            // Determine outer loop to minimize code jumping.
+            // Determine outer loop to reduce calculations
             if (effectiveWidth < effectiveHeight) {
                 for (short x = startX; x <= endX_intermediate; x++) {    
                     short deltaX = (short) (x - centerX);
     
                     short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaX * deltaX);
                     short inner_startY = (short) Math.max(0, centerY - flooredMaxSqrt);
-                    short inner_endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMaxSqrt);
+                    short inner_endY = (short) Math.max(0, Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMaxSqrt));
     
                     short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaX * deltaX);
                     short inner_endY_intermediate = (short) Math.max(0, centerY - flooredMinSqrt);
-                    short inner_startY_intermediate = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMinSqrt);
+                    short inner_startY_intermediate = (short) Math.max(0, Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMinSqrt));
                     if (inner_endY_intermediate == inner_startY_intermediate) inner_startY_intermediate++;
 
                     for (short y = inner_startY; y <= inner_endY_intermediate; y++) {
@@ -75,11 +78,11 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
     
                     short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaX * deltaX);
                     short inner_startY = (short) Math.max(0, centerY - flooredMaxSqrt);
-                    short inner_endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMaxSqrt);
+                    short inner_endY = (short) Math.max(0, Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMaxSqrt));
     
                     short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaX * deltaX);
                     short inner_endY_intermediate = (short) Math.max(0, centerY - flooredMinSqrt);
-                    short inner_startY_intermediate = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMinSqrt);
+                    short inner_startY_intermediate = (short) Math.max(0, Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMinSqrt));
                     if (inner_endY_intermediate == inner_startY_intermediate) inner_startY_intermediate++;
 
                     for (short y = inner_startY; y <= inner_endY_intermediate; y++) {
@@ -96,11 +99,11 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
     
                     short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaY * deltaY);
                     short inner_startX = (short) Math.max(0, centerX - flooredMaxSqrt);
-                    short inner_endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMaxSqrt);
+                    short inner_endX = (short) Math.max(0, Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMaxSqrt));
     
                     short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaY * deltaY);
                     short inner_endX_intermediate = (short) Math.max(0, centerX - flooredMinSqrt);
-                    short inner_startX_intermediate = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMinSqrt);
+                    short inner_startX_intermediate = (short) Math.max(0, Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMinSqrt));
                     if (inner_endX_intermediate == inner_startX_intermediate) inner_startX_intermediate++;
 
                     for (short x = inner_startX; x <= inner_endX_intermediate; x++) {

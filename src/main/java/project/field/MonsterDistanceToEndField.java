@@ -18,7 +18,7 @@ import project.query.ArenaObjectStorage.StoredType;
  * A scalar field where the value on each point equals the minimum distance
  * travelled from that point to the end zone.
  */
-public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
+public final class MonsterDistanceToEndField extends ArenaScalarField<Short> {
     
     /**
      * The method invoked when an {@link ArenaObject} is being added.
@@ -58,13 +58,13 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
      */
     private void recalculate(ArenaObjectStorage storage) {
         // Reset values
-        setAll(Integer.MAX_VALUE);
+        setAll(Short.MAX_VALUE);
 
         // Calculate distance
     	LinkedList<ScalarFieldPoint> openSet = new LinkedList<>();
         openSet.add(new ScalarFieldPoint(ArenaManager.END_X, ArenaManager.END_Y));
 
-        setValueAt(ArenaManager.END_X, ArenaManager.END_Y, 0);
+        setValueAt(ArenaManager.END_X, ArenaManager.END_Y, (short) 0);
     	while (!openSet.isEmpty()) {
             ScalarFieldPoint current = openSet.poll();
             short currentX = current.getX();
@@ -77,7 +77,7 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
                 // Monsters can only go to grids that do not contain a Tower
                 ArenaObjectGridSelector selector = new ArenaObjectGridSelector(neighbourX, neighbourY);
                 if (storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER)).isEmpty()) {
-        			int newCost = getValueAt(currentX, currentY) + 1;
+        			short newCost = (short) (getValueAt(currentX, currentY) + 1);
         			if (getValueAt(neighbourX, neighbourY) > newCost) {
                         setValueAt(neighbourX, neighbourY, newCost);
         				openSet.add(new ScalarFieldPoint(neighbourX, neighbourY));

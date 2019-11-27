@@ -75,16 +75,25 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
         if (height < 0) throw new IllegalArgumentException(String.format("The height must be non-negative. Value: %d", height));
 
         this.leftX = leftX;
-        this.topY = topY;
-        this.width = width;
-        this.height = height;
+        if (leftX < 0) this.startX = 0;
+        else if (leftX > ArenaManager.ARENA_WIDTH) this.startX = ArenaManager.ARENA_WIDTH;
+        else this.startX = leftX;
 
-        this.startX = (short) Math.max(0, leftX);
-        this.endX = (short) Math.min(ArenaManager.ARENA_WIDTH, leftX + width);
+        this.topY = topY;
+        if (topY < 0) this.startY = 0;
+        else if (topY > ArenaManager.ARENA_HEIGHT) this.startY = ArenaManager.ARENA_HEIGHT;
+        else this.startY = topY;
+
+        this.width = width;
+        if (leftX + width < 0) this.endX = 0;
+        else if (leftX + width > ArenaManager.ARENA_WIDTH) this.endX = ArenaManager.ARENA_WIDTH;
+        else this.endX = (short) (leftX + width);
         this.effectiveWidth = (short) (endX - startX);
 
-        this.startY = (short) Math.max(0, topY);
-        this.endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, topY + height);
+        this.height = height;
+        if (topY + height < 0) this.endY = 0;
+        else if (topY + height > ArenaManager.ARENA_HEIGHT) this.endY = ArenaManager.ARENA_HEIGHT;
+        else this.endY = (short) (topY + height);
         this.effectiveHeight = (short) (endY - startY);
     }
 

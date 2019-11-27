@@ -71,12 +71,22 @@ public class ArenaObjectCircleSelector implements ArenaObjectSelector {
         this.centerY = centerY;
         this.radius = radius;
 
-        this.startX = (short) Math.max(0, centerX - radius);
-        this.endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + radius);
-        this.effectiveWidth = (short) (endX - startX);
+        if (centerX - radius < 0) this.startX = 0;
+        else if (centerX - radius > ArenaManager.ARENA_WIDTH) this.startX = ArenaManager.ARENA_WIDTH;
+        else this.startX = (short) (centerX - radius);
 
-        this.startY = (short) Math.max(0, centerY - radius);
-        this.endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + radius);
+        if (centerY - radius < 0) this.startY = 0;
+        else if (centerY - radius > ArenaManager.ARENA_HEIGHT) this.startY = ArenaManager.ARENA_HEIGHT;
+        else this.startY = (short) (centerY - radius);
+
+        if (centerX + radius < 0) this.endX = 0;
+        else if (centerX + radius > ArenaManager.ARENA_WIDTH) this.endX = ArenaManager.ARENA_WIDTH;
+        else this.endX = (short) (centerX + radius);
+        this.effectiveWidth = (short) (endX - startX);
+        
+        if (centerY + radius < 0) this.endY = 0;
+        else if (centerY + radius > ArenaManager.ARENA_HEIGHT) this.endY = ArenaManager.ARENA_HEIGHT;
+        else this.endY = (short) (centerY + radius);
         this.effectiveHeight = (short) (endY - startY);
     }
 
