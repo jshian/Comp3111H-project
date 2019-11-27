@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.persistence.EntityManagerFactory;
 
 @Configuration
-public class HibernateConfig {
+public class Config {
 
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;

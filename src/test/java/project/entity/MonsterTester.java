@@ -68,7 +68,7 @@ public class MonsterTester extends JavaFXTester {
             trackedMonsterHasDied = false;
             ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.subscribe(deathEvent);
 
-            m.health.set(23.45);
+            m.healthProperty.set(23.45);
             assertEquals(m.getHealth(), 23.45, MAX_ERROR);
             assertFalse(trackedMonsterHasDied);
             m.takeDamage(23, this);

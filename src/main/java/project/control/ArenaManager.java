@@ -5,6 +5,7 @@ import project.SpringApplication;
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
 import project.arena.ArenaScalarFieldRegister;
+import project.entity.Monster;
 import project.query.ArenaObjectStorage;
 import project.ui.UIController;
 
@@ -171,6 +172,7 @@ public final class ArenaManager {
      */
     public static void save(Player player) {
         SpringApplication.main(new String[]{});
+        SpringApplication.test();
     }
 
     /**
@@ -232,7 +234,7 @@ public final class ArenaManager {
 
     /**
      * Returns the y-position of the grid containing a point.
-     * @param x The y-coordinate of the point.
+     * @param y The y-coordinate of the point.
      * @return The y-position of the grid containing a point.
      */
     public static short getGridYPosFromCoor(short y) {
