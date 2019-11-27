@@ -50,7 +50,7 @@ public class MonsterTester extends JavaFXTester {
             assertEquals(m.getY(), y);
             assertNotNull(m.getTrail());
             assertTrue(m.getTrail().isEmpty());
-            assertEquals(m.getHealth(), m.health.get(), MAX_ERROR);
+            assertEquals(m.getHealth(), m.healthProperty.get(), MAX_ERROR);
             assertEquals(m.getHealth(), m.maxHealth, MAX_ERROR);
             assertEquals(m.getSpeed(), m.speed, MAX_ERROR);
             assertEquals(m.getSpeed(), m.baseSpeed, MAX_ERROR);
@@ -80,7 +80,7 @@ public class MonsterTester extends JavaFXTester {
             m.takeDamage(-999, this);
             assertEquals(m.getHealth(), -9.55, MAX_ERROR); // Negative damage taken should do nothing
             assertTrue(trackedMonsterHasDied);
-            m.health.set(50);
+            m.healthProperty.set(50);
             assertEquals(m.getHealth(), 50, MAX_ERROR);
             assertTrue(trackedMonsterHasDied); // Dead monster is no longer on the arena
         }
@@ -139,11 +139,11 @@ public class MonsterTester extends JavaFXTester {
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1000);
-            f.health.set(Double.POSITIVE_INFINITY);
+            f.healthProperty.set(Double.POSITIVE_INFINITY);
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 160, (short) 0, 100);
-            f.health.set(Double.POSITIVE_INFINITY);
+            f.healthProperty.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
 
@@ -152,7 +152,7 @@ public class MonsterTester extends JavaFXTester {
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 200, (short) 0, 1);
-            f.health.set(Double.POSITIVE_INFINITY);
+            f.healthProperty.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
 
@@ -162,11 +162,11 @@ public class MonsterTester extends JavaFXTester {
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1000);
-            f.health.set(Double.POSITIVE_INFINITY);
+            f.healthProperty.set(Double.POSITIVE_INFINITY);
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 160, (short) 0, 100);
-            f.health.set(Double.POSITIVE_INFINITY);
+            f.healthProperty.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
 
@@ -175,7 +175,7 @@ public class MonsterTester extends JavaFXTester {
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 200, (short) 0, 1);
-            f.health.set(Double.POSITIVE_INFINITY);
+            f.healthProperty.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
     }
@@ -191,7 +191,7 @@ public class MonsterTester extends JavaFXTester {
         assertEquals(p.getHealth(), maxHealth, MAX_ERROR); // Health should not go beyond max health
 
         double newHealth = maxHealth / 2;
-        p.health.set(newHealth);
+        p.healthProperty.set(newHealth);
         p.onNextFrame.handleEvent(this, new EventArgs());
         assertTrue(p.getHealth() > newHealth); // Health should regenerate
         newHealth = p.getHealth();

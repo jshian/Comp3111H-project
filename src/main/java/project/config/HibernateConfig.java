@@ -12,6 +12,10 @@ import javax.persistence.EntityManagerFactory;
 @Configuration
 public class HibernateConfig {
 
+    public EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
+    }
+
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
