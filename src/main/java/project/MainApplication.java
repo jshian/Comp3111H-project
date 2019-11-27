@@ -6,9 +6,32 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import project.config.Config;
+import project.control.Manager;
 import project.ui.UIController;
 
+import java.util.concurrent.CompletableFuture;
+
+@SpringBootApplication
 public class MainApplication extends Application {
+
+    public static ConfigurableApplicationContext context;
+
+    @Override
+    public void init() throws Exception {
+        CompletableFuture.supplyAsync(() -> {
+            ConfigurableApplicationContext ctx = org.springframework.boot.SpringApplication.run(this.getClass());
+            return ctx;
+        }).thenAccept(this::launchApplicationView);
+    }
+
+    private void launchApplicationView(ConfigurableApplicationContext ctx) {
+        context = ctx;
+        Config hc = context.getBean(Config.class);
+        Manager.setEntityManager(hc.getEntityManagerFactory().createEntityManager());
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{

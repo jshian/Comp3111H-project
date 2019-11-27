@@ -55,7 +55,7 @@ public class IceTower extends Tower {
      * Returns the slow down time of tower.
      * @return the slow down time of tower.
      */
-    public final int getSlowDownTime() { return slowDownTime; }
+    public int getSlowDownTime() { return slowDownTime; }
 
     @Override
     protected void upgrade() {

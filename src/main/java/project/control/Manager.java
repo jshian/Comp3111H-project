@@ -1,7 +1,5 @@
 package project.control;
 
-import project.Player;
-import project.SpringApplication;
 import project.arena.ArenaInstance;
 import project.entity.*;
 import project.query.ArenaObjectStorage;
@@ -12,7 +10,6 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.Iterator;
-import java.util.List;
 
 public class Manager {
 
@@ -65,7 +62,6 @@ public class Manager {
     }
 
     public static void save(ArenaInstance arenaInstance) {
-        SpringApplication.main(new String[]{});
         if(entityManager == null) return;
 
         removeAll();
@@ -105,7 +101,6 @@ public class Manager {
     }
 
     public static ArenaInstance load() {
-        SpringApplication.main(new String[]{});
         if(entityManager == null) return null;
 
         ArenaInstance a = null;
