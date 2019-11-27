@@ -116,6 +116,10 @@ public class Manager {
             cq.select(qb.count(cq.from(ArenaInstance.class)));
             Long numOfRow = entityManager.createQuery(cq).getSingleResult();
 
+            String sql2 = "SELECT t FROM ArenaObjectStorage t";
+            Query query2 = entityManager.createQuery(sql2);
+            System.out.println(((ArenaObjectStorage) query2.setMaxResults(1).getResultList().get(0)).getTowers());
+
             if (numOfRow > 0) {
                 String sql = "SELECT t FROM ArenaInstance t";
                 Query query = entityManager.createQuery(sql);
