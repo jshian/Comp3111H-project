@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+</head>
+<style>
+    table {
+        table-layout: fixed;
+        width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 3px solid grey;
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    td {
+        padding-left: 5px;
+        border: 1px solid grey;
+    }
+
+    td:first-child {
+        width: 30px;
+        padding-left: 3px;
+        border-right: 2px solid grey;
+        font-weight: bold;
+    }
+</style>
+<script src="jquery-3.3.1.min.js"></script>
+<script src="top10.js"> </script>
+<body>
+    <div style="border: 2px solid black; text-align: center;">
+        <p style="font-family: arial; font-size: 1.5em; font-weight: bold; color: red;">LEADERBOARD</p>
+    </div>
+    <div style="height: 10px;">&nbsp;</div>
+    <table id="table_top10">
+        <tbody></tbody>
+    </table>
+</body>
+</html>

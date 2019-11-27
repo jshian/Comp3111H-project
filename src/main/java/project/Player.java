@@ -44,6 +44,7 @@ public class Player {
     /**
      * The method invoked when an {@link ArenaObject} is being added.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
