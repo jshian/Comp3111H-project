@@ -11,9 +11,7 @@ import javafx.scene.image.Image;
 
 import project.Player;
 import project.control.ArenaManager;
-import project.entity.ArenaObject;
-import project.entity.ArenaObjectFactory;
-import project.entity.Monster;
+import project.entity.*;
 import project.entity.ArenaObjectFactory.MonsterType;
 import project.event.EventHandler;
 import project.event.EventManager;
@@ -138,6 +136,18 @@ public final class ArenaInstance {
     }
 
     /**
+     * Copy a {@link ArenaInstance} object and attaches a player to it.
+     * @param other the {@link ArenaInstance} object to be copied.
+     * @param player the player of the arena.
+     */
+    public ArenaInstance(ArenaInstance other, Player player) {
+        eventRegister = other.eventRegister;
+        this.player = player; player.attachToArena(this);
+        storage = other.storage;
+        scalarFieldRegister = other.scalarFieldRegister;
+    }
+
+    /**
      * Constructs a newly allocated {@link ArenaInstance} object and attaches a player to it.
      * @param player The player of the arena.
      */
@@ -147,8 +157,8 @@ public final class ArenaInstance {
         eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
         eventRegister.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
 
-        this.player = player;
-        player.attachToArena(this);
+        this.player = player; player.attachToArena(this);
+        storage = new ArenaObjectStorage(this);
         scalarFieldRegister = new ArenaScalarFieldRegister(this); // Scalar fields may be based on objects on the arena
     }
 

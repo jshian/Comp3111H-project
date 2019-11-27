@@ -1,5 +1,7 @@
 package project.arena;
 
+import project.entity.ArenaObject;
+import project.entity.Tower;
 import project.event.*;
 import project.event.eventargs.*;
 

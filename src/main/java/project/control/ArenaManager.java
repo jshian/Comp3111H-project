@@ -155,10 +155,14 @@ public final class ArenaManager {
      * Loads an arena instance.
      * @param ui The UI controller of the arena instance.
      * @param player The player of the arena instance.
-     * @param arenaInstance The arena instance.
      */
-    public static void load(UIController ui, Player player, ArenaInstance arenaInstance) {
+    public static void load(UIController ui, Player player) {
         activeUIController = ui;
+        ArenaInstance newInstance = Manager.load();
+        activeArenaInstance = newInstance;
+        activeArenaInstance.getStorage().registerMoves();
+        ui.setupNewGame(newInstance);
+        System.out.println(activeArenaInstance.getStorage().getTowers());
     }
 
     // TODO
@@ -170,7 +174,8 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void save(Player player) {
-        Manager.save(activeArenaInstance);
+        ArenaInstance shadow = new ArenaInstance(activeArenaInstance, player);
+        Manager.save(shadow);
     }
 
     /**

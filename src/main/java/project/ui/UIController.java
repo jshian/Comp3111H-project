@@ -35,6 +35,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 import project.Player;
+import project.arena.ArenaInstance;
 import project.control.ArenaManager;
 import project.entity.ArenaObjectFactory;
 import project.entity.Tower;
@@ -210,6 +211,17 @@ public class UIController {
     }
 
     /**
+     * Sets up a new game given an ArenaInstance.
+     * @param arenaInstance the arenaInstance of the new game.
+     */
+    public void setupNewGame(ArenaInstance arenaInstance) {
+        player = arenaInstance.getPlayer();
+        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesPropertyProperty()));
+        ArenaManager.loadNew(this, player);
+        ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+    }
+
+    /**
      * Runs the next frame.
      */
     @FXML
@@ -271,6 +283,7 @@ public class UIController {
     private void load() {
         // TODO
         resetGame();
+        ArenaManager.load(this, player);
     }
 
     /**
@@ -605,8 +618,8 @@ public class UIController {
 
     /**
      * Draws a specific circle at a specific location.
-     * @param sourceX The x-coordinate of the circle center.
-     * @param sourceY The y-coordinate of the circle center.
+     * @param centerX The x-coordinate of the circle center.
+     * @param centerY The y-coordinate of the circle center.
      * @param radius The radius of the circle.
      * @param duration The duration in number of frames that the circle will remain on the arena.
      */

@@ -19,6 +19,7 @@ public class MainApplication extends Application {
         primaryStage.show();
         UIController appController = (UIController)loader.getController();
         appController.createArena();
+        SpringApplication.main(new String[]{});
     }
 
     public static void main(String[] args) {

@@ -3,16 +3,16 @@ package project.control;
 import project.Player;
 import project.SpringApplication;
 import project.arena.ArenaInstance;
-import project.entity.ArenaObject;
-import project.entity.ArenaObjectPositionInfo;
-import project.entity.Monster;
-import project.entity.StatusEffect;
+import project.entity.*;
 import project.query.ArenaObjectStorage;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.Iterator;
+import java.util.List;
 
 public class Manager {
 
@@ -26,7 +26,7 @@ public class Manager {
         Manager.entityManager = entityManager;
     }
 
-    public static void removeAll() {
+    private static void removeAll() {
         if(entityManager == null) return;
         try {
             EntityTransaction tran = entityManager.getTransaction();
@@ -65,7 +65,6 @@ public class Manager {
     }
 
     public static void save(ArenaInstance arenaInstance) {
-        SpringApplication.main(new String[]{});
         if(entityManager == null) return;
 
         removeAll();
@@ -102,5 +101,32 @@ public class Manager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static ArenaInstance load() {
+        if(entityManager == null) return null;
+
+        ArenaInstance a = null;
+        try {
+            EntityTransaction tran = entityManager.getTransaction();
+            tran.begin();
+
+            CriteriaBuilder qb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+            cq.select(qb.count(cq.from(ArenaInstance.class)));
+            Long numOfRow = entityManager.createQuery(cq).getSingleResult();
+
+            if (numOfRow > 0) {
+                String sql = "SELECT t FROM ArenaInstance t";
+                Query query = entityManager.createQuery(sql);
+                a = (ArenaInstance) query.setMaxResults(1).getResultList().get(0);
+            }
+
+            tran.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return a;
     }
 }
