@@ -12,6 +12,7 @@ import project.event.eventargs.ArenaObjectEventArgs;
 import project.query.ArenaObjectGridSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
+import project.util.ArrayVisualizer2D;
 
 /**
  * A scalar field where the value on each point equals the minimum distance
@@ -25,6 +26,8 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
             recalculate(ArenaManager.getActiveObjectStorage());
+
+            ArrayVisualizer2D.visualizeIntNestedList(values);
         }
     };
 
@@ -77,7 +80,7 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
                 ArenaObjectGridSelector selector = new ArenaObjectGridSelector(neighbourX, neighbourY);
                 if (storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER)).isEmpty()) {
         			int newCost = getValueAt(currentX, currentY) + 1;
-        			if (getValueAt(neighbourX, neighbourY) > newCost ) {
+        			if (getValueAt(neighbourX, neighbourY) > newCost) {
                         setValueAt(neighbourX, neighbourY, newCost);
         				openSet.add(new ScalarFieldPoint(neighbourX, neighbourY));
         			}

@@ -1,5 +1,7 @@
 package project.field;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -13,7 +15,14 @@ import project.entity.ArenaObjectPositionInfo;
  */
 public class ArenaScalarField<T extends Number & Comparable<T>> {
 
-    private Object[][] values = new Object[ArenaManager.ARENA_WIDTH + 1][ArenaManager.ARENA_HEIGHT + 1];
+    protected ArrayList<ArrayList<T>> values;
+    {
+        values = new ArrayList<ArrayList<T>>(ArenaManager.ARENA_WIDTH + 1);
+        for (int i = 0; i < ArenaManager.ARENA_HEIGHT + 1; i++) {
+            values.add(i, new ArrayList<T>(ArenaManager.ARENA_HEIGHT + 1));
+            Collections.fill(values.get(i), null);
+        }
+    }
 
     /**
      * Constructs a newly allocated {@link ArenaScalarField} object and attaches it to an arena instance.
@@ -29,12 +38,11 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
         private short y;
         private T value;
 
-        @SuppressWarnings("unchecked") 
         protected ScalarFieldPoint(short x, short y) {
             ArenaObjectPositionInfo.assertValidPosition(x, y);
             this.x = x;
             this.y = y;
-            this.value = (T) values[x][y];
+            this.value = values.get(x).get(y);
         }
 
         /**
@@ -62,10 +70,9 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param y The y-coordinate of the point.
      * @return The value of the scalar field at the point.
      */
-    @SuppressWarnings("unchecked") 
     public T getValueAt(short x, short y) {
         ArenaObjectPositionInfo.assertValidPosition(x, y);
-        return (T) values[x][y];
+        return values.get(x).get(y);
     }
 
     /**
@@ -73,11 +80,7 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param value The new value.
      */
     protected final void setAll(T value) {
-        for (int x = 0; x < values.length; x++) {
-            for (int y = 0; y < values[x].length; y++) {
-                values[x][y] = value;
-            }
-        }
+        Collections.fill(values, new ArrayList<T>(Collections.nCopies(ArenaManager.ARENA_HEIGHT + 1, value)));
     }
 
     /**
@@ -88,7 +91,7 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      */
     protected final void setValueAt(short x, short y, T value) {
         ArenaObjectPositionInfo.assertValidPosition(x, y);
-        values[x][y] = value;
+        values.get(x).set(y, value);
     }
 
     /**

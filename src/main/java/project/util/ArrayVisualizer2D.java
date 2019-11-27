@@ -2,13 +2,14 @@ package project.util;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /**
- * Helper class to visualize numerical arrays.
+ * Helper class to visualize numerical 2D arrays, as well as nested lists.
  * For debugging only.
  */
 public final class ArrayVisualizer2D {
@@ -41,28 +42,20 @@ public final class ArrayVisualizer2D {
     }
 
     /**
-     * Visualizes an array of booleans as a heat map. Colors range from blue (smallest value) to red (largest value).
-     * @param arr The array to visualize.
+     * Visualizes a nested list of shorts as a heat map. Colors range from blue (smallest value) to red (largest value).
+     * @param nestedList The nested list to visualize.
      */
-    public static void visualizeBooleanArray(boolean[][] arr) {
-        int width = arr.length;
-        double[][] doubles = new double[width][];
+    public static void visualizeShortNestedList(ArrayList<ArrayList<Short>> nestedList) {
+        short[][] arr = new short[nestedList.size()][];
 
-        // Get max and min values
-        for (int i = 0; i < width; i++) {
-            int height = arr[i].length;
-            doubles[i] = new double[height];
-
-            for (int j = 0; j < height; j++) {
-                if (arr[i][j]) {
-                    doubles[i][j] = Double.POSITIVE_INFINITY;
-                } else {
-                    doubles[i][j] = Double.NEGATIVE_INFINITY;
-                }
+        for (int i = 0; i < nestedList.size(); i++) {
+            arr[i] = new short[nestedList.get(i).size()];
+            for (int j = 0; j < nestedList.get(i).size(); j++) {
+                arr[i][j] = nestedList.get(i).get(j);
             }
         }
-        
-        visualizeDoubleArray(doubles);
+
+        visualizeShortArray(arr);
     }
 
     /**
@@ -93,6 +86,23 @@ public final class ArrayVisualizer2D {
     }
 
     /**
+     * Visualizes a nested list of integers as a heat map. Colors range from blue (smallest value) to red (largest value).
+     * @param nestedList The nested list to visualize.
+     */
+    public static void visualizeIntNestedList(ArrayList<ArrayList<Integer>> nestedList) {
+        int[][] arr = new int[nestedList.size()][];
+
+        for (int i = 0; i < nestedList.size(); i++) {
+            arr[i] = new int[nestedList.get(i).size()];
+            for (int j = 0; j < nestedList.get(i).size(); j++) {
+                arr[i][j] = nestedList.get(i).get(j);
+            }
+        }
+
+        visualizeIntArray(arr);
+    }
+
+    /**
      * Visualizes an array of integers as a heat map. Colors range from blue (smallest value) to red (largest value).
      * @param arr The array to visualize.
      */
@@ -117,6 +127,23 @@ public final class ArrayVisualizer2D {
         }
         
         visualizeDoubleArray(doubles);
+    }
+    
+    /**
+     * Visualizes a nested list of doubles as a heat map. Colors range from blue (smallest value) to red (largest value).
+     * @param nestedList The nested list to visualize.
+     */
+    public static void visualizeDoubleNestedList(ArrayList<ArrayList<Double>> nestedList) {
+        double[][] arr = new double[nestedList.size()][];
+
+        for (int i = 0; i < nestedList.size(); i++) {
+            arr[i] = new double[nestedList.get(i).size()];
+            for (int j = 0; j < nestedList.get(i).size(); j++) {
+                arr[i][j] = nestedList.get(i).get(j);
+            }
+        }
+
+        visualizeDoubleArray(arr);
     }
 
     /**

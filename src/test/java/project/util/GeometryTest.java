@@ -13,7 +13,7 @@ import javafx.geometry.Point2D;
 /**
  * Tests the {@link Geometry} class.
  */
-public class GeometryTester {
+public class GeometryTest {
 	@Rule
     public final ExpectedException expectedException = ExpectedException.none();
     

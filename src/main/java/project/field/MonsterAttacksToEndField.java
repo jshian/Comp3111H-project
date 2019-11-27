@@ -250,7 +250,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                 ArenaObjectGridSelector selector = new ArenaObjectGridSelector(neighbourX, neighbourY);
                 if (storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER)).isEmpty()) {
         			float newCost = getValueAt(currentX, currentY) + towerAttacksPerFrameField.getValueAt(neighbourX, neighbourY) + MOVEMENT_COST;
-        			if (getValueAt(neighbourX, neighbourY) > newCost ) {
+        			if (getValueAt(neighbourX, neighbourY) > newCost) {
                         setValueAt(neighbourX, neighbourY, newCost);
         				openSet.add(new ScalarFieldPoint(neighbourX, neighbourY));
         			}

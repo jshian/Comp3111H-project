@@ -21,7 +21,7 @@ import project.query.ArenaObjectStorage.StoredComparableType;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
- * Tests the {@link ArenaObjectStorage} class.
+ * Tests the {@link ArenaObjectStorage} and, associatively, the {@link ArenaObjectFactory} class.
  */
 public class ArenaObjectStorageTest extends JavaFXTester {
     // The objects to be tested

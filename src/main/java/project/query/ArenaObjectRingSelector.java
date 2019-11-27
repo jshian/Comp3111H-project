@@ -120,7 +120,9 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
 
             for (short x = startX; x <= endX; x++) {
                 for (ArenaObject o : index.get(x)) {
-                    if (isAllSatisfied(o, types, filters)) result.add(o);
+                    if (isInSelection(o)) {
+                        if (isAllSatisfied(o, types, filters)) result.add(o);
+                    }
                 }
             }
         } else {
@@ -128,7 +130,9 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
 
             for (short y = startY; y <= endY; y++) {
                 for (ArenaObject o : index.get(y)) {
-                    if (isAllSatisfied(o, types, filters)) result.add(o);
+                    if (isInSelection(o)) {
+                        if (isAllSatisfied(o, types, filters)) result.add(o);
+                    }
                 }
             }
         }
