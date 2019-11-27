@@ -71,13 +71,13 @@ public class MonsterTester extends JavaFXTester {
             m.health.set(23.45);
             assertEquals(m.getHealth(), 23.45, MAX_ERROR);
             assertFalse(trackedMonsterHasDied);
-            m.takeDamage(23);
+            m.takeDamage(23, this);
             assertEquals(m.getHealth(), 0.45, MAX_ERROR);
             assertFalse(trackedMonsterHasDied);
-            m.takeDamage(10);
+            m.takeDamage(10, this);
             assertEquals(m.getHealth(), -9.55, MAX_ERROR);
             assertTrue(trackedMonsterHasDied);
-            m.takeDamage(-999);
+            m.takeDamage(-999, this);
             assertEquals(m.getHealth(), -9.55, MAX_ERROR); // Negative damage taken should do nothing
             assertTrue(trackedMonsterHasDied);
             m.health.set(50);
@@ -127,7 +127,7 @@ public class MonsterTester extends JavaFXTester {
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, 1);
             assertTrue(f.getHealth() > 0); // Health on generation should be greater than zero
-            removeObjectFromArena(f);
+            f.dispose(this);
         }
 
         // Test pathfinding...
@@ -218,6 +218,10 @@ public class MonsterTester extends JavaFXTester {
 
             // Unicorn has the most health
             assertTrue("Health test failed for i = " + i, u.maxHealth > f.maxHealth && u.maxHealth > p.maxHealth);
+
+            f.dispose(this);
+            p.dispose(this);
+            u.dispose(this);
         }
     }
 }

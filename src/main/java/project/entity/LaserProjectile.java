@@ -52,7 +52,7 @@ public class LaserProjectile extends Projectile {
         LinkedList<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
         for (ArenaObject m : monsters) {
             if (Geometry.isInRay(m.getX(),m.getY(), origin.getX(),origin.getY(),target.getX(),target.getY(), 3)) {
-                ((Monster) m).takeDamage(damage);
+                ((Monster) m).takeDamage(damage, this);
             }
         }
     }

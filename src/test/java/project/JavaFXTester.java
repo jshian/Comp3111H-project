@@ -24,10 +24,8 @@ import javafx.stage.Stage;
 
 import project.arena.ArenaInstance;
 import project.control.ArenaManager;
-import project.entity.ArenaObject;
 import project.entity.ArenaObjectFactory.TowerType;
 import project.event.EventHandler;
-import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
 import project.ui.UIController;
 
@@ -54,18 +52,6 @@ public class JavaFXTester extends ApplicationTest {
 		this.primaryStage.show();
 		this.appController = (UIController)loader.getController();
 		this.appController.createArena();
-	}
-
-	/**
-	 * Removes an object from the currently active arena.
-	 * @param o The object to remove.
-	 */
-	protected final void removeObjectFromArena(ArenaObject o) {
-		ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
-				new ArenaObjectEventArgs() {
-					{ subject = o; }
-				}
-		);
 	}
 
 	/**

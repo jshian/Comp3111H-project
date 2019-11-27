@@ -70,8 +70,24 @@ public abstract class ArenaObject {
                 }
         );
 
+        subscribeEvents();
+    }
+
+    /**
+     * Subscribes the object to each event.
+     */
+    protected void subscribeEvents() {
         if (onNextFrame != null) {
             ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
+        }
+    }
+
+    /**
+     * Unsubscribes the object from each event.
+     */
+    protected void unsubscribeEvents() {
+        if (onNextFrame != null) {
+            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
         }
     }
 
@@ -122,15 +138,14 @@ public abstract class ArenaObject {
     }
 
     /**
-     * Removes the object from the active arena.
-     * Override this if the object has to unsubscribe from events other than {@link ArenaEventRegister#ARENA_NEXT_FRAME}.
+     * Removes the object from the active arena and invokes {@link ArenaEventRegister#ARENA_OBJECT_REMOVE} as if the other
+     * object called it.
+     * @param disposedBy The object which disposed this object.
      */
-    public void dispose() {
-        if (onNextFrame != null) {
-            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
-        }
+    public void dispose(Object disposedBy) {
+        unsubscribeEvents();
         
-        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
+        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(disposedBy,
             new ArenaObjectEventArgs() {
                 { subject = ArenaObject.this; }
             }

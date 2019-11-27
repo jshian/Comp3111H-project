@@ -533,12 +533,7 @@ public class UIController {
             paneArena.getChildren().remove(vb);
         });
         destroyBtn.setOnAction(e2 -> {
-            player.receiveResources(t.getBuildValue() / 2);
-            ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(this,
-                    new ArenaObjectEventArgs() {
-                        { subject = t; }
-                    }
-            );
+            t.dispose(this);
             paneArena.getChildren().remove(vb);
         });
 
