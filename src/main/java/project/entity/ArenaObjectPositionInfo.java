@@ -18,7 +18,7 @@ public final class ArenaObjectPositionInfo {
     /**
      * ID for storage using Java Persistence API
      */
-    private Integer id;
+    private int id;
     private IntegerProperty x = new SimpleIntegerProperty();
     private IntegerProperty y = new SimpleIntegerProperty();
 
