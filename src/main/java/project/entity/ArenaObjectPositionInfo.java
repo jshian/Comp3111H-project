@@ -18,7 +18,7 @@ public final class ArenaObjectPositionInfo {
     /**
      * ID for storage using Java Persistence API
      */
-    private int id;
+    private Long id;
     private IntegerProperty x = new SimpleIntegerProperty();
     private IntegerProperty y = new SimpleIntegerProperty();
 
@@ -95,8 +95,8 @@ public final class ArenaObjectPositionInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public int getId() {
-        return id;
+    public Long getId() {
+        return (id == null)?null:id;
     }
 
     // setters below is used for hibernate.
@@ -104,7 +104,7 @@ public final class ArenaObjectPositionInfo {
      * Sets the id of the object within the same storage.
      * @param id The id of the object.
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -27,7 +27,7 @@ public final class ArenaObjectStorage {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     /**
      * Index for each object in the x-direction.

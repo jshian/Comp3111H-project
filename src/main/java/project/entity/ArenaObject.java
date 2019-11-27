@@ -23,7 +23,7 @@ public abstract class ArenaObject {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     /**
      * The storage where the object is located within.
