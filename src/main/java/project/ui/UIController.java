@@ -161,11 +161,11 @@ public class UIController {
         for (short i = 0; i < maxV; i++)
             for (short j = 0; j < maxH; j++) {
                 Label newLabel = new Label();
-                if (j == maxH - 1 && i == 0) {
+                if (j == ArenaManager.getEndGridXPos() && i == ArenaManager.getEndGridYPos()) {
                     Image image1 = new Image("/end-zone.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true);
                     BackgroundImage backgroundImage1= new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));
-                } else if (j == 0 && i == 0) {
+                } else if (j == ArenaManager.getStartingGridXPos() && i == ArenaManager.getStartingGridYPos()) {
                     Image image1 = new Image("/show-up.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true);
                     BackgroundImage backgroundImage1 = new BackgroundImage(image1, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
                     newLabel.setBackground(new Background(backgroundImage1));

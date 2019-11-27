@@ -13,7 +13,6 @@ import project.event.eventargs.ArenaTowerEventArgs;
 import project.query.ArenaObjectGridSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
-import project.util.ArrayVisualizer2D;
 
 /**
  * A scalar field where the value on each point equals the minimum distance
@@ -40,11 +39,11 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
             short endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + maxRadius);
             short effectiveHeight = (short) (endY - startY);
     
-            short endX_intermediate = (short) Math.min(endX, centerX - minRadius);
+            short endX_intermediate = (short) Math.max(0, Math.min(endX, centerX - minRadius));
             short startX_intermediate = (short) Math.min(endX_intermediate, centerX + minRadius);
             if (endX_intermediate == startX_intermediate) startX_intermediate++;
     
-            short endY_intermediate = (short) Math.min(endY, centerY - minRadius);
+            short endY_intermediate = (short) Math.max(0, Math.min(endY, centerY - minRadius));
             short startY_intermediate = (short) Math.min(endY_intermediate, centerY + minRadius);
             if (endY_intermediate == startY_intermediate) startY_intermediate++;
     
