@@ -32,7 +32,7 @@ public class CatapultTest extends JavaFXTester {
         }
 
         simulateNextFrame();
-        Assert.assertTrue(catapult.monstersInSplashRange.size() == 1);
+        Assert.assertEquals(catapult.monstersInSplashRange.size(), 1);
         Assert.assertEquals(catapult.monstersInSplashRange.peek(), m3);
         for (Monster m :catapult.monstersInSplashRange) {
             Assert.assertTrue(Geometry.isInCircle( m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
@@ -48,7 +48,7 @@ public class CatapultTest extends JavaFXTester {
         }
 
         simulateNextFrame();
-        Assert.assertTrue(catapult.monstersInSplashRange.size() == 1);
+        Assert.assertEquals(catapult.monstersInSplashRange.size(), 1);
         Assert.assertEquals(catapult.monstersInSplashRange.peek(), m3);
         for (Monster m :catapult.monstersInSplashRange) {
             Assert.assertTrue(Geometry.isInCircle(m.getX(), m.getY(), catapult.targetLocationX, catapult.targetLocationY,25));
@@ -64,7 +64,7 @@ public class CatapultTest extends JavaFXTester {
         }
 
         simulateNextFrame();
-        Assert.assertTrue(catapult.monstersInSplashRange.size() == 2);
+        Assert.assertEquals(catapult.monstersInSplashRange.size(), 2);
         Assert.assertEquals(catapult.monstersInSplashRange.get(0), m3);
         Assert.assertEquals(catapult.monstersInSplashRange.get(1), m6);
         for (Monster m :catapult.monstersInSplashRange) {

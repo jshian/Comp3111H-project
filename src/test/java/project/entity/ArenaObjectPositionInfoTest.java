@@ -15,9 +15,9 @@ import javafx.scene.image.ImageView;
 import project.control.ArenaManager;
 
 /**
- * Tests the {@link Coordinates} class.
+ * Tests the {@link ArenaObjectPositionInfoTest} class.
  */
-public class ArenaObjectPositionInfoTester {
+public class ArenaObjectPositionInfoTest {
 	@Rule
 	public final ExpectedException expectedException = ExpectedException.none();
 

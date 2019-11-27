@@ -114,6 +114,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      */
     public Projectile(Tower tower, Monster target, short deltaX, short deltaY) {
         super(tower.getX(), tower.getY());
+        this.origin = tower;
         this.target = target;
         this.deltaX = deltaX;
         this.deltaY = deltaY;
