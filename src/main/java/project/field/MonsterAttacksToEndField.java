@@ -62,9 +62,11 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     short inner_endY_intermediate = (short) (centerY - flooredMinSqrt);
                     short inner_startY_intermediate = (short) (centerY + flooredMinSqrt);
     
-                    for (short y = inner_startY; y <= inner_endY; y++) {
-                        if (y > inner_endY_intermediate) y = inner_startY_intermediate;
+                    for (short y = inner_startY; y <= inner_endY_intermediate; y++) {
+                        setValueAt(x, y, getValueAt(x, y) + amount);
+                    }
 
+                    for (short y = inner_startY_intermediate; y <= inner_endY; y++) {
                         setValueAt(x, y, getValueAt(x, y) + amount);
                     }
                 }
@@ -82,9 +84,11 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     short inner_endX_intermediate = (short) (centerX - flooredMinSqrt);
                     short inner_startX_intermediate = (short) (centerX + flooredMinSqrt);
     
-                    for (short x = inner_startX; x <= inner_endX; x++) {
-                        if (x > inner_endX_intermediate) x = inner_startX_intermediate;
+                    for (short x = inner_startX; x <= inner_endX_intermediate; x++) {
+                        setValueAt(x, y, getValueAt(x, y) + amount);
+                    }
 
+                    for (short x = inner_startX_intermediate; x <= inner_endX; x++) {
                         setValueAt(x, y, getValueAt(x, y) + amount);
                     }
                 }

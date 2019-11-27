@@ -56,39 +56,40 @@ public abstract class ArenaObject {
     public ArenaObject() {}
     
     /**
-     * Constructs a newly allocated {@link ArenaObject} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link ArenaObject} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
     public ArenaObject(short x, short y) {
         this.storage = ArenaManager.getActiveObjectStorage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
-
-        ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD.invoke(this,
-                new ArenaObjectEventArgs() {
-                    { subject = ArenaObject.this; }
-                }
-        );
-
-        subscribeEvents();
     }
 
     /**
-     * Subscribes the object to each event.
+     * Subscribes the object to each event, only meant to be called by {@link ArenaObjectFactory}.
+     * @return <code>true</code> iff the object was not originally subscribed to each event.
      */
-    protected void subscribeEvents() {
-        if (onNextFrame != null) {
-            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
-        }
-    }
+    boolean subscribeEvents() {
+        boolean success = true;
 
-    /**
-     * Unsubscribes the object from each event.
-     */
-    protected void unsubscribeEvents() {
         if (onNextFrame != null) {
-            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
+            success = success && ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
         }
+
+        return success;
+    }
+    /**
+     * Unsubscribes the object from each event only meant to be called by {@link ArenaObjectFactory}.
+     * @return <code>true</code> iff the object was originally subscribed to each event.
+     */
+    boolean unsubscribeEvents() {
+        boolean success = true;
+
+        if (onNextFrame != null) {
+            success = success && ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
+        }
+
+        return success;
     }
 
     /**
@@ -134,21 +135,6 @@ public abstract class ArenaObject {
                 new ArenaObjectEventArgs() {
                     { subject = ArenaObject.this; }
                 }
-        );
-    }
-
-    /**
-     * Removes the object from the active arena and invokes {@link ArenaEventRegister#ARENA_OBJECT_REMOVE} as if the other
-     * object called it.
-     * @param disposedBy The object which disposed this object.
-     */
-    public void dispose(Object disposedBy) {
-        unsubscribeEvents();
-        
-        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(disposedBy,
-            new ArenaObjectEventArgs() {
-                { subject = ArenaObject.this; }
-            }
         );
     }
 

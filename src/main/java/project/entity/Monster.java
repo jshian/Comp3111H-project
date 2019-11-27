@@ -163,7 +163,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     /**
-     * Constructs a newly allocated {@link Monster} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link Monster} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
@@ -207,7 +207,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
         this.health = healthProperty.get();
 
         // Remove monster from arena if dead
-        if (healthProperty.get() <= 0) dispose(attacker);
+        if (healthProperty.get() <= 0) ArenaObjectFactory.removeObject(attacker, this);
     }
 
     /**

@@ -288,7 +288,7 @@ public final class ArenaInstance {
      */
     private void generateMonster(MonsterType type)
     {
-        Monster m = ArenaObjectFactory.createMonster(type, ArenaManager.STARTING_X, ArenaManager.STARTING_Y, difficulty);
+        Monster m = ArenaObjectFactory.createMonster(this, type, ArenaManager.STARTING_X, ArenaManager.STARTING_Y, difficulty);
 
         System.out.println(String.format("%s:%.2f generated", m.getDisplayName(), m.getHealth()));
     }

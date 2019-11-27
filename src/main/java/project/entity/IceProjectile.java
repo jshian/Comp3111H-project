@@ -23,7 +23,7 @@ public class IceProjectile extends Projectile {
     public IceProjectile() {}
 
     /**
-     * Constructs a newly allocated {@link IceProjectile} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link IceProjectile} object.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.

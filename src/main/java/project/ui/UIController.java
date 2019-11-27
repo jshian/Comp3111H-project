@@ -40,7 +40,6 @@ import project.entity.ArenaObjectFactory;
 import project.entity.Tower;
 import project.entity.ArenaObjectFactory.TowerType;
 import project.event.EventHandler;
-import project.event.eventargs.ArenaObjectEventArgs;
 import project.event.eventargs.EventArgs;
 import project.util.Geometry;
 
@@ -404,8 +403,7 @@ public class UIController {
                                 showAlert("Not enough resources", "Do not have enough resources to build " + type.getDefaultName() + "!");
 
                             } else if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
-                                player.spendResources(type.getBuildingCost());
-                                Tower newTower = ArenaObjectFactory.createTower(type, x, y);
+                                Tower newTower = ArenaObjectFactory.createTower(UIController.this, type, x, y);
                                 setTowerEvent(newTower);
                                 e.setDropCompleted(true);
                             }
@@ -533,7 +531,7 @@ public class UIController {
             paneArena.getChildren().remove(vb);
         });
         destroyBtn.setOnAction(e2 -> {
-            t.dispose(this);
+            ArenaObjectFactory.removeObject(UIController.this, t);
             paneArena.getChildren().remove(vb);
         });
 

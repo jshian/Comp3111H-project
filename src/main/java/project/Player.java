@@ -42,6 +42,17 @@ public class Player {
     private Integer resources = 0;
 
     /**
+     * The method invoked when an {@link ArenaObject} is being added.
+     */
+    private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+
+        if (sender instanceof UIController && subject instanceof Tower) {
+            spendResources(((Tower) subject).getBuildValue());
+        }
+    };
+
+    /**
      * The method invoked when an {@link ArenaObject} is being removed.
      */
     @Transient
@@ -79,6 +90,7 @@ public class Player {
      */
     public void attachToArena(ArenaInstance arenaInstance) {
         ArenaEventRegister register = arenaInstance.getEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
     }
 

@@ -24,7 +24,7 @@ public class Fox extends Monster {
     public Fox() {}
 
     /**
-     * Constructs a newly allocated {@link Fox} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link Fox} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.
