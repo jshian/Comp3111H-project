@@ -36,7 +36,7 @@ public class MonsterTester extends JavaFXTester {
     @Test
     public void testInvalidBaseClassConstructor() {
         expectedException.expect(IllegalArgumentException.class);
-        ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 1, (short) 1, 0); // Difficulty must be at least 1
+        ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 1, (short) 1, 0); // Difficulty must be at least 1
     }
 
     @Test
@@ -45,7 +45,7 @@ public class MonsterTester extends JavaFXTester {
 
         {
             // Test constructor
-            Monster m = ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, 1);
+            Monster m = ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1);
             assertEquals(m.getX(), x);
             assertEquals(m.getY(), y);
             assertNotNull(m.getTrail());
@@ -86,7 +86,7 @@ public class MonsterTester extends JavaFXTester {
         }
         
         {
-            Monster m = ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, 1);
+            Monster m = ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1);
 
             // Test status effect
             StatusEffect slowEffect = new StatusEffect(StatusEffect.EffectType.Slow, 2);
@@ -125,7 +125,7 @@ public class MonsterTester extends JavaFXTester {
         short x = 18, y = 23;
 
         {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, 1);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1);
             assertTrue(f.getHealth() > 0); // Health on generation should be greater than zero
             f.dispose(this);
         }
@@ -138,11 +138,11 @@ public class MonsterTester extends JavaFXTester {
             simulateBuildTower(TowerType.BASIC, xPos, (short) 1);
         }
         {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, 1000);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1000);
             f.health.set(Double.POSITIVE_INFINITY);
         }
         {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, (short) 160, (short) 0, 100);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 160, (short) 0, 100);
             f.health.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
@@ -151,7 +151,7 @@ public class MonsterTester extends JavaFXTester {
             simulateBuildTower(TowerType.BASIC, xPos, (short) 1);
         }
         {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, (short) 200, (short) 0, 1);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 200, (short) 0, 1);
             f.health.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
@@ -161,11 +161,11 @@ public class MonsterTester extends JavaFXTester {
             simulateBuildTower(TowerType.CATAPULT, xPos, (short) 1);
         }
         {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, 1000);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, 1000);
             f.health.set(Double.POSITIVE_INFINITY);
         }
         {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, (short) 160, (short) 0, 100);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 160, (short) 0, 100);
             f.health.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
@@ -174,7 +174,7 @@ public class MonsterTester extends JavaFXTester {
             simulateBuildTower(TowerType.CATAPULT, xPos, (short) 1);
         }
         {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, (short) 200, (short) 0, 1);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 200, (short) 0, 1);
             f.health.set(Double.POSITIVE_INFINITY);
         }
         simulateGameNoSpawning(4);
@@ -184,7 +184,7 @@ public class MonsterTester extends JavaFXTester {
     public void testPenguin() {
         short x = 345, y = 79;
 
-        Penguin p = (Penguin) ArenaObjectFactory.createMonster(MonsterType.PENGUIN, x, y, 1);
+        Penguin p = (Penguin) ArenaObjectFactory.createMonster(this, MonsterType.PENGUIN, x, y, 1);
 
         double maxHealth = p.maxHealth;
         p.onNextFrame.handleEvent(this, new EventArgs());
@@ -205,9 +205,9 @@ public class MonsterTester extends JavaFXTester {
         Random rng = new Random();
 
         for (int i = 1; i < 10000; i += rng.nextDouble() * 100) {
-            Fox f = (Fox) ArenaObjectFactory.createMonster(MonsterType.FOX, x, y, i);
-            Penguin p = (Penguin) ArenaObjectFactory.createMonster(MonsterType.PENGUIN, x, y, i);
-            Unicorn u = (Unicorn) ArenaObjectFactory.createMonster(MonsterType.UNICORN, x, y, i);
+            Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, x, y, i);
+            Penguin p = (Penguin) ArenaObjectFactory.createMonster(this, MonsterType.PENGUIN, x, y, i);
+            Unicorn u = (Unicorn) ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, x, y, i);
 
             // Stats must be greater than zero
             assertTrue("Speed test failed for i = " + i, f.getSpeed() > 0 && p.getSpeed() > 0 && u.getSpeed() > 0);

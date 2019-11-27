@@ -35,7 +35,7 @@ public class LaserTower extends Tower{
     private int shootingCost = 2;
 
     /**
-     * Constructs a newly allocated {@link LaserTower} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link LaserTower} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */

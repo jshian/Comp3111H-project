@@ -51,7 +51,7 @@ public class Catapult extends Tower {
     protected short targetLocationY;
 
     /**
-     * Constructs a newly allocated {@link Catapult} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link Catapult} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
@@ -124,7 +124,7 @@ public class Catapult extends Tower {
 
         short deltaX = (short) (targetLocationX - target.getX());
         short deltaY = (short) (targetLocationY - target.getY());
-        ArenaObjectFactory.createProjectile(this, target, deltaX, deltaY);
+        ArenaObjectFactory.createProjectile(this, this, target, deltaX, deltaY);
     }
 
     @Override

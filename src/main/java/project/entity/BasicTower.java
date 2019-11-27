@@ -22,7 +22,7 @@ public class BasicTower extends Tower {
     }
 
     /**
-     * Constructs a newly allocated {@link BasicTower} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link BasicTower} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */

@@ -14,7 +14,7 @@ import project.control.ArenaManager;
 public class BasicProjectile extends Projectile {
 
     /**
-     * Constructs a newly allocated {@link BasicProjectile} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link BasicProjectile} object.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.

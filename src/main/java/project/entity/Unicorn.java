@@ -13,7 +13,7 @@ import project.control.ArenaManager;
 @Entity
 public class Unicorn extends Monster {
     /**
-     * Constructs a newly allocated {@link Unicorn} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link Unicorn} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      * @param difficulty The difficulty rating of the monster, which should be at least <code>1</code>.

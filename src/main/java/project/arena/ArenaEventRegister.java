@@ -32,11 +32,13 @@ public final class ArenaEventRegister {
 
     /**
      * An {@link ArenaObject} of any type is being added to the arena.
+     * The object is assumed to be fully initialized.
      */
     public final EventManager<ArenaObjectEventArgs> ARENA_OBJECT_ADD = new EventManager<>();
 
     /**
      * An {@link ArenaObject} of any type is being removed from the arena.
+     * The object is assumed to be ready for disposal.
      */
     public final EventManager<ArenaObjectEventArgs> ARENA_OBJECT_REMOVE = new EventManager<>();
 

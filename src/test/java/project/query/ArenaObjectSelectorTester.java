@@ -47,22 +47,22 @@ public class ArenaObjectSelectorTester extends JavaFXTester {
 
         {
             {
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 12, (short) 49, 1);
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 47, (short) 29, 1);
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 42, (short) 56, 1);
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 50, (short) 20, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 12, (short) 49, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 47, (short) 29, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 42, (short) 56, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 50, (short) 20, 1);
 
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 0, (short) 0, 1);
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, ArenaManager.ARENA_WIDTH, (short) 0, 1);
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 0, ArenaManager.ARENA_HEIGHT, 1);
-                ArenaObjectFactory.createMonster(MonsterType.UNICORN, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 0, (short) 0, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, ArenaManager.ARENA_WIDTH, (short) 0, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 0, ArenaManager.ARENA_HEIGHT, 1);
+                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT, 1);
             }
 
-            Monster m1 = ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 30, (short) 60, 1);
-            Monster m2 = ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 10, (short) 40, 1);
-            Monster m3 = ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 31, (short) 21, 1);
-            Monster m4 = ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 10, (short) 40, 1);
-            Monster m5 = ArenaObjectFactory.createMonster(MonsterType.UNICORN, (short) 50, (short) 40, 1);
+            Monster m1 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 30, (short) 60, 1);
+            Monster m2 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 10, (short) 40, 1);
+            Monster m3 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 31, (short) 21, 1);
+            Monster m4 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 10, (short) 40, 1);
+            Monster m5 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 50, (short) 40, 1);
 
             ArenaObjectCircleSelector circleSelector = new ArenaObjectCircleSelector((short) 30, (short) 40, (short) 20);
             float selectivity = circleSelector.estimateSelectivity(storage);

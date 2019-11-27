@@ -95,15 +95,15 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
                 if (counter <= 0) {
                     shoot(validTargets);
                     counter = reload;
-                } else {
-                    counter--;
                 }
+                
+                counter--;
             }
         };
     }
 
     /**
-     * Constructs a newly allocated {@link Tower} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link Tower} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
@@ -219,7 +219,7 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
      */
     protected void shoot(PriorityQueue<Monster> validTargets) {
         // Target the monster with the shortest path to end zone
-        ArenaObjectFactory.createProjectile(this, validTargets.peek(), (short) 0, (short) 0);
+        ArenaObjectFactory.createProjectile(this, this, validTargets.peek(), (short) 0, (short) 0);
     }
 
     @Override

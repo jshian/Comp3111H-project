@@ -41,19 +41,13 @@ public abstract class ArenaObject {
     protected EventHandler<EventArgs> onNextFrame = null;
     
     /**
-     * Constructs a newly allocated {@link ArenaObject} object and adds it to the currently active arena.
+     * Constructs a newly allocated {@link ArenaObject} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
     public ArenaObject(short x, short y) {
         this.storage = ArenaManager.getActiveObjectStorage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, x, y);
-
-        ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD.invoke(this,
-                new ArenaObjectEventArgs() {
-                    { subject = ArenaObject.this; }
-                }
-        );
 
         subscribeEvents();
     }
@@ -66,7 +60,6 @@ public abstract class ArenaObject {
             ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
         }
     }
-
     /**
      * Unsubscribes the object from each event.
      */
@@ -123,14 +116,13 @@ public abstract class ArenaObject {
     }
 
     /**
-     * Removes the object from the active arena and invokes {@link ArenaEventRegister#ARENA_OBJECT_REMOVE} as if the other
-     * object called it.
-     * @param disposedBy The object which disposed this object.
+     * Removes the object from the active arena on the disposer's behalf.
+     * @param disposer The object which disposes this object.
      */
-    public void dispose(Object disposedBy) {
+    public void dispose(Object disposer) {
         unsubscribeEvents();
         
-        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(disposedBy,
+        ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.invoke(disposer,
             new ArenaObjectEventArgs() {
                 { subject = ArenaObject.this; }
             }
