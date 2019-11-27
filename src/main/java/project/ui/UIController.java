@@ -231,6 +231,7 @@ public class UIController {
             }
 
             ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.invoke(this, new EventArgs());
+            ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME_END.invoke(this, new EventArgs());
         }
     }
 
