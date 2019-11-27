@@ -19,13 +19,13 @@ class SpringApplicationTests {
     @Autowired
     private Transaction transaction;
 
-//    @Test
-//    void add() {
-//        transaction.begin();
-//        Player p = new Player("tk", 0);
-//        session.save(p);
-//        transaction.commit();
-//    }
+    @Test
+    void add() {
+        transaction.begin();
+        Player p = new Player("tk", 0);
+        session.save(p);
+        transaction.commit();
+    }
 
     @Test
     void load() {

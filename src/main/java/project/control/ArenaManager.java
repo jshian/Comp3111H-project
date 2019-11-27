@@ -170,7 +170,7 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void save(Player player) {
-        Manager.save(activeArenaInstance, player);
+        Manager.save(activeArenaInstance);
     }
 
     /**

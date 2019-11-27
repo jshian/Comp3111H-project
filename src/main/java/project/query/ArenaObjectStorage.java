@@ -408,14 +408,26 @@ public final class ArenaObjectStorage {
         return query.run(this, type, option);
     }
 
+    /**
+     * Access the towers inside the arena.
+     * @return the towers inside the arena.
+     */
     public List<Tower> getTowers() {
         return towers;
     }
 
+    /**
+     * Access the projectiles inside the arena.
+     * @return the projectiles inside the arena.
+     */
     public List<Projectile> getProjectiles() {
         return projectiles;
     }
 
+    /**
+     * Access the monsters inside the arena.
+     * @return the monsters inside the arena.
+     */
     public List<Monster> getMonsters() {
         return monsters;
     }

@@ -64,7 +64,7 @@ public class Manager {
         }
     }
 
-    public static void save(ArenaInstance activeArenaInstance, Player player) {
+    public static void save(ArenaInstance arenaInstance) {
         SpringApplication.main(new String[]{});
         if(entityManager == null) return;
 
@@ -73,9 +73,8 @@ public class Manager {
             EntityTransaction tran = entityManager.getTransaction();
             tran.begin();
 
-            ArenaInstance temp = activeArenaInstance;
-            entityManager.persist(player);
-            ArenaObjectStorage tempStorage = temp.getStorage();
+            entityManager.persist(arenaInstance.getPlayer());
+            ArenaObjectStorage tempStorage = arenaInstance.getStorage();
             for (ArenaObject o : tempStorage.getTowers()) {
                 entityManager.persist(o.getPositionInfo());
                 entityManager.persist(o);
@@ -92,13 +91,12 @@ public class Manager {
                 }
                 entityManager.persist(o);
             }
-            // projectiles must be persist after tower and monster.
             for (ArenaObject o : tempStorage.getProjectiles()) {
                 entityManager.persist(o.getPositionInfo());
                 entityManager.persist(o);
             }
             entityManager.persist(tempStorage);
-            entityManager.persist(temp);
+            entityManager.persist(arenaInstance);
 
             tran.commit();
         } catch (Exception e) {

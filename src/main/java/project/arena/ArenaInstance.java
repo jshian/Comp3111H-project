@@ -147,8 +147,8 @@ public final class ArenaInstance {
         eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
         eventRegister.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
 
-        this.player = player; player.attachToArena(this);
-        storage = new ArenaObjectStorage(this);
+        this.player = player;
+        player.attachToArena(this);
         scalarFieldRegister = new ArenaScalarFieldRegister(this); // Scalar fields may be based on objects on the arena
     }
 
