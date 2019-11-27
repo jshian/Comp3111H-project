@@ -6,13 +6,13 @@ import java.util.LinkedList;
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
 import project.control.ArenaManager;
+import project.entity.ArenaObject;
 import project.entity.Tower;
 import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.query.ArenaObjectGridSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
-import project.util.ArrayVisualizer2D;
 
 /**
  * A scalar field where the value on each point equals the minimum distance
@@ -26,8 +26,6 @@ public final class MonsterDistanceToEndField extends ArenaScalarField<Integer> {
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         if (args.subject instanceof Tower) {
             recalculate(ArenaManager.getActiveObjectStorage());
-
-            ArrayVisualizer2D.visualizeIntNestedList(values);
         }
     };
 

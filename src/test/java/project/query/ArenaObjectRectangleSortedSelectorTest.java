@@ -27,7 +27,7 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
     private static int NUM_RANDOM_SELECTORS = 100;
     private static int NUM_RANDOM_MONSTERS = 100;
 
-    private PriorityQueue<Monster> generateMonsterBox(short leftX, short topY, short width, short height) {
+    private PriorityQueue<Monster> generateBox(short leftX, short topY, short width, short height) {
         if (leftX < 0) leftX = 0;
         if (leftX > ArenaManager.ARENA_WIDTH) leftX = ArenaManager.ARENA_WIDTH;
         if (topY < 0) topY = 0;
@@ -60,8 +60,8 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
     public void testBoundaryCases() {
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
         
-        expectedSelection.addAll(generateMonsterBox((short) 50, (short) 10, (short) 290, (short) 270));
-        generateMonsterBox((short) 49, (short) 9, (short) 292, (short) 272);
+        expectedSelection.addAll(generateBox((short) 50, (short) 10, (short) 290, (short) 270));
+        generateBox((short) 49, (short) 9, (short) 292, (short) 272);
         
         ArenaObjectRectangleSortedSelector<Monster> rectangleSortedSelector = new ArenaObjectRectangleSortedSelector<>((short) 50, (short) 10, (short) 290, (short) 270);
         float selectivity = rectangleSortedSelector.estimateSelectivity(storage);
@@ -79,8 +79,10 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
     }
 
     private void reset() {
+        System.out.println("Resetting...");
         expectedSelection.clear();
         ArenaManager.getActiveObjectStorage().clear();
+        System.out.println("Reset complete");
     }
 
     @Test

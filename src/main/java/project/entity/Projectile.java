@@ -82,7 +82,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
             double potentialDistanceTravelled = speed + unusedMovement;
     
             if (getMovementDistanceToDestination() <= potentialDistanceTravelled) {
-                updatePosition(targetX, targetY);
+                moveObject(this, targetX, targetY);
                 damageTarget();
 
                 // Remove projectile from arena once it has reached target
@@ -93,7 +93,7 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
                 short newY = (short) (getY() + (short) (potentialDistanceTravelled * Math.sin(angleFromTarget)));
     
                 double actualDistanceTravelled = Geometry.findEuclideanDistance(getX(), getY(), newX, newY);
-                updatePosition(newX, newY);
+                moveObject(this, newX, newY);
                 unusedMovement += speed - actualDistanceTravelled;
             }
         };

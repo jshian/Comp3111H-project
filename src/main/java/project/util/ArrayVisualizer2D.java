@@ -128,6 +128,50 @@ public final class ArrayVisualizer2D {
         
         visualizeDoubleArray(doubles);
     }
+
+    /**
+     * Visualizes a nested list of floats as a heat map. Colors range from blue (smallest value) to red (largest value).
+     * @param nestedList The nested list to visualize.
+     */
+    public static void visualizeFloatNestedList(ArrayList<ArrayList<Float>> nestedList) {
+        float[][] arr = new float[nestedList.size()][];
+
+        for (int i = 0; i < nestedList.size(); i++) {
+            arr[i] = new float[nestedList.get(i).size()];
+            for (int j = 0; j < nestedList.get(i).size(); j++) {
+                arr[i][j] = nestedList.get(i).get(j);
+            }
+        }
+
+        visualizeFloatArray(arr);
+    }
+
+    /**
+     * Visualizes an array of floats as a heat map. Colors range from blue (smallest value) to red (largest value).
+     * @param arr The array to visualize.
+     */
+    public static void visualizeFloatArray(float[][] arr) {
+        int width = arr.length;
+        double[][] doubles = new double[width][];
+
+        // Get max and min values
+        for (int i = 0; i < width; i++) {
+            int height = arr[i].length;
+            doubles[i] = new double[height];
+
+            for (int j = 0; j < height; j++) {
+                if (arr[i][j] == Float.MAX_VALUE) {
+                    doubles[i][j] = Double.POSITIVE_INFINITY;
+                } else if (arr[i][j] == Float.MIN_VALUE) {
+                    doubles[i][j] = Double.NEGATIVE_INFINITY;
+                } else {
+                    doubles[i][j] = arr[i][j];
+                }
+            }
+        }
+        
+        visualizeDoubleArray(doubles);
+    }
     
     /**
      * Visualizes a nested list of doubles as a heat map. Colors range from blue (smallest value) to red (largest value).

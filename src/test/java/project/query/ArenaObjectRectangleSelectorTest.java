@@ -11,9 +11,9 @@ import org.junit.Test;
 import project.JavaFXTester;
 import project.control.ArenaManager;
 import project.entity.ArenaObject;
-import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
-import project.entity.ArenaObjectFactory.MonsterType;
+import project.entity.Projectile;
+import project.entity.Tower;
 import project.query.ArenaObjectStorage.StoredType;
 import project.util.CollectionComparator;
 
@@ -22,13 +22,49 @@ import project.util.CollectionComparator;
  */
 public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
     // The objects to be tested
-    private LinkedList<Monster> expectedSelection = new LinkedList<>();
+    private LinkedList<Tower> expectedTowers = new LinkedList<>();
+    private LinkedList<Monster> expectedMonsters = new LinkedList<>();
+    private LinkedList<Projectile> expectedProjectiles = new LinkedList<>();
 
     // Number of random test cases
-    private static int NUM_RANDOM_SELECTORS = 100;
-    private static int NUM_RANDOM_MONSTERS = 100;
+    private static int NUM_RANDOM_SELECTORS = 20;
+    private static int NUM_RANDOM_OBJECTS_PER_TYPE = 20;
 
-    private LinkedList<Monster> generateMonsterBox(short leftX, short topY, short width, short height) {
+    private void addObjects(short leftX, short rightX, short topY, short bottomY, boolean isExpected) {
+        Tower t = ArenaObjectStorageHelper.addTower(this);
+        if (t.getX() >= leftX && t.getX() <= rightX && t.getY() >= topY && t.getY() <= bottomY) {
+            if (isExpected) expectedTowers.add(t);
+        }
+
+        Monster m = ArenaObjectStorageHelper.addMonster(this);
+        if (m.getX() >= leftX && m.getX() <= rightX && m.getY() >= topY && m.getY() <= bottomY) {
+            if (isExpected) expectedMonsters.add(m);
+        }
+
+        Projectile p = ArenaObjectStorageHelper.addProjectile(this, t, m);
+        if (p.getX() >= leftX && p.getX() <= rightX && p.getY() >= topY && p.getY() <= bottomY) {
+            if (isExpected) expectedProjectiles.add(p);
+        }
+    }
+
+    private void addObjects(short x, short y, short leftX, short rightX, short topY, short bottomY, boolean isExpected) {
+        Tower t = ArenaObjectStorageHelper.addTower(this, x, y);
+        if (t.getX() >= leftX && t.getX() <= rightX && t.getY() >= topY && t.getY() <= bottomY) {
+            if (isExpected) expectedTowers.add(t);
+        }
+
+        Monster m = ArenaObjectStorageHelper.addMonster(this, x, y);
+        if (m.getX() >= leftX && m.getX() <= rightX && m.getY() >= topY && m.getY() <= bottomY) {
+            if (isExpected) expectedMonsters.add(m);
+        }
+
+        Projectile p = ArenaObjectStorageHelper.addProjectile(this, t, m, x, y);
+        if (p.getX() >= leftX && p.getX() <= rightX && p.getY() >= topY && p.getY() <= bottomY) {
+            if (isExpected) expectedProjectiles.add(p);
+        }
+    }
+
+    private void generateBox(short leftX, short topY, short width, short height, boolean isExpected) {
         if (leftX < 0) leftX = 0;
         if (leftX > ArenaManager.ARENA_WIDTH) leftX = ArenaManager.ARENA_WIDTH;
         if (topY < 0) topY = 0;
@@ -42,42 +78,77 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
         if (bottomY < 0) bottomY = 0;
         if (bottomY > ArenaManager.ARENA_HEIGHT) bottomY = ArenaManager.ARENA_HEIGHT;
 
-        Random rng = new Random();
-
-        LinkedList<Monster> monsters = new LinkedList<>();
         for (short x = leftX; x <= rightX; x++) {
-            monsters.add(ArenaObjectFactory.createMonster(this, MonsterType.values()[rng.nextInt(MonsterType.values().length)], x, topY, 1));
-            monsters.add(ArenaObjectFactory.createMonster(this, MonsterType.values()[rng.nextInt(MonsterType.values().length)], x, bottomY, 1));
+            addObjects(x, topY, leftX, rightX, topY, bottomY, isExpected);
+            addObjects(x, bottomY, leftX, rightX, topY, bottomY, isExpected);
         }
         for (short y = topY; y <= bottomY; y++) {
-            monsters.add(ArenaObjectFactory.createMonster(this, MonsterType.values()[rng.nextInt(MonsterType.values().length)], leftX, y, 1));
-            monsters.add(ArenaObjectFactory.createMonster(this, MonsterType.values()[rng.nextInt(MonsterType.values().length)], rightX, y, 1));
+            addObjects(leftX, y, leftX, rightX, topY, bottomY, isExpected);
+            addObjects(rightX, y, leftX, rightX, topY, bottomY, isExpected);
         }
+    }
 
-        return monsters;
+    private void testQueryFilters(ArenaObjectSelector selector) {
+        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
+
+        {
+            LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
+            LinkedList<ArenaObject> expected = new LinkedList<>(expectedMonsters);
+            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+        }
+        {
+            LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER));
+            LinkedList<ArenaObject> expected = new LinkedList<>(expectedTowers);
+            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+        }
+        {
+            LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.PROJECTILE));
+            LinkedList<ArenaObject> expected = new LinkedList<>(expectedProjectiles);
+            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+        }
+        {
+            LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER, StoredType.TOWER));
+            LinkedList<ArenaObject> expected = new LinkedList<>(expectedMonsters); expected.addAll(expectedTowers);
+            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+        }
+        {
+            LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER, StoredType.PROJECTILE));
+            LinkedList<ArenaObject> expected = new LinkedList<>(expectedMonsters); expected.addAll(expectedProjectiles);
+            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+        }
+        {
+            LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER, StoredType.PROJECTILE));
+            LinkedList<ArenaObject> expected = new LinkedList<>(expectedTowers); expected.addAll(expectedProjectiles);
+            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+        }
+        {
+            LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER, StoredType.MONSTER, StoredType.PROJECTILE));
+            LinkedList<ArenaObject> expected = new LinkedList<>(expectedTowers); expected.addAll(expectedMonsters); expected.addAll(expectedProjectiles);
+            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+        }
     }
 
     @Test
     public void testBoundaryCases() {
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
         
-        expectedSelection.addAll(generateMonsterBox((short) 100, (short) 200, (short) 50, (short) 40));
-        generateMonsterBox((short) 99, (short) 199, (short) 52, (short) 42);
+        generateBox((short) 100, (short) 200, (short) 50, (short) 40, true);
+        generateBox((short) 99, (short) 199, (short) 52, (short) 42, false);
 
         ArenaObjectRectangleSelector rectangleSelector = new ArenaObjectRectangleSelector((short) 100, (short) 200, (short) 50, (short) 40);
         float selectivity = rectangleSelector.estimateSelectivity(storage);
         assertTrue(0 <= selectivity && selectivity <= 1);
 
-        {
-            LinkedList<ArenaObject> result = storage.getQueryResult(rectangleSelector, EnumSet.of(StoredType.MONSTER));
-            LinkedList<ArenaObject> expected = new LinkedList<>(expectedSelection);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
-        }
+        testQueryFilters(rectangleSelector);
     }
 
     private void reset() {
-        expectedSelection.clear();
+        System.out.println("Resetting...");
+        expectedTowers.clear();
+        expectedMonsters.clear();
+        expectedProjectiles.clear();
         ArenaManager.getActiveObjectStorage().clear();
+        System.out.println("Reset complete");
     }
 
     @Test
@@ -107,26 +178,13 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
             System.out.println(String.format("Created rectangle selector: leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height));
 
             reset();
-            for (int j = 0; j < NUM_RANDOM_MONSTERS; j++) {
-                Monster m = ArenaObjectFactory.createMonster(this,
-                    MonsterType.values()[rng.nextInt(MonsterType.values().length)],
-                    (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
-                    (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1), 1
-                );
-    
-                if (m.getX() >= leftX && m.getX() <= rightX && m.getY() >= topY && m.getY() <= bottomY) {
-                    expectedSelection.add(m);
-                    System.out.println(String.format("Added valid monster: x = %d, y = %d", m.getX(), m.getY()));
-                } else {
-                    System.out.println(String.format("Added invalid monster: x = %d, y = %d", m.getX(), m.getY()));
-                }
+            for (int j = 0; j < NUM_RANDOM_OBJECTS_PER_TYPE; j++) {
+                addObjects(leftX, rightX, topY, bottomY, true);
             }
 
             {
                 System.out.println("Testing...");
-                LinkedList<ArenaObject> result = ArenaManager.getActiveObjectStorage().getQueryResult(rectangleSelector, EnumSet.of(StoredType.MONSTER));
-                LinkedList<ArenaObject> expected = new LinkedList<>(expectedSelection);
-                assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+                testQueryFilters(rectangleSelector);
             }
         }
     }

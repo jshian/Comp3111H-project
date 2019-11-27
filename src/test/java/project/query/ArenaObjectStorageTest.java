@@ -14,8 +14,6 @@ import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
 import project.entity.Projectile;
 import project.entity.Tower;
-import project.entity.ArenaObjectFactory.MonsterType;
-import project.entity.ArenaObjectFactory.TowerType;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredComparableType;
 import project.query.ArenaObjectStorage.StoredType;
@@ -46,29 +44,13 @@ public class ArenaObjectStorageTest extends JavaFXTester {
     }
 
     private void addObjects() {
-        Random rng = new Random();
-
-        Tower t = ArenaObjectFactory.createTower(this,
-            TowerType.values()[rng.nextInt(TowerType.values().length)],
-            (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
-            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1)
-        );
+        Tower t = ArenaObjectStorageHelper.addTower(this);
         towers.add(t);
-        System.out.println(String.format("Added tower: x = %d, y = %d", t.getX(), t.getY()));
 
-        Monster m = ArenaObjectFactory.createMonster(this,
-            MonsterType.values()[rng.nextInt(MonsterType.values().length)],
-            (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
-            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1), 1
-        );
+        Monster m = ArenaObjectStorageHelper.addMonster(this);
         monsters.add(m);
-        System.out.println(String.format("Added monster: x = %d, y = %d", m.getX(), m.getY()));
 
-        Projectile p = ArenaObjectFactory.createProjectile(this, t, m,
-            (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
-            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-        projectiles.add(p);
-        System.out.println(String.format("Added projectile: x = %d, y = %d", p.getX(), p.getY()));
+        projectiles.add(ArenaObjectStorageHelper.addProjectile(this, t, m));
     }
 
     private void removeObjects() {
@@ -92,69 +74,21 @@ public class ArenaObjectStorageTest extends JavaFXTester {
     }
 
     private void moveObjects() {
-        Random rng = new Random();
-
-        if (!towers.isEmpty()) {
-            Tower t = towers.get(rng.nextInt(towers.size()));
-            System.out.println(String.format("Moving tower: x = %d, y = %d", t.getX(), t.getY()));
-            t.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved tower: x = %d, y = %d", t.getX(), t.getY()));
-        }
-        if (!monsters.isEmpty()) {
-            Monster m = monsters.get(rng.nextInt(monsters.size()));
-            System.out.println(String.format("Moving monster: x = %d, y = %d", m.getX(), m.getY()));
-            m.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved monster: x = %d, y = %d", m.getX(), m.getY()));
-        }
-        if (!projectiles.isEmpty()) {
-            Projectile p = projectiles.get(rng.nextInt(projectiles.size()));
-            System.out.println(String.format("Moving projectile: x = %d, y = %d", p.getX(), p.getY()));
-            p.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved projectile: x = %d, y = %d", p.getX(), p.getY()));
-        }
+        ArenaObjectStorageHelper.moveObjects(this);
     }
 
     private void addObjects(short x, short y) {
-        Random rng = new Random();
-
-        Tower t = ArenaObjectFactory.createTower(this,
-            TowerType.values()[rng.nextInt(TowerType.values().length)], x, y
-        );
+        Tower t = ArenaObjectStorageHelper.addTower(this, x, y);
         towers.add(t);
-        System.out.println(String.format("Added tower: x = %d, y = %d", t.getX(), t.getY()));
 
-        Monster m = ArenaObjectFactory.createMonster(this,
-            MonsterType.values()[rng.nextInt(MonsterType.values().length)], x, y, 1
-        );
+        Monster m = ArenaObjectStorageHelper.addMonster(this, x, y);
         monsters.add(m);
-        System.out.println(String.format("Added monster: x = %d, y = %d", m.getX(), m.getY()));
 
-        Projectile p = ArenaObjectFactory.createProjectile(this, t, m, x, y);
-        projectiles.add(p);
-        System.out.println(String.format("Added projectile: x = %d, y = %d", p.getX(), p.getY()));
+        projectiles.add(ArenaObjectStorageHelper.addProjectile(this, t, m, x, y));
     }
 
     private void moveObjects(short x, short y) {
-        Random rng = new Random();
-
-        if (!towers.isEmpty()) {
-            Tower t = towers.get(rng.nextInt(towers.size()));
-            System.out.println(String.format("Moving tower: x = %d, y = %d", t.getX(), t.getY()));
-            t.updatePosition(x, y);
-            System.out.println(String.format("Moved tower: x = %d, y = %d", t.getX(), t.getY()));
-        }
-        if (!monsters.isEmpty()) {
-            Monster m = monsters.get(rng.nextInt(monsters.size()));
-            System.out.println(String.format("Moving monster: x = %d, y = %d", m.getX(), m.getY()));
-            m.updatePosition(x, y);
-            System.out.println(String.format("Moved monster: x = %d, y = %d", m.getX(), m.getY()));
-        }
-        if (!projectiles.isEmpty()) {
-            Projectile p = projectiles.get(rng.nextInt(projectiles.size()));
-            System.out.println(String.format("Moving projectile: x = %d, y = %d", p.getX(), p.getY()));
-            p.updatePosition(x, y);
-            System.out.println(String.format("Moved projectile: x = %d, y = %d", p.getX(), p.getY()));
-        }
+        ArenaObjectStorageHelper.moveObjects(this, x, y);
     }
 
     private void doRandomAction() {

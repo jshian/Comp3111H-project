@@ -97,18 +97,16 @@ public abstract class ArenaObject {
 
     /**
      * Updates the position of the object within the same storage,
-     * while also updating the position of the bound ImageView.
-     * 
-     * In addition, the {@link ArenaObjectStorage} is updated accordingly.
-     * 
+     * while also updating the position of the bound ImageView, on the mover's behalf.
+     * @param mover The object which moves this object.
      * @param x The x-coordinate of the new position.
      * @param y The y-coordinate of the new position.
      * @throws IllegalArgumentException If the position is out of bounds.
      */
-    public void updatePosition(short x, short y) throws IllegalArgumentException {
+    public void moveObject(Object mover, short x, short y) throws IllegalArgumentException {
         ArenaEventRegister register = ArenaManager.getActiveEventRegister();
 
-        register.ARENA_OBJECT_MOVE_START.invoke(this,
+        register.ARENA_OBJECT_MOVE_START.invoke(mover,
                 new ArenaObjectEventArgs() {
                     { subject = ArenaObject.this; }
                 }
@@ -116,7 +114,7 @@ public abstract class ArenaObject {
 
         this.positionInfo.setPosition(x, y);
 
-        register.ARENA_OBJECT_MOVE_END.invoke(this,
+        register.ARENA_OBJECT_MOVE_END.invoke(mover,
                 new ArenaObjectEventArgs() {
                     { subject = ArenaObject.this; }
                 }

@@ -13,6 +13,7 @@ import project.event.eventargs.ArenaTowerEventArgs;
 import project.query.ArenaObjectGridSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredType;
+import project.util.ArrayVisualizer2D;
 
 /**
  * A scalar field where the value on each point equals the minimum distance
@@ -31,27 +32,25 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
          * @param maxRadius The maximum radius of the ring.
          */
         private void incrementRing(Float amount, short centerX, short centerY, short minRadius, short maxRadius) {
-            short leftX = (short) (centerX - maxRadius);
-            short topY = (short) (centerY - maxRadius);
+            short startX = (short) Math.max(0, centerX - maxRadius);
+            short endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + maxRadius);
+            short effectiveWidth = (short) (endX - startX);
     
-            short effectiveWidth = (short) (maxRadius - Math.max(0, - leftX) - Math.max(0, leftX + maxRadius - ArenaManager.ARENA_WIDTH));
-            short effectiveHeight = (short) (maxRadius - Math.max(0, - topY) - Math.max(0, topY + maxRadius - ArenaManager.ARENA_HEIGHT));
+            short startY = (short) Math.max(0, centerY - maxRadius);
+            short endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + maxRadius);
+            short effectiveHeight = (short) (endY - startY);
     
-            short startX = (short) Math.max(0, leftX);
-            short endX_intermediate = (short) Math.min(startX + effectiveWidth, startX + maxRadius - minRadius);
-            short startX_intermediate = (short) Math.min(startX + effectiveWidth, endX_intermediate + minRadius + minRadius);
-            short endX = (short) (startX + effectiveWidth);
+            short endX_intermediate = (short) Math.min(endX, centerX - minRadius);
+            short startX_intermediate = (short) Math.min(endX_intermediate, centerX + minRadius);
+            if (endX_intermediate == startX_intermediate) startX_intermediate++;
     
-            short startY = (short) Math.max(0, topY);
-            short endY_intermediate = (short) Math.min(startY + effectiveHeight, startY + maxRadius - minRadius);
-            short startY_intermediate = (short) Math.min(startY + effectiveHeight, endY_intermediate + minRadius + minRadius);
-            short endY = (short) (startY + effectiveHeight);
+            short endY_intermediate = (short) Math.min(endY, centerY - minRadius);
+            short startY_intermediate = (short) Math.min(endY_intermediate, centerY + minRadius);
+            if (endY_intermediate == startY_intermediate) startY_intermediate++;
     
             // Determine outer loop to minimize code jumping.
             if (effectiveWidth < effectiveHeight) {
-                for (short x = startX; x <= endX; x++) {
-                    if (x > endX_intermediate) x = startX_intermediate;
-    
+                for (short x = startX; x <= endX_intermediate; x++) {    
                     short deltaX = (short) (x - centerX);
     
                     short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaX * deltaX);
@@ -61,7 +60,29 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaX * deltaX);
                     short inner_endY_intermediate = (short) Math.max(0, centerY - flooredMinSqrt);
                     short inner_startY_intermediate = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMinSqrt);
+                    if (inner_endY_intermediate == inner_startY_intermediate) inner_startY_intermediate++;
+
+                    for (short y = inner_startY; y <= inner_endY_intermediate; y++) {
+                        setValueAt(x, y, getValueAt(x, y) + amount);
+                    }
+
+                    for (short y = inner_startY_intermediate; y <= inner_endY; y++) {
+                        setValueAt(x, y, getValueAt(x, y) + amount);
+                    }
+                }
+
+                for (short x = startX_intermediate; x <= endX; x++) {    
+                    short deltaX = (short) (x - centerX);
     
+                    short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaX * deltaX);
+                    short inner_startY = (short) Math.max(0, centerY - flooredMaxSqrt);
+                    short inner_endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMaxSqrt);
+    
+                    short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaX * deltaX);
+                    short inner_endY_intermediate = (short) Math.max(0, centerY - flooredMinSqrt);
+                    short inner_startY_intermediate = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + flooredMinSqrt);
+                    if (inner_endY_intermediate == inner_startY_intermediate) inner_startY_intermediate++;
+
                     for (short y = inner_startY; y <= inner_endY_intermediate; y++) {
                         setValueAt(x, y, getValueAt(x, y) + amount);
                     }
@@ -71,9 +92,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     }
                 }
             } else {
-                for (short y = startY; y <= endY; y++) {
-                    if (y > endY_intermediate) y = startY_intermediate;
-    
+                for (short y = startY; y <= endY_intermediate; y++) {
                     short deltaY = (short) (y - centerY);
     
                     short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaY * deltaY);
@@ -83,7 +102,28 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                     short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaY * deltaY);
                     short inner_endX_intermediate = (short) Math.max(0, centerX - flooredMinSqrt);
                     short inner_startX_intermediate = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMinSqrt);
+                    if (inner_endX_intermediate == inner_startX_intermediate) inner_startX_intermediate++;
+
+                    for (short x = inner_startX; x <= inner_endX_intermediate; x++) {
+                        setValueAt(x, y, getValueAt(x, y) + amount);
+                    }
+
+                    for (short x = inner_startX_intermediate; x <= inner_endX; x++) {
+                        setValueAt(x, y, getValueAt(x, y) + amount);
+                    }
+                }
+                for (short y = startY_intermediate; y <= endY; y++) {
+                    short deltaY = (short) (y - centerY);
     
+                    short flooredMaxSqrt = (short) Math.sqrt(maxRadius * maxRadius - deltaY * deltaY);
+                    short inner_startX = (short) Math.max(0, centerX - flooredMaxSqrt);
+                    short inner_endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMaxSqrt);
+    
+                    short flooredMinSqrt = (short) Math.sqrt(minRadius * minRadius - deltaY * deltaY);
+                    short inner_endX_intermediate = (short) Math.max(0, centerX - flooredMinSqrt);
+                    short inner_startX_intermediate = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + flooredMinSqrt);
+                    if (inner_endX_intermediate == inner_startX_intermediate) inner_startX_intermediate++;
+
                     for (short x = inner_startX; x <= inner_endX_intermediate; x++) {
                         setValueAt(x, y, getValueAt(x, y) + amount);
                     }

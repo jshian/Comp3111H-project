@@ -105,7 +105,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
             unusedMovement--;
         }
 
-        updatePosition(x, y);
+        moveObject(this, x, y);
     }
 
     protected void updateStatusEffects() {
