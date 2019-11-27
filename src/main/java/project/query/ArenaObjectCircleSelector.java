@@ -62,26 +62,22 @@ public class ArenaObjectCircleSelector implements ArenaObjectSelector {
      * Constructs a newly allocated {@link ArenaObjectCircleSelector} object.
      * @param centerX The center x-coordinate of the circle.
      * @param centerY The center y-coordinate of the circle.
-     * @param radius The radius of the circle.
+     * @param radius The radius of the circle, must be non-negative.
      */
     public ArenaObjectCircleSelector(short centerX, short centerY, short radius) {
+        if (radius < 0) throw new IllegalArgumentException(String.format("The radius must be non-negative. Value: %d", radius));
+
         this.centerX = centerX;
         this.centerY = centerY;
         this.radius = radius;
 
-        short leftX = (short) (centerX - radius);
-        short topY = (short) (centerY - radius);
+        this.startX = (short) Math.max(0, centerX - radius);
+        this.endX = (short) Math.min(ArenaManager.ARENA_WIDTH, centerX + radius);
+        this.effectiveWidth = (short) (endX - startX);
 
-        this.effectiveWidth = (short) (radius - Math.max(0, - leftX) - Math.max(0, leftX + radius - ArenaManager.ARENA_WIDTH));
-        this.effectiveHeight = (short) (radius - Math.max(0, - topY) - Math.max(0, topY + radius - ArenaManager.ARENA_HEIGHT));
-
-        this.startX = (short) Math.max(0, leftX); assert startX >= 0;
-        this.endX = (short) (startX + effectiveWidth); assert endX <= ArenaManager.ARENA_WIDTH;
-        assert startX <= endX;
-
-        this.startY = (short) Math.max(0, topY); assert startY >= 0;
-        this.endY = (short) (startY + effectiveHeight); assert endX <= ArenaManager.ARENA_HEIGHT;
-        assert startY <= endY;
+        this.startY = (short) Math.max(0, centerY - radius);
+        this.endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, centerY + radius);
+        this.effectiveHeight = (short) (endY - startY);
     }
 
     @Override

@@ -50,23 +50,23 @@ public class ArenaObjectStorageTest extends JavaFXTester {
 
         Tower t = ArenaObjectFactory.createTower(this,
             TowerType.values()[rng.nextInt(TowerType.values().length)],
-            (short) rng.nextInt(ArenaManager.ARENA_WIDTH),
-            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT)
+            (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
+            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1)
         );
         towers.add(t);
         System.out.println(String.format("Added tower: x = %d, y = %d", t.getX(), t.getY()));
 
         Monster m = ArenaObjectFactory.createMonster(this,
             MonsterType.values()[rng.nextInt(MonsterType.values().length)],
-            (short) rng.nextInt(ArenaManager.ARENA_WIDTH),
-            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), 1
+            (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
+            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1), 1
         );
         monsters.add(m);
         System.out.println(String.format("Added monster: x = %d, y = %d", m.getX(), m.getY()));
 
         Projectile p = ArenaObjectFactory.createProjectile(this, t, m,
-            (short) rng.nextInt(ArenaManager.ARENA_WIDTH),
-            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT));
+            (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
+            (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
         projectiles.add(p);
         System.out.println(String.format("Added projectile: x = %d, y = %d", p.getX(), p.getY()));
     }
@@ -97,19 +97,19 @@ public class ArenaObjectStorageTest extends JavaFXTester {
         if (!towers.isEmpty()) {
             Tower t = towers.get(rng.nextInt(towers.size()));
             System.out.println(String.format("Moving tower: x = %d, y = %d", t.getX(), t.getY()));
-            t.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT));
+            t.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
             System.out.println(String.format("Moved tower: x = %d, y = %d", t.getX(), t.getY()));
         }
         if (!monsters.isEmpty()) {
             Monster m = monsters.get(rng.nextInt(monsters.size()));
             System.out.println(String.format("Moving monster: x = %d, y = %d", m.getX(), m.getY()));
-            m.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT));
+            m.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
             System.out.println(String.format("Moved monster: x = %d, y = %d", m.getX(), m.getY()));
         }
         if (!projectiles.isEmpty()) {
             Projectile p = projectiles.get(rng.nextInt(projectiles.size()));
             System.out.println(String.format("Moving projectile: x = %d, y = %d", p.getX(), p.getY()));
-            p.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT));
+            p.updatePosition((short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
             System.out.println(String.format("Moved projectile: x = %d, y = %d", p.getX(), p.getY()));
         }
     }
@@ -258,12 +258,14 @@ public class ArenaObjectStorageTest extends JavaFXTester {
 
         for (int n = 0; n < NUM_RANDOM_ACTIONS; n++) {
             doRandomAction();
+            System.out.println("Testing...");
             checkTypeIndex(ArenaManager.getActiveObjectStorage());
             checkXYIndex(ArenaManager.getActiveObjectStorage());
         }
 
         while (!towers.isEmpty() || !monsters.isEmpty() | !projectiles.isEmpty()) {
             removeObjects();
+            System.out.println("Testing...");
             checkTypeIndex(ArenaManager.getActiveObjectStorage());
             checkXYIndex(ArenaManager.getActiveObjectStorage());
         }

@@ -2,33 +2,32 @@ package project.query;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.EnumSet;
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 import org.junit.Test;
 
 import project.JavaFXTester;
 import project.control.ArenaManager;
-import project.entity.ArenaObject;
 import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
 import project.entity.ArenaObjectFactory.MonsterType;
-import project.query.ArenaObjectStorage.StoredType;
+import project.query.ArenaObjectStorage.SortOption;
+import project.query.ArenaObjectStorage.StoredComparableType;
 import project.util.CollectionComparator;
 
 /**
- * Tests the {@link ArenaObjectRectangleSelector} class.
+ * Tests the {@link ArenaObjectRectangleSortedSelector} class.
  */
-public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
+public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
     // The objects to be tested
-    private LinkedList<Monster> expectedSelection = new LinkedList<>();
+    private PriorityQueue<Monster> expectedSelection = new PriorityQueue<>();
 
     // Number of random test cases
     private static int NUM_RANDOM_SELECTORS = 100;
     private static int NUM_RANDOM_MONSTERS = 100;
 
-    private LinkedList<Monster> generateMonsterBox(short leftX, short topY, short width, short height) {
+    private PriorityQueue<Monster> generateMonsterBox(short leftX, short topY, short width, short height) {
         if (leftX < 0) leftX = 0;
         if (leftX > ArenaManager.ARENA_WIDTH) leftX = ArenaManager.ARENA_WIDTH;
         if (topY < 0) topY = 0;
@@ -44,7 +43,7 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
 
         Random rng = new Random();
 
-        LinkedList<Monster> monsters = new LinkedList<>();
+        PriorityQueue<Monster> monsters = new PriorityQueue<>();
         for (short x = leftX; x <= rightX; x++) {
             monsters.add(ArenaObjectFactory.createMonster(this, MonsterType.values()[rng.nextInt(MonsterType.values().length)], x, topY, 1));
             monsters.add(ArenaObjectFactory.createMonster(this, MonsterType.values()[rng.nextInt(MonsterType.values().length)], x, bottomY, 1));
@@ -61,17 +60,21 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
     public void testBoundaryCases() {
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
         
-        expectedSelection.addAll(generateMonsterBox((short) 100, (short) 200, (short) 50, (short) 40));
-        generateMonsterBox((short) 99, (short) 199, (short) 52, (short) 42);
-
-        ArenaObjectRectangleSelector rectangleSelector = new ArenaObjectRectangleSelector((short) 100, (short) 200, (short) 50, (short) 40);
-        float selectivity = rectangleSelector.estimateSelectivity(storage);
+        expectedSelection.addAll(generateMonsterBox((short) 50, (short) 10, (short) 290, (short) 270));
+        generateMonsterBox((short) 49, (short) 9, (short) 292, (short) 272);
+        
+        ArenaObjectRectangleSortedSelector<Monster> rectangleSortedSelector = new ArenaObjectRectangleSortedSelector<>((short) 50, (short) 10, (short) 290, (short) 270);
+        float selectivity = rectangleSortedSelector.estimateSelectivity(storage);
         assertTrue(0 <= selectivity && selectivity <= 1);
-
         {
-            LinkedList<ArenaObject> result = storage.getQueryResult(rectangleSelector, EnumSet.of(StoredType.MONSTER));
-            LinkedList<ArenaObject> expected = new LinkedList<>(expectedSelection);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            PriorityQueue<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
+            PriorityQueue<Monster> expected = new PriorityQueue<>(expectedSelection);
+            assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+        }
+        {
+            PriorityQueue<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
+            PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(expectedSelection);
+            assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
         }
     }
 
@@ -103,7 +106,7 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
             if (bottomY < 0) bottomY = 0;
             if (bottomY > ArenaManager.ARENA_HEIGHT) bottomY = ArenaManager.ARENA_HEIGHT;
 
-            ArenaObjectRectangleSelector rectangleSelector = new ArenaObjectRectangleSelector(leftX, topY, width, height);
+            ArenaObjectRectangleSortedSelector<Monster> rectangleSortedSelector = new ArenaObjectRectangleSortedSelector<>(leftX, topY, width, height);
             System.out.println(String.format("Created rectangle selector: leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height));
 
             reset();
@@ -121,12 +124,16 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
                     System.out.println(String.format("Added invalid monster: x = %d, y = %d", m.getX(), m.getY()));
                 }
             }
-
+            
             {
-                System.out.println("Testing...");
-                LinkedList<ArenaObject> result = ArenaManager.getActiveObjectStorage().getQueryResult(rectangleSelector, EnumSet.of(StoredType.MONSTER));
-                LinkedList<ArenaObject> expected = new LinkedList<>(expectedSelection);
-                assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+                PriorityQueue<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
+                PriorityQueue<Monster> expected = new PriorityQueue<>(expectedSelection);
+                assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+            }
+            {
+                PriorityQueue<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
+                PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(expectedSelection);
+                assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
             }
         }
     }

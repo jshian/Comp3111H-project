@@ -67,25 +67,25 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
      * Constructs a newly allocated {@link ArenaObjectRectangleSelector} object.
      * @param leftX The minimum x-coordinate of the rectangle.
      * @param topY The minimum y-coordinate of the rectangle.
-     * @param width The x-length of the rectangle.
-     * @param height The y-length of the rectangle.
+     * @param width The x-length of the rectangle, must be non-negative.
+     * @param height The y-length of the rectangle, must be non-negative.
      */
     public ArenaObjectRectangleSelector(short leftX, short topY, short width, short height) {
+        if (width < 0) throw new IllegalArgumentException(String.format("The width must be non-negative. Value: %d", width));
+        if (height < 0) throw new IllegalArgumentException(String.format("The height must be non-negative. Value: %d", height));
+
         this.leftX = leftX;
         this.topY = topY;
         this.width = width;
         this.height = height;
 
-        this.effectiveWidth = (short) (width - Math.max(0, - leftX) - Math.max(0, leftX + width - ArenaManager.ARENA_WIDTH));
-        this.effectiveHeight = (short) (height - Math.max(0, - topY) - Math.max(0, topY + height - ArenaManager.ARENA_HEIGHT));
+        this.startX = (short) Math.max(0, leftX);
+        this.endX = (short) Math.min(ArenaManager.ARENA_WIDTH, leftX + width);
+        this.effectiveWidth = (short) (endX - startX);
 
-        this.startX = (short) Math.max(0, leftX); assert startX >= 0;
-        this.endX = (short) (startX + effectiveWidth); assert endX <= ArenaManager.ARENA_WIDTH;
-        assert startX <= endX;
-
-        this.startY = (short) Math.max(0, topY); assert startY >= 0;
-        this.endY = (short) (startY + effectiveHeight); assert endX <= ArenaManager.ARENA_HEIGHT;
-        assert startY <= endY;
+        this.startY = (short) Math.max(0, topY);
+        this.endY = (short) Math.min(ArenaManager.ARENA_HEIGHT, topY + height);
+        this.effectiveHeight = (short) (endY - startY);
     }
 
     @Override
