@@ -1,7 +1,6 @@
 package project.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.PostLoad;
+import javax.persistence.*;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -16,30 +15,46 @@ import project.query.ArenaObjectStorage;
 /**
  * Represents an object that exists in an {@link ArenaObjectStorage}.
  */
-@Entity
+@Entity(name="ArenaObject")
 public abstract class ArenaObject {
+
+    /**
+     * ID for storage using Java Persistence API
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * The storage where the object is located within.
      */
+    @ManyToOne(cascade = {CascadeType.ALL})
     protected ArenaObjectStorage storage;
 
     /**
      * The ImageView that the object is bound to.
      */
+    @Transient
     protected ImageView imageView = getDefaultImage();
 
     /**
      * The position of the object within the storage.
      */
+    @OneToOne(cascade = {CascadeType.ALL})
     protected ArenaObjectPositionInfo positionInfo;
 
     /**
      * The method invoked when the next frame is called.
      */
+    @Transient
     @Nullable
     protected EventHandler<EventArgs> onNextFrame = null;
-    
+
+    /**
+     * Default constructor.
+     */
+    public ArenaObject() {}
+
     /**
      * Constructs a newly allocated {@link ArenaObject} object.
      * @param x The x-coordinate of the object within the storage.
@@ -131,8 +146,11 @@ public abstract class ArenaObject {
      * Loads the image view when it is generated from the database.
      */
     @PostLoad
-    protected void loadImage() {
-        imageView = getDefaultImage();
+    protected void loadArenaObject() {
         this.positionInfo = new ArenaObjectPositionInfo(imageView, getX(), getY());
+    }
+
+    public ArenaObjectPositionInfo getPositionInfo() {
+        return positionInfo;
     }
 }

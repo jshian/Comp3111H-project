@@ -22,6 +22,11 @@ public class BasicTower extends Tower {
     }
 
     /**
+     * Default constructor.
+     */
+    public BasicTower() {}
+
+    /**
      * Constructs a newly allocated {@link BasicTower} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.

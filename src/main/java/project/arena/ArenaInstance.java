@@ -4,20 +4,14 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.Random;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import javafx.scene.image.Image;
 
 import project.Player;
 import project.control.ArenaManager;
-import project.entity.ArenaObject;
-import project.entity.ArenaObjectFactory;
-import project.entity.Monster;
-import project.entity.Projectile;
-import project.entity.Tower;
+import project.entity.*;
 import project.entity.ArenaObjectFactory.MonsterType;
 import project.event.EventHandler;
 import project.event.EventManager;
@@ -34,14 +28,21 @@ import project.query.ArenaObjectStorage.StoredType;
  * {@link Monster}s spawn at the starting position and try to reach the end-zone.
  * {@link Tower}s reside on the arena and fire {@link Projectile}s at enemies in range.
  */
-@Entity
+@Entity(name="ArenaInstance")
 public final class ArenaInstance {
+
+    /**
+     * ID for storage using Java Persistence API
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * The player attached to the arena.
      */
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Player player;
 
     /**
@@ -60,7 +61,7 @@ public final class ArenaInstance {
      * The storage of {@link ArenaObject}s attached to this arena.
      */
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private ArenaObjectStorage storage;
 
     /**
@@ -76,6 +77,7 @@ public final class ArenaInstance {
     /**
      * The method invoked when an {@link ArenaObject} is being added.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
@@ -85,6 +87,7 @@ public final class ArenaInstance {
     /**
      * The method invoked when an {@link ArenaObject} is being removed.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
@@ -102,6 +105,7 @@ public final class ArenaInstance {
      * <p>
      * Invokes the game over event if a monster has reached the end-zone.
      */
+    @Transient
     private EventHandler<EventArgs> onEndNextFrame = (sender, args) -> {
         if (currentFrame++ % ArenaManager.WAVE_INTERVAL == 0) spawnWave();
 
@@ -111,6 +115,42 @@ public final class ArenaInstance {
             ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.invoke(this, new EventArgs());
         }
     };
+
+    /**
+     * Default constructor.
+     */
+    public ArenaInstance() {}
+
+    /**
+     * load object after initialise from jpa.
+     */
+    @PostLoad
+    protected void loadArenaInstance() {
+        System.out.println('1');
+        eventRegister = new ArenaEventRegister();
+        eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        eventRegister.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
+
+        player.attachToArena(this);
+        scalarFieldRegister = new ArenaScalarFieldRegister(this); // Scalar fields may be based on objects on the arena
+    }
+
+    /**
+     * Copy a {@link ArenaInstance} object and attaches a player to it.
+     * @param other the {@link ArenaInstance} object to be copied.
+     * @param player the player of the arena.
+     */
+    public ArenaInstance(ArenaInstance other, Player player) {
+        eventRegister = new ArenaEventRegister();
+        eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        eventRegister.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
+
+        this.player = player; player.attachToArena(this);
+        storage = other.storage;
+        scalarFieldRegister = other.scalarFieldRegister;
+    }
 
     /**
      * Constructs a newly allocated {@link ArenaInstance} object and attaches a player to it.
@@ -144,7 +184,7 @@ public final class ArenaInstance {
      * @return The scalar field register attached to the arena.
      */
     public ArenaScalarFieldRegister getScalarFieldRegister() { return scalarFieldRegister; }
-    
+
     /**
      * Returns the storage of the arena.
      * @return The storage of the arena.

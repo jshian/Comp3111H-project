@@ -3,7 +3,7 @@ package project.database.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import project.database.entity.Player;
+import project.Player;
 import project.database.repository.PlayerRepository;
 import project.database.service.PlayerService;
 

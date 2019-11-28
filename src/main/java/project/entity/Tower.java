@@ -11,6 +11,7 @@ import project.arena.ArenaEventRegister;
 import project.control.ArenaManager;
 import project.event.eventargs.ArenaTowerEventArgs;
 import project.query.ArenaObjectRingSortedSelector;
+import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredComparableType;
 import project.util.Geometry;
@@ -24,8 +25,8 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
      * ID for storage using Java Persistence API
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * The maximum attack power of the tower.
@@ -96,11 +97,16 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
                     shoot(validTargets);
                     counter = reload;
                 }
-                
+
                 counter--;
             }
         };
     }
+
+    /**
+     * Default constructor.
+     */
+    public Tower() {}
 
     /**
      * Constructs a newly allocated {@link Tower} object.

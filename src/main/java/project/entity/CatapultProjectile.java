@@ -30,6 +30,11 @@ public class CatapultProjectile extends Projectile {
     private short splashRadius;
 
     /**
+     * Default constructor.
+     */
+    public CatapultProjectile() {}
+
+    /**
      * Constructs a newly allocated {@link CatapultProjectile} object.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.

@@ -21,8 +21,8 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      * ID for storage using Java Persistence API
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * Represents the position from which the projectile is fired.
@@ -96,6 +96,11 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
             }
         };
     }
+
+    /**
+     * Default constructor.
+     */
+    public Projectile() {}
 
     /**
      * Constructs a newly allocated {@link Projectile} object.

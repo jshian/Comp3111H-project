@@ -32,6 +32,11 @@ public class IceTower extends Tower {
     private final int maxSlowDownTime = 100;
 
     /**
+     * Default constructor.
+     */
+    public IceTower() {}
+
+    /**
      * Constructs a newly allocated {@link IceTower} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
@@ -50,7 +55,7 @@ public class IceTower extends Tower {
      * Returns the slow down time of tower.
      * @return the slow down time of tower.
      */
-    public final int getSlowDownTime() { return slowDownTime; }
+    public int getSlowDownTime() { return slowDownTime; }
 
     @Override
     protected void upgrade() {

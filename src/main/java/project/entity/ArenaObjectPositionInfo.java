@@ -6,12 +6,26 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.ImageView;
 import project.control.ArenaManager;
 
+import javax.persistence.*;
+
 /**
  * Represents the position of an {@link ArenaObject}.
  */
+@Entity(name="ArenaObjectPositionInfo")
+@Access(AccessType.PROPERTY)
 public final class ArenaObjectPositionInfo {
+
+    /**
+     * ID for storage using Java Persistence API
+     */
+    private Long id;
     private IntegerProperty x = new SimpleIntegerProperty();
     private IntegerProperty y = new SimpleIntegerProperty();
+
+    /**
+     * Default constructor.
+     */
+    public ArenaObjectPositionInfo() {}
 
     /**
      * Constructs a newly allocated {@link ArenaObjectPositionInfo} object.
@@ -22,7 +36,6 @@ public final class ArenaObjectPositionInfo {
      */
     ArenaObjectPositionInfo(ImageView imageView, short x, short y) throws IllegalArgumentException {
         setPosition(x, y);
-
         imageView.xProperty().bind(Bindings.add(this.x, - imageView.getImage().getWidth() / 2));
         imageView.yProperty().bind(Bindings.add(this.y, - imageView.getImage().getHeight() / 2));
     }
@@ -61,6 +74,7 @@ public final class ArenaObjectPositionInfo {
      * Returns the x-coordinate of the object.
      * @return The x-coordinate of the object.
      */
+    @Column(name = "x")
     public short getX() {
         return (short) x.get();
     }
@@ -69,7 +83,48 @@ public final class ArenaObjectPositionInfo {
      * Returns the y-coordinate of the object.
      * @return The y-coordinate of the object.
      */
+    @Column(name = "y")
     public short getY() {
         return (short) y.get();
+    }
+
+    /**
+     * Returns the id of the object.
+     * @return The id of the object.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    public Long getId() {
+        return (id == null)?null:id;
+    }
+
+    // setters below is used for hibernate.
+    /**
+     * Sets the id of the object within the same storage.
+     * @param id The id of the object.
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Sets the x-coordinate of the object within the same storage,
+     * while also updating the position of the bound ImageView.
+     * @param x x-coordinate of the object.
+     */
+    public void setX(int x) {
+        assertValidPosition((short)x, (short)0);
+        this.x.set(x);
+    }
+
+    /**
+     * Sets the y-coordinate of the object within the same storage,
+     * while also updating the position of the bound ImageView.
+     * @param y y-coordinate of the object.
+     */
+    public void setY(int y) {
+        assertValidPosition((short)0, (short)y);
+        this.y.set(y);
     }
 }

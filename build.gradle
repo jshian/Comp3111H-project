@@ -9,6 +9,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
+group = 'com.game'
+version = '0.0.1-SNAPSHOT'
 sourceCompatibility = org.gradle.api.JavaVersion.VERSION_11
 targetCompatibility = org.gradle.api.JavaVersion.VERSION_11
 
@@ -35,6 +37,12 @@ jar {
 }
 
 mainClassName = 'project.Main'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
 repositories {
     mavenCentral()
@@ -74,10 +82,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jacoco {

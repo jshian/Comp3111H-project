@@ -24,10 +24,16 @@ public class Penguin extends Monster {
             moveMonsterOneFrame();
             updateStatusEffects();
 
-            this.health.set(Math.min(getHealth() + regenerationRate, maxHealth));
+            this.healthProperty.set(Math.min(getHealth() + regenerationRate, maxHealth));
+            this.health = this.healthProperty.get();
         };
     }
-    
+
+    /**
+     * Default constructor.
+     */
+    public Penguin() {}
+
     /**
      * Constructs a newly allocated {@link Penguin} object.
      * @param x The x-coordinate of the object within the storage.
@@ -38,7 +44,8 @@ public class Penguin extends Monster {
         super(x, y, difficulty);
         this.maxHealth = 7.5 + 2.5 * difficulty;
         this.baseSpeed = 3 + 0.3 * Math.log10(difficulty);
-        this.health.set(this.maxHealth);
+        this.healthProperty.set(this.maxHealth);
+        this.health = this.healthProperty.get();
         this.speed = this.baseSpeed;
         this.resourceValue = (int) (difficulty * 1.25);
         this.regenerationRate = maxHealth * 0.05;

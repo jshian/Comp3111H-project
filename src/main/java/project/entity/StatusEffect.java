@@ -10,13 +10,13 @@ import javax.validation.constraints.NotNull;
  * Status effects can modify the stats of {@link Monster}s.
  * Note, when applied, status effects only start to take effect and count down on the next frame.
  */
-@Entity
+@Entity(name="StatusEffect")
 public class StatusEffect {
     /**
      * ID for storage using Java Persistence API
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     /**
@@ -39,6 +39,11 @@ public class StatusEffect {
      * The remaining duration of the status effects in number of frames.
      */
     private int duration;
+
+    /**
+     * Default constructor.
+     */
+    public StatusEffect() {}
 
     /**
      * Default constructor for StatusEffect class.
@@ -64,16 +69,16 @@ public class StatusEffect {
      * Accesses the type of the status effect.
      * @return The type of the status effect.
      */
-    public final EffectType getEffectType() { return effectType; }
+    public EffectType getEffectType() { return effectType; }
 
     /**
      * Accesses the remaining duration of the status effect.
      * @return The remaining duration of the status effect.
      */
-    public final int getDuration() { return duration; }
+    public int getDuration() { return duration; }
 
     /**
      * Counts down the status effect by one frame.
      */
-    public final void countDown() { duration -= 1; }
+    public void countDown() { duration -= 1; }
 }
