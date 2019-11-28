@@ -15,6 +15,7 @@ import project.entity.Monster;
 import project.entity.Projectile;
 import project.entity.Tower;
 import project.query.ArenaObjectStorage;
+import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredComparableType;
 import project.query.ArenaObjectStorage.StoredType;
 
@@ -148,7 +149,8 @@ public class ArenaObjectStorageTest extends JavaFXTester {
         assertEquals(storage.getIndexFor(StoredType.MONSTER).size(), monsters.size());
         assertEquals(storage.getIndexFor(StoredType.PROJECTILE).size(), projectiles.size());
 
-        assertEquals(storage.getIndexFor(StoredComparableType.MONSTER).size(), monsters.size());
+        assertEquals(storage.getSortedIndexFor(StoredComparableType.MONSTER, SortOption.ASCENDING).size(), monsters.size());
+        assertEquals(storage.getSortedIndexFor(StoredComparableType.MONSTER, SortOption.DESCENDING).size(), monsters.size());
     }
 
     @Test

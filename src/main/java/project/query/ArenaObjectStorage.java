@@ -326,14 +326,26 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Returns the index for a supported compoarable {@link ArenaObject} type.
+     * Returns the index for a supported comparable {@link ArenaObject} type.
      * @param type The supported comparable object type.
+     * @param option The sorting option.
      * @return The index for a supported comparable object type.
      */
     @SuppressWarnings("unchecked")
-    <T extends ArenaObject & Comparable <T>> LinkedList<T> getIndexFor(StoredComparableType type) {
-        switch (type) {
-            //case MONSTER: return (LinkedList<T>) monsters;
+    <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedIndexFor(StoredComparableType type, SortOption option) {
+        PriorityQueue<T> result = null;
+        switch (option) {
+        	case ASCENDING: result = new PriorityQueue<>(); break;
+        	case DESCENDING: result = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); break;
+        }
+    	
+    	switch (type) {
+            case MONSTER: {
+            	for (Monster o : monsters) {
+            		result.add((T) o);
+            	}
+            	return result;
+            }
         }
 
         return null;
@@ -361,7 +373,7 @@ public final class ArenaObjectStorage {
         int count = 0;
 
         for (StoredComparableType type : EnumSet.allOf(StoredComparableType.class)) {
-            count += getIndexFor(type).size();
+            count += getSortedIndexFor(type, SortOption.ASCENDING).size();
         }
 
         return count;

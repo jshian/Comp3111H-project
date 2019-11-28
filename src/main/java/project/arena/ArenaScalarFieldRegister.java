@@ -1,5 +1,6 @@
 package project.arena;
 
+import project.entity.Monster;
 import project.field.MonsterDistanceToEndField;
 import project.field.MonsterAttacksToEndField;
 
