@@ -26,9 +26,9 @@ public class DemoApplicationTests {
     @Test
     public void test(){
         transaction.begin();
-        Player player =new Player();
-//        player.setName("alan");
-//        player.setScore(1000000);
+        Player player =new Player("alan",1000);
+        //player.setName("alan");
+        //player.setScore(1000000);
         session.save(player);
         transaction.commit();
     }

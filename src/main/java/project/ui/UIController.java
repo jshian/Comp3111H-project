@@ -34,6 +34,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
+import org.springframework.web.client.RestTemplate;
 import project.Player;
 import project.arena.ArenaInstance;
 import project.control.ArenaManager;
@@ -146,6 +147,12 @@ public class UIController {
         System.out.println("Gameover");
         mode = GameMode.END;
         enableGameButton();
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url ="http://localhost:8080/players/add_post";
+        Player result =  restTemplate.postForObject(url, player,Player.class);
+        System.out.println(result);
+
         showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
     };
 
@@ -217,6 +224,7 @@ public class UIController {
     public void setupNewGame(ArenaInstance arenaInstance) {
         player = arenaInstance.getPlayer();
         remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        ArenaManager.loadNew(this, player);
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }
 

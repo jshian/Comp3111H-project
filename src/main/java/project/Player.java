@@ -15,6 +15,7 @@ import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.ui.UIController;
 
+
 @Entity(name="Player")
 @Access(AccessType.PROPERTY)
 public class Player {
