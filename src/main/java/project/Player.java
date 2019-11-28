@@ -2,8 +2,18 @@ package project;
 
 import javax.persistence.Entity;
 
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import project.arena.ArenaEventRegister;
+import project.arena.ArenaInstance;
+import project.entity.ArenaObject;
+import project.entity.Monster;
+import project.entity.Projectile;
+import project.entity.Tower;
+import project.event.EventHandler;
+import project.event.eventargs.ArenaObjectEventArgs;
+import project.ui.UIController;
 
 @Entity
 public class Player {
@@ -11,15 +21,54 @@ public class Player {
     // Attribute
     private final String name;
     private IntegerProperty resources = new SimpleIntegerProperty(0);
+    private int score = 0;
 
     /**
-     * Constructor of player
-     * @param name the name of player
-     * @param resource the amount of resources player has.
+     * The method invoked when an {@link ArenaObject} is being added.
+     */
+    private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+
+        if (sender instanceof UIController && subject instanceof Tower) {
+            spendResources(((Tower) subject).getBuildValue());
+        }
+    };
+
+    /**
+     * The method invoked when an {@link ArenaObject} is being removed.
+     */
+    private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
+        ArenaObject subject = args.subject;
+
+        if (sender instanceof UIController && subject instanceof Tower) {
+            receiveResources(((Tower) subject).getBuildValue() / 2);
+        }
+
+        if (sender instanceof Projectile && subject instanceof Monster) {
+            int resourceValue = ((Monster) subject).getResourceValue();
+            receiveResources(resourceValue);
+            score += resourceValue;
+        }
+    };
+
+    /**
+     * Constructs a newly allocated {@link Player} object.
+     * @param name The name of the player.
+     * @param resource The amount of resources the player has.
      */
     public Player(String name, int resource) {
         this.name = name;
         this.resources.set(resource);
+    }
+
+    /**
+     * Attaches the player to an arena instance so that it can receive events.
+     * @param arenaInstance The arena instanceto attach to.
+     */
+    public void attachToArena(ArenaInstance arenaInstance) {
+        ArenaEventRegister register = arenaInstance.getEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
     }
 
     /**
@@ -45,6 +94,14 @@ public class Player {
     }
 
     /**
+     * get the score of player.
+     * @return the score of player.
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
      * check if the player has enough resources to perform the action.
      * @param cost cost of an action.
      * @return true if the player has enough resources or false otherwise.
@@ -59,11 +116,11 @@ public class Player {
     }
 
     public void spendResources(int amount) {
-        resources.set(Math.max(0,  resources.get() - amount));
+        Platform.runLater(() -> resources.set(Math.max(0, resources.get() - amount)));
     }
 
     public void receiveResources(int amount) {
-        resources.set(resources.get() + amount);
+        Platform.runLater(() -> resources.set(resources.get() + amount));
     }
 
 }
