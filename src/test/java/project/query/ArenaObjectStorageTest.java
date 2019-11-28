@@ -14,7 +14,6 @@ import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
 import project.entity.Projectile;
 import project.entity.Tower;
-import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.StoredComparableType;
 import project.query.ArenaObjectStorage.StoredType;
 

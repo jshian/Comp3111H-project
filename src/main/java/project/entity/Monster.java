@@ -11,7 +11,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Tooltip;
 import project.control.ArenaManager;
 import project.field.ArenaScalarField;
-import project.query.ArenaObjectStorage;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
@@ -84,14 +83,12 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * A linked list of references to each status effect that is active against the monster.
      */
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name="MonsterStatusEffects")
     protected List<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
      * A linked list containing a reference to the positions that the monster has passed through in the previous frame.
      */
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name="MonsterTrail")
     protected List<ArenaObjectPositionInfo> trail = new LinkedList<>();
 
     protected void moveMonsterOneFrame() {
@@ -229,7 +226,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     @Override
-    public LinkedList<ArenaObjectPositionInfo> getTrail() { return (LinkedList<ArenaObjectPositionInfo>)trail; }
+    public List<ArenaObjectPositionInfo> getTrail() { return trail; }
 
     @Override
     public short getTargetLocationX() { return ArenaManager.END_X; }

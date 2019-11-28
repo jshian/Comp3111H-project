@@ -5,6 +5,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.Entity;
 
@@ -62,7 +63,7 @@ public class CatapultProjectile extends Projectile {
         ArenaManager.getActiveUIController().drawCircle(getX(), getY(), splashRadius, SPLASH_DISPLAY_DURATION);
 
         ArenaObjectCircleSelector selector = new ArenaObjectCircleSelector(getX(), getY(), splashRadius);
-        LinkedList<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
+        List<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
         for (ArenaObject m : monsters) {
             ((Monster) m).takeDamage(damage, this);
         }

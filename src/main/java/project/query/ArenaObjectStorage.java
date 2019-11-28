@@ -161,12 +161,12 @@ public final class ArenaObjectStorage {
 
         // Add to position-based index
         short x = subject.getX();
-        LinkedList<ArenaObject> xList = objectsAtX.get(x);
+        List<ArenaObject> xList = objectsAtX.get(x);
         assert (!xList.contains(subject));
         xList.add(subject);
 
         short y = subject.getY();
-        LinkedList<ArenaObject> yList = objectsAtY.get(y);
+        List<ArenaObject> yList = objectsAtY.get(y);
         assert (!yList.contains(subject));
         yList.add(subject);
 
@@ -194,12 +194,12 @@ public final class ArenaObjectStorage {
 
         // Remove from position-based index
         short x = subject.getX();
-        LinkedList<ArenaObject> xList = objectsAtX.get(x);
+        List<ArenaObject> xList = objectsAtX.get(x);
         assert (xList.contains(subject));
         xList.remove(subject);
 
         short y = subject.getY();
-        LinkedList<ArenaObject> yList = objectsAtY.get(y);
+        List<ArenaObject> yList = objectsAtY.get(y);
         assert (yList.contains(subject));
         yList.remove(subject);
 
@@ -228,11 +228,11 @@ public final class ArenaObjectStorage {
         short y = subject.getY();
 
         // Remove from position-based index
-        LinkedList<ArenaObject> xList_old = objectsAtX.get(x);
+        List<ArenaObject> xList_old = objectsAtX.get(x);
         assert (xList_old.contains(subject));
         xList_old.remove(subject);
 
-        LinkedList<ArenaObject> yList_old = objectsAtY.get(y);
+        List<ArenaObject> yList_old = objectsAtY.get(y);
         assert (yList_old.contains(subject));
         yList_old.remove(subject);
     };
@@ -247,11 +247,11 @@ public final class ArenaObjectStorage {
         short y = subject.getY();
 
         // Add to position-based index
-        LinkedList<ArenaObject> xList_new = objectsAtX.get(x);
+        List<ArenaObject> xList_new = objectsAtX.get(x);
         assert (!xList_new.contains(subject));
         xList_new.add(subject);
 
-        LinkedList<ArenaObject> yList_new = objectsAtY.get(y);
+        List<ArenaObject> yList_new = objectsAtY.get(y);
         assert (!yList_new.contains(subject));
         yList_new.add(subject);
     };
@@ -306,7 +306,7 @@ public final class ArenaObjectStorage {
      * Clears the storage. For testing only.
      */
     void clear() {
-        LinkedList<ArenaObject> toRemove = new LinkedList<>(towers);
+        List<ArenaObject> toRemove = new LinkedList<>(towers);
         toRemove.addAll(projectiles);
         toRemove.addAll(monsters);
 
@@ -334,11 +334,11 @@ public final class ArenaObjectStorage {
      * @param type The supported object type.
      * @return The index for a supported object type.
      */
-    LinkedList<? extends ArenaObject> getIndexFor(StoredType type) {
+    List<? extends ArenaObject> getIndexFor(StoredType type) {
         switch (type) {
-            case TOWER: return (LinkedList<Tower>) towers;
-            case PROJECTILE: return (LinkedList<Projectile>) projectiles;
-            case MONSTER: return (LinkedList<Monster>) monsters;
+            case TOWER: return towers;
+            case PROJECTILE: return projectiles;
+            case MONSTER: return monsters;
         }
 
         return null;
@@ -350,7 +350,7 @@ public final class ArenaObjectStorage {
      * @return The index for a supported comparable object type.
      */
     @SuppressWarnings("unchecked")
-    <T extends ArenaObject & Comparable <T>> LinkedList<T> getIndexFor(StoredComparableType type) {
+    <T extends ArenaObject & Comparable <T>> List<T> getIndexFor(StoredComparableType type) {
         switch (type) {
             //case MONSTER: return (LinkedList<T>) monsters;
         }
@@ -410,7 +410,7 @@ public final class ArenaObjectStorage {
      * @param types The types of {@link ArenaObject} to select.
      * @return The query result.
      */
-    public LinkedList<ArenaObject> getQueryResult(ArenaObjectSelector selector, EnumSet<StoredType> types) {
+    public List<ArenaObject> getQueryResult(ArenaObjectSelector selector, EnumSet<StoredType> types) {
         ArenaObjectQuery query = new ArenaObjectQuery(selector);
         return query.run(this, types);
     }
@@ -421,7 +421,7 @@ public final class ArenaObjectStorage {
      * @param types The types of {@link ArenaObject} to select.
      * @return The query result.
      */
-    public LinkedList<ArenaObject> getQueryResult(LinkedList<ArenaObjectSelector> selectors, EnumSet<StoredType> types) {
+    public List<ArenaObject> getQueryResult(List<ArenaObjectSelector> selectors, EnumSet<StoredType> types) {
         ArenaObjectQuery query = new ArenaObjectQuery(selectors);
         return query.run(this, types);
     }

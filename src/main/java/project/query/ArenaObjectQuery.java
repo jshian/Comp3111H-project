@@ -2,6 +2,7 @@ package project.query;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.StoredType;
@@ -33,7 +34,7 @@ class ArenaObjectQuery {
      * Constructs a newly allocated {@link ArenaObjectQuery} object with multiple selectors.
      * @param selectors The list of selectors.
      */
-    public ArenaObjectQuery(LinkedList<ArenaObjectSelector> selectors) {
+    public ArenaObjectQuery(List<ArenaObjectSelector> selectors) {
         this.selectors = new LinkedList<>(selectors);
     }
 

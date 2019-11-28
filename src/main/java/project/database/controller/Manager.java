@@ -23,13 +23,15 @@ public class Manager {
         Manager.entityManager = entityManager;
     }
 
-    private static void removeAll() {
+    public static void save(ArenaInstance arenaInstance) {
         if(entityManager == null) return;
+
         EntityTransaction tran = null;
         try {
             tran = entityManager.getTransaction();
             tran.begin();
 
+            // remove old
             Query q1 = entityManager.createQuery("DELETE FROM ArenaInstance");
             Query q2 = entityManager.createQuery("DELETE FROM ArenaObject");
             Query q3 = entityManager.createQuery("DELETE FROM ArenaObjectPositionInfo");
@@ -56,22 +58,7 @@ public class Manager {
 //            q10.executeUpdate();
 //            q11.executeUpdate();
 
-            tran.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            tran.rollback();
-        }
-    }
-
-    public static void save(ArenaInstance arenaInstance) {
-        if(entityManager == null) return;
-
-        removeAll();
-        EntityTransaction tran = null;
-        try {
-            tran = entityManager.getTransaction();
-            tran.begin();
-
+            // add new
             entityManager.persist(arenaInstance.getPlayer());
             ArenaObjectStorage tempStorage = arenaInstance.getStorage();
             for (ArenaObject o : tempStorage.getTowers()) {
