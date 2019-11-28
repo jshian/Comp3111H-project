@@ -25,6 +25,7 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
 
     @Test
     public void testBoundaryCases() {
+        ArenaObjectStorageHelper.disableScalarFieldUpdates();
 
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
         {
@@ -72,6 +73,8 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
 
     @Test
     public void testGeneralCases() {
+        ArenaObjectStorageHelper.disableScalarFieldUpdates();
+        
         ArenaObjectCircleSelector circleSelector;
         ArenaObjectCircleSortedSelector<Monster> circleSortedSelector;
 

@@ -58,6 +58,7 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
 
     @Test
     public void testBoundaryCases() {
+        ArenaObjectStorageHelper.disableScalarFieldUpdates();
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
         
         expectedSelection.addAll(generateBox((short) 50, (short) 10, (short) 290, (short) 270));
@@ -87,6 +88,7 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
 
     @Test
     public void testGeneralCases() {
+        ArenaObjectStorageHelper.disableScalarFieldUpdates();
         Random rng = new Random();
         for (int i = 0; i < NUM_RANDOM_SELECTORS; i++) {
             short leftX = (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1);

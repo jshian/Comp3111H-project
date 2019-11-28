@@ -1,5 +1,9 @@
 package project.query;
 
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -10,13 +14,67 @@ import project.entity.Projectile;
 import project.entity.Tower;
 import project.entity.ArenaObjectFactory.MonsterType;
 import project.entity.ArenaObjectFactory.TowerType;
+import project.event.EventHandler;
+import project.event.EventManager;
+import project.event.eventargs.ArenaObjectEventArgs;
+import project.field.MonsterAttacksToEndField;
+import project.field.MonsterDistanceToEndField;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
- * Helper interface to facilitate mass addition and removal of objects from
+ * Helper class to facilitate mass addition and removal of objects from
  * {@link ArenaObjectStorage}.
  */
-interface ArenaObjectStorageHelper {
+public class ArenaObjectStorageHelper {
+
+    /**
+     * Disables updates to scalar fields to speed up testing.
+     */
+    public static void disableScalarFieldUpdates() {
+
+        try {
+            Field field_onAddObject_distance = MonsterDistanceToEndField.class.getDeclaredField("onAddObject");
+            field_onAddObject_distance.setAccessible(true);
+
+            Field field_onRemoveObject_distance = MonsterDistanceToEndField.class.getDeclaredField("onRemoveObject");
+            field_onRemoveObject_distance.setAccessible(true);
+
+            Field field_onEndMoveObject_distance = MonsterDistanceToEndField.class.getDeclaredField("onEndMoveObject");
+            field_onEndMoveObject_distance.setAccessible(true);
+
+            Field field_onAddObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onAddObject");
+            field_onAddObject_attack.setAccessible(true);
+
+            Field field_onRemoveObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onRemoveObject");
+            field_onRemoveObject_attack.setAccessible(true);
+
+            Field field_onStartMoveObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onStartMoveObject");
+            field_onStartMoveObject_attack.setAccessible(true);
+
+            Field field_onEndMoveObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onEndMoveObject");
+            field_onEndMoveObject_attack.setAccessible(true);
+
+            Method method_unsubscribe = EventManager.class.getDeclaredMethod("unsubscribe", EventHandler.class);
+            method_unsubscribe.setAccessible(true);
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_ADD = ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD;
+            method_unsubscribe.invoke(ARENA_OBJECT_ADD, field_onAddObject_distance.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END));
+            method_unsubscribe.invoke(ARENA_OBJECT_ADD, field_onAddObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_REMOVE = ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE;
+            method_unsubscribe.invoke(ARENA_OBJECT_REMOVE, field_onRemoveObject_distance.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END));
+            method_unsubscribe.invoke(ARENA_OBJECT_REMOVE, field_onRemoveObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_MOVE_START = ArenaManager.getActiveEventRegister().ARENA_OBJECT_MOVE_START;
+            method_unsubscribe.invoke(ARENA_OBJECT_MOVE_START, field_onStartMoveObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_MOVE_END = ArenaManager.getActiveEventRegister().ARENA_OBJECT_MOVE_END;
+            method_unsubscribe.invoke(ARENA_OBJECT_MOVE_END, field_onEndMoveObject_distance.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END));
+            method_unsubscribe.invoke(ARENA_OBJECT_MOVE_END, field_onEndMoveObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+        } catch (Exception e) {
+            fail("An unexpected error has occurred");
+        }
+    }
 
     /**
      * Adds a random {@link Tower} to a random location on the arena on the creator's behalf.
