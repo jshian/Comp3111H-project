@@ -2,6 +2,7 @@ package project.arena;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import javax.persistence.*;
@@ -42,7 +43,7 @@ public final class ArenaInstance {
      * The player attached to the arena.
      */
     @NotNull
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.MERGE})
     private Player player;
 
     /**
@@ -61,7 +62,7 @@ public final class ArenaInstance {
      * The storage of {@link ArenaObject}s attached to this arena.
      */
     @NotNull
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.MERGE})
     private ArenaObjectStorage storage;
 
     /**
@@ -110,7 +111,7 @@ public final class ArenaInstance {
         if (currentFrame++ % ArenaManager.WAVE_INTERVAL == 0) spawnWave();
 
         ArenaObjectRectangleSelector selector = new ArenaObjectRectangleSelector(ArenaManager.END_X, ArenaManager.END_Y, (short) 0, (short) 0);
-        LinkedList<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
+        List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
         if (!result.isEmpty()) {
             ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.invoke(this, new EventArgs());
         }
@@ -122,11 +123,10 @@ public final class ArenaInstance {
     public ArenaInstance() {}
 
     /**
-     * load object after initialise from jpa.
+     * load object after initialise.
      */
     @PostLoad
     protected void loadArenaInstance() {
-        System.out.println('1');
         eventRegister = new ArenaEventRegister();
         eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
         eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
@@ -201,7 +201,7 @@ public final class ArenaInstance {
     public boolean canBuildTowerAt(short x, short y)
     {
         ArenaObjectGridSelector gridSelector = new ArenaObjectGridSelector(x, y);
-        LinkedList<ArenaObject> objectsInGrid = storage.getQueryResult(gridSelector, EnumSet.of(StoredType.TOWER, StoredType.MONSTER));
+        List<ArenaObject> objectsInGrid = storage.getQueryResult(gridSelector, EnumSet.of(StoredType.TOWER, StoredType.MONSTER));
         if (!objectsInGrid.isEmpty()) return false;
 
         short gridXPos = ArenaManager.getGridXPosFromCoor(x);
@@ -234,7 +234,7 @@ public final class ArenaInstance {
                 short centerY = ArenaManager.getGridCenterYFromPos(j);
 
                 ArenaObjectGridSelector gridSelector = new ArenaObjectGridSelector(centerX, centerY);
-                LinkedList<ArenaObject> towersInGrid = storage.getQueryResult(gridSelector, EnumSet.of(StoredType.TOWER));
+                List<ArenaObject> towersInGrid = storage.getQueryResult(gridSelector, EnumSet.of(StoredType.TOWER));
                 noTower[i][j] = towersInGrid.isEmpty();
                 
                 visited[i][j] = false;
@@ -244,7 +244,7 @@ public final class ArenaInstance {
         gridDFS(noTower, visited, ArenaManager.getEndGridXPos(), ArenaManager.getEndGridYPos());
 
         // { xPos, yPos }
-        LinkedList<short[]> hasMonster = new LinkedList<>();
+        List<short[]> hasMonster = new LinkedList<>();
         hasMonster.add(new short[] { ArenaManager.getStartingGridXPos(), ArenaManager.getStartingGridYPos() });
         for (ArenaObject m : storage.getQueryResult(new ArenaObjectPropertySelector<>(Monster.class, o -> true), EnumSet.of(StoredType.MONSTER))) {
             short monsterGridXPos = ArenaManager.getGridXPosFromCoor(m.getX());

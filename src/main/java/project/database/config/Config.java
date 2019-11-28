@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
 
+/**
+ * Configuration of spring boot application.
+ */
 @Configuration
 public class Config {
 

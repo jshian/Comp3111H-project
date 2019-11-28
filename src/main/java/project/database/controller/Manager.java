@@ -5,28 +5,41 @@ import project.entity.*;
 import project.query.ArenaObjectStorage;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.Iterator;
 
+/**
+ * Manager that perform save/load game function.
+ */
 public class Manager {
 
-    static EntityManager entityManager = null;
+    /**
+     * the entityManagerFactory of manager.
+     */
+    private static EntityManagerFactory entityManagerFactory = null;
 
-    public static EntityManager getEntityManager() {
-        return entityManager;
+    /**
+     * set the entityManagerFactory of manager.
+     * @param entityManagerFactory the entityManagerFactory of manager.
+     */
+    public static void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        Manager.entityManagerFactory = entityManagerFactory;
     }
 
-    public static void setEntityManager(EntityManager entityManager) {
-        Manager.entityManager = entityManager;
-    }
-
+    /**
+     * remove all arenaInstances in the database.
+     */
     private static void removeAll() {
-        if(entityManager == null) return;
+        if(entityManagerFactory == null) return;
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction tran = null;
         try {
-            EntityTransaction tran = entityManager.getTransaction();
+            tran = entityManager.getTransaction();
             tran.begin();
 
             Query q1 = entityManager.createQuery("DELETE FROM ArenaInstance");
@@ -36,12 +49,6 @@ public class Manager {
             Query q5 = entityManager.createQuery("DELETE FROM Player");
             Query q6 = entityManager.createQuery("DELETE FROM StatusEffect");
 
-//            Query q7 = entityManager.createQuery("DELETE FROM MonsterStatusEffects");
-//            Query q8 = entityManager.createQuery("DELETE FROM ArenaObjectStorageMonsters");
-//            Query q9 = entityManager.createQuery("DELETE FROM ArenaObjectStorageProjectiles");
-//            Query q10 = entityManager.createQuery("DELETE FROM ArenaObjectStorageTowers");
-//            Query q11 = entityManager.createQuery("DELETE FROM MonsterTrail");
-
             q1.executeUpdate();
             q2.executeUpdate();
             q3.executeUpdate();
@@ -49,63 +56,82 @@ public class Manager {
             q5.executeUpdate();
             q6.executeUpdate();
 
-//            q7.executeUpdate();
-//            q8.executeUpdate();
-//            q9.executeUpdate();
-//            q10.executeUpdate();
-//            q11.executeUpdate();
-
             tran.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            tran.rollback();
+        } finally {
+            entityManager.close();
         }
     }
 
+    /**
+     * save the arenaInstance to database.
+     * @param arenaInstance the arenaInstance.
+     */
     public static void save(ArenaInstance arenaInstance) {
-        if(entityManager == null) return;
-
-        removeAll();
+        if(entityManagerFactory == null) return;
+        //removeAll();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction tran = null;
         try {
-            EntityTransaction tran = entityManager.getTransaction();
+            tran = entityManager.getTransaction();
             tran.begin();
 
-            entityManager.persist(arenaInstance.getPlayer());
+            add(entityManager, arenaInstance.getPlayer());
             ArenaObjectStorage tempStorage = arenaInstance.getStorage();
             for (ArenaObject o : tempStorage.getTowers()) {
-                entityManager.persist(o.getPositionInfo());
-                entityManager.persist(o);
+                System.out.println("tower");
+                add(entityManager, o.getPositionInfo());
+                add(entityManager, o);
             }
             for (ArenaObject o : tempStorage.getMonsters()) {
-                entityManager.persist(o.getPositionInfo());
+                add(entityManager, o.getPositionInfo());
 
                 Iterator<StatusEffect> i = ((Monster) o).getStatusEffects();
                 while (i.hasNext()) {
-                    entityManager.persist(i.next());
+                    add(entityManager, i.next());
                 }
                 for (ArenaObjectPositionInfo pos : ((Monster) o).getTrail()) {
-                    entityManager.persist(pos);
+                    add(entityManager, pos);
                 }
-                entityManager.persist(o);
+                add(entityManager, o);
             }
             for (ArenaObject o : tempStorage.getProjectiles()) {
-                entityManager.persist(o.getPositionInfo());
-                entityManager.persist(o);
+                add(entityManager, o.getPositionInfo());
+                add(entityManager, o);
             }
-            entityManager.persist(tempStorage);
-            entityManager.persist(arenaInstance);
+            add(entityManager, tempStorage);
+            add(entityManager, arenaInstance);
 
             tran.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            tran.rollback();
+        } finally {
+            entityManager.close();
         }
     }
 
-    public static ArenaInstance load() {
-        if(entityManager == null) return null;
+    private static void add(EntityManager entityManager, Object o) throws Exception {
+        if (entityManager.contains(o))
+            entityManager.merge(o);
+        else
+            entityManager.persist(o);
+    }
 
+    /**
+     * load an arenaInstance from the database.
+     * @return an arenaInstance from the database.
+     */
+    public static ArenaInstance load() {
+        if(entityManagerFactory == null) return null;
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction tran = null;
         ArenaInstance a = null;
         try {
-            EntityTransaction tran = entityManager.getTransaction();
+            tran = entityManager.getTransaction();
             tran.begin();
 
             CriteriaBuilder qb = entityManager.getCriteriaBuilder();
@@ -114,7 +140,7 @@ public class Manager {
             Long numOfRow = entityManager.createQuery(cq).getSingleResult();
 
             if (numOfRow > 0) {
-                String sql = "SELECT t FROM ArenaInstance t";
+                String sql = "SELECT t FROM ArenaInstance t order by t.id desc";
                 Query query = entityManager.createQuery(sql);
                 a = (ArenaInstance) query.setMaxResults(1).getResultList().get(0);
             }
@@ -122,10 +148,12 @@ public class Manager {
             tran.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            tran.rollback();
+        } finally {
+            entityManager.close();
         }
-
-        System.out.println(a.getPlayer().getName() + " " + a.getStorage().getTowers());
 
         return a;
     }
+
 }
