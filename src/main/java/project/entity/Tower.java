@@ -106,12 +106,6 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
      */
     public Tower() {}
 
-    @Override
-    @PostLoad
-    protected void loadArenaObject() {
-        super.loadArenaObject();
-    }
-
     /**
      * Constructs a newly allocated {@link Tower} object.
      * @param x The x-coordinate of the object within the storage.

@@ -71,37 +71,36 @@ public class Manager {
      */
     public static void save(ArenaInstance arenaInstance) {
         if(entityManagerFactory == null) return;
-        //removeAll();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction tran = null;
         try {
             tran = entityManager.getTransaction();
             tran.begin();
 
-            add(entityManager, arenaInstance.getPlayer());
-            ArenaObjectStorage tempStorage = arenaInstance.getStorage();
-            for (ArenaObject o : tempStorage.getTowers()) {
-                System.out.println("tower");
-                add(entityManager, o.getPositionInfo());
-                add(entityManager, o);
-            }
-            for (ArenaObject o : tempStorage.getMonsters()) {
-                add(entityManager, o.getPositionInfo());
-
-                Iterator<StatusEffect> i = ((Monster) o).getStatusEffects();
-                while (i.hasNext()) {
-                    add(entityManager, i.next());
-                }
-                for (ArenaObjectPositionInfo pos : ((Monster) o).getTrail()) {
-                    add(entityManager, pos);
-                }
-                add(entityManager, o);
-            }
-            for (ArenaObject o : tempStorage.getProjectiles()) {
-                add(entityManager, o.getPositionInfo());
-                add(entityManager, o);
-            }
-            add(entityManager, tempStorage);
+//            add(entityManager, arenaInstance.getPlayer());
+//            ArenaObjectStorage tempStorage = arenaInstance.getStorage();
+//            for (ArenaObject o : tempStorage.getTowers()) {
+//                System.out.println("tower");
+//                add(entityManager, o.getPositionInfo());
+//                add(entityManager, o);
+//            }
+//            for (ArenaObject o : tempStorage.getMonsters()) {
+//                add(entityManager, o.getPositionInfo());
+//
+//                Iterator<StatusEffect> i = ((Monster) o).getStatusEffects();
+//                while (i.hasNext()) {
+//                    add(entityManager, i.next());
+//                }
+//                for (ArenaObjectPositionInfo pos : ((Monster) o).getTrail()) {
+//                    add(entityManager, pos);
+//                }
+//                add(entityManager, o);
+//            }
+//            for (ArenaObject o : tempStorage.getProjectiles()) {
+//                add(entityManager, o.getPositionInfo());
+//                add(entityManager, o);
+//            }
+//            add(entityManager, tempStorage);
             add(entityManager, arenaInstance);
 
             tran.commit();
@@ -113,11 +112,17 @@ public class Manager {
         }
     }
 
+    /**
+     * add an object to the db.
+     * @param entityManager the entityManager to connect db.
+     * @param o the object to persist.
+     * @throws Exception RuntimeException when persist an object.
+     */
     private static void add(EntityManager entityManager, Object o) throws Exception {
-        if (entityManager.contains(o))
+//        if (entityManager.contains(o))
             entityManager.merge(o);
-        else
-            entityManager.persist(o);
+//        else
+//            entityManager.persist(o);
     }
 
     /**
