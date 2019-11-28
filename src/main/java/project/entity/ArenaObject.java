@@ -28,7 +28,7 @@ public abstract class ArenaObject {
     /**
      * The storage where the object is located within.
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     protected ArenaObjectStorage storage;
 
     /**

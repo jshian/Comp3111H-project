@@ -1,4 +1,4 @@
-package project.control;
+package project.database.controller;
 
 import project.arena.ArenaInstance;
 import project.entity.*;
@@ -113,22 +113,18 @@ public class Manager {
             cq.select(qb.count(cq.from(ArenaInstance.class)));
             Long numOfRow = entityManager.createQuery(cq).getSingleResult();
 
-            String sql2 = "SELECT t FROM ArenaObjectStorage t";
-            Query query2 = entityManager.createQuery(sql2);
-            ArenaObjectStorage storage = (ArenaObjectStorage) query2.setMaxResults(1).getResultList().get(0);
-            System.out.println(storage.getTowers().get(0).getX() + " " + storage.getTowers().get(0).getY());
-
             if (numOfRow > 0) {
                 String sql = "SELECT t FROM ArenaInstance t";
                 Query query = entityManager.createQuery(sql);
                 a = (ArenaInstance) query.setMaxResults(1).getResultList().get(0);
-                System.out.println(a.getStorage());
             }
 
             tran.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println(a.getPlayer().getName() + " " + a.getStorage().getTowers());
 
         return a;
     }

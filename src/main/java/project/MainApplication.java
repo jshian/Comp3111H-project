@@ -8,8 +8,8 @@ import javafx.stage.Stage;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import project.config.Config;
-import project.control.Manager;
+import project.database.config.Config;
+import project.database.controller.Manager;
 import project.ui.UIController;
 
 import java.util.concurrent.CompletableFuture;

@@ -1,4 +1,4 @@
-package project.config;
+package project.database.config;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

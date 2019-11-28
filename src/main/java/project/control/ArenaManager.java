@@ -4,6 +4,7 @@ import project.Player;
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
 import project.arena.ArenaScalarFieldRegister;
+import project.database.controller.Manager;
 import project.entity.Monster;
 import project.query.ArenaObjectStorage;
 import project.ui.UIController;
@@ -160,8 +161,6 @@ public final class ArenaManager {
         activeUIController = ui;
         ArenaInstance newInstance = Manager.load();
         activeArenaInstance = newInstance;
-        ui.setupNewGame(newInstance);
-        System.out.println(activeArenaInstance.getStorage().getTowers());
     }
 
     // TODO
@@ -173,7 +172,8 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void save(Player player) {
-        ArenaInstance shadow = new ArenaInstance(activeArenaInstance, player);
+        Player shadowPlayer = new Player(player.getName(), player.getResourcesProperty());
+        ArenaInstance shadow = new ArenaInstance(activeArenaInstance, shadowPlayer);
         Manager.save(shadow);
     }
 
