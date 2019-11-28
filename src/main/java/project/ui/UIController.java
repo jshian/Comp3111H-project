@@ -35,6 +35,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 import project.Player;
+import project.arena.ArenaInstance;
 import project.control.ArenaManager;
 import project.entity.ArenaObjectFactory;
 import project.entity.Tower;
@@ -198,13 +199,24 @@ public class UIController {
         setupNewGame();
         setDragLabel();
     }
-    
+
     /**
      * Sets up a new game.
      */
     private void setupNewGame() {
         player = new Player("name", 200);
-        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesPropertyProperty()));
+        ArenaManager.loadNew(this, player);
+        ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+    }
+
+    /**
+     * Sets up a new game given an ArenaInstance.
+     * @param arenaInstance the arenaInstance of the new game.
+     */
+    public void setupNewGame(ArenaInstance arenaInstance) {
+        player = arenaInstance.getPlayer();
+        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesPropertyProperty()));
         ArenaManager.loadNew(this, player);
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }
@@ -266,16 +278,17 @@ public class UIController {
     }
 
     /**
-     * Load the game
+     * Load the game.
      */
     @FXML
     private void load() {
         // TODO
         resetGame();
+        ArenaManager.load(this, player);
     }
 
     /**
-     * Saves the game.
+     * Save the game.
      */
     @FXML
     private void save() {
@@ -365,12 +378,12 @@ public class UIController {
                         e.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                         Object source = e.getGestureSource();
                         TowerType type = null;
-                        
+
                         if (source.equals(labelBasicTower)) type = TowerType.BASIC;
                         else if (source.equals(labelIceTower)) type = TowerType.ICE;
                         else if (source.equals(labelCatapult)) type = TowerType.CATAPULT;
                         else if (source.equals(labelLaserTower)) type = TowerType.LASER;
-                        
+
                         if (type != null) {
                             if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y)
                                     && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
@@ -392,7 +405,7 @@ public class UIController {
             	    if (mode != GameMode.SIMULATE && mode != GameMode.END) {
                         Object source = e.getGestureSource();
                         TowerType type = null;
-                        
+
                         if (source.equals(labelBasicTower)) type = TowerType.BASIC;
                         else if (source.equals(labelIceTower)) type = TowerType.ICE;
                         else if (source.equals(labelCatapult)) type = TowerType.CATAPULT;
@@ -402,7 +415,7 @@ public class UIController {
                             if (!ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
                                 // not enough resources
                                 showAlert("Not enough resources", "Do not have enough resources to build " + type.getDefaultName() + "!");
-    
+
                             } else if (ArenaManager.getActiveArenaInstance().canBuildTowerAt(x, y) && ArenaManager.getActivePlayer().hasResources(type.getBuildingCost())) {
                                 Tower newTower = ArenaObjectFactory.createTower(UIController.this, type, x, y);
                                 setTowerEvent(newTower);
@@ -492,7 +505,7 @@ public class UIController {
         l.setOnDragDetected(e -> {
             if (mode != GameMode.SIMULATE) {
                 Dragboard db = l.startDragAndDrop(TransferMode.ANY);
-                
+
                 ClipboardContent content = new ClipboardContent();
                 content.putString(l.getText());
                 db.setContent(content);
@@ -596,7 +609,7 @@ public class UIController {
     public void drawRay(short sourceX, short sourceY, short targetX, short targetY, int duration) {
         Point2D edgePt = Geometry.intersectBox(sourceX, sourceY, targetX, targetY,
                                                     0, 0, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT);
-        
+
         Line ray = new Line(sourceX, sourceY, edgePt.getX(), edgePt.getY());
         ray.setStroke(javafx.scene.paint.Color.rgb(255, 255, 0));
         ray.setStrokeWidth(3);
@@ -606,8 +619,8 @@ public class UIController {
 
     /**
      * Draws a specific circle at a specific location.
-     * @param sourceX The x-coordinate of the circle center.
-     * @param sourceY The y-coordinate of the circle center.
+     * @param centerX The x-coordinate of the circle center.
+     * @param centerY The y-coordinate of the circle center.
      * @param radius The radius of the circle.
      * @param duration The duration in number of frames that the circle will remain on the arena.
      */

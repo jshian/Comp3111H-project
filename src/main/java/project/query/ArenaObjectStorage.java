@@ -1,13 +1,8 @@
 package project.query;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.*;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
@@ -25,8 +20,15 @@ import project.event.eventargs.ArenaObjectEventArgs;
  * 
  * Add or remove objects from this storage by invoking the events in {@link ArenaManager#getActiveEventRegister()}.
  */
-@Entity
+@Entity(name="ArenaObjectStorage")
 public final class ArenaObjectStorage {
+
+    /**
+     * ID for storage using Java Persistence API
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * Index for each object in the x-direction.
@@ -53,20 +55,23 @@ public final class ArenaObjectStorage {
     /**
      * Index for each {@link Tower} on the arena.
      */
-    @OneToMany
-    private LinkedList<Tower> towers = new LinkedList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable
+    private List<Tower> towers = new LinkedList<>();
 
     /**
      * Index for each {@link Projectile} on the arena.
      */
-    @OneToMany
-    private LinkedList<Projectile> projectiles = new LinkedList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable
+    private List<Projectile> projectiles = new LinkedList<>();
 
     /**
      * Index for each {@link Monster} on the arena.
      */
-    @OneToMany
-    private LinkedList<Monster> monsters = new LinkedList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable
+    private List<Monster> monsters = new LinkedList<>();
 
     /**
      * Enum of the stored types of {@link ArenaObject} inside the storage.
@@ -87,7 +92,7 @@ public final class ArenaObjectStorage {
          * Refers to all types of {@link Monster}.
          */
         MONSTER (Monster.class);
-        
+
 
         private final Class<? extends ArenaObject> clazz;
 
@@ -111,7 +116,7 @@ public final class ArenaObjectStorage {
          * Refers to all types of {@link Monster}.
          */
         MONSTER (Monster.class);
-        
+
 
         private final Class<?> clazz;
 
@@ -150,6 +155,7 @@ public final class ArenaObjectStorage {
     /**
      * The method invoked when an {@link ArenaObject} is being added.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onAddObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
@@ -182,6 +188,7 @@ public final class ArenaObjectStorage {
     /**
      * The method invoked when an {@link ArenaObject} is being removed.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onRemoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
 
@@ -214,6 +221,7 @@ public final class ArenaObjectStorage {
     /**
      * The method invoked when an {@link ArenaObject} is scheduled to be moved.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onStartMoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
         short x = subject.getX();
@@ -232,6 +240,7 @@ public final class ArenaObjectStorage {
     /**
      * The method invoked when an {@link ArenaObject} has been moved.
      */
+    @Transient
     private EventHandler<ArenaObjectEventArgs> onEndMoveObject = (sender, args) -> {
         ArenaObject subject = args.subject;
         short x = subject.getX();
@@ -246,6 +255,21 @@ public final class ArenaObjectStorage {
         assert (!yList_new.contains(subject));
         yList_new.add(subject);
     };
+
+    /**
+     * Default constructor.
+     */
+    public ArenaObjectStorage() {}
+
+    @PostLoad
+    protected void registerMoves() {
+        System.out.println('2');
+        ArenaEventRegister register = ArenaManager.getActiveEventRegister();
+        register.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
+        register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
+    }
 
     /**
      * Constructs a newly allocated {@link ArenaObjectStorage} object and attaches it to an arena instance.
@@ -293,9 +317,9 @@ public final class ArenaObjectStorage {
      */
     LinkedList<? extends ArenaObject> getIndexFor(StoredType type) {
         switch (type) {
-            case TOWER: return towers;
-            case PROJECTILE: return projectiles;
-            case MONSTER: return monsters;
+            case TOWER: return (LinkedList<Tower>) towers;
+            case PROJECTILE: return (LinkedList<Projectile>) projectiles;
+            case MONSTER: return (LinkedList<Monster>) monsters;
         }
 
         return null;
@@ -309,7 +333,7 @@ public final class ArenaObjectStorage {
     @SuppressWarnings("unchecked")
     <T extends ArenaObject & Comparable <T>> LinkedList<T> getIndexFor(StoredComparableType type) {
         switch (type) {
-            case MONSTER: return (LinkedList<T>) monsters;
+            //case MONSTER: return (LinkedList<T>) monsters;
         }
 
         return null;
@@ -407,5 +431,29 @@ public final class ArenaObjectStorage {
     public <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedQueryResult(LinkedList<ArenaObjectSortedSelector<T>> selectors, StoredComparableType type, SortOption option) {
         ArenaObjectSortedQuery<T> query = new ArenaObjectSortedQuery<>(selectors);
         return query.run(this, type, option);
+    }
+
+    /**
+     * Access the towers inside the arena.
+     * @return the towers inside the arena.
+     */
+    public List<Tower> getTowers() {
+        return towers;
+    }
+
+    /**
+     * Access the projectiles inside the arena.
+     * @return the projectiles inside the arena.
+     */
+    public List<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
+    /**
+     * Access the monsters inside the arena.
+     * @return the monsters inside the arena.
+     */
+    public List<Monster> getMonsters() {
+        return monsters;
     }
 }

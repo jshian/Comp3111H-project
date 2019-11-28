@@ -2,19 +2,16 @@ package project.entity;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Tooltip;
 import project.control.ArenaManager;
 import project.field.ArenaScalarField;
+import project.query.ArenaObjectStorage;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
@@ -34,8 +31,8 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * ID for storage using Java Persistence API
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * The scalar field used to determine the movement of the monster via gradient descent.
@@ -48,7 +45,14 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * When this is not greater than zero, the monster is considered dead.
      * @see #hasDied()
      */
-    protected SimpleDoubleProperty health = new SimpleDoubleProperty(1);
+    @Transient
+    protected SimpleDoubleProperty healthProperty = new SimpleDoubleProperty(1);
+
+    // use a redundant variable to store hp in jpa so that don't need to add getter/setter for all fields.
+    /**
+     * The current health of monster with type double. It is only used for saving.
+     */
+    protected double health = healthProperty.get();
 
     /**
      * The maximum health of the monster.
@@ -79,14 +83,16 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * A linked list of references to each status effect that is active against the monster.
      */
-    @OneToMany
-    protected LinkedList<StatusEffect> statusEffects = new LinkedList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name="MonsterStatusEffects")
+    protected List<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
      * A linked list containing a reference to the positions that the monster has passed through in the previous frame.
      */
-    @OneToMany
-    protected LinkedList<ArenaObjectPositionInfo> trail = new LinkedList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name="MonsterTrail")
+    protected List<ArenaObjectPositionInfo> trail = new LinkedList<>();
 
     protected void moveMonsterOneFrame() {
         trail.clear();
@@ -131,6 +137,34 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     /**
+     * Default constructor.
+     */
+    public Monster() {}
+
+    /**
+     * initialise healthProperty from health when initialising from jpa.
+     */
+    @Override
+    @PostLoad
+    public void loadArenaObject() {
+        super.loadArenaObject();
+        this.healthProperty.set(health);
+        setupTooltip();
+    }
+
+    /**
+     * Setup tooltip to display hp of monster.
+     */
+    public void setupTooltip() {
+        // Set up tooltip
+        Tooltip tp = new Tooltip();
+        tp.textProperty().bind(Bindings.format("%s", getDisplayDetails()));
+        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
+        imageView.setOnMouseExited(e -> tp.hide());
+    }
+
+    /**
      * Constructs a newly allocated {@link Monster} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
@@ -140,13 +174,8 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
         super(x, y);
 
         if (difficulty < 1) throw new IllegalArgumentException("Difficulty should be at least equal to one.");
-        
-        // Set up tooltip
-        Tooltip tp = new Tooltip();
-        tp.textProperty().bind(Bindings.format("%s", getDisplayDetails()));
-        imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
-        imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
-        imageView.setOnMouseExited(e -> tp.hide());
+
+        setupTooltip();
     }
 
     /**
@@ -159,7 +188,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * Returns the current health of the monster.
      * @return The current health of the monster.
      */
-    public double getHealth() { return health.get(); }
+    public double getHealth() { return healthProperty.get(); }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.
@@ -173,13 +202,14 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * @param attacker The object which damaged the monster.
      */
     public void takeDamage(double amount, Object attacker) {
-        if (health.get() <= 0) return; // Already dead
+        if (healthProperty.get() <= 0) return; // Already dead
         if (amount <= 0) return; // No damage dealt
 
-        this.health.set(getHealth() - amount);
+        this.healthProperty.set(getHealth() - amount);
+        this.health = healthProperty.get();
 
         // Remove monster from arena if dead
-        if (health.get() <= 0) ArenaObjectFactory.removeObject(attacker, this);
+        if (healthProperty.get() <= 0) ArenaObjectFactory.removeObject(attacker, this);
     }
 
     /**
@@ -199,7 +229,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     @Override
-    public LinkedList<ArenaObjectPositionInfo> getTrail() { return trail; }
+    public LinkedList<ArenaObjectPositionInfo> getTrail() { return (LinkedList<ArenaObjectPositionInfo>)trail; }
 
     @Override
     public short getTargetLocationX() { return ArenaManager.END_X; }
@@ -216,5 +246,5 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public String getDisplayName() { return getClass().getSimpleName(); }
     
     @Override
-    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", health.get(), maxHealth); }
+    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty, maxHealth); }
 }

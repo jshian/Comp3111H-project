@@ -77,14 +77,14 @@ public class JavaFXTester extends ApplicationTest {
 			try {
 				Field field_currentFrame = ArenaInstance.class.getDeclaredField("currentFrame");
 				field_currentFrame.setAccessible(true);
-	
+
 				ArenaInstance arena = ArenaManager.getActiveArenaInstance();
 				field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1);
 			} catch (Exception e) {
 				fail("An unexpected error has occurred");
 			}
 		};
-		
+
 		EventHandler<EventArgs> onGameover = (sender, args) -> {
 			notify();
 		};
@@ -95,7 +95,7 @@ public class JavaFXTester extends ApplicationTest {
 		try {
 			Field field_mode = UIController.class.getDeclaredField("mode");
 			field_mode.setAccessible(true);
-			
+
 			Method method_play = UIController.class.getDeclaredMethod("play");
 			method_play.setAccessible(true);
 			method_play.invoke(appController);

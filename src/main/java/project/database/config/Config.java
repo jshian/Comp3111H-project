@@ -10,17 +10,28 @@ import org.springframework.context.annotation.Configuration;
 import javax.persistence.EntityManagerFactory;
 
 @Configuration
-public class HibernateConfig {
+public class Config {
+
+    public EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
+    }
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
-
+    /**
+     * access the session needed for hibernate.
+     * @return the session needed for hibernate.
+     */
     @Bean
-    protected Session getSession() {
+    public Session getSession() {
         return entityManagerFactory.unwrap(SessionFactory.class).openSession();
     }
 
+    /**
+     * access the transaction needed for hibernate.
+     * @return the transaction needed for hibernate.
+     */
     @Bean
     public Transaction getTransaction(){
         return getSession().getTransaction();

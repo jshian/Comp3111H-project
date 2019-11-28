@@ -4,8 +4,7 @@ package project.database.controller;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import project.database.entity.Player;
-import project.database.model.PlayerModel;
+import project.Player;
 import project.database.service.PlayerService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +25,7 @@ public class PlayerController {
             throw new RuntimeException("name not null");
         }
         Player player =new Player();
-        player.setName(name);
+//        player.setName(name);
         return playerService.save(player);
     }
 
@@ -41,18 +40,18 @@ public class PlayerController {
         // copy playerModel's properties value to player with name consistent
         return playerService.save(player);
     }
-    @ResponseBody
-    @PostMapping(value = "/add_post2")
-    public Player savePost2(@RequestBody PlayerModel playerModel){
-        String name = playerModel.getName();
-        if(name==null||name.length()==0){
-            throw new RuntimeException("name not null");
-        }
-        // copy playerModel's properties value to player with name consistent
-        Player player =new Player();
-        BeanUtils.copyProperties(playerModel,player);
-        return playerService.save(player);
-    }
+//    @ResponseBody
+//    @PostMapping(value = "/add_post2")
+//    public Player savePost2(@RequestBody PlayerModel playerModel){
+//        String name = playerModel.getName();
+//        if(name==null||name.length()==0){
+//            throw new RuntimeException("name not null");
+//        }
+//        // copy playerModel's properties value to player with name consistent
+//        Player player =new Player();
+//        BeanUtils.copyProperties(playerModel,player);
+//        return playerService.save(player);
+//    }
 
 
     @ResponseBody

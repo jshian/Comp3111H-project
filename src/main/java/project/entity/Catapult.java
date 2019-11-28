@@ -51,6 +51,11 @@ public class Catapult extends Tower {
     protected short targetLocationY;
 
     /**
+     * Default constructor.
+     */
+    public Catapult() {}
+
+    /**
      * Constructs a newly allocated {@link Catapult} object.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.

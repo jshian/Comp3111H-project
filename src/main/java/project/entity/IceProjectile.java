@@ -18,6 +18,11 @@ public class IceProjectile extends Projectile {
     private int slowDownTime;
 
     /**
+     * Default constructor.
+     */
+    public IceProjectile() {}
+
+    /**
      * Constructs a newly allocated {@link IceProjectile} object.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
@@ -33,7 +38,7 @@ public class IceProjectile extends Projectile {
      * Returns the slow down time of the projectile.
      * @return The slow down time of the projectile.
      */
-    public final int getSlowDownTime() { return slowDownTime; }
+    public int getSlowDownTime() { return slowDownTime; }
 
     @Override
     protected void damageTarget() {

@@ -21,8 +21,8 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
      * ID for storage using Java Persistence API
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * Represents the position from which the projectile is fired.
@@ -40,13 +40,11 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
 
     /**
      * The offset in x-coordinate of the projectile's landing spot from the target monster.
-     * @see Coordinates
      */
     protected short deltaX = 0;
 
     /**
      * The offset in y-coordinate of the projectile's landing spot from the target monster.
-     * @see Coordinates
      */
     protected short deltaY = 0;
 
@@ -100,7 +98,12 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
     }
 
     /**
-     * Constructs a newly allocated {@link Projjectile} object.
+     * Default constructor.
+     */
+    public Projectile() {}
+
+    /**
+     * Constructs a newly allocated {@link Projectile} object.
      * @param tower The tower from which this projectile originates.
      * @param target The monster that the projectile will pursue.
      * @param deltaX The x-offset from the targeted monster where the projectile will land.

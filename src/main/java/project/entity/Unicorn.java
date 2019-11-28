@@ -12,6 +12,12 @@ import project.control.ArenaManager;
  */
 @Entity
 public class Unicorn extends Monster {
+
+    /**
+     * Default constructor.
+     */
+    public Unicorn() {}
+
     /**
      * Constructs a newly allocated {@link Unicorn} object.
      * @param x The x-coordinate of the object within the storage.
@@ -22,7 +28,8 @@ public class Unicorn extends Monster {
         super(x, y, difficulty);
         this.maxHealth = 10 + 3 * difficulty;
         this.baseSpeed = 2 + 0.2 * Math.log10(difficulty);
-        this.health.set(this.maxHealth);
+        this.healthProperty.set(this.maxHealth);
+        this.health = this.healthProperty.get();
         this.speed = this.baseSpeed;
         this.resourceValue = (int) (difficulty * 1);
     }

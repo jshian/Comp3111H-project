@@ -2,7 +2,8 @@ package project.database.service;
 
 
 
-import project.database.entity.Player;
+
+import project.Player;
 
 import java.util.List;
 
