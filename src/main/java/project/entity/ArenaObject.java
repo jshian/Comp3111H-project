@@ -57,6 +57,7 @@ public abstract class ArenaObject {
 
     /**
      * Constructs a newly allocated {@link ArenaObject} object.
+     * If you want the object to be added to the arena, construct it through the {@link ArenaObjectFactory} instead.
      * @param x The x-coordinate of the object within the storage.
      * @param y The y-coordinate of the object within the storage.
      */
@@ -66,7 +67,7 @@ public abstract class ArenaObject {
     }
 
     /**
-     * Subscribes the object to each event, only meant to be called by {@link ArenaObjectFactory}.
+     * Subscribes the object to each event.
      * @return <code>true</code> iff the object was not originally subscribed to each event.
      */
     boolean subscribeEvents() {
@@ -78,8 +79,9 @@ public abstract class ArenaObject {
 
         return success;
     }
+
     /**
-     * Unsubscribes the object from each event only meant to be called by {@link ArenaObjectFactory}.
+     * Unsubscribes the object from each event.
      * @return <code>true</code> iff the object was originally subscribed to each event.
      */
     boolean unsubscribeEvents() {

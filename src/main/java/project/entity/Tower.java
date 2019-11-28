@@ -8,10 +8,8 @@ import project.arena.ArenaEventRegister;
 import project.control.ArenaManager;
 import project.event.eventargs.ArenaTowerEventArgs;
 import project.query.ArenaObjectRingSortedSelector;
-import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredComparableType;
-import project.ui.UIController;
 import project.util.Geometry;
 
 /**

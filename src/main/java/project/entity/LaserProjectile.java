@@ -1,7 +1,6 @@
 package project.entity;
 
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import javafx.scene.image.Image;

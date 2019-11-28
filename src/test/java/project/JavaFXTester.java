@@ -4,30 +4,28 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.util.WaitForAsyncUtils;
 
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import project.arena.ArenaInstance;
 import project.control.ArenaManager;
+import project.entity.ArenaObjectFactory;
+import project.entity.Tower;
 import project.entity.ArenaObjectFactory.TowerType;
 import project.event.EventHandler;
 import project.event.eventargs.EventArgs;
 import project.ui.UIController;
+import project.ui.UIController.GameMode;
 
 /**
  * Base class to inherit from when testing objects that make use of JavaFX objects.
@@ -39,6 +37,9 @@ public class JavaFXTester extends ApplicationTest {
 	protected Stage primaryStage;
 	protected Scene currentScene;
 	protected UIController appController;
+
+	// For convenience
+	protected static final short ZERO = (short) 0;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -52,6 +53,17 @@ public class JavaFXTester extends ApplicationTest {
 		this.primaryStage.show();
 		this.appController = (UIController)loader.getController();
 		this.appController.createArena();
+	}
+
+	/**
+	 * Simulate the action to build tower on specific grid.
+	 * @param type The type of the tower.
+	 * @param x The x-position of the grid.
+	 * @param y The y-position of the grid.
+	 */
+	protected final void addTowerToGrid(TowerType type, short xPos, short yPos) {
+		Tower t = ArenaObjectFactory.createTower(this, type, ArenaManager.getGridCenterXFromPos(xPos), ArenaManager.getGridCenterYFromPos(yPos));
+		appController.setTowerEvent(t);
 	}
 
 	/**
@@ -84,13 +96,8 @@ public class JavaFXTester extends ApplicationTest {
 				fail("An unexpected error has occurred");
 			}
 		};
-		
-		EventHandler<EventArgs> onGameover = (sender, args) -> {
-			notify();
-		};
 
 		ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.subscribe(onNextFrame);
-		ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
 
 		try {
 			Field field_mode = UIController.class.getDeclaredField("mode");
@@ -100,77 +107,13 @@ public class JavaFXTester extends ApplicationTest {
 			method_play.setAccessible(true);
 			method_play.invoke(appController);
 
-			wait();
+			WaitForAsyncUtils.waitFor(60, TimeUnit.SECONDS, () -> ((GameMode) field_mode.get(ArenaManager.getActiveEventRegister()) == GameMode.END));
+			WaitForAsyncUtils.waitForFxEvents();
+			clickOn("OK");
 		} catch (Exception e) {
 			fail("An unexpected error has occurred");
 		}
 
 		ArenaManager.getActiveEventRegister().ARENA_NEXT_FRAME.unsubscribe(onNextFrame);
-		ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.unsubscribe(onGameover);
-	}
-
-	/**
-	 * Simulate the action to build tower on specific grid.
-	 * @param type The type of the tower.
-	 * @param x The x-position of the grid.
-	 * @param y The y-position of the grid.
-	 */
-	protected final void simulateBuildTowerGrid(TowerType type, short xPos, short yPos) {
-		simulateBuildTower(type, ArenaManager.getGridCenterXFromPos(xPos), ArenaManager.getGridCenterYFromPos(yPos));
-	}
-
-	/**
-	 * Simulate the action to build tower on specific coordinates.
-	 * @param type The type of the tower.
-	 * @param x The x-coordinate inside the paneArena.
-	 * @param y The y-coordinate inside the paneArena.
-	 */
-	protected final void simulateBuildTower(TowerType type, short x, short y) {
-		Label l = (Label)currentScene.lookup("#label" + type.getDefaultName());
-		Bounds labelBound = l.localToScreen(l.getLayoutBounds());
-		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
-		Bounds paneBound = b.localToScreen(b.getLayoutBounds());
-		double sceneX = paneBound.getMinX();
-		double sceneY = paneBound.getMinY();
-
-		drag(labelBound.getMinX()+1, labelBound.getMinY()+1, MouseButton.PRIMARY);
-		dropTo(sceneX+x, sceneY+y);
-	}
-
-	/**
-	 * Test if there is a tower with specific tower type in the grid containing the specified coordinates.
-	 * @param type The type of the tower.
-	 * @param x The x-coordinate inside the paneArena.
-	 * @param y The y-coordinate inside the paneArena.
-	 */
-	protected final boolean hasTower(TowerType type, short x, short y) {
-		short leftX = ArenaManager.getGridLeftXFromCoor(x);
-		short topY = ArenaManager.getGridTopYFromCoor(y);
-
-		AnchorPane b = (AnchorPane)currentScene.lookup("#paneArena");
-		for (Node n : b.getChildren()) {
-			if (n instanceof ImageView) {
-				if (((ImageView) n).getX() == leftX && ((ImageView) n).getY() == topY) {
-					Image img = ((ImageView) n).getImage();
-					Image compare = null;
-					switch(type) {
-						case BASIC: compare = new Image("/basicTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
-						case CATAPULT: compare = new Image("/catapult.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
-						case ICE: compare = new Image("/iceTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
-						case LASER: compare = new Image("/laserTower.png", img.getWidth(), img.getHeight(), img.isPreserveRatio(), img.isSmooth()); break;
-					}
-					boolean equal = true;
-					for (int i = 0; i < img.getHeight(); i++)
-						for (int j = 0; j < img.getWidth(); j++)
-							if (!img.getPixelReader().getColor(i, j).toString().equals(compare.getPixelReader().getColor(i, j).toString())) {
-								equal = false;
-								break;
-							}
-					if (equal == true)
-						return true;
-				}
-			}
-		}
-		return false;
 	}
 }

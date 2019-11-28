@@ -24,7 +24,9 @@ public class Penguin extends Monster {
             moveMonsterOneFrame();
             updateStatusEffects();
 
-            this.healthProperty.set(Math.min(getHealth() + regenerationRate, maxHealth));
+            if (getHealth() + regenerationRate <= maxHealth) {
+                this.healthProperty.set(getHealth() + regenerationRate);
+            }
             this.health = this.healthProperty.get();
         };
     }
