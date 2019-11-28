@@ -69,12 +69,12 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
         {
             PriorityQueue<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
             PriorityQueue<Monster> expected = new PriorityQueue<>(expectedSelection);
-            assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
         }
         {
             PriorityQueue<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
             PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(expectedSelection);
-            assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
         }
     }
 
@@ -132,12 +132,12 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
             {
                 PriorityQueue<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
                 PriorityQueue<Monster> expected = new PriorityQueue<>(expectedSelection);
-                assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+                assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
             {
                 PriorityQueue<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
                 PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(expectedSelection);
-                assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+                assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
         }
     }

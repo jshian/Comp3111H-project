@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import project.entity.ArenaObject;
+import project.entity.Monster;
 
 /**
  * Helper class for comparing collections.
@@ -33,12 +34,12 @@ public class CollectionComparator {
             
             for (T o1 : h1_cpy) {
                 if (o1 instanceof ArenaObject) {
-                    System.out.println(String.format("Found extra element in l1: x = %d, y = %d", ((ArenaObject) o1).getX(), ((ArenaObject) o1).getY()));
+                    System.err.println(String.format("Found extra element in l1: x = %d, y = %d", ((ArenaObject) o1).getX(), ((ArenaObject) o1).getY()));
                 }
             }
             for (T o2 : h2_cpy) {
                 if (o2 instanceof ArenaObject) {
-                    System.out.println(String.format("Found extra element in l2: x = %d, y = %d", ((ArenaObject) o2).getX(), ((ArenaObject) o2).getY()));
+                    System.err.println(String.format("Found extra element in l2: x = %d, y = %d", ((ArenaObject) o2).getX(), ((ArenaObject) o2).getY()));
                 }
             }
         }
@@ -54,15 +55,25 @@ public class CollectionComparator {
      * @return Whether the set of elements of the two queues is equivalent and sorted in the same order.
      */
     public static <T> boolean isElementSetAndOrderEqual(Queue<T> q1, Queue<T> q2) {
+        if (!isElementSetEqual(q1, q2)) return false;
+
         LinkedList<T> q1_cpy = new LinkedList<>(q1);
         LinkedList<T> q2_cpy = new LinkedList<>(q2);
 
+        boolean isEqual = true;
         while (!q1_cpy.isEmpty()) {
             T e1 = q1_cpy.poll();
-            if (q2_cpy.poll() != e1) return false;
+            T e2 = q2_cpy.poll();
+            if (e1 instanceof ArenaObject && e2 instanceof ArenaObject) {
+                System.out.println(String.format("e1: x = %d, y = %d; e2: x = %d, y = %d", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
+                if (e1 instanceof Monster && e2 instanceof Monster) {
+                    System.out.println(String.format("e1: Dist = %.0f; e2:  Dist = %.0f", ((Monster) e1).getMovementDistanceToDestination(), ((Monster) e2).getMovementDistanceToDestination()));
+                }
+            }
+            if (e2 != e1) isEqual = false;
         }
 
-        return q2_cpy.isEmpty();
+        return isEqual;
     }
 
 }
