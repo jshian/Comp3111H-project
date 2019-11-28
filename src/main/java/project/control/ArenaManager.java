@@ -1,6 +1,5 @@
 package project.control;
 
-import com.rits.cloning.Cloner;
 import project.Player;
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
@@ -203,7 +202,7 @@ public final class ArenaManager {
      */
     public static void save(Player player) {
         // cloner not working because of javafx.
-        Player shadowPlayer = new Player(player.getName(), player.getResourcesProperty());
+        Player shadowPlayer = new Player(player.getName(), player.getResources());
         ArenaInstance shadow = new ArenaInstance(activeArenaInstance, shadowPlayer);
         Manager.save(shadow);
     }

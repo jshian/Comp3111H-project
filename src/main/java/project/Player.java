@@ -16,13 +16,12 @@ import project.event.eventargs.ArenaObjectEventArgs;
 import project.ui.UIController;
 
 @Entity(name="Player")
+@Access(AccessType.PROPERTY)
 public class Player {
 
     /**
      * ID for storage using Java Persistence API
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
@@ -34,12 +33,7 @@ public class Player {
      * Resources that the player has.
      */
     @Transient
-    private IntegerProperty resourcesProperty = new SimpleIntegerProperty(0);
-
-    /**
-     * Resources that player has with type Integer. Used in jpa only.
-     */
-    private Integer resources = 0;
+    private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
      * Score of the player.
@@ -88,8 +82,7 @@ public class Player {
      */
     public Player(String name, int resource) {
         this.name = name;
-        this.resourcesProperty.set(resource);
-        this.resources = this.resourcesProperty.get();
+        this.resources.set(resource);
     }
 
     /**
@@ -112,16 +105,16 @@ public class Player {
      * get the amount of resources of player.
      * @return the amount of resources of player.
      */
-    public int getResourcesProperty() {
-        return resourcesProperty.get();
+    public int getResources() {
+        return resources.get();
     }
 
     /**
      * get resources Property of player.
      * @return resources Property of player.
      */
-    public IntegerProperty resourcesPropertyProperty() {
-        return resourcesProperty;
+    public IntegerProperty resourcesProperty() {
+        return resources;
     }
 
     /**
@@ -139,7 +132,7 @@ public class Player {
      */
     public boolean hasResources(int cost)
     {
-        if (cost > resourcesProperty.get()) {
+        if (cost > resources.get()) {
             return false;
         } else {
             return true;
@@ -152,8 +145,7 @@ public class Player {
      */
     public void spendResources(int amount) {
         Platform.runLater(() -> {
-            resourcesProperty.set(Math.max(0, resourcesProperty.get() - amount));
-            resources = resourcesProperty.get();
+            resources.set(Math.max(0, resources.get() - amount));
         });
     }
 
@@ -163,17 +155,30 @@ public class Player {
      */
     public void receiveResources(int amount) {
         Platform.runLater(() -> {
-            resourcesProperty.set(resourcesProperty.get() + amount);
-            resources = resourcesProperty.get();
+            resources.set(resources.get() + amount);
         });
     }
 
-    /**
-     * Load resourcesProperty from resources. Used for jpa.
-     */
-    @PostLoad
-    public void loadResources() {
-        resourcesProperty.set(resources);
+    // getter/setter for jpa.
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long getId() {
+        return id;
     }
 
+    private void setId(Long id) {
+        this.id = id;
+    }
+
+    private void setName(String name) {
+        this.name = name;
+    }
+
+    private void setResources(int resources) {
+        this.resources.set(resources);
+    }
+
+    private void setScore(int score) {
+        this.score = score;
+    }
 }
