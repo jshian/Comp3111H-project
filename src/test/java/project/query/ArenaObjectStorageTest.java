@@ -139,18 +139,18 @@ public class ArenaObjectStorageTest extends JavaFXTester {
         objects.addAll(monsters);
 
         for (ArenaObject o : objects) {
-            assertEquals(storage.getXIndex().get(o.getX()).size(), getExpectedXIndexCount(o.getX()));
-            assertEquals(storage.getYIndex().get(o.getY()).size(), getExpectedYIndexCount(o.getY()));
+            assertEquals(getExpectedXIndexCount(o.getX()), storage.getXIndex().get(o.getX()).size());
+            assertEquals(getExpectedYIndexCount(o.getY()), storage.getYIndex().get(o.getY()).size());
         }
     }
 
     private void checkTypeIndex(ArenaObjectStorage storage) {
-        assertEquals(storage.getIndexFor(StoredType.TOWER).size(), towers.size());
-        assertEquals(storage.getIndexFor(StoredType.MONSTER).size(), monsters.size());
-        assertEquals(storage.getIndexFor(StoredType.PROJECTILE).size(), projectiles.size());
+        assertEquals(towers.size(), storage.getIndexFor(StoredType.TOWER).size());
+        assertEquals(monsters.size(), storage.getIndexFor(StoredType.MONSTER).size());
+        assertEquals(projectiles.size(), storage.getIndexFor(StoredType.PROJECTILE).size());
 
-        assertEquals(storage.getSortedIndexFor(StoredComparableType.MONSTER, SortOption.ASCENDING).size(), monsters.size());
-        assertEquals(storage.getSortedIndexFor(StoredComparableType.MONSTER, SortOption.DESCENDING).size(), monsters.size());
+        assertEquals(monsters.size(), storage.getSortedIndexFor(StoredComparableType.MONSTER, SortOption.ASCENDING).size());
+        assertEquals(monsters.size(), storage.getSortedIndexFor(StoredComparableType.MONSTER, SortOption.DESCENDING).size());
     }
 
     @Test

@@ -27,20 +27,20 @@ public class ArenaObjectPositionInfoTest extends JavaFXTester {
 		// Boundary Cases
 		{
 			ArenaObjectPositionInfo c1 = new ArenaObjectPositionInfo(iv, ZERO, ZERO);
-			assertEquals(c1.getX(), ZERO);
-			assertEquals(c1.getY(), ZERO);
+			assertEquals(ZERO, c1.getX());
+			assertEquals(ZERO, c1.getY());
 
 			ArenaObjectPositionInfo c2 = new ArenaObjectPositionInfo(iv, ZERO, ArenaManager.ARENA_HEIGHT);
-			assertEquals(c2.getX(), ZERO);
-			assertEquals(c2.getY(), ArenaManager.ARENA_HEIGHT);
+			assertEquals(ZERO, c2.getX());
+			assertEquals(ArenaManager.ARENA_HEIGHT, c2.getY());
 
 			ArenaObjectPositionInfo c3 = new ArenaObjectPositionInfo(iv, ArenaManager.ARENA_WIDTH, ZERO);
-			assertEquals(c3.getX(), ArenaManager.ARENA_WIDTH);
-			assertEquals(c3.getY(), ZERO);
+			assertEquals(ArenaManager.ARENA_WIDTH, c3.getX());
+			assertEquals(ZERO, c3.getY());
 
 			ArenaObjectPositionInfo c4 = new ArenaObjectPositionInfo(iv, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT);
-			assertEquals(c4.getX(), ArenaManager.ARENA_WIDTH);
-			assertEquals(c4.getY(), ArenaManager.ARENA_HEIGHT);
+			assertEquals(ArenaManager.ARENA_WIDTH, c4.getX());
+			assertEquals(ArenaManager.ARENA_HEIGHT, c4.getY());
 
 			assertExceptionThrown_constructor(IllegalArgumentException.class, ArenaObjectPositionInfo.class, constructorArgTypes, new Object[] { iv, (short) -1, ZERO });
 			assertExceptionThrown_constructor(IllegalArgumentException.class, ArenaObjectPositionInfo.class, constructorArgTypes, new Object[] { iv, ZERO, (short) -1 });
@@ -58,8 +58,8 @@ public class ArenaObjectPositionInfoTest extends JavaFXTester {
 				short y = (short) (rng.nextDouble() * ArenaManager.ARENA_HEIGHT);
 
 				ArenaObjectPositionInfo c = new ArenaObjectPositionInfo(iv, x, y);
-				assertEquals("x test failed for x = " + x, c.getX(), x);
-				assertEquals("y test failed for y = " + x, c.getY(), y);
+				assertEquals("x test failed for x = " + x, x, c.getX());
+				assertEquals("y test failed for y = " + x, y, c.getY());
 			}
 
 			assertExceptionThrown_constructor(IllegalArgumentException.class, ArenaObjectPositionInfo.class, constructorArgTypes, new Object[] { iv, (short) -215, (short) 0 });

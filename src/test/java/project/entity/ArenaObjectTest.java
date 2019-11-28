@@ -87,7 +87,7 @@ public class ArenaObjectTest extends JavaFXTester {
 
     @Test
     public void test() {
-        assertEquals(arenaObject.getX(), x);
-        assertEquals(arenaObject.getY(), y);
+        assertEquals(x, arenaObject.getX());
+        assertEquals(y, arenaObject.getY());
     }
 }

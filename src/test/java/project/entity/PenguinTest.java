@@ -30,10 +30,10 @@ public class PenguinTest extends JavaFXTester {
 
         p.healthProperty.set(p.maxHealth);
         p.onNextFrame.handleEvent(this, new EventArgs());
-        assertEquals(p.getHealth(), p.maxHealth, MAX_ERROR); // Health should not regenerate beyond max health
+        assertEquals(p.maxHealth, p.getHealth(), MAX_ERROR); // Health should not regenerate beyond max health
 
         p.healthProperty.set(p.maxHealth + 10);
         p.onNextFrame.handleEvent(this, new EventArgs());
-        assertEquals(p.getHealth(), p.maxHealth + 10, MAX_ERROR); // Health should not regenerate beyond max health, but nor should it be forced back down to max health
+        assertEquals(p.maxHealth + 10, p.getHealth(), MAX_ERROR); // Health should not regenerate beyond max health, but nor should it be forced back down to max health
     }
 }
