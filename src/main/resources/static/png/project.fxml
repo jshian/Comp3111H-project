@@ -24,8 +24,8 @@
           <AnchorPane maxHeight="480.0" maxWidth="120.0" minHeight="480.0" minWidth="120.0" prefHeight="480.0" prefWidth="120.0">
                <children>
                   <Button fx:id="buttonNextFrame" layoutX="4.0" layoutY="24.0" mnemonicParsing="false" onAction="#nextFrame" text="Next Frame" />
-                  <Button fx:id="buttonSimulate" layoutX="5.0" layoutY="65.0" mnemonicParsing="false" onAction="#simulate" text="Simulate" />
-                  <Button fx:id="buttonPlay" layoutX="6.0" layoutY="108.0" mnemonicParsing="false" onAction="#play" text="Play" />
+                  <Button fx:id="buttonSimulate" layoutX="5.0" layoutY="60.0" mnemonicParsing="false" onAction="#simulate" text="Simulate" />
+                  <Button fx:id="buttonPlay" layoutX="6.0" layoutY="98.0" mnemonicParsing="false" onAction="#play" text="Play" />
                   <Label fx:id="labelBasicTower" layoutX="17.0" layoutY="257.0" minWidth="80.0" style="-fx-border-color: black;" text="Basic Tower">
                      <opaqueInsets>
                         <Insets />
@@ -62,8 +62,9 @@
                      </padding>
                   </Label>
                   <Label fx:id="remainingResources" layoutX="17.0" layoutY="381.0" text="Money: " />
-                  <Button fx:id="buttonPause" layoutX="6.0" layoutY="151.0" mnemonicParsing="false" onAction="#pause" text="Pause" />
-                  <Button fx:id="buttonSave" layoutX="6.0" layoutY="194.0" mnemonicParsing="false" onAction="#save" text="Save" />
+                  <Button fx:id="buttonPause" layoutX="6.0" layoutY="136.0" mnemonicParsing="false" onAction="#pause" text="Pause" />
+                  <Button fx:id="buttonLoad" layoutX="6.0" layoutY="174.0" mnemonicParsing="false" onAction="#load" text="Load Game" />
+                  <Button fx:id="buttonSave" layoutX="6.0" layoutY="212.0" mnemonicParsing="false" onAction="#save" text="Save Game" />
                </children>
                <padding>
                   <Insets left="10.0" />
