@@ -567,16 +567,16 @@ public class UIController {
     }
 
     /**
-     * Adds a node to the {@link AnchorPane).
-     * @param iv The node to add.
+     * Adds a node to the {@link AnchorPane}.
+     * @param n The node to add.
      */
     public void addToPane(Node n) {
         Platform.runLater(() -> paneArena.getChildren().add(n));
     }
 
     /**
-     * Removes an node from the {@link AnchorPane).
-     * @param iv The node to remove.
+     * Removes a node from the {@link AnchorPane}.
+     * @param n The node to remove.
      */
     public void removeFromPane(Node n) {
         Platform.runLater(() -> paneArena.getChildren().remove(n));

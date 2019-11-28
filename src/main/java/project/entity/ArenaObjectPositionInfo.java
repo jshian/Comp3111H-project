@@ -114,7 +114,7 @@ public final class ArenaObjectPositionInfo {
      * @param x x-coordinate of the object.
      */
     public void setX(int x) {
-        assertValidPosition((short)x, (short)1);
+        assertValidPosition((short)x, (short)0);
         this.x.set(x);
     }
 
@@ -124,7 +124,7 @@ public final class ArenaObjectPositionInfo {
      * @param y y-coordinate of the object.
      */
     public void setY(int y) {
-        assertValidPosition((short)1, (short)y);
+        assertValidPosition((short)0, (short)y);
         this.y.set(y);
     }
 }

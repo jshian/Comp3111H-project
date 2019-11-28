@@ -60,11 +60,11 @@ class ArenaObjectSortedQuery<T extends ArenaObject & Comparable<T>> {
     PriorityQueue<T> run(ArenaObjectStorage storage, StoredComparableType type, SortOption option) {
         // Return everything if there are no selectors
         if (selectors.isEmpty()) {
-            return new PriorityQueue<T>(storage.getIndexFor(type));
+            return new PriorityQueue<T>(storage.getSortedIndexFor(type, option));
         }
 
         // The cost of accessing through type-based index
-        int typeIndexCost = storage.getIndexFor(type).size();
+        int typeIndexCost = storage.getSortedIndexFor(type, option).size();
 
         // The cost of accessing through the selector with the least cost
         int minCost = Integer.MAX_VALUE;
@@ -82,7 +82,7 @@ class ArenaObjectSortedQuery<T extends ArenaObject & Comparable<T>> {
             PriorityQueue<T> result = new PriorityQueue<>();
             ArenaObjectPropertySortedSelector<T> dummySelector = new ArenaObjectPropertySortedSelector<T>(type.getObjectClass(), o -> true);
 
-            for (ArenaObject o : storage.getIndexFor(type)) {
+            for (ArenaObject o : storage.getSortedIndexFor(type, option)) {
                 if (dummySelector.isComparableAndAllSatisfied(o, type, selectors)) {
                     result.add((T) o);
                 }

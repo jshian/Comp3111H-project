@@ -1,6 +1,5 @@
 package project.database.utils;
 
-
 import org.springframework.web.client.RestTemplate;
 import project.Player;
 

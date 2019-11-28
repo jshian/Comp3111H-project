@@ -265,24 +265,7 @@ public final class ArenaObjectStorage {
      * register objects to the arena.
      */
     @PostLoad
-    public void registerMoves() {
-        // not work
-//        LinkedList<Tower> t1 = new LinkedList<>();
-//        for(Tower t : towers) {
-//            t1.add(t);
-//        }
-//        towers = t1;
-//        LinkedList<Projectile> t2 = new LinkedList<>();
-//        for(Projectile p : projectiles) {
-//            t2.add(p);
-//        }
-//        projectiles = t2;
-//        LinkedList<Monster> t3 = new LinkedList<>();
-//        for(Monster m : monsters) {
-//            t3.add(m);
-//        }
-//        monsters = t3;
-
+    protected void registerMoves() {
         ArenaEventRegister register = ArenaManager.getActiveEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
@@ -345,14 +328,26 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Returns the index for a supported compoarable {@link ArenaObject} type.
+     * Returns the index for a supported comparable {@link ArenaObject} type.
      * @param type The supported comparable object type.
+     * @param option The sorting option.
      * @return The index for a supported comparable object type.
      */
     @SuppressWarnings("unchecked")
-    <T extends ArenaObject & Comparable <T>> List<T> getIndexFor(StoredComparableType type) {
-        switch (type) {
-            //case MONSTER: return (LinkedList<T>) monsters;
+    <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedIndexFor(StoredComparableType type, SortOption option) {
+        PriorityQueue<T> result = null;
+        switch (option) {
+        	case ASCENDING: result = new PriorityQueue<>(); break;
+        	case DESCENDING: result = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); break;
+        }
+
+    	switch (type) {
+            case MONSTER: {
+            	for (Monster o : monsters) {
+            		result.add((T) o);
+            	}
+            	return result;
+            }
         }
 
         return null;
@@ -380,7 +375,7 @@ public final class ArenaObjectStorage {
         int count = 0;
 
         for (StoredComparableType type : EnumSet.allOf(StoredComparableType.class)) {
-            count += getIndexFor(type).size();
+            count += getSortedIndexFor(type, SortOption.ASCENDING).size();
         }
 
         return count;

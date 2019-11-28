@@ -41,7 +41,7 @@ interface ArenaObjectSortedSelector<T extends ArenaObject & Comparable<T>> exten
     /**
      * Returns whether an {@link ArenaObject} is comparable, matches the given type and passes through a set of filters.
      * @param o The object to test.
-     * @param type The type of comparable {@ArenaObject}.
+     * @param type The type of comparable {@link ArenaObject}.
      * @param filters The set of filters.
      * @return Whether the object satisfies all requirements.
      */
