@@ -82,19 +82,22 @@ public class MonsterTest extends JavaFXTester {
             ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.subscribe(deathEvent);
     
             m.healthProperty.set(23.45);
-            assertEquals(m.getHealth(), 23.45, MAX_ERROR);
+            assertEquals(23.45, m.getHealth(), MAX_ERROR);
             assertFalse(trackedMonsterHasDied);
             m.takeDamage(23, this);
-            assertEquals(m.getHealth(), 0.45, MAX_ERROR);
+            assertEquals(0.45, m.getHealth(), MAX_ERROR);
+            assertFalse(trackedMonsterHasDied);
+            m.takeDamage(-0.01, this);
+            assertEquals(0.45, m.getHealth(), MAX_ERROR); // Negative damage taken should do nothing
             assertFalse(trackedMonsterHasDied);
             m.takeDamage(10, this);
-            assertEquals(m.getHealth(), -9.55, MAX_ERROR);
+            assertEquals(-9.55, m.getHealth(), MAX_ERROR);
             assertTrue(trackedMonsterHasDied);
             m.takeDamage(-999, this);
-            assertEquals(m.getHealth(), -9.55, MAX_ERROR); // Negative damage taken should do nothing
+            assertEquals(-9.55, m.getHealth(), MAX_ERROR); // Negative damage taken should do nothing
             assertTrue(trackedMonsterHasDied);
             m.healthProperty.set(50);
-            assertEquals(m.getHealth(), 50, MAX_ERROR);
+            assertEquals(50, m.getHealth(), MAX_ERROR);
             assertTrue(trackedMonsterHasDied); // Dead monster is no longer on the arena
         }
     }

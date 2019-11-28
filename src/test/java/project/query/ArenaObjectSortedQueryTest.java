@@ -73,11 +73,11 @@ public class ArenaObjectSortedQueryTest extends JavaFXTester {
         assertTrue(q1.selectors.isEmpty());
 
         ArenaObjectSortedQuery<Monster> q2 = new ArenaObjectSortedQuery<>(s1);
-        assertEquals(q2.selectors.size(), 1);
+        assertEquals(1, q2.selectors.size());
 
         LinkedList<ArenaObjectSortedSelector<Monster>> l = new LinkedList<>(); l.add(s1); l.add(s3); l.add(s2);
         ArenaObjectSortedQuery<Monster> q3 = new ArenaObjectSortedQuery<>(l);
-        assertEquals(q3.selectors.size(), 3);
+        assertEquals(3, q3.selectors.size());
     }
 
     @Test
@@ -89,15 +89,15 @@ public class ArenaObjectSortedQueryTest extends JavaFXTester {
         DummySortedSelector<Monster> s3 = new DummySortedSelector<>(3);
         
         ArenaObjectSortedQuery<Monster> q = new ArenaObjectSortedQuery<>();
-        q.restrict(s3); assertEquals(q.selectors.size(), 1);
-        q.restrict(s3); assertEquals(q.selectors.size(), 1); // No duplicates
-        q.restrict(s2); assertEquals(q.selectors.size(), 2);
-        q.restrict(s2); assertEquals(q.selectors.size(), 2); // No duplicates
-        q.restrict(s1); assertEquals(q.selectors.size(), 3);
+        q.restrict(s3); assertEquals(1, q.selectors.size());
+        q.restrict(s3); assertEquals(1, q.selectors.size()); // No duplicates
+        q.restrict(s2); assertEquals(2, q.selectors.size());
+        q.restrict(s2); assertEquals(2, q.selectors.size()); // No duplicates
+        q.restrict(s1); assertEquals(3, q.selectors.size());
         q.run(storage, StoredComparableType.MONSTER, SortOption.ASCENDING);
-        assertEquals(selectedSortedSelector, s1);
+        assertEquals(s1, selectedSortedSelector);
         q.run(storage, StoredComparableType.MONSTER, SortOption.DESCENDING);
-        assertEquals(selectedSortedSelector, s1);
+        assertEquals(s1, selectedSortedSelector);
     }
 
     @Test
