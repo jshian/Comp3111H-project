@@ -62,26 +62,32 @@ public class ArenaObjectCircleSelector implements ArenaObjectSelector {
      * Constructs a newly allocated {@link ArenaObjectCircleSelector} object.
      * @param centerX The center x-coordinate of the circle.
      * @param centerY The center y-coordinate of the circle.
-     * @param radius The radius of the circle.
+     * @param radius The radius of the circle, must be non-negative.
      */
     public ArenaObjectCircleSelector(short centerX, short centerY, short radius) {
+        if (radius < 0) throw new IllegalArgumentException(String.format("The radius must be non-negative. Value: %d", radius));
+
         this.centerX = centerX;
         this.centerY = centerY;
         this.radius = radius;
 
-        short leftX = (short) (centerX - radius);
-        short topY = (short) (centerY - radius);
+        if (centerX - radius < 0) this.startX = 0;
+        else if (centerX - radius > ArenaManager.ARENA_WIDTH) this.startX = ArenaManager.ARENA_WIDTH;
+        else this.startX = (short) (centerX - radius);
 
-        this.effectiveWidth = (short) (radius - Math.max(0, - leftX) - Math.max(0, leftX + radius - ArenaManager.ARENA_WIDTH));
-        this.effectiveHeight = (short) (radius - Math.max(0, - topY) - Math.max(0, topY + radius - ArenaManager.ARENA_HEIGHT));
+        if (centerY - radius < 0) this.startY = 0;
+        else if (centerY - radius > ArenaManager.ARENA_HEIGHT) this.startY = ArenaManager.ARENA_HEIGHT;
+        else this.startY = (short) (centerY - radius);
 
-        this.startX = (short) Math.max(0, leftX); assert startX >= 0;
-        this.endX = (short) (startX + effectiveWidth); assert endX <= ArenaManager.ARENA_WIDTH;
-        assert startX <= endX;
-
-        this.startY = (short) Math.max(0, topY); assert startY >= 0;
-        this.endY = (short) (startY + effectiveHeight); assert endX <= ArenaManager.ARENA_HEIGHT;
-        assert startY <= endY;
+        if (centerX + radius < 0) this.endX = 0;
+        else if (centerX + radius > ArenaManager.ARENA_WIDTH) this.endX = ArenaManager.ARENA_WIDTH;
+        else this.endX = (short) (centerX + radius);
+        this.effectiveWidth = (short) (endX - startX);
+        
+        if (centerY + radius < 0) this.endY = 0;
+        else if (centerY + radius > ArenaManager.ARENA_HEIGHT) this.endY = ArenaManager.ARENA_HEIGHT;
+        else this.endY = (short) (centerY + radius);
+        this.effectiveHeight = (short) (endY - startY);
     }
 
     @Override

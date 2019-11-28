@@ -67,28 +67,36 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
      * Constructs a newly allocated {@link ArenaObjectRingSelector} object.
      * @param centerX The center x-coordinate of the ring.
      * @param centerY The center y-coordinate of the ring.
-     * @param minRadius The minimum radius of the ring.
-     * @param maxRadius The maximum radius of the ring.
+     * @param minRadius The minimum radius of the ring, must be non-negative.
+     * @param maxRadius The maximum radius of the ring, must be non-negative.
      */
     public ArenaObjectRingSelector(short centerX, short centerY, short minRadius, short maxRadius) {
+        if (minRadius < 0) throw new IllegalArgumentException(String.format("The minRadius must be non-negative. Value: %d", minRadius));
+        if (maxRadius < 0) throw new IllegalArgumentException(String.format("The maxRadius must be non-negative. Value: %d", maxRadius));
+        if (minRadius > maxRadius) throw new IllegalArgumentException(String.format("The minRadius: %d should be not greater than maxRadius: %d", minRadius, maxRadius));
+
         this.centerX = centerX;
         this.centerY = centerY;
         this.minRadius = minRadius;
         this.maxRadius = maxRadius;
 
-        short leftX = (short) (centerX - maxRadius);
-        short topY = (short) (centerY - maxRadius);
+        if (centerX - maxRadius < 0) this.startX = 0;
+        else if (centerX - maxRadius > ArenaManager.ARENA_WIDTH) this.startX = ArenaManager.ARENA_WIDTH;
+        else this.startX = (short) (centerX - maxRadius);
 
-        this.effectiveWidth = (short) (maxRadius - Math.max(0, - leftX) - Math.max(0, leftX + maxRadius - ArenaManager.ARENA_WIDTH));
-        this.effectiveHeight = (short) (maxRadius - Math.max(0, - topY) - Math.max(0, topY + maxRadius - ArenaManager.ARENA_HEIGHT));
+        if (centerY - maxRadius < 0) this.startY = 0;
+        else if (centerY - maxRadius > ArenaManager.ARENA_HEIGHT) this.startY = ArenaManager.ARENA_HEIGHT;
+        else this.startY = (short) (centerY - maxRadius);
 
-        this.startX = (short) Math.max(0, leftX); assert startX >= 0;
-        this.endX = (short) (startX + effectiveWidth); assert endX <= ArenaManager.ARENA_WIDTH;
-        assert startX <= endX;
-
-        this.startY = (short) Math.max(0, topY); assert startY >= 0;
-        this.endY = (short) (startY + effectiveHeight); assert endX <= ArenaManager.ARENA_HEIGHT;
-        assert startY <= endY;
+        if (centerX + maxRadius < 0) this.endX = 0;
+        else if (centerX + maxRadius > ArenaManager.ARENA_WIDTH) this.endX = ArenaManager.ARENA_WIDTH;
+        else this.endX = (short) (centerX + maxRadius);
+        this.effectiveWidth = (short) (endX - startX);
+        
+        if (centerY + maxRadius < 0) this.endY = 0;
+        else if (centerY + maxRadius > ArenaManager.ARENA_HEIGHT) this.endY = ArenaManager.ARENA_HEIGHT;
+        else this.endY = (short) (centerY + maxRadius);
+        this.effectiveHeight = (short) (endY - startY);
     }
 
     @Override

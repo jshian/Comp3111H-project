@@ -56,10 +56,10 @@ public class MonsterTest extends JavaFXTester {
             assertEquals(m.getSpeed(), m.baseSpeed, MAX_ERROR);
 
             // Test location
-            m.updatePosition((short) 40, (short) 50);
+            m.moveObject(this, (short) 40, (short) 50);
             assertEquals(m.getX(), 40);
             assertEquals(m.getY(), 50);
-            m.updatePosition((short) 3, (short) 2);
+            m.moveObject(this, (short) 3, (short) 2);
             assertEquals(m.getX(), 3);
             assertEquals(m.getY(), 2);
 

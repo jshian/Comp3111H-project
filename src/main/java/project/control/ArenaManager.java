@@ -36,22 +36,22 @@ public final class ArenaManager {
     /**
      * x-coordinate of starting location for each spawned {@link Monster}.
      */
-    public static short STARTING_X = 0;
+    public static short STARTING_X = 20;
 
     /**
      * y-coordinate of starting location for each spawned {@link Monster}.
      */
-    public static short STARTING_Y = 0;
+    public static short STARTING_Y = 20;
 
     /**
      * x-coordinate of end zone for each spawned {@link Monster}.
      */
-    public static short END_X = 480;
+    public static short END_X = 460;
 
     /**
      * y-coordinate of end zone for each spawned {@link Monster}.
      */
-    public static short END_Y = 0;
+    public static short END_Y = 20;
 
     /**
      * Interval between {@link Monster} spawning, in terms of number of frames.

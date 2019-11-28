@@ -200,12 +200,11 @@ public final class ArenaInstance {
         if (!objectsInGrid.isEmpty()) return false;
 
         short gridXPos = ArenaManager.getGridXPosFromCoor(x);
-        if (gridXPos == ArenaManager.getStartingGridXPos() || gridXPos == ArenaManager.getEndGridXPos()) {
+        short gridYPos = ArenaManager.getGridYPosFromCoor(y);
+        if (gridXPos == ArenaManager.getStartingGridXPos() && gridYPos == ArenaManager.getStartingGridYPos()) {
             return false;
         }
-
-        short gridYPos = ArenaManager.getGridYPosFromCoor(y);
-        if (gridYPos == ArenaManager.getStartingGridYPos() || gridXPos == ArenaManager.getEndGridYPos()) {
+        if (gridXPos == ArenaManager.getEndGridXPos() && gridYPos == ArenaManager.getEndGridYPos()) {
             return false;
         }
         
@@ -225,8 +224,11 @@ public final class ArenaInstance {
         boolean[][] noTower = new boolean[ArenaManager.getMaxHorizontalGrids()][ArenaManager.getMaxVerticalGrids()];
         boolean[][] visited = new boolean[ArenaManager.getMaxHorizontalGrids()][ArenaManager.getMaxVerticalGrids()];
         for (short i = 0; i < noTower.length; i++) {
-            for (short j = 0; j < noTower[0].length; j++) {
-                ArenaObjectGridSelector gridSelector = new ArenaObjectGridSelector(x, y);
+            for (short j = 0; j < noTower[i].length; j++) {
+                short centerX = ArenaManager.getGridCenterXFromPos(i);
+                short centerY = ArenaManager.getGridCenterYFromPos(j);
+
+                ArenaObjectGridSelector gridSelector = new ArenaObjectGridSelector(centerX, centerY);
                 LinkedList<ArenaObject> towersInGrid = storage.getQueryResult(gridSelector, EnumSet.of(StoredType.TOWER));
                 noTower[i][j] = towersInGrid.isEmpty();
                 
@@ -238,7 +240,7 @@ public final class ArenaInstance {
 
         // { xPos, yPos }
         LinkedList<short[]> hasMonster = new LinkedList<>();
-        hasMonster.add(new short[] { 0, 0 });
+        hasMonster.add(new short[] { ArenaManager.getStartingGridXPos(), ArenaManager.getStartingGridYPos() });
         for (ArenaObject m : storage.getQueryResult(new ArenaObjectPropertySelector<>(Monster.class, o -> true), EnumSet.of(StoredType.MONSTER))) {
             short monsterGridXPos = ArenaManager.getGridXPosFromCoor(m.getX());
             short monsterGridYPos = ArenaManager.getGridYPosFromCoor(m.getY());
@@ -261,7 +263,7 @@ public final class ArenaInstance {
      */
     private void gridDFS(boolean[][] noTower, boolean[][] visited, short x, short y)
     {
-        if (x < 0 || y < 0 || x >= noTower.length || y >= noTower[0].length)
+        if (x < 0 || y < 0 || x >= noTower.length || y >= noTower[x].length)
             return;
         if (visited[x][y] == true || noTower[x][y] == false)
             return;

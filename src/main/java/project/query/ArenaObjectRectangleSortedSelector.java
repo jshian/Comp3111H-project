@@ -19,8 +19,8 @@ public class ArenaObjectRectangleSortedSelector<T extends ArenaObject & Comparab
      * Constructs a newly allocated {@link ArenaObjectRectangleSortedSelector} object.
      * @param leftX The minimum x-coordinate of the rectangle.
      * @param topY The minimum y-coordinate of the rectangle.
-     * @param width The x-length of the rectangle.
-     * @param height The y-length of the rectangle.
+     * @param width The x-length of the rectangle, must be non-negative.
+     * @param height The y-length of the rectangle, must be non-negative.
      */
     public ArenaObjectRectangleSortedSelector(short leftX, short topY, short width, short height) {
         super(leftX, topY, width, height);

@@ -8,6 +8,7 @@ import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
 import project.control.ArenaManager;
 import project.entity.ArenaObject;
+import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
 import project.entity.Projectile;
 import project.entity.Tower;
@@ -279,6 +280,17 @@ public final class ArenaObjectStorage {
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
         register.ARENA_OBJECT_MOVE_START.subscribe(onStartMoveObject);
         register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
+    }
+
+    /**
+     * Clears the storage. For testing only.
+     */
+    void clear() {
+        LinkedList<ArenaObject> toRemove = new LinkedList<>(towers);
+        toRemove.addAll(projectiles);
+        toRemove.addAll(monsters);
+
+        for (ArenaObject o : toRemove) ArenaObjectFactory.removeObject(this, o);
     }
 
     /**

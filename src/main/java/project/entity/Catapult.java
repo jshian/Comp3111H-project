@@ -97,6 +97,7 @@ public class Catapult extends Tower {
 
         while (closestDistance == (int) validTargets.peek().getMovementDistanceToDestination()) {
             closestTargets.add(validTargets.poll());
+            if (validTargets.isEmpty()) break;
         }
 
         Monster target = closestTargets.peek();

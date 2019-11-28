@@ -1,7 +1,6 @@
 package project.field;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -18,9 +17,11 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
     protected ArrayList<ArrayList<T>> values;
     {
         values = new ArrayList<ArrayList<T>>(ArenaManager.ARENA_WIDTH + 1);
-        for (int i = 0; i < ArenaManager.ARENA_HEIGHT + 1; i++) {
+        for (int i = 0; i < ArenaManager.ARENA_WIDTH + 1; i++) {
             values.add(i, new ArrayList<T>(ArenaManager.ARENA_HEIGHT + 1));
-            Collections.fill(values.get(i), null);
+            for (int j = 0; j < ArenaManager.ARENA_HEIGHT + 1; j++) {
+                values.get(i).add(null);
+            }
         }
     }
 
@@ -80,7 +81,11 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param value The new value.
      */
     protected final void setAll(T value) {
-        Collections.fill(values, new ArrayList<T>(Collections.nCopies(ArenaManager.ARENA_HEIGHT + 1, value)));
+        for (int x = 0; x < ArenaManager.ARENA_HEIGHT + 1; x++) {
+            for (int y = 0; y < ArenaManager.ARENA_WIDTH + 1; y++) {
+                values.get(x).set(y, value);
+            }
+        }
     }
 
     /**

@@ -1,7 +1,6 @@
 package project.entity;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.PriorityQueue;
 
 import org.junit.Assert;
