@@ -71,6 +71,7 @@ public class Manager {
      */
     public static void save(ArenaInstance arenaInstance) {
         if(entityManagerFactory == null) return;
+        removeAll();
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction tran = null;
         try {
