@@ -1,5 +1,6 @@
 package project.event;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import project.event.eventargs.EventArgs;
@@ -44,8 +45,9 @@ public class EventManager<TEventArgs extends EventArgs> {
      * @param args The arguments of the event.
      */
     public void invoke(Object sender, TEventArgs args) {
-        for (EventHandler<TEventArgs> s : subscribers) {
-            s.handleEvent(sender, args);
+        Iterator<EventHandler<TEventArgs>> iterator = subscribers.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().handleEvent(sender, args);
         }
     }
 }

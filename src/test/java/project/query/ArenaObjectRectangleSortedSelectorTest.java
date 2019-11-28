@@ -64,8 +64,8 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
         generateBox((short) 49, (short) 9, (short) 292, (short) 272);
         
         ArenaObjectRectangleSortedSelector<Monster> rectangleSortedSelector = new ArenaObjectRectangleSortedSelector<>((short) 50, (short) 10, (short) 290, (short) 270);
-        float selectivity = rectangleSortedSelector.estimateSelectivity(storage);
-        assertTrue(0 <= selectivity && selectivity <= 1);
+        int cost = rectangleSortedSelector.estimateCost(storage);
+        assertTrue(cost > 0);
         {
             PriorityQueue<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
             PriorityQueue<Monster> expected = new PriorityQueue<>(expectedSelection);
@@ -110,6 +110,8 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
 
             ArenaObjectRectangleSortedSelector<Monster> rectangleSortedSelector = new ArenaObjectRectangleSortedSelector<>(leftX, topY, width, height);
             System.out.println(String.format("Created rectangle selector: leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height));
+            int cost = rectangleSortedSelector.estimateCost(ArenaManager.getActiveObjectStorage());
+            assertTrue(cost > 0);
 
             reset();
             for (int j = 0; j < NUM_RANDOM_MONSTERS; j++) {

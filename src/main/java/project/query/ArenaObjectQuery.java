@@ -65,22 +65,41 @@ class ArenaObjectQuery {
             return result;
         }
 
-        // Query using the minSelector and apply the other selections as the results are being fetched
-        float minSelectivity = Float.POSITIVE_INFINITY;
+        // The cost of accessing through type-based index
+        int typeIndexCost = 0;
+        for (StoredType type : types) typeIndexCost += storage.getIndexFor(type).size();
+
+        // The cost of accessing through the selector with the least cost
+        int minCost = Integer.MAX_VALUE;
         ArenaObjectSelector minSelector = null;
         for (ArenaObjectSelector selector : selectors) {
-            float selectivity = selector.estimateSelectivity(storage);
-            if (selectivity < minSelectivity) {
-                minSelectivity = selectivity;
+            int cost = selector.estimateCost(storage);
+            if (cost < minCost) {
+                minCost = cost;
                 minSelector = selector;
             }
         }
 
-        assert (minSelector != null);
+        if (typeIndexCost <= minCost) {
+            // Query using the type index and apply each selection as the results are being fetched
+            LinkedList<ArenaObject> result = new LinkedList<>();
+            ArenaObjectPropertySelector<ArenaObject> dummySelector = new ArenaObjectPropertySelector<>(ArenaObject.class, o -> true);
 
-        LinkedList<ArenaObjectSelector> otherSelectors = new LinkedList<>(selectors);
-        otherSelectors.remove(minSelector);
+            for (StoredType type : types) {
+                for (ArenaObject o : storage.getIndexFor(type)) {
+                    if (dummySelector.isAllSatisfied(o, types, selectors)) {
+                        result.add(o);
+                    }
+                }
+            }
 
-        return minSelector.select(storage, types, otherSelectors);
+            return result;
+        } else {
+            // Query using the minSelector and apply the other selections as the results are being fetched
+            LinkedList<ArenaObjectSelector> otherSelectors = new LinkedList<>(selectors);
+            otherSelectors.remove(minSelector);
+
+            return minSelector.select(storage, types, otherSelectors);
+        }
     }
 }
