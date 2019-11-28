@@ -38,7 +38,7 @@ public class IceProjectile extends Projectile {
      * Returns the slow down time of the projectile.
      * @return The slow down time of the projectile.
      */
-    public final int getSlowDownTime() { return slowDownTime; }
+    public int getSlowDownTime() { return slowDownTime; }
 
     @Override
     protected void damageTarget() {
