@@ -40,7 +40,7 @@ public abstract class ArenaObject {
     /**
      * The position of the object within the storage.
      */
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     protected ArenaObjectPositionInfo positionInfo;
 
     /**
@@ -54,7 +54,7 @@ public abstract class ArenaObject {
      * Default constructor.
      */
     public ArenaObject() {}
-    
+
     /**
      * Constructs a newly allocated {@link ArenaObject} object.
      * @param x The x-coordinate of the object within the storage.
@@ -147,7 +147,6 @@ public abstract class ArenaObject {
      */
     @PostLoad
     protected void loadArenaObject() {
-        imageView = getDefaultImage();
         this.positionInfo = new ArenaObjectPositionInfo(imageView, getX(), getY());
     }
 

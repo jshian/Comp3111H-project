@@ -115,7 +115,8 @@ public class Manager {
 
             String sql2 = "SELECT t FROM ArenaObjectStorage t";
             Query query2 = entityManager.createQuery(sql2);
-            System.out.println(((ArenaObjectStorage) query2.setMaxResults(1).getResultList().get(0)).getTowers());
+            ArenaObjectStorage storage = (ArenaObjectStorage) query2.setMaxResults(1).getResultList().get(0);
+            System.out.println(storage.getTowers().get(0).getX() + " " + storage.getTowers().get(0).getY());
 
             if (numOfRow > 0) {
                 String sql = "SELECT t FROM ArenaInstance t";
