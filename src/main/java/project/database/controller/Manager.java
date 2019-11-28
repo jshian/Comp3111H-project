@@ -25,8 +25,9 @@ public class Manager {
 
     private static void removeAll() {
         if(entityManager == null) return;
+        EntityTransaction tran = null;
         try {
-            EntityTransaction tran = entityManager.getTransaction();
+            tran = entityManager.getTransaction();
             tran.begin();
 
             Query q1 = entityManager.createQuery("DELETE FROM ArenaInstance");
@@ -58,6 +59,7 @@ public class Manager {
             tran.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            tran.rollback();
         }
     }
 
@@ -65,8 +67,9 @@ public class Manager {
         if(entityManager == null) return;
 
         removeAll();
+        EntityTransaction tran = null;
         try {
-            EntityTransaction tran = entityManager.getTransaction();
+            tran = entityManager.getTransaction();
             tran.begin();
 
             entityManager.persist(arenaInstance.getPlayer());
@@ -97,6 +100,7 @@ public class Manager {
             tran.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            tran.rollback();
         }
     }
 
@@ -104,8 +108,9 @@ public class Manager {
         if(entityManager == null) return null;
 
         ArenaInstance a = null;
+        EntityTransaction tran = null;
         try {
-            EntityTransaction tran = entityManager.getTransaction();
+            tran = entityManager.getTransaction();
             tran.begin();
 
             CriteriaBuilder qb = entityManager.getCriteriaBuilder();
@@ -122,9 +127,8 @@ public class Manager {
             tran.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            tran.rollback();
         }
-
-        System.out.println(a.getPlayer().getName() + " " + a.getStorage().getTowers());
 
         return a;
     }

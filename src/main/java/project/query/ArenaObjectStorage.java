@@ -56,21 +56,21 @@ public final class ArenaObjectStorage {
      * Index for each {@link Tower} on the arena.
      */
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinTable
+    @OrderColumn
     private List<Tower> towers = new LinkedList<>();
 
     /**
      * Index for each {@link Projectile} on the arena.
      */
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinTable
+    @OrderColumn
     private List<Projectile> projectiles = new LinkedList<>();
 
     /**
      * Index for each {@link Monster} on the arena.
      */
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinTable
+    @OrderColumn
     private List<Monster> monsters = new LinkedList<>();
 
     /**
@@ -261,9 +261,28 @@ public final class ArenaObjectStorage {
      */
     public ArenaObjectStorage() {}
 
+    /**
+     * register objects to the arena.
+     */
     @PostLoad
-    protected void registerMoves() {
-        System.out.println('2');
+    public void registerMoves() {
+        // not work
+//        LinkedList<Tower> t1 = new LinkedList<>();
+//        for(Tower t : towers) {
+//            t1.add(t);
+//        }
+//        towers = t1;
+//        LinkedList<Projectile> t2 = new LinkedList<>();
+//        for(Projectile p : projectiles) {
+//            t2.add(p);
+//        }
+//        projectiles = t2;
+//        LinkedList<Monster> t3 = new LinkedList<>();
+//        for(Monster m : monsters) {
+//            t3.add(m);
+//        }
+//        monsters = t3;
+
         ArenaEventRegister register = ArenaManager.getActiveEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);

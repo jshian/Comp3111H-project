@@ -122,11 +122,11 @@ public final class ArenaInstance {
     public ArenaInstance() {}
 
     /**
-     * load object after initialise from jpa.
+     * load object after initialise.
      */
     @PostLoad
     protected void loadArenaInstance() {
-        System.out.println('1');
+        storage.registerMoves();
         eventRegister = new ArenaEventRegister();
         eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
         eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
