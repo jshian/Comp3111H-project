@@ -55,21 +55,21 @@ public final class ArenaObjectStorage {
     /**
      * Index for each {@link Tower} on the arena.
      */
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.MERGE})
     @OrderColumn
     private List<Tower> towers = new LinkedList<>();
 
     /**
      * Index for each {@link Projectile} on the arena.
      */
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.MERGE})
     @OrderColumn
     private List<Projectile> projectiles = new LinkedList<>();
 
     /**
      * Index for each {@link Monster} on the arena.
      */
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.MERGE})
     @OrderColumn
     private List<Monster> monsters = new LinkedList<>();
 

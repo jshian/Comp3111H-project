@@ -43,7 +43,7 @@ public final class ArenaInstance {
      * The player attached to the arena.
      */
     @NotNull
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.MERGE})
     private Player player;
 
     /**
@@ -62,7 +62,7 @@ public final class ArenaInstance {
      * The storage of {@link ArenaObject}s attached to this arena.
      */
     @NotNull
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.MERGE})
     private ArenaObjectStorage storage;
 
     /**

@@ -17,10 +17,13 @@ import java.util.concurrent.CompletableFuture;
 @SpringBootApplication
 public class MainApplication extends Application {
 
-    public static ConfigurableApplicationContext context;
+    private static ConfigurableApplicationContext context;
 
+    /**
+     * initialise the spring boot application.
+     */
     @Override
-    public void init() throws Exception {
+    public void init() {
         CompletableFuture.supplyAsync(() -> {
             ConfigurableApplicationContext ctx = org.springframework.boot.SpringApplication.run(this.getClass());
             return ctx;
@@ -30,8 +33,9 @@ public class MainApplication extends Application {
     private void launchApplicationView(ConfigurableApplicationContext ctx) {
         context = ctx;
         Config hc = context.getBean(Config.class);
-        Manager.setEntityManager(hc.getEntityManagerFactory().createEntityManager());
+        Manager.setEntityManagerFactory(hc.getEntityManagerFactory());
     }
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{

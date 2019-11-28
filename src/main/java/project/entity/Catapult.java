@@ -38,7 +38,7 @@ public class Catapult extends Tower {
     /**
      * Temporary list that includes the list of monsters that will be inside the splash radius.
      */
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.MERGE})
     protected List<Monster> monstersInSplashRange = new LinkedList<>();
 
     /**

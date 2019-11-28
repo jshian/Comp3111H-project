@@ -171,8 +171,10 @@ public final class ArenaManager {
         for (ArenaObject o : getActiveObjectStorage().getProjectiles()) {
             ArenaObjectFactory.removeObject(player, o);
         }
+
         activeUIController = ui;
         ArenaInstance newInstance = Manager.load();
+
         if (newInstance != null) {
             activeArenaInstance = newInstance;
             for (ArenaObject o : getActiveObjectStorage().getTowers()) {

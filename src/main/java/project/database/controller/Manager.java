@@ -5,27 +5,39 @@ import project.entity.*;
 import project.query.ArenaObjectStorage;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.Iterator;
 
+/**
+ * Manager that perform save/load game function.
+ */
 public class Manager {
 
-    static EntityManager entityManager = null;
+    /**
+     * the entityManagerFactory of manager.
+     */
+    private static EntityManagerFactory entityManagerFactory = null;
 
-    public static EntityManager getEntityManager() {
-        return entityManager;
+    /**
+     * set the entityManagerFactory of manager.
+     * @param entityManagerFactory the entityManagerFactory of manager.
+     */
+    public static void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        Manager.entityManagerFactory = entityManagerFactory;
     }
 
-    public static void setEntityManager(EntityManager entityManager) {
-        Manager.entityManager = entityManager;
-    }
-
+    /**
+     * save the arenaInstance to database.
+     * @param arenaInstance the arenaInstance.
+     */
     public static void save(ArenaInstance arenaInstance) {
-        if(entityManager == null) return;
+        if(entityManagerFactory == null) return;
 
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction tran = null;
         try {
             tran = entityManager.getTransaction();
@@ -39,24 +51,12 @@ public class Manager {
             Query q5 = entityManager.createQuery("DELETE FROM Player");
             Query q6 = entityManager.createQuery("DELETE FROM StatusEffect");
 
-//            Query q7 = entityManager.createQuery("DELETE FROM MonsterStatusEffects");
-//            Query q8 = entityManager.createQuery("DELETE FROM ArenaObjectStorageMonsters");
-//            Query q9 = entityManager.createQuery("DELETE FROM ArenaObjectStorageProjectiles");
-//            Query q10 = entityManager.createQuery("DELETE FROM ArenaObjectStorageTowers");
-//            Query q11 = entityManager.createQuery("DELETE FROM MonsterTrail");
-
             q1.executeUpdate();
             q2.executeUpdate();
             q3.executeUpdate();
             q4.executeUpdate();
             q5.executeUpdate();
             q6.executeUpdate();
-
-//            q7.executeUpdate();
-//            q8.executeUpdate();
-//            q9.executeUpdate();
-//            q10.executeUpdate();
-//            q11.executeUpdate();
 
             // add new
             entityManager.persist(arenaInstance.getPlayer());
@@ -88,14 +88,21 @@ public class Manager {
         } catch (Exception e) {
             e.printStackTrace();
             tran.rollback();
+        } finally {
+            entityManager.close();
         }
     }
 
+    /**
+     * load an arenaInstance from the database.
+     * @return an arenaInstance from the database.
+     */
     public static ArenaInstance load() {
-        if(entityManager == null) return null;
+        if(entityManagerFactory == null) return null;
 
-        ArenaInstance a = null;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction tran = null;
+        ArenaInstance a = null;
         try {
             tran = entityManager.getTransaction();
             tran.begin();
@@ -115,8 +122,11 @@ public class Manager {
         } catch (Exception e) {
             e.printStackTrace();
             tran.rollback();
+        } finally {
+            entityManager.close();
         }
 
         return a;
     }
+
 }

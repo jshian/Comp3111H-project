@@ -14,7 +14,7 @@ import project.field.ArenaScalarField;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
- * They can only move horizontally or vertically towards an adjacent {@link Grid} that does not contain a Tower.
+ * They can only move horizontally or vertically towards an adjacent Grid that does not contain a Tower.
  * If they succeed, the game is lost.
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
@@ -82,13 +82,13 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * A linked list of references to each status effect that is active against the monster.
      */
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.MERGE})
     protected List<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
      * A linked list containing a reference to the positions that the monster has passed through in the previous frame.
      */
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.MERGE})
     protected List<ArenaObjectPositionInfo> trail = new LinkedList<>();
 
     protected void moveMonsterOneFrame() {
