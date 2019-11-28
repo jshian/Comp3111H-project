@@ -53,19 +53,19 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
             {
                 List<ArenaObject> result = storage.getQueryResult(circleSelector, EnumSet.of(StoredType.MONSTER));
                 LinkedList<ArenaObject> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5));
-                assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+                assertTrue(CollectionComparator.isElementSetEqual(expected, result));
             }
             
             ArenaObjectCircleSortedSelector<Monster> circleSortedSelector = new ArenaObjectCircleSortedSelector<>((short) 30, (short) 40, (short) 20);
             {
                 PriorityQueue<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
                 PriorityQueue<Monster> expected = new PriorityQueue<>(Arrays.asList(m1, m2, m3, m4, m5));
-                assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+                assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
             {
                 PriorityQueue<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
                 PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(Arrays.asList(m1, m2, m3, m4, m5));
-                assertTrue(CollectionComparator.isElementSetAndOrderEqual(result, expected));
+                assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
         }
     }

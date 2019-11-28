@@ -42,7 +42,6 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * The current health of the monster. It cannot go beyond {@link #maxHealth}.
      * When this is not greater than zero, the monster is considered dead.
-     * @see #hasDied()
      */
     @Transient
     protected SimpleDoubleProperty healthProperty = new SimpleDoubleProperty(1);

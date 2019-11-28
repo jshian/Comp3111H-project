@@ -1,7 +1,9 @@
 package project.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Rule;
@@ -22,57 +24,57 @@ public class GeometryTest {
 	@Test
 	public void testTaxicabDistance() {
         // Same point
-        assertEquals(Geometry.findTaxicabDistance(0, 0, 0, 0), 0);
-        assertEquals(Geometry.findTaxicabDistance(5, 0, 5, 0), 0);
-        assertEquals(Geometry.findTaxicabDistance(0, -10, 0, -10), 0);
-        assertEquals(Geometry.findTaxicabDistance(32, -456, 32, -456), 0);
+        assertEquals(0, Geometry.findTaxicabDistance(0, 0, 0, 0));
+        assertEquals(0, Geometry.findTaxicabDistance(5, 0, 5, 0));
+        assertEquals(0, Geometry.findTaxicabDistance(0, -10, 0, -10));
+        assertEquals(0, Geometry.findTaxicabDistance(32, -456, 32, -456));
 
         // One equal coordinate
-        assertEquals(Geometry.findTaxicabDistance(-1, 0, 0, 0), 1);
-        assertEquals(Geometry.findTaxicabDistance(0, -2, 0, 0), 2);
-        assertEquals(Geometry.findTaxicabDistance(0, 0, -3, 0), 3);
-        assertEquals(Geometry.findTaxicabDistance(0, 0, 0, -4), 4);
-        assertEquals(Geometry.findTaxicabDistance(6, 0, 0, 0), 6);
-        assertEquals(Geometry.findTaxicabDistance(0, 7, 0, 0), 7);
-        assertEquals(Geometry.findTaxicabDistance(0, 0, 8, 0), 8);
-        assertEquals(Geometry.findTaxicabDistance(0, 0, 0, 9), 9);
-        assertEquals(Geometry.findTaxicabDistance(-1, 0, 1, 0), 2);
-        assertEquals(Geometry.findTaxicabDistance(0, 2, 0, -2), 4);
+        assertEquals(1, Geometry.findTaxicabDistance(-1, 0, 0, 0));
+        assertEquals(2, Geometry.findTaxicabDistance(0, -2, 0, 0));
+        assertEquals(3, Geometry.findTaxicabDistance(0, 0, -3, 0));
+        assertEquals(4, Geometry.findTaxicabDistance(0, 0, 0, -4));
+        assertEquals(6, Geometry.findTaxicabDistance(6, 0, 0, 0));
+        assertEquals(7, Geometry.findTaxicabDistance(0, 7, 0, 0));
+        assertEquals(8, Geometry.findTaxicabDistance(0, 0, 8, 0));
+        assertEquals(9, Geometry.findTaxicabDistance(0, 0, 0, 9));
+        assertEquals(2, Geometry.findTaxicabDistance(-1, 0, 1, 0));
+        assertEquals(4, Geometry.findTaxicabDistance(0, 2, 0, -2));
 
         // Distinct x- and y- coordinates
-        assertEquals(Geometry.findTaxicabDistance(-5, 7, -3, 6), 3);
-        assertEquals(Geometry.findTaxicabDistance(490, 234, 436, -50), 338);
-        assertEquals(Geometry.findTaxicabDistance(56, 14, 43, 2), 25);
-        assertEquals(Geometry.findTaxicabDistance(30, -19, 329, 10), 328);
-        assertEquals(Geometry.findTaxicabDistance(130, -50, -40, -20), 200);
+        assertEquals(3, Geometry.findTaxicabDistance(-5, 7, -3, 6));
+        assertEquals(338, Geometry.findTaxicabDistance(490, 234, 436, -50));
+        assertEquals(25, Geometry.findTaxicabDistance(56, 14, 43, 2));
+        assertEquals(328, Geometry.findTaxicabDistance(30, -19, 329, 10));
+        assertEquals(200, Geometry.findTaxicabDistance(130, -50, -40, -20));
     }
     
     @Test
     public void testEuclideanDistance() {
         // Same point
-        assertEquals(Geometry.findEuclideanDistance(0, 0, 0, 0), 0, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(5, 0, 5, 0), 0, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, -10, 0, -10), 0, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(32, -456, 32, -456), 0, MAX_ERROR);
+        assertEquals(0, Geometry.findEuclideanDistance(0, 0, 0, 0), MAX_ERROR);
+        assertEquals(0, Geometry.findEuclideanDistance(5, 0, 5, 0), MAX_ERROR);
+        assertEquals(0, Geometry.findEuclideanDistance(0, -10, 0, -10), MAX_ERROR);
+        assertEquals(0, Geometry.findEuclideanDistance(32, -456, 32, -456), MAX_ERROR);
 
         // One equal coordinate
-        assertEquals(Geometry.findEuclideanDistance(-1, 0, 0, 0), 1, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, -2, 0, 0), 2, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, 0, -3, 0), 3, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, 0, 0, -4), 4, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(6, 0, 0, 0), 6, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, 7, 0, 0), 7, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, 0, 8, 0), 8, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, 0, 0, 9), 9, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(-1, 0, 1, 0), 2, MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(0, 2, 0, -2), 4, MAX_ERROR);
+        assertEquals(1, Geometry.findEuclideanDistance(-1, 0, 0, 0), MAX_ERROR);
+        assertEquals(2, Geometry.findEuclideanDistance(0, -2, 0, 0), MAX_ERROR);
+        assertEquals(3, Geometry.findEuclideanDistance(0, 0, -3, 0), MAX_ERROR);
+        assertEquals(4, Geometry.findEuclideanDistance(0, 0, 0, -4), MAX_ERROR);
+        assertEquals(6, Geometry.findEuclideanDistance(6, 0, 0, 0), MAX_ERROR);
+        assertEquals(7, Geometry.findEuclideanDistance(0, 7, 0, 0), MAX_ERROR);
+        assertEquals(8, Geometry.findEuclideanDistance(0, 0, 8, 0), MAX_ERROR);
+        assertEquals(9, Geometry.findEuclideanDistance(0, 0, 0, 9), MAX_ERROR);
+        assertEquals(2, Geometry.findEuclideanDistance(-1, 0, 1, 0), MAX_ERROR);
+        assertEquals(4, Geometry.findEuclideanDistance(0, 2, 0, -2), MAX_ERROR);
 
         // Distinct x- and y- coordinates
-        assertEquals(Geometry.findEuclideanDistance(-5, 7, -3, 6), Math.sqrt(5), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(490, 234, 436, -50), Math.sqrt(83572), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(56, 14, 43, 2), Math.sqrt(313), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(30, -19, 329, 10), Math.sqrt(90242), MAX_ERROR);
-        assertEquals(Geometry.findEuclideanDistance(130, -50, -40, -20), Math.sqrt(29800), MAX_ERROR);
+        assertEquals(Math.sqrt(5), Geometry.findEuclideanDistance(-5, 7, -3, 6), MAX_ERROR);
+        assertEquals(Math.sqrt(83572), Geometry.findEuclideanDistance(490, 234, 436, -50), MAX_ERROR);
+        assertEquals(Math.sqrt(313), Geometry.findEuclideanDistance(56, 14, 43, 2), MAX_ERROR);
+        assertEquals(Math.sqrt(90242), Geometry.findEuclideanDistance(30, -19, 329, 10), MAX_ERROR);
+        assertEquals(Math.sqrt(29800), Geometry.findEuclideanDistance(130, -50, -40, -20), MAX_ERROR);
     }
 
     public void assertUnsupportedOperationException_findAngleFrom(int x1, int y1, int x2, int y2) {
@@ -93,23 +95,23 @@ public class GeometryTest {
         assertUnsupportedOperationException_findAngleFrom(32, -456, 32, -456);
 
         // One equal coordinate
-        assertEquals(Geometry.findAngleFrom(-1, 0, 0, 0), 0, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(0, -2, 0, 0), Math.PI / 2, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(0, 0, -3, 0), Math.PI, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(0, 0, 0, -4), 3 * Math.PI / 2, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(6, 0, 0, 0), Math.PI, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(0, 7, 0, 0), 3 * Math.PI / 2, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(0, 0, 8, 0), 0, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(0, 0, 0, 9), Math.PI / 2, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(-1, 0, 1, 0), 0, MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(0, 2, 0, -2), 3 * Math.PI / 2, MAX_ERROR);
+        assertEquals(0, Geometry.findAngleFrom(-1, 0, 0, 0), MAX_ERROR);
+        assertEquals(Math.PI / 2, Geometry.findAngleFrom(0, -2, 0, 0), MAX_ERROR);
+        assertEquals(Math.PI, Geometry.findAngleFrom(0, 0, -3, 0), MAX_ERROR);
+        assertEquals(3 * Math.PI / 2,Geometry.findAngleFrom(0, 0, 0, -4),  MAX_ERROR);
+        assertEquals(Math.PI, Geometry.findAngleFrom(6, 0, 0, 0), MAX_ERROR);
+        assertEquals(3 * Math.PI / 2, Geometry.findAngleFrom(0, 7, 0, 0), MAX_ERROR);
+        assertEquals(0, Geometry.findAngleFrom(0, 0, 8, 0), MAX_ERROR);
+        assertEquals(Math.PI / 2, Geometry.findAngleFrom(0, 0, 0, 9), MAX_ERROR);
+        assertEquals(0, Geometry.findAngleFrom(-1, 0, 1, 0), MAX_ERROR);
+        assertEquals(3 * Math.PI / 2, Geometry.findAngleFrom(0, 2, 0, -2), MAX_ERROR);
 
         // Distinct x- and y- coordinates
-        assertEquals(Geometry.findAngleFrom(-5, 7, -3, 6), Math.toRadians(333.43495), MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(490, 234, 436, -50), Math.toRadians(259.23424), MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(56, 14, 43, 2), Math.toRadians(222.70938), MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(30, -19, 329, 10), Math.toRadians(5.5397881), MAX_ERROR);
-        assertEquals(Geometry.findAngleFrom(130, -50, -40, -20), Math.toRadians(169.99202), MAX_ERROR);
+        assertEquals(Math.toRadians(333.43495), Geometry.findAngleFrom(-5, 7, -3, 6), MAX_ERROR);
+        assertEquals(Math.toRadians(259.23424), Geometry.findAngleFrom(490, 234, 436, -50), MAX_ERROR);
+        assertEquals(Math.toRadians(222.70938), Geometry.findAngleFrom(56, 14, 43, 2), MAX_ERROR);
+        assertEquals(Math.toRadians(5.5397881), Geometry.findAngleFrom(30, -19, 329, 10), MAX_ERROR);
+        assertEquals(Math.toRadians(169.99202), Geometry.findAngleFrom(130, -50, -40, -20), MAX_ERROR);
     }
     
     public void assertUnsupportedOperationException_intersectBox(int x0, int y0, int x, int y, int boxMinX, int boxMinY, int boxWidth, int boxHeight) {
@@ -146,63 +148,63 @@ public class GeometryTest {
 
         // Boundary of box
         Point2D p_boundaryTest1 = Geometry.intersectBox(30, 0, 0, 0, 0, 0, 30, 67);
-        assertEquals(p_boundaryTest1.getX(), 0, MAX_ERROR);
-        assertEquals(p_boundaryTest1.getY(), 0, MAX_ERROR);
+        assertEquals(0, p_boundaryTest1.getX(), MAX_ERROR);
+        assertEquals(0, p_boundaryTest1.getY(), MAX_ERROR);
         Point2D p_boundaryTest2 = Geometry.intersectBox(0, 0, 30, 0, 0, 0, 30, 67);
-        assertEquals(p_boundaryTest2.getX(), 30, MAX_ERROR);
-        assertEquals(p_boundaryTest2.getY(), 0, MAX_ERROR);
+        assertEquals(30, p_boundaryTest2.getX(), MAX_ERROR);
+        assertEquals(0, p_boundaryTest2.getY(), MAX_ERROR);
         Point2D p_boundaryTest3 = Geometry.intersectBox(0, 67, 0, 0, 0, 0, 30, 67);
-        assertEquals(p_boundaryTest3.getX(), 0, MAX_ERROR);
-        assertEquals(p_boundaryTest3.getY(), 0, MAX_ERROR);
+        assertEquals(0, p_boundaryTest3.getX(), MAX_ERROR);
+        assertEquals(0, p_boundaryTest3.getY(), MAX_ERROR);
         Point2D p_boundaryTest4 = Geometry.intersectBox(0, 0, 0, 67, 0, 0, 30, 67);
-        assertEquals(p_boundaryTest4.getX(), 0, MAX_ERROR);
-        assertEquals(p_boundaryTest4.getY(), 67, MAX_ERROR);
+        assertEquals(0, p_boundaryTest4.getX(), MAX_ERROR);
+        assertEquals(67, p_boundaryTest4.getY(), MAX_ERROR);
         Point2D p_boundaryTest5 = Geometry.intersectBox(25, 0, 0, 0, -5, 0, 30, 67);
-        assertEquals(p_boundaryTest5.getX(), -5, MAX_ERROR);
-        assertEquals(p_boundaryTest5.getY(), 0, MAX_ERROR);
+        assertEquals(-5, p_boundaryTest5.getX(), MAX_ERROR);
+        assertEquals(0, p_boundaryTest5.getY(), MAX_ERROR);
         Point2D p_boundaryTest6 = Geometry.intersectBox(0, 0, 80, 0, 50, 0, 30, 67);
-        assertEquals(p_boundaryTest6.getX(), 80, MAX_ERROR);
-        assertEquals(p_boundaryTest6.getY(), 0, MAX_ERROR);
+        assertEquals(80, p_boundaryTest6.getX(), MAX_ERROR);
+        assertEquals(0, p_boundaryTest6.getY(), MAX_ERROR);
         Point2D p_boundaryTest7 = Geometry.intersectBox(-2, -5, 45, -76, -2, -5, 30, 67);
-        assertEquals(p_boundaryTest7.getX(), -2, MAX_ERROR);
-        assertEquals(p_boundaryTest7.getY(), -5, MAX_ERROR);
+        assertEquals(-2, p_boundaryTest7.getX(), MAX_ERROR);
+        assertEquals(-5, p_boundaryTest7.getY(), MAX_ERROR);
         Point2D p_boundaryTest8 = Geometry.intersectBox(45, -76, -2, -5, -2, -5, 30, 67);
-        assertEquals(p_boundaryTest8.getX(), -2, MAX_ERROR);
-        assertEquals(p_boundaryTest8.getY(), -5, MAX_ERROR);
+        assertEquals(-2, p_boundaryTest8.getX(), MAX_ERROR);
+        assertEquals(-5, p_boundaryTest8.getY(), MAX_ERROR);
 
         // One equal coordinate
         Point2D p_oneEqualTest1 = Geometry.intersectBox(6, 2, 10, 2, 0, 0, 50, 50);
-        assertEquals(p_oneEqualTest1.getX(), 50, MAX_ERROR);
-        assertEquals(p_oneEqualTest1.getY(), 2, MAX_ERROR);
+        assertEquals(50, p_oneEqualTest1.getX(), MAX_ERROR);
+        assertEquals(2, p_oneEqualTest1.getY(), MAX_ERROR);
         Point2D p_oneEqualTest2 = Geometry.intersectBox(48, 5, 8, 5, 0, 0, 345, 13);
-        assertEquals(p_oneEqualTest2.getX(), 0 , MAX_ERROR);
-        assertEquals(p_oneEqualTest2.getY(), 5, MAX_ERROR);
+        assertEquals(0, p_oneEqualTest2.getX(), MAX_ERROR);
+        assertEquals(5, p_oneEqualTest2.getY(), MAX_ERROR);
         Point2D p_oneEqualTest3 = Geometry.intersectBox(3, 7, 3, 79, 0, 0, 296, 305);
-        assertEquals(p_oneEqualTest3.getX(), 3, MAX_ERROR);
-        assertEquals(p_oneEqualTest3.getY(), 305, MAX_ERROR);
+        assertEquals(3, p_oneEqualTest3.getX(), MAX_ERROR);
+        assertEquals(305, p_oneEqualTest3.getY(), MAX_ERROR);
         Point2D p_oneEqualTest4 = Geometry.intersectBox(47, 432, 47, 45, 0, 0, 479, 345);
-        assertEquals(p_oneEqualTest4.getX(), 47, MAX_ERROR);
-        assertEquals(p_oneEqualTest4.getY(), 0, MAX_ERROR);
+        assertEquals(47, p_oneEqualTest4.getX(), MAX_ERROR);
+        assertEquals(0, p_oneEqualTest4.getY(), MAX_ERROR);
 
         // Distinct x- and y- coordinates
         Point2D p_distinctTest1 = Geometry.intersectBox(-5, 7, -3, 6, -50, 0, 120, 590);
-        assertEquals(p_distinctTest1.getX(), 9, MAX_ERROR);
-        assertEquals(p_distinctTest1.getY(), 0, MAX_ERROR);
+        assertEquals(9, p_distinctTest1.getX(), MAX_ERROR);
+        assertEquals(0, p_distinctTest1.getY(), MAX_ERROR);
         Point2D p_distinctTest2 = Geometry.intersectBox(490, 234, 436, -50, 54, -100, 600, 340);
-        assertEquals(p_distinctTest2.getX(), 426.49296, MAX_ERROR);
-        assertEquals(p_distinctTest2.getY(), -100, MAX_ERROR);
+        assertEquals(426.49296, p_distinctTest2.getX(), MAX_ERROR);
+        assertEquals(-100, p_distinctTest2.getY(), MAX_ERROR);
         Point2D p_distinctTest3 = Geometry.intersectBox(56, 14, 43, 2, -23, -50, 300, 324);
-        assertEquals(p_distinctTest3.getX(), -13.333333, MAX_ERROR);
-        assertEquals(p_distinctTest3.getY(), -50, MAX_ERROR);
+        assertEquals(-13.333333, p_distinctTest3.getX(), MAX_ERROR);
+        assertEquals(-50, p_distinctTest3.getY(), MAX_ERROR);
         Point2D p_distinctTest4 = Geometry.intersectBox(30, -19, 329, 10, 0, -19, 329, 329);
-        assertEquals(p_distinctTest4.getX(), 329, MAX_ERROR);
-        assertEquals(p_distinctTest4.getY(), 10, MAX_ERROR);
+        assertEquals(329, p_distinctTest4.getX(), MAX_ERROR);
+        assertEquals(10, p_distinctTest4.getY(), MAX_ERROR);
         Point2D p_distinctTest5 = Geometry.intersectBox(130, -50, -40, -20, -70, -90, 315, 120);
-        assertEquals(p_distinctTest5.getX(), -70, MAX_ERROR);
-        assertEquals(p_distinctTest5.getY(), -14.705882, MAX_ERROR);
+        assertEquals(-70, p_distinctTest5.getX(), MAX_ERROR);
+        assertEquals(-14.705882, p_distinctTest5.getY(), MAX_ERROR);
         Point2D p_distinctTest6 = Geometry.intersectBox(420, 460, 420, 420, 0, 0, 480, 480);
-        assertEquals(p_distinctTest6.getX(), 420, MAX_ERROR);
-        assertEquals(p_distinctTest6.getY(), 0, MAX_ERROR);
+        assertEquals(420, p_distinctTest6.getX(), MAX_ERROR);
+        assertEquals(0, p_distinctTest6.getY(), MAX_ERROR);
     }
     
     public void assertUnsupportedOperationException_isInRay(int testX, int testY, int x0, int y0, int x, int y, int maxDist) {
@@ -223,22 +225,22 @@ public class GeometryTest {
     	assertUnsupportedOperationException_isInRay(-23, 45, 32, -456, 32, -456, 3);
 
         // Boundary
-        assertEquals(Geometry.isInRay(0, 0, 0, 0, 1, 0, 0), true);
-        assertEquals(Geometry.isInRay(0, -5, 0, 0, 0, -1, 0), true);
-        assertEquals(Geometry.isInRay(1, -5, 0, 0, 0, 1, 0), false);
-        assertEquals(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 3), true);
-        assertEquals(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 2.99), false);
-        assertEquals(Geometry.isInRay(-9, -12, 0, 0, -6, -8, 0), true);
-        assertEquals(Geometry.isInRay(-8, -12, 0, 0, -6, -8, 0), false);
-        assertEquals(Geometry.isInRay(-5, -15, 0, 0, -9, -12, 5), true);
-        assertEquals(Geometry.isInRay(-5, -15, 0, 0, -9, -12, 4.99), false);
+        assertTrue(Geometry.isInRay(0, 0, 0, 0, 1, 0, 0));
+        assertTrue(Geometry.isInRay(0, -5, 0, 0, 0, -1, 0));
+        assertFalse(Geometry.isInRay(1, -5, 0, 0, 0, 1, 0));
+        assertTrue(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 3));
+        assertFalse(Geometry.isInRay(-3, 10, 0, 0, 0, 1, 2.99));
+        assertTrue(Geometry.isInRay(-9, -12, 0, 0, -6, -8, 0));
+        assertFalse(Geometry.isInRay(-8, -12, 0, 0, -6, -8, 0));
+        assertTrue(Geometry.isInRay(-5, -15, 0, 0, -9, -12, 5));
+        assertFalse(Geometry.isInRay(-5, -15, 0, 0, -9, -12, 4.99));
 
         // General
-        assertEquals(Geometry.isInRay(0, 5, -5, 7, -3, -6, 3), false);
-        assertEquals(Geometry.isInRay(423, -324, 490, 234, 436, -50, 60), true);
-        assertEquals(Geometry.isInRay(82, 39, 56, 14, 43, 2, 57), true);
-        assertEquals(Geometry.isInRay(126, -95, 30, -19, 329, 10, 83), false);
-        assertEquals(Geometry.isInRay(-50, 30, 130, -50, -40, -20, 40), false);
+        assertFalse(Geometry.isInRay(0, 5, -5, 7, -3, -6, 3));
+        assertTrue(Geometry.isInRay(423, -324, 490, 234, 436, -50, 60));
+        assertTrue(Geometry.isInRay(82, 39, 56, 14, 43, 2, 57));
+        assertFalse(Geometry.isInRay(126, -95, 30, -19, 329, 10, 83));
+        assertFalse(Geometry.isInRay(-50, 30, 130, -50, -40, -20, 40));
     }
     
     public void assertUnsupportedOperationException_isInCircle(int testX, int testY, int x0, int y0, double r) {
@@ -259,34 +261,34 @@ public class GeometryTest {
     	assertUnsupportedOperationException_isInCircle(32, -456, 32, -456, -12);
 
         // Zero radius
-        assertEquals(Geometry.isInCircle(0, 0, 0, 0, 0), true);
-        assertEquals(Geometry.isInCircle(5, 0, 4, 0, 0), false);
-        assertEquals(Geometry.isInCircle(0, -10, 0, -10, 0), true);
-        assertEquals(Geometry.isInCircle(32, -456, 32, -455, 0), false);
+        assertTrue(Geometry.isInCircle(0, 0, 0, 0, 0));
+        assertFalse(Geometry.isInCircle(5, 0, 4, 0, 0));
+        assertTrue(Geometry.isInCircle(0, -10, 0, -10, 0));
+        assertFalse(Geometry.isInCircle(32, -456, 32, -455, 0));
 
         // Boundary
-        assertEquals(Geometry.isInCircle(-1, 0, 0, 0, 1), true);
-        assertEquals(Geometry.isInCircle(0, -2, 0, 0, 2), true);
-        assertEquals(Geometry.isInCircle(0, 0, -3, 0, 3), true);
-        assertEquals(Geometry.isInCircle(0, 0, 0, -4, 4), true);
-        assertEquals(Geometry.isInCircle(6, 0, 0, 0, 5.99), false);
-        assertEquals(Geometry.isInCircle(0, 7, 0, 0, 6.99), false);
-        assertEquals(Geometry.isInCircle(0, 0, 8, 0, 8), true);
-        assertEquals(Geometry.isInCircle(0, 0, 0, 9, 8.99), false);
-        assertEquals(Geometry.isInCircle(-1, 0, 1, 0, 2), true);
-        assertEquals(Geometry.isInCircle(0, 2, 0, -2, 3.99), false);
-        assertEquals(Geometry.isInCircle(-5, 7, -3, 6, Math.sqrt(5)), true);
-        assertEquals(Geometry.isInCircle(490, 234, 436, -50, Math.sqrt(83572 - 1)), false);
-        assertEquals(Geometry.isInCircle(56, 14, 43, 2, Math.sqrt(313)), true);
-        assertEquals(Geometry.isInCircle(30, -19, 329, 10, Math.sqrt(90242 - 1)), false);
-        assertEquals(Geometry.isInCircle(130, -50, -40, -20, Math.sqrt(29800)), true);
+        assertTrue(Geometry.isInCircle(-1, 0, 0, 0, 1));
+        assertTrue(Geometry.isInCircle(0, -2, 0, 0, 2));
+        assertTrue(Geometry.isInCircle(0, 0, -3, 0, 3));
+        assertTrue(Geometry.isInCircle(0, 0, 0, -4, 4));
+        assertFalse(Geometry.isInCircle(6, 0, 0, 0, 5.99));
+        assertFalse(Geometry.isInCircle(0, 7, 0, 0, 6.99));
+        assertTrue(Geometry.isInCircle(0, 0, 8, 0, 8));
+        assertFalse(Geometry.isInCircle(0, 0, 0, 9, 8.99));
+        assertTrue(Geometry.isInCircle(-1, 0, 1, 0, 2));
+        assertFalse(Geometry.isInCircle(0, 2, 0, -2, 3.99));
+        assertTrue(Geometry.isInCircle(-5, 7, -3, 6, Math.sqrt(5)));
+        assertFalse(Geometry.isInCircle(490, 234, 436, -50, Math.sqrt(83572) - 1));
+        assertTrue(Geometry.isInCircle(56, 14, 43, 2, Math.sqrt(313)));
+        assertFalse(Geometry.isInCircle(30, -19, 329, 10, Math.sqrt(90242) - 1));
+        assertTrue(Geometry.isInCircle(130, -50, -40, -20, Math.sqrt(29800)));
     }
 
     @Test
     public void testIsAt() {
-        assertEquals(Geometry.isAt(0, 0, 0, 0), true);
-        assertEquals(Geometry.isAt(5, 0, 4, 0), false);
-        assertEquals(Geometry.isAt(0, -10, 0, -10), true);
-        assertEquals(Geometry.isAt(32, -456, 32, -455), false);
+        assertTrue(Geometry.isAt(0, 0, 0, 0));
+        assertFalse(Geometry.isAt(5, 0, 4, 0));
+        assertTrue(Geometry.isAt(0, -10, 0, -10));
+        assertFalse(Geometry.isAt(32, -456, 32, -455));
     }
 }

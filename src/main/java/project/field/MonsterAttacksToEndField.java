@@ -290,7 +290,7 @@ public final class MonsterAttacksToEndField implements ArenaScalarField<Float> {
 
     @Override
     public void setAll(Float value) {
-        for (int x = 0; x < ArenaManager.ARENA_WIDTH; x++) {
+        for (int x = 0; x < ArenaManager.ARENA_WIDTH + 1; x++) {
             Arrays.fill(this.values[x], value);
         }
     }

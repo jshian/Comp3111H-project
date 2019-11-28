@@ -69,7 +69,6 @@ public class ArenaObjectTest extends JavaFXTester {
             };
         }
 
-        final short ZERO = (short) 0;
         LinkedList<Object[]> boundaryParams = new LinkedList<>();
         boundaryParams.add(new Object[] { ZERO, ZERO });
         boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ZERO });
@@ -88,7 +87,7 @@ public class ArenaObjectTest extends JavaFXTester {
 
     @Test
     public void test() {
-        assertEquals(arenaObject.getX(), x);
-        assertEquals(arenaObject.getY(), y);
+        assertEquals(x, arenaObject.getX());
+        assertEquals(y, arenaObject.getY());
     }
 }
