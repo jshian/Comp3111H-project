@@ -35,8 +35,8 @@ public class ArenaObjectPropertySelector<T extends ArenaObject> implements Arena
     }
 
     @Override
-    public float estimateSelectivity(ArenaObjectStorage storage) {
-        return 1;
+    public int estimateCost(ArenaObjectStorage storage) {
+        return Integer.MAX_VALUE; // So that the query will always search by type
     }
 
     @Override

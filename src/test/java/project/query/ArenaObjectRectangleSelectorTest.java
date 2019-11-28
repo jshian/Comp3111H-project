@@ -136,8 +136,8 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
         generateBox((short) 99, (short) 199, (short) 52, (short) 42, false);
 
         ArenaObjectRectangleSelector rectangleSelector = new ArenaObjectRectangleSelector((short) 100, (short) 200, (short) 50, (short) 40);
-        float selectivity = rectangleSelector.estimateSelectivity(storage);
-        assertTrue(0 <= selectivity && selectivity <= 1);
+        int cost = rectangleSelector.estimateCost(storage);
+        assertTrue(cost > 0);
 
         testQueryFilters(rectangleSelector);
     }
@@ -176,6 +176,8 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
 
             ArenaObjectRectangleSelector rectangleSelector = new ArenaObjectRectangleSelector(leftX, topY, width, height);
             System.out.println(String.format("Created rectangle selector: leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height));
+            int cost = rectangleSelector.estimateCost(ArenaManager.getActiveObjectStorage());
+            assertTrue(cost > 0);
 
             reset();
             for (int j = 0; j < NUM_RANDOM_OBJECTS_PER_TYPE; j++) {

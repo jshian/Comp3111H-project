@@ -98,11 +98,16 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
     }
 
     @Override
-    public float estimateSelectivity(ArenaObjectStorage storage) {
+    public int estimateCost(ArenaObjectStorage storage) {
         // Out of bounds (== 0 means a point search)
         if (effectiveWidth < 0 || effectiveHeight < 0) return 0;
 
-        return ((float) ((effectiveWidth + 1) * (effectiveHeight + 1))) / ((ArenaManager.ARENA_WIDTH + 1) * (ArenaManager.ARENA_HEIGHT + 1));
+        // One access for the index, and one access for each object within the index.
+        if (effectiveWidth < effectiveHeight) {
+            return (int) (effectiveWidth * (1 + storage.getObjectsPerX()));
+        } else {
+            return (int) (effectiveHeight * (1 + storage.getObjectsPerY()));
+        }
     }
 
     @Override

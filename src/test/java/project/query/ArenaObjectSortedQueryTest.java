@@ -31,15 +31,15 @@ public class ArenaObjectSortedQueryTest extends JavaFXTester {
     private class DummySortedSelector<T extends ArenaObject & Comparable<T>>
              implements ArenaObjectSortedSelector<T> {
 
-        private float selectivity;
+        private int cost;
 
-        private DummySortedSelector(float selectivity) {
-            this.selectivity = selectivity;
+        private DummySortedSelector(int cost) {
+            this.cost = cost;
         }
 
         @Override
-        public float estimateSelectivity(ArenaObjectStorage storage) {
-            return selectivity;
+        public int estimateCost(ArenaObjectStorage storage) {
+            return cost;
         }
 
         @Override
@@ -65,9 +65,9 @@ public class ArenaObjectSortedQueryTest extends JavaFXTester {
 
     @Test
     public void testConstructor() {
-        DummySortedSelector<Monster> s1 = new DummySortedSelector<>(0.1f);
-        DummySortedSelector<Monster> s2 = new DummySortedSelector<>(0.2f);
-        DummySortedSelector<Monster> s3 = new DummySortedSelector<>(0.3f);
+        DummySortedSelector<Monster> s1 = new DummySortedSelector<>(1);
+        DummySortedSelector<Monster> s2 = new DummySortedSelector<>(2);
+        DummySortedSelector<Monster> s3 = new DummySortedSelector<>(3);
 
         ArenaObjectSortedQuery<Monster> q1 = new ArenaObjectSortedQuery<>();
         assertTrue(q1.selectors.isEmpty());
@@ -84,9 +84,9 @@ public class ArenaObjectSortedQueryTest extends JavaFXTester {
     public void testQuerySequence() {
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
 
-        DummySortedSelector<Monster> s1 = new DummySortedSelector<>(0.1f);
-        DummySortedSelector<Monster> s2 = new DummySortedSelector<>(0.2f);
-        DummySortedSelector<Monster> s3 = new DummySortedSelector<>(0.3f);
+        DummySortedSelector<Monster> s1 = new DummySortedSelector<>(1);
+        DummySortedSelector<Monster> s2 = new DummySortedSelector<>(2);
+        DummySortedSelector<Monster> s3 = new DummySortedSelector<>(3);
         
         ArenaObjectSortedQuery<Monster> q = new ArenaObjectSortedQuery<>();
         q.restrict(s3); assertEquals(q.selectors.size(), 1);

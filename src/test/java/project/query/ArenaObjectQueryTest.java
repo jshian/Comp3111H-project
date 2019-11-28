@@ -29,15 +29,15 @@ public class ArenaObjectQueryTest extends JavaFXTester {
 
     private class DummySelector implements ArenaObjectSelector {
 
-        private float selectivity;
+        private int cost;
 
-        private DummySelector(float selectivity) {
-            this.selectivity = selectivity;
+        private DummySelector(int cost) {
+            this.cost = cost;
         }
 
         @Override
-        public float estimateSelectivity(ArenaObjectStorage storage) {
-            return selectivity;
+        public int estimateCost(ArenaObjectStorage storage) {
+            return cost;
         }
 
         @Override
@@ -56,9 +56,9 @@ public class ArenaObjectQueryTest extends JavaFXTester {
 
     @Test
     public void testConstructor() {
-        DummySelector s1 = new DummySelector(0.1f);
-        DummySelector s2 = new DummySelector(0.2f);
-        DummySelector s3 = new DummySelector(0.3f);
+        DummySelector s1 = new DummySelector(1);
+        DummySelector s2 = new DummySelector(2);
+        DummySelector s3 = new DummySelector(3);
 
         ArenaObjectQuery q1 = new ArenaObjectQuery();
         assertTrue(q1.selectors.isEmpty());
@@ -75,9 +75,9 @@ public class ArenaObjectQueryTest extends JavaFXTester {
     public void testQuerySequence() {
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
 
-        DummySelector s1 = new DummySelector(0.1f);
-        DummySelector s2 = new DummySelector(0.2f);
-        DummySelector s3 = new DummySelector(0.3f);
+        DummySelector s1 = new DummySelector(1);
+        DummySelector s2 = new DummySelector(2);
+        DummySelector s3 = new DummySelector(3);
 
         ArenaObjectQuery q = new ArenaObjectQuery();
         q.restrict(s1); assertEquals(q.selectors.size(), 1);

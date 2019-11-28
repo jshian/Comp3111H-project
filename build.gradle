@@ -11,8 +11,8 @@ plugins {
 
 group = 'com.game'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-targetCompatibility = '11'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 if (JavaVersion.current() > org.gradle.api.JavaVersion.VERSION_1_10) {
     println('Current JavaVersion: "' + JavaVersion.current() + '"');
@@ -88,6 +88,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 test {

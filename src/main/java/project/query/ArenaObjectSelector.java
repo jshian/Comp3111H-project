@@ -12,11 +12,11 @@ import project.query.ArenaObjectStorage.StoredType;
 interface ArenaObjectSelector {
 
     /**
-     * Estimates the selectivity of the selection on a storage, disregarding the type filter.
+     * Estimates the number of accesses of the selector, disregarding the type filter.
      * @param storage The storage to run the select from.
-     * @return The estimated selectivity.
+     * @return The estimated number of accesses.
      */
-    abstract float estimateSelectivity(ArenaObjectStorage storage);
+    abstract int estimateCost(ArenaObjectStorage storage);
 
     /**
      * Performs selection on a storage.

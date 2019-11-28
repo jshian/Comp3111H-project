@@ -1,35 +1,16 @@
 package project.field;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import project.arena.ArenaInstance;
 import project.control.ArenaManager;
 import project.entity.ArenaObjectPositionInfo;
 
 /**
- * A scalar field that permeates the arena.
+ * Interface for scalar field thats permeates the arena.
  */
-public class ArenaScalarField<T extends Number & Comparable<T>> {
-
-    protected ArrayList<ArrayList<T>> values;
-    {
-        values = new ArrayList<ArrayList<T>>(ArenaManager.ARENA_WIDTH + 1);
-        for (int i = 0; i < ArenaManager.ARENA_WIDTH + 1; i++) {
-            values.add(i, new ArrayList<T>(ArenaManager.ARENA_HEIGHT + 1));
-            for (int j = 0; j < ArenaManager.ARENA_HEIGHT + 1; j++) {
-                values.get(i).add(null);
-            }
-        }
-    }
-
-    /**
-     * Constructs a newly allocated {@link ArenaScalarField} object and attaches it to an arena instance.
-     * @param arenaInstance The arena instance.
-     */
-    ArenaScalarField(ArenaInstance arenaInstance) {}
+public interface ArenaScalarField<T extends Number & Comparable<T>> {
 
     /**
      * Represents a point on an {@link ArenaScalarField}.
@@ -37,13 +18,16 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
     public class ScalarFieldPoint {
         private short x;
         private short y;
-        private T value;
 
-        protected ScalarFieldPoint(short x, short y) {
+        /**
+         * Constructs a newly allocated {@link ScalarFieldPoint} object.
+         * @param x The x-coordinate of the point.
+         * @param y The y-coordinate of the point.
+         */
+        ScalarFieldPoint(short x, short y) {
             ArenaObjectPositionInfo.assertValidPosition(x, y);
             this.x = x;
             this.y = y;
-            this.value = values.get(x).get(y);
         }
 
         /**
@@ -57,12 +41,6 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
          * @return The y-coordinate of the point.
          */
         public short getY() { return y; }
-
-        /**
-         * Returns the value of the scalar field at the point.
-         * @return The value of the scalar field at the point.
-         */
-        public Number getValue() { return value; }
     }
 
     /**
@@ -71,22 +49,7 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param y The y-coordinate of the point.
      * @return The value of the scalar field at the point.
      */
-    public T getValueAt(short x, short y) {
-        ArenaObjectPositionInfo.assertValidPosition(x, y);
-        return values.get(x).get(y);
-    }
-
-    /**
-     * Sets the value at each point on the scalar field.
-     * @param value The new value.
-     */
-    protected final void setAll(T value) {
-        for (int x = 0; x < ArenaManager.ARENA_HEIGHT + 1; x++) {
-            for (int y = 0; y < ArenaManager.ARENA_WIDTH + 1; y++) {
-                values.get(x).set(y, value);
-            }
-        }
-    }
+    public abstract T getValueAt(short x, short y);
 
     /**
      * Sets the value of the scalar field at a given point.
@@ -94,10 +57,13 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param y The y-coordinate of the point.
      * @param value The new value at the point.
      */
-    protected final void setValueAt(short x, short y, T value) {
-        ArenaObjectPositionInfo.assertValidPosition(x, y);
-        values.get(x).set(y, value);
-    }
+    abstract void setValueAt(short x, short y, T value);
+
+    /**
+     * Sets the value at each point on the scalar field.
+     * @param value The new value.
+     */
+    abstract void setAll(T value);
 
     /**
      * Returns the immediate neighbour in each of the four cardinal directions from the given point, if they exist.
@@ -105,7 +71,7 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param y The y-coordinate of the point.
      * @return The neighbours which satisfy the requirement, or <code>null</code> if the given point is the only point in the entire field.
      */
-    protected final @Nullable LinkedList<ScalarFieldPoint> getTaxicabNeighbours(short x, short y) {
+    static @Nullable LinkedList<ScalarFieldPoint> getTaxicabNeighbours(short x, short y) {
         LinkedList<ScalarFieldPoint> neighbours = new LinkedList<>();
 
         // Left
@@ -129,7 +95,7 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
      * @param y The y-coordinate of the point.
      * @return The point after moving by one step, or <code>null</code> if the current point is a local minimum.
      */
-    public @Nullable ScalarFieldPoint descendTaxicab(short x, short y) {
+    public default @Nullable ScalarFieldPoint descendTaxicab(short x, short y) {
         ArenaObjectPositionInfo.assertValidPosition(x, y);
         
         if (getTaxicabNeighbours(x, y) == null) return null;
@@ -137,7 +103,7 @@ public class ArenaScalarField<T extends Number & Comparable<T>> {
         T lowestCost = getValueAt(x, y);
         ScalarFieldPoint lowestCostNeighbour = null;
         for (ScalarFieldPoint neighbour : getTaxicabNeighbours(x, y)) {
-            T cost = neighbour.value;
+            T cost = getValueAt(neighbour.x, neighbour.y);
 
             if (cost.compareTo(lowestCost) < 0) {
                 lowestCost = cost;

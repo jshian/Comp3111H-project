@@ -1,5 +1,6 @@
 package project.field;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
 
@@ -18,9 +19,30 @@ import project.query.ArenaObjectStorage.StoredType;
  * A scalar field where the value on each point equals the minimum distance
  * travelled from that point to the end zone.
  */
-public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
+public final class MonsterAttacksToEndField implements ArenaScalarField<Float> {
 
-    private class TowerAttacksPerFrameField extends ArenaScalarField<Float> {
+    protected float[][] values = new float[ArenaManager.ARENA_WIDTH + 1][ArenaManager.ARENA_HEIGHT + 1];
+
+    protected class TowerAttacksPerFrameField implements ArenaScalarField<Float> {
+
+        protected float[][] values = new float[ArenaManager.ARENA_WIDTH + 1][ArenaManager.ARENA_HEIGHT + 1];
+
+        @Override
+        public Float getValueAt(short x, short y) {
+            return this.values[x][y];
+        }
+        
+        @Override
+        public void setValueAt(short x, short y, Float value) {
+            this.values[x][y] = value;
+        }
+    
+        @Override
+        public void setAll(Float value) {
+            for (int x = 0; x < ArenaManager.ARENA_WIDTH; x++) {
+                Arrays.fill(this.values[x], value);
+            }
+        }
 
         /**
          * Increments the value at each point on the scalar field within a defined circular ring.
@@ -136,14 +158,9 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
                 }
             }
         }
-
-        private TowerAttacksPerFrameField(ArenaInstance arenaInstance) {
-            super(arenaInstance);
-            setAll(0f);
-        }
     }
 
-    private TowerAttacksPerFrameField towerAttacksPerFrameField;
+    private TowerAttacksPerFrameField towerAttacksPerFrameField = new TowerAttacksPerFrameField();
 
     /**
      * The method invoked when an {@link ArenaObject} is being added.
@@ -250,9 +267,6 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
      * @param arenaInstance The arena instance.
      */
     public MonsterAttacksToEndField(ArenaInstance arenaInstance) {
-        super(arenaInstance);
-
-        towerAttacksPerFrameField = new TowerAttacksPerFrameField(arenaInstance);
         recalculate(arenaInstance.getStorage());
 
         ArenaEventRegister register = arenaInstance.getEventRegister();
@@ -262,6 +276,23 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
         register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
         register.ARENA_TOWER_UPGRADE_START.subscribe(onStartUpgradeTower);
         register.ARENA_TOWER_UPGRADE_END.subscribe(onEndUpgradeTower);
+    }
+
+    @Override
+    public Float getValueAt(short x, short y) {
+        return this.values[x][y];
+    }
+    
+    @Override
+    public void setValueAt(short x, short y, Float value) {
+        this.values[x][y] = value;
+    }
+
+    @Override
+    public void setAll(Float value) {
+        for (int x = 0; x < ArenaManager.ARENA_WIDTH; x++) {
+            Arrays.fill(this.values[x], value);
+        }
     }
 
     /**
@@ -284,7 +315,7 @@ public final class MonsterAttacksToEndField extends ArenaScalarField<Float> {
             short currentX = current.getX();
             short currentY = current.getY();
     		// Monsters can only travel horizontally or vertically
-    		for (ScalarFieldPoint neighbour : getTaxicabNeighbours(currentX, currentY)) {
+    		for (ScalarFieldPoint neighbour : ArenaScalarField.getTaxicabNeighbours(currentX, currentY)) {
                 short neighbourX = neighbour.getX();
                 short neighbourY = neighbour.getY();
 

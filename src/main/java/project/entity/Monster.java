@@ -101,7 +101,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
         short x = getX();
         short y = getY();
         while (unusedMovement >= 1) {
-            ArenaScalarField<?>.ScalarFieldPoint nextPosition = gradientDescentField.descendTaxicab(x, y);
+            ArenaScalarField.ScalarFieldPoint nextPosition = gradientDescentField.descendTaxicab(x, y);
             if (nextPosition != null) {
                 x = nextPosition.getX();
                 y = nextPosition.getY();

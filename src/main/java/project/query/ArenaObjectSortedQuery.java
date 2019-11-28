@@ -56,28 +56,45 @@ class ArenaObjectSortedQuery<T extends ArenaObject & Comparable<T>> {
      * @param option The sorting option.
      * @return The query result.
      */
+    @SuppressWarnings("unchecked")
     PriorityQueue<T> run(ArenaObjectStorage storage, StoredComparableType type, SortOption option) {
         // Return everything if there are no selectors
         if (selectors.isEmpty()) {
             return new PriorityQueue<T>(storage.getIndexFor(type));
         }
 
-        // Query using the minSelector and apply the other selections as the results are being fetched
-        float minSelectivity = Float.POSITIVE_INFINITY;
+        // The cost of accessing through type-based index
+        int typeIndexCost = storage.getIndexFor(type).size();
+
+        // The cost of accessing through the selector with the least cost
+        int minCost = Integer.MAX_VALUE;
         ArenaObjectSortedSelector<T> minSelector = null;
         for (ArenaObjectSortedSelector<T> selector : selectors) {
-            float selectivity = selector.estimateSelectivity(storage);
-            if (selectivity < minSelectivity) {
-                minSelectivity = selectivity;
+            int cost = selector.estimateCost(storage);
+            if (cost < minCost) {
+                minCost = cost;
                 minSelector = selector;
             }
         }
 
-        assert (minSelector != null);
+        if (typeIndexCost <= minCost) {
+            // Query using the type index and apply each selection as the results are being fetched
+            PriorityQueue<T> result = new PriorityQueue<>();
+            ArenaObjectPropertySortedSelector<T> dummySelector = new ArenaObjectPropertySortedSelector<T>(type.getObjectClass(), o -> true);
 
-        LinkedList<ArenaObjectSortedSelector<T>> otherSelectors = new LinkedList<>(selectors);
-        otherSelectors.remove(minSelector);
+            for (ArenaObject o : storage.getIndexFor(type)) {
+                if (dummySelector.isComparableAndAllSatisfied(o, type, selectors)) {
+                    result.add((T) o);
+                }
+            }
 
-        return minSelector.select(storage, type, otherSelectors, option);
+            return result;
+        } else {
+            // Query using the minSelector and apply the other selections as the results are being fetched
+            LinkedList<ArenaObjectSortedSelector<T>> otherSelectors = new LinkedList<>(selectors);
+            otherSelectors.remove(minSelector);
+
+            return minSelector.select(storage, type, otherSelectors, option);
+        }
     }
 }

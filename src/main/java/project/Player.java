@@ -42,6 +42,11 @@ public class Player {
     private Integer resources = 0;
 
     /**
+     * Score of the player.
+     */
+    private int score = 0;
+
+    /**
      * The method invoked when an {@link ArenaObject} is being added.
      */
     @Transient
@@ -65,7 +70,9 @@ public class Player {
         }
 
         if (sender instanceof Projectile && subject instanceof Monster) {
-            receiveResources(((Monster) subject).getResourceValue());
+            int resourceValue = ((Monster) subject).getResourceValue();
+            receiveResources(resourceValue);
+            score += resourceValue;
         }
     };
 
@@ -115,6 +122,14 @@ public class Player {
      */
     public IntegerProperty resourcesPropertyProperty() {
         return resourcesProperty;
+    }
+
+    /**
+     * get the score of player.
+     * @return the score of player.
+     */
+    public int getScore() {
+        return score;
     }
 
     /**

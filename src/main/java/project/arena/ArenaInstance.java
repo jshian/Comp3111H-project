@@ -95,7 +95,7 @@ public final class ArenaInstance {
 
         // Draw monster explosion
         if (subject instanceof Monster) {
-            Image img = new Image("/collision.png", ArenaManager.GRID_WIDTH / 8, ArenaManager.GRID_WIDTH / 8, true, true);
+            Image img = new Image("/collision.png", ArenaManager.GRID_WIDTH / 4, ArenaManager.GRID_WIDTH / 4, true, true);
             ArenaManager.getActiveUIController().drawImage(img, subject.getX(), subject.getY(), Monster.DEATH_DISPLAY_DURATION);
         }
     };

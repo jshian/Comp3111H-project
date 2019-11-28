@@ -340,38 +340,50 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Returns every stored {@link ArenaObject}.
-     * @return Every stored {@link ArenaObject}.
+     * Returns the number of stored {@link ArenaObject}s.
+     * @return The number of stored {@link ArenaObject}s.
      */
-    private LinkedList<ArenaObject> getAllObjects() {
-        LinkedList<ArenaObject> result = new LinkedList<>();
+    private int getNumStoredObjects() {
+        int count = 0;
 
         for (StoredType type : EnumSet.allOf(StoredType.class)) {
-            result.addAll(getIndexFor(type));
+            count += getIndexFor(type).size();
         }
 
-        return result;
+        return count;
     }
 
     /**
-     * Returns every stored comparable {@link ArenaObject}.
-     * @return Every stored comparable {@link ArenaObject}.
+     * Returns the number of comparable {@link ArenaObject}s.
+     * @return The number of comparable {@link ArenaObject}s.
      */
-    private LinkedList<ArenaObject> getComparableObjects() {
-        LinkedList<ArenaObject> result = new LinkedList<>();
+    private int getNumComparableObjects() {
+        int count = 0;
 
         for (StoredComparableType type : EnumSet.allOf(StoredComparableType.class)) {
-            result.addAll(getIndexFor(type));
+            count += getIndexFor(type).size();
         }
 
-        return result;
+        return count;
     }
+
+    /**
+     * Returns the average number of {@link ArenaObject}s per x-coordinate.
+     * @return The average number of {@link ArenaObject}s per x-coordinate.
+     */
+    float getObjectsPerX() { return (float) (getNumStoredObjects() / ArenaManager.ARENA_WIDTH); }
+
+    /**
+     * Returns the average number of {@link ArenaObject}s per y-coordinate.
+     * @return The average number of {@link ArenaObject}s per y-coordinate.
+     */
+    float getObjectsPerY() { return (float) (getNumStoredObjects() / ArenaManager.ARENA_HEIGHT); }
 
     /**
      * Returns the fraction of {@link ArenaObject}s that are {@link ComparableArenaObject}s.
      * @return The fraction of {@link ArenaObject}s that are {@link ComparableArenaObject}s.
      */
-    float getComparableFraction() { return ((float) getComparableObjects().size()) / (getAllObjects().size()); }
+    float getComparableFraction() { return (float) (getNumComparableObjects() / getNumStoredObjects()); }
 
     /**
      * Runs a query on the storage.

@@ -50,8 +50,8 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
             Monster m5 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 50, (short) 40, 1);
 
             ArenaObjectCircleSelector circleSelector = new ArenaObjectCircleSelector((short) 30, (short) 40, (short) 20);
-            float selectivity = circleSelector.estimateSelectivity(storage);
-            assertTrue(0 <= selectivity && selectivity <= 1);
+            int cost = circleSelector.estimateCost(storage);
+            assertTrue(cost > 0);
 
             {
                 LinkedList<ArenaObject> result = storage.getQueryResult(circleSelector, EnumSet.of(StoredType.MONSTER));
