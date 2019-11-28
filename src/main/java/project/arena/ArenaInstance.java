@@ -42,7 +42,7 @@ public final class ArenaInstance {
      * The player attached to the arena.
      */
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Player player;
 
     /**
@@ -61,7 +61,7 @@ public final class ArenaInstance {
      * The storage of {@link ArenaObject}s attached to this arena.
      */
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private ArenaObjectStorage storage;
 
     /**
@@ -125,7 +125,8 @@ public final class ArenaInstance {
      * load object after initialise from jpa.
      */
     @PostLoad
-    public void loadArenaInstance() {
+    protected void loadArenaInstance() {
+        System.out.println('1');
         eventRegister = new ArenaEventRegister();
         eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
         eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
@@ -141,7 +142,11 @@ public final class ArenaInstance {
      * @param player the player of the arena.
      */
     public ArenaInstance(ArenaInstance other, Player player) {
-        eventRegister = other.eventRegister;
+        eventRegister = new ArenaEventRegister();
+        eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
+        eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
+        eventRegister.ARENA_NEXT_FRAME_END.subscribe(onEndNextFrame);
+
         this.player = player; player.attachToArena(this);
         storage = other.storage;
         scalarFieldRegister = other.scalarFieldRegister;

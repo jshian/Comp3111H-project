@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Random;
 
 import project.control.ArenaManager;
@@ -93,7 +94,7 @@ public class MonsterTest extends JavaFXTester {
 
             double originalSpeed = m.getSpeed();
             m.addStatusEffect(slowEffect);
-            assertTrue(m.statusEffects.size() == 1 && m.statusEffects.peek() == slowEffect);
+            assertTrue(m.statusEffects.size() == 1 && ((LinkedList<StatusEffect>)m.statusEffects).peek() == slowEffect);
             assertTrue(originalSpeed == m.getSpeed()); // Monster should be pending slow
     
             Iterator<StatusEffect> iterator = m.getStatusEffects();

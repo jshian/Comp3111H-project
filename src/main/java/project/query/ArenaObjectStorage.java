@@ -55,22 +55,22 @@ public final class ArenaObjectStorage {
     /**
      * Index for each {@link Tower} on the arena.
      */
-    @OneToMany
-    @JoinTable(name="ArenaObjectStorageTowers")
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable
     private List<Tower> towers = new LinkedList<>();
 
     /**
      * Index for each {@link Projectile} on the arena.
      */
-    @OneToMany
-    @JoinTable(name="ArenaObjectStorageProjectiles")
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable
     private List<Projectile> projectiles = new LinkedList<>();
 
     /**
      * Index for each {@link Monster} on the arena.
      */
-    @OneToMany
-    @JoinTable(name="ArenaObjectStorageMonsters")
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinTable
     private List<Monster> monsters = new LinkedList<>();
 
     /**
@@ -92,7 +92,7 @@ public final class ArenaObjectStorage {
          * Refers to all types of {@link Monster}.
          */
         MONSTER (Monster.class);
-        
+
 
         private final Class<? extends ArenaObject> clazz;
 
@@ -116,7 +116,7 @@ public final class ArenaObjectStorage {
          * Refers to all types of {@link Monster}.
          */
         MONSTER (Monster.class);
-        
+
 
         private final Class<?> clazz;
 
@@ -262,7 +262,8 @@ public final class ArenaObjectStorage {
     public ArenaObjectStorage() {}
 
     @PostLoad
-    public void registerMoves() {
+    protected void registerMoves() {
+        System.out.println('2');
         ArenaEventRegister register = ArenaManager.getActiveEventRegister();
         register.ARENA_OBJECT_ADD.subscribe(onAddObject);
         register.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);
@@ -332,8 +333,8 @@ public final class ArenaObjectStorage {
     @SuppressWarnings("unchecked")
     <T extends ArenaObject & Comparable <T>> LinkedList<T> getIndexFor(StoredComparableType type) {
         switch (type) {
-            case MONSTER: return (LinkedList<T>) monsters;
-
+            //case MONSTER: return (LinkedList<T>) monsters;
+        }
 
         return null;
     }

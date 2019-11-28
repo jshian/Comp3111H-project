@@ -160,7 +160,6 @@ public final class ArenaManager {
         activeUIController = ui;
         ArenaInstance newInstance = Manager.load();
         activeArenaInstance = newInstance;
-        activeArenaInstance.getStorage().registerMoves();
         ui.setupNewGame(newInstance);
         System.out.println(activeArenaInstance.getStorage().getTowers());
     }

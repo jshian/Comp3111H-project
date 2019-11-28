@@ -121,6 +121,7 @@ public class Manager {
                 String sql = "SELECT t FROM ArenaInstance t";
                 Query query = entityManager.createQuery(sql);
                 a = (ArenaInstance) query.setMaxResults(1).getResultList().get(0);
+                System.out.println(a.getStorage());
             }
 
             tran.commit();
