@@ -212,7 +212,7 @@ public class UIController {
      */
     private void setupNewGame() {
         player = new Player("name", 200);
-        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesPropertyProperty()));
+        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         ArenaManager.loadNew(this, player);
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }
@@ -223,8 +223,7 @@ public class UIController {
      */
     public void setupNewGame(ArenaInstance arenaInstance) {
         player = arenaInstance.getPlayer();
-        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesPropertyProperty()));
-        ArenaManager.loadNew(this, player);
+        remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }
 
@@ -442,7 +441,7 @@ public class UIController {
      * add event listener to display the tower information and upgrade/destroy the tower.
      * @param t a tower in the arena.
      */
-    private void setTowerEvent(Tower t) {
+    public void setTowerEvent(Tower t) {
         ImageView iv = t.getImageView();
 
         iv.setOnMouseEntered(e -> {

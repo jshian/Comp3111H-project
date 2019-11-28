@@ -2,10 +2,7 @@ package project.entity;
 
 import java.util.PriorityQueue;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import project.arena.ArenaEventRegister;
 import project.control.ArenaManager;
@@ -14,6 +11,7 @@ import project.query.ArenaObjectRingSortedSelector;
 import project.query.ArenaObjectStorage;
 import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredComparableType;
+import project.ui.UIController;
 import project.util.Geometry;
 
 /**
@@ -107,6 +105,12 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
      * Default constructor.
      */
     public Tower() {}
+
+    @Override
+    @PostLoad
+    protected void loadArenaObject() {
+        super.loadArenaObject();
+    }
 
     /**
      * Constructs a newly allocated {@link Tower} object.

@@ -5,7 +5,10 @@ import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
 import project.arena.ArenaScalarFieldRegister;
 import project.database.controller.Manager;
+import project.entity.ArenaObject;
+import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
+import project.entity.Tower;
 import project.query.ArenaObjectStorage;
 import project.ui.UIController;
 
@@ -149,6 +152,7 @@ public final class ArenaManager {
     public static void loadNew(UIController ui, Player player) {
         activeUIController = ui;
         activeArenaInstance = new ArenaInstance(player);
+
     }
 
     // TODO
@@ -158,9 +162,34 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void load(UIController ui, Player player) {
+        for (ArenaObject o : getActiveObjectStorage().getTowers()) {
+            ArenaObjectFactory.removeObject(player, o);
+        }
+        for (ArenaObject o : getActiveObjectStorage().getMonsters()) {
+            ArenaObjectFactory.removeObject(player, o);
+        }
+        for (ArenaObject o : getActiveObjectStorage().getProjectiles()) {
+            ArenaObjectFactory.removeObject(player, o);
+        }
+
         activeUIController = ui;
         ArenaInstance newInstance = Manager.load();
-        activeArenaInstance = newInstance;
+
+        if (newInstance != null) {
+            activeArenaInstance = newInstance;
+            for (ArenaObject o : getActiveObjectStorage().getTowers()) {
+                ArenaObjectFactory.addObject(player, o);
+                ui.setTowerEvent((Tower) o);
+            }
+            for (ArenaObject o : getActiveObjectStorage().getMonsters()) {
+                ArenaObjectFactory.addObject(player, o);
+            }
+            for (ArenaObject o : getActiveObjectStorage().getProjectiles()) {
+                ArenaObjectFactory.addObject(player, o);
+            }
+            ui.setupNewGame(newInstance);
+        }
+
     }
 
     // TODO
@@ -172,7 +201,8 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void save(Player player) {
-        Player shadowPlayer = new Player(player.getName(), player.getResourcesProperty());
+        // cloner not working because of javafx.
+        Player shadowPlayer = new Player(player.getName(), player.getResources());
         ArenaInstance shadow = new ArenaInstance(activeArenaInstance, shadowPlayer);
         Manager.save(shadow);
     }

@@ -2,10 +2,7 @@ package project.query;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import org.junit.Test;
 
@@ -54,7 +51,7 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
             assertTrue(cost > 0);
 
             {
-                LinkedList<ArenaObject> result = storage.getQueryResult(circleSelector, EnumSet.of(StoredType.MONSTER));
+                List<ArenaObject> result = storage.getQueryResult(circleSelector, EnumSet.of(StoredType.MONSTER));
                 LinkedList<ArenaObject> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5));
                 assertTrue(CollectionComparator.isElementSetEqual(result, expected));
             }
