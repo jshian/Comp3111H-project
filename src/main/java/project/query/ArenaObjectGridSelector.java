@@ -1,6 +1,7 @@
 package project.query;
 
 import project.control.ArenaManager;
+import project.entity.ArenaObject;
 
 /**
  * A class that selects the {@link ArenaObject}s inside a grid within the arena that contains a defined point.

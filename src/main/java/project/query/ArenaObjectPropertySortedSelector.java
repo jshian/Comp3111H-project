@@ -32,7 +32,7 @@ public class ArenaObjectPropertySortedSelector<T extends ArenaObject & Comparabl
         PriorityQueue<T> result = createPriorityQueue(option);
 
         if (type.getObjectClass().isAssignableFrom(objectType)) {
-            for (ArenaObject o : storage.getIndexFor(type)) {
+            for (ArenaObject o : storage.getSortedIndexFor(type, option)) {
                 if (isComparableAndAllSatisfied(o, type, filters)) {
                     if (predicate.test((T) o)) result.add((T) o);
                 }

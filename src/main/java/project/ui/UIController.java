@@ -555,16 +555,16 @@ public class UIController {
     }
 
     /**
-     * Adds a node to the {@link AnchorPane).
-     * @param iv The node to add.
+     * Adds a node to the {@link AnchorPane}.
+     * @param n The node to add.
      */
     public void addToPane(Node n) {
         Platform.runLater(() -> paneArena.getChildren().add(n));
     }
 
     /**
-     * Removes an node from the {@link AnchorPane).
-     * @param iv The node to remove.
+     * Removes a node from the {@link AnchorPane}.
+     * @param n The node to remove.
      */
     public void removeFromPane(Node n) {
         Platform.runLater(() -> paneArena.getChildren().remove(n));
@@ -606,8 +606,8 @@ public class UIController {
 
     /**
      * Draws a specific circle at a specific location.
-     * @param sourceX The x-coordinate of the circle center.
-     * @param sourceY The y-coordinate of the circle center.
+     * @param centerX The x-coordinate of the circle center.
+     * @param centerY The y-coordinate of the circle center.
      * @param radius The radius of the circle.
      * @param duration The duration in number of frames that the circle will remain on the arena.
      */

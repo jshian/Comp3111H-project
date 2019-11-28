@@ -18,7 +18,7 @@ import project.field.ArenaScalarField;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
- * They can only move horizontally or vertically towards an adjacent {@link Grid} that does not contain a Tower.
+ * They can only move horizontally or vertically towards an adjacent grid that does not contain a Tower.
  * If they succeed, the game is lost.
  * Monsters do not have collision boxes, thus multiple of them can exist on the same pixel.
  */
@@ -45,8 +45,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
 
     /**
      * The current health of the monster. It cannot go beyond {@link #maxHealth}.
-     * When this is not greater than zero, the monster is considered dead.
-     * @see #hasDied()
+     * When this is not greater than zero, the monster is considered dead and will be removed from the arena.
      */
     protected SimpleDoubleProperty health = new SimpleDoubleProperty(1);
 

@@ -16,6 +16,8 @@ import project.control.ArenaManager;
 import project.entity.ArenaObject;
 import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
+import project.entity.Projectile;
+import project.entity.Tower;
 import project.entity.ArenaObjectFactory.MonsterType;
 import project.event.EventHandler;
 import project.event.EventManager;
