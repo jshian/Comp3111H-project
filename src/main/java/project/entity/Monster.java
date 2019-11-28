@@ -246,5 +246,5 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public String getDisplayName() { return getClass().getSimpleName(); }
     
     @Override
-    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty, maxHealth); }
+    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty.getValue(), maxHealth); }
 }

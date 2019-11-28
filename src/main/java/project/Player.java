@@ -15,7 +15,8 @@ import project.event.EventHandler;
 import project.event.eventargs.ArenaObjectEventArgs;
 import project.ui.UIController;
 
-@Entity(name="Player")
+@Entity
+@Table(name = "player")
 public class Player {
 
     /**
@@ -28,7 +29,7 @@ public class Player {
     /**
      * Name of the player.
      */
-    private String name = "";
+    private String name = "name";
 
     /**
      * Resources that the player has.
