@@ -333,7 +333,7 @@ public final class ArenaObjectStorage {
     @SuppressWarnings("unchecked")
     <T extends ArenaObject & Comparable <T>> LinkedList<T> getIndexFor(StoredComparableType type) {
         switch (type) {
-            //case MONSTER: return (LinkedList<T>) monsters;
+            case MONSTER: return (LinkedList<T>) monsters;
         }
 
         return null;
