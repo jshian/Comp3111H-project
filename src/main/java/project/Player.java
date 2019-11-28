@@ -160,24 +160,43 @@ public class Player {
     }
 
     // getter/setter for jpa.
+
+    /**
+     * access the id of the player.
+     * @return the id of the player.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long getId() {
         return id;
     }
 
+    /**
+     * set the id of the player.
+     */
     private void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * set the name of the player.
+     */
     private void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * set the resources of the player.
+     * @return the resources of the player.
+     */
     private void setResources(int resources) {
         this.resources.set(resources);
     }
 
+    /**
+     * set the score of the player.
+     * @return the score of the player.
+     */
     private void setScore(int score) {
         this.score = score;
     }
