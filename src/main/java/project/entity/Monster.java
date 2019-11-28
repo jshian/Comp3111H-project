@@ -11,7 +11,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Tooltip;
 import project.control.ArenaManager;
 import project.field.ArenaScalarField;
-import project.query.ArenaObjectStorage;
 
 /**
  * Monsters spawn at the starting position and try to reach the end-zone of the arena.
