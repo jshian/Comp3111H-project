@@ -4,7 +4,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;

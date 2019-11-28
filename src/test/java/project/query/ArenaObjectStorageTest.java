@@ -158,8 +158,6 @@ public class ArenaObjectStorageTest extends JavaFXTester {
         checkTypeIndex(ArenaManager.getActiveObjectStorage());
         checkXYIndex(ArenaManager.getActiveObjectStorage());
 
-        final short ZERO = (short) 0;
-
         addObjects(ZERO, ZERO);
         checkTypeIndex(ArenaManager.getActiveObjectStorage());
         checkXYIndex(ArenaManager.getActiveObjectStorage());

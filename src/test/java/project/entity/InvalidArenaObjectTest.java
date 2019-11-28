@@ -56,12 +56,10 @@ public class InvalidArenaObjectTest extends JavaFXTester {
     }
 
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorNegativePositionX() {
         Random rng = new Random();
         short invalidX = (short) (-1 * rng.nextInt(ArenaManager.ARENA_WIDTH + 1));
-
-        expectedException.expect(IllegalArgumentException.class);
 
         System.out.println(String.format("Test invalidX = %s", invalidX));
         new ArenaObject(invalidX, y) {
@@ -72,12 +70,10 @@ public class InvalidArenaObjectTest extends JavaFXTester {
         };
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorNegativePositionY() {
         Random rng = new Random();
         short invalidY = (short) (-1 * rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-
-        expectedException.expect(IllegalArgumentException.class);
 
         System.out.println(String.format("Test invalidY = %s", invalidY));
         new ArenaObject(x, invalidY) {
@@ -88,12 +84,10 @@ public class InvalidArenaObjectTest extends JavaFXTester {
         };
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorOutofBoundsPositionX() {
         Random rng = new Random();
         short invalidX = (short) (ArenaManager.ARENA_WIDTH + 1 + rng.nextInt(ArenaManager.ARENA_WIDTH + 1));
-
-        expectedException.expect(IllegalArgumentException.class);
 
         System.out.println(String.format("Test invalidX = %s", invalidX));
         new ArenaObject(invalidX, y) {
@@ -104,13 +98,11 @@ public class InvalidArenaObjectTest extends JavaFXTester {
         };
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testConstructorOutofBoundsPositionY() {
 
         Random rng = new Random();
         short invalidY = (short) (ArenaManager.ARENA_HEIGHT + 1 + rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-
-        expectedException.expect(IllegalArgumentException.class);
 
         System.out.println(String.format("Test invalidY = %s", invalidY));
         new ArenaObject(x, invalidY) {
