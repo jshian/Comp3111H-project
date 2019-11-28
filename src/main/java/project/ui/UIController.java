@@ -299,8 +299,7 @@ public class UIController {
      */
     @FXML
     private void save() {
-        // TODO
-        ArenaManager.save(player);
+        ArenaManager.save();
     }
 
     /**

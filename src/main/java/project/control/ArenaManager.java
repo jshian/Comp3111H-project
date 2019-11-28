@@ -198,13 +198,9 @@ public final class ArenaManager {
     // You can use another thread safely at this point.
     /**
      * Saves the currently active arena instance.
-     * @param player The player of the arena instance.
      */
-    public static void save(Player player) {
-        // cloner not working because of javafx.
-        Player shadowPlayer = new Player(player.getName(), player.getResources());
-        ArenaInstance shadow = new ArenaInstance(activeArenaInstance, shadowPlayer);
-        Manager.save(shadow);
+    public static void save() {
+        Manager.save(activeArenaInstance);
     }
 
     /**
