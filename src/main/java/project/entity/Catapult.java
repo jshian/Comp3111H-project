@@ -2,13 +2,13 @@ package project.entity;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import javax.persistence.Entity;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import project.control.ArenaManager;
 import project.query.ArenaObjectCircleSelector;
@@ -38,7 +38,8 @@ public class Catapult extends Tower {
     /**
      * Temporary list that includes the list of monsters that will be inside the splash radius.
      */
-    protected LinkedList<Monster> monstersInSplashRange = new LinkedList<Monster>(); 
+    @OneToMany(cascade = {CascadeType.MERGE})
+    protected List<Monster> monstersInSplashRange = new LinkedList<>();
 
     /**
      * Temporary short that is the x-coordinate of the target location (NOT always the location of the target monster).
@@ -92,7 +93,7 @@ public class Catapult extends Tower {
     // Catapult tries to hit the most targets in range of the main target
     @Override
     protected void shoot(PriorityQueue<Monster> validTargets) {
-        LinkedList<Monster> closestTargets = new LinkedList<>();
+        List<Monster> closestTargets = new LinkedList<>();
         int closestDistance = (int) validTargets.peek().getMovementDistanceToDestination();
 
         while (closestDistance == (int) validTargets.peek().getMovementDistanceToDestination()) {
@@ -100,7 +101,9 @@ public class Catapult extends Tower {
             if (validTargets.isEmpty()) break;
         }
 
-        Monster target = closestTargets.peek();
+        Monster target = null;
+        if (closestTargets.size() < 1)
+            target = closestTargets.get(0);
         for (Monster m :closestTargets) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
 
@@ -110,7 +113,7 @@ public class Catapult extends Tower {
                     if (j < 0 || j > ArenaManager.ARENA_HEIGHT) continue;
 
                     if (Geometry.isInCircle(i,j,m.getX(),m.getY(),splashRadius)){//splash radius in current point
-                        LinkedList<ArenaObject> monInCircle = storage.getQueryResult(
+                        List<ArenaObject> monInCircle = storage.getQueryResult(
                                 new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));  
 
                         if(count < monInCircle.size()){

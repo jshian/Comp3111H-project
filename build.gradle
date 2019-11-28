@@ -89,6 +89,9 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // https://mvnrepository.com/artifact/uk.com.robust-it/cloning
+    compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.2'
 }
 
 test {

@@ -2,6 +2,7 @@ package project.entity;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,7 +50,7 @@ public class LaserProjectile extends Projectile {
         ArenaManager.getActiveUIController().drawRay(origin.getX(), origin.getY(), getX(), getY(), LASER_DISPLAY_DURATION);
 
         ArenaObjectPropertySelector<Monster> selector = new ArenaObjectPropertySelector<>(Monster.class, o -> true);
-        LinkedList<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
+        List<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
         for (ArenaObject m : monsters) {
             if (Geometry.isInRay(m.getX(),m.getY(), origin.getX(),origin.getY(),target.getX(),target.getY(), 3)) {
                 ((Monster) m).takeDamage(damage, this);
