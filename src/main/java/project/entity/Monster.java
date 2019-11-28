@@ -92,7 +92,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     protected List<ArenaObjectPositionInfo> trail = new LinkedList<>();
 
     protected void moveMonsterOneFrame() {
-        trail.clear();
+        trail = new LinkedList<>();
         unusedMovement += speed;
 
         short x = getX();
@@ -155,7 +155,8 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public void setupTooltip() {
         // Set up tooltip
         Tooltip tp = new Tooltip();
-        tp.textProperty().bind(Bindings.format("%s", getDisplayDetails()));
+        //getDisplayDetails() is fixed so even you bind it to a property, it wont change.
+        tp.textProperty().bind(Bindings.format("HP: %.2f / %.2f", healthProperty.getValue(), maxHealth));
         imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
         imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
         imageView.setOnMouseExited(e -> tp.hide());
@@ -243,5 +244,5 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public String getDisplayName() { return getClass().getSimpleName(); }
     
     @Override
-    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty, maxHealth); }
+    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty.getValue(), maxHealth); }
 }

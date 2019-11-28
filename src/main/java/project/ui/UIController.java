@@ -434,7 +434,7 @@ public class UIController {
      * add event listener to display the tower information and upgrade/destroy the tower.
      * @param t a tower in the arena.
      */
-    private void setTowerEvent(Tower t) {
+    public void setTowerEvent(Tower t) {
         ImageView iv = t.getImageView();
 
         iv.setOnMouseEntered(e -> {

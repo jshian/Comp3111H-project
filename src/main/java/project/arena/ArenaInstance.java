@@ -127,7 +127,6 @@ public final class ArenaInstance {
      */
     @PostLoad
     protected void loadArenaInstance() {
-        storage.registerMoves();
         eventRegister = new ArenaEventRegister();
         eventRegister.ARENA_OBJECT_ADD.subscribe(onAddObject);
         eventRegister.ARENA_OBJECT_REMOVE.subscribe(onRemoveObject);

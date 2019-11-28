@@ -9,6 +9,7 @@ import project.database.controller.Manager;
 import project.entity.ArenaObject;
 import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
+import project.entity.Tower;
 import project.query.ArenaObjectStorage;
 import project.ui.UIController;
 
@@ -179,6 +180,7 @@ public final class ArenaManager {
             activeArenaInstance = newInstance;
             for (ArenaObject o : getActiveObjectStorage().getTowers()) {
                 ArenaObjectFactory.addObject(player, o);
+                ui.setTowerEvent((Tower) o);
             }
             for (ArenaObject o : getActiveObjectStorage().getMonsters()) {
                 ArenaObjectFactory.addObject(player, o);
@@ -186,7 +188,6 @@ public final class ArenaManager {
             for (ArenaObject o : getActiveObjectStorage().getProjectiles()) {
                 ArenaObjectFactory.addObject(player, o);
             }
-            System.out.println(getActiveObjectStorage().getTowers().getClass());
             ui.setupNewGame(newInstance);
         }
 
@@ -202,10 +203,8 @@ public final class ArenaManager {
      */
     public static void save(Player player) {
         // cloner not working because of javafx.
-//        Cloner cloner = new Cloner();
-//        ArenaInstance shadow = cloner.deepClone(activeArenaInstance);
-
-        ArenaInstance shadow = new ArenaInstance(activeArenaInstance, player);
+        Player shadowPlayer = new Player(player.getName(), player.getResourcesProperty());
+        ArenaInstance shadow = new ArenaInstance(activeArenaInstance, shadowPlayer);
         Manager.save(shadow);
     }
 
