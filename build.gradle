@@ -9,8 +9,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = org.gradle.api.JavaVersion.VERSION_11
+targetCompatibility = org.gradle.api.JavaVersion.VERSION_11
 
 if (JavaVersion.current() > org.gradle.api.JavaVersion.VERSION_1_10) {
     println('Current JavaVersion: "' + JavaVersion.current() + '"');
