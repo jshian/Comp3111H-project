@@ -21,6 +21,7 @@ public class Player {
     // Attribute
     private final String name;
     private IntegerProperty resources = new SimpleIntegerProperty(0);
+    private int score = 0;
 
     /**
      * The method invoked when an {@link ArenaObject} is being added.
@@ -44,7 +45,9 @@ public class Player {
         }
 
         if (sender instanceof Projectile && subject instanceof Monster) {
-            receiveResources(((Monster) subject).getResourceValue());
+            int resourceValue = ((Monster) subject).getResourceValue();
+            receiveResources(resourceValue);
+            score += resourceValue;
         }
     };
 
@@ -88,6 +91,14 @@ public class Player {
      */
     public IntegerProperty resourcesProperty() {
         return resources;
+    }
+
+    /**
+     * get the score of player.
+     * @return the score of player.
+     */
+    public int getScore() {
+        return score;
     }
 
     /**
