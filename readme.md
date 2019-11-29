@@ -35,7 +35,7 @@ Members:
 		* *The Grid* is within the end-zone.
 		* *The Grid* contains at least one tower.
 		* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
-		* The *Resource Pool* is lower than the tower's cost.
+		* The *Money* is lower than the tower's cost.
 		* *The Grid* contains at least one monster.
 		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
 	* Otherwise, *The Grid* glows blue, indicating that the tower can be built there, i.e. *The Grid* is valid.
@@ -118,12 +118,12 @@ Members:
 	* After the stone is thrown, the Catapult takes some time to reload. During that time, it cannot fire at any monsters. (Regular Task 2(iv)(c))
 1. Upgrade the Catapult. Verify that the time required to reload it has been reduced. (Regular Task 2(iv)(c)(a))
 1. Verify the following about the Laser Tower:
-	* Every time it fires, the *Resource Pool* is reduced. (Task 2(v)(a))
+	* Every time it fires, the *Money* is reduced (However, the money may increase because the awarded money by killing monster is more than laser tower consumed). (Task 2(v)(a))
 	* When it fires, a line is drawn from the center of the tower to the monster. The line extends to the edge of the arena. (Task 2(v)(b))
 	* Any monster within `3` pixels of the line is hit. (Task 2(v)(b)(a))
 1. Upgrade the Laser Tower. Verify that its attack power has been increased. (Regular Task 2(v)(c))
 1. Close the application.
-1. Open the project using Eclipse IDE and run the Gradle task `PPP` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
+1. Open the project using Eclipse IDE and run the Gradle task `CatapultTest` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
 1. Close the project.
 ### Grade Task 3
 1. Start the application using the same `.jar` file as `Grade Task 1`.
@@ -167,7 +167,7 @@ Members:
 	1. Click on either `Simulate` or `Play`. Verify that the game runs accordingly.
 1. On *Machine B*, do the following: (Honors Extra Task 2)
 	1. Set up your towers however you like.
-	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.(what is that?)
+	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.(http://localhost:8080/players/table)
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and is in descending order from top to bottom.
 	1. Playthrough 8 more games in `play` mode but without building any towers, and submit each score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains each new score and remains in descending order from top to bottom.
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and remains in descending order from top to bottom, and that only 10 scores are being displayed.
