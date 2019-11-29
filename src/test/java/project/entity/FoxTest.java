@@ -35,6 +35,9 @@ public class FoxTest extends JavaFXTester {
         }
     }
 
+    /** 
+     * Optional
+     */
     private void visualize() {
         try {
             FieldVisualizer.visualizeArenaScalarField(Float.class, ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END);
@@ -47,7 +50,6 @@ public class FoxTest extends JavaFXTester {
     public void testPathfinding_basicTowers() {
         for (short xPos = 1; xPos < ArenaManager.getMaxHorizontalGrids() - 1; xPos++) {
             addTowerToGrid(TowerType.BASIC, xPos, (short) 1);
-            visualize();
         }
         generatePathfindingFox();
         simulateGameNoSpawning(1);
@@ -57,7 +59,6 @@ public class FoxTest extends JavaFXTester {
     public void testPathfinding_catapult() {        
         for (short xPos = 1; xPos < ArenaManager.getMaxHorizontalGrids() - 1; xPos++) {
             addTowerToGrid(TowerType.CATAPULT, xPos, (short) 1);
-            visualize();
         }
         generatePathfindingFox();
         simulateGameNoSpawning(1);
@@ -67,7 +68,6 @@ public class FoxTest extends JavaFXTester {
     public void testPathfinding_ice() {        
         for (short xPos = 1; xPos < ArenaManager.getMaxHorizontalGrids() - 1; xPos++) {
             addTowerToGrid(TowerType.ICE, xPos, (short) 1);
-            visualize();
         }
         generatePathfindingFox();
         simulateGameNoSpawning(1);
@@ -77,7 +77,6 @@ public class FoxTest extends JavaFXTester {
     public void testPathfinding_laser() {        
         for (short xPos = 1; xPos < ArenaManager.getMaxHorizontalGrids() - 1; xPos++) {
             addTowerToGrid(TowerType.LASER, xPos, (short) 1);
-            visualize();
         }
         generatePathfindingFox();
         simulateGameNoSpawning(1);
