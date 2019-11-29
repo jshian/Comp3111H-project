@@ -126,20 +126,14 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
     public void test() {
         ArenaObjectStorageHelper.disableScalarFieldUpdates();
 
-        List<Tower> towers = new LinkedList<>();
-        List<Monster> monsters = new LinkedList<>();
-        List<Projectile> projectiles = new LinkedList<>();
         for (int n = 0; n < NUM_RANDOM_OBJECT_SETS; n++) {
             Tower t = ArenaObjectStorageHelper.addTower(this);
-            towers.add(t);
             if (rectangleSelector.isInSelectionByDefinition(t)) expectedTowers.add(t);
 
             Monster m = ArenaObjectStorageHelper.addMonster(this);
-            monsters.add(m);
             if (rectangleSelector.isInSelectionByDefinition(m)) expectedMonsters.add(m);
 
             Projectile p = ArenaObjectStorageHelper.addProjectile(this, t, m);
-            projectiles.add(p);
             if (rectangleSelector.isInSelectionByDefinition(p)) expectedProjectiles.add(p);
         }
 

@@ -123,12 +123,10 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
     public void test() {
         ArenaObjectStorageHelper.disableScalarFieldUpdates();
 
-        List<Monster> monsters = new LinkedList<>();
         for (int n = 0; n < NUM_RANDOM_OBJECT_SETS; n++) {
             Tower t = ArenaObjectStorageHelper.addTower(this);
             
             Monster m = ArenaObjectStorageHelper.addMonster(this);
-            monsters.add(m);
             if (rectangleSortedSelector.isInSelectionByDefinition(m)) expectedMonsters.add(m);
 
             Projectile p = ArenaObjectStorageHelper.addProjectile(this, t, m);
@@ -136,13 +134,13 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
 
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
 
-        List<Monster> expectedMonsterAsc = new LinkedList<>(monsters);
+        List<Monster> expectedMonsterAsc = new LinkedList<>(expectedMonsters);
         expectedMonsterAsc.sort(null);
         assertTrue(CollectionComparator.isElementSetAndOrderEqual(expectedMonsterAsc,
                 storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING)));
 
-        List<Monster> expectedMonsterDesc = new LinkedList<>(monsters);
-        expectedMonsterAsc.sort((o1, o2) -> o2.compareTo(o1));
+        List<Monster> expectedMonsterDesc = new LinkedList<>(expectedMonsters);
+        expectedMonsterDesc.sort((o1, o2) -> o2.compareTo(o1));
         assertTrue(CollectionComparator.isElementSetAndOrderEqual(expectedMonsterDesc,
                 storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING)));
     }
