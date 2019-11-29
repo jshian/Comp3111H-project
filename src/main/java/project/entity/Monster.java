@@ -88,7 +88,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * A linked list of references to each status effect that is active against the monster.
      */
-    @OneToMany(cascade = {CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
     protected List<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
@@ -152,6 +152,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public void loadArenaObject() {
         super.loadArenaObject();
         this.healthProperty.set(health);
+        this.maxHealthProperty.set(maxHealth);
         setupTooltip();
     }
 
