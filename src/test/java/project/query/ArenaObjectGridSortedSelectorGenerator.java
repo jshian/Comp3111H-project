@@ -14,6 +14,9 @@ import project.entity.Monster;
  */
 public class ArenaObjectGridSortedSelectorGenerator implements ArenaObjectSortedSelectorGenerator {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArenaObjectSortedSelector<Monster> generateSortedSelector(Object... args) {
         short x = (short) args[0];
@@ -22,6 +25,9 @@ public class ArenaObjectGridSortedSelectorGenerator implements ArenaObjectSorted
         return new ArenaObjectGridSortedSelector<Monster>(x, y);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateSelectorInfo(Object... args) {
         short x = (short) args[0];
@@ -30,6 +36,9 @@ public class ArenaObjectGridSortedSelectorGenerator implements ArenaObjectSorted
         return String.format("x = %d, y = %d", x, y);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Object[]> generateArgSets() {
         Object[][] randomParams = new Object[NUM_SELECTORS][];

@@ -51,6 +51,9 @@ public class Penguin extends Monster {
         this.regenerationRate = maxHealth * 0.05;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/penguin.png", ArenaManager.GRID_WIDTH / 4, ArenaManager.GRID_HEIGHT / 4, true, true));

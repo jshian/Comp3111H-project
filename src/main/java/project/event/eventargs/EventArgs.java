@@ -10,4 +10,9 @@ public class EventArgs {
      */
     public static final EventArgs EMPTY = null;
 
+    /**
+     * Default constructor.
+     */
+    public EventArgs() {}
+
 }

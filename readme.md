@@ -18,13 +18,13 @@ Members:
 1. Complete `Grade Task 1`, `Grade Task 2` and `Grade Task 3` on *Machine A*. (See below)
 1. Complete `Grade Extra Tasks` on both *Machine A* and *Machine B*. (See below)
 ### Grade Task 1
-1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
+1. Open and run the project in Eclipse (so that the console output can be tracked). Verify the following:
 	* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
 	* The starting position on the arena is represented by the image `show-up.png`. (Regular Task 1(i))
 	* The end zone on the arena is represented by the image `end-zone.png`. (Regular Task 1(i))
 	* A resource count of *200* (referred to as *Money*) is displayed.
 1. Left-click and hold on either the `Basic Tower`, `Ice Tower`, `Catapult` or `Laser Tower` button.
-1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
+1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, the game is said to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
 	* If any one of the following is satisfied, *The Grid* glows red, indicating that the tower cannot be built there, i.e. *The Grid* is invalid. (Honors Task 1(i))
 		* *The Grid* is within the starting position.
 		* *The Grid* is within the end-zone.
@@ -63,11 +63,11 @@ Members:
 1. Also verify:
 	* A dialog box appears which prompts that there is insufficient resources to build the tower. (Regular Task 1(ii)(d))
 1. Mouse over any one of the towers previously built, and then left-click on it. Verify the following:
-	* Two buttons `destroy the tower` and `upgrade` appear near the *Tower Information*. (Regular Task 1(ii)(e))
+	* Two buttons `destroy` and `upgrade` appear near the *Tower Information*. (Regular Task 1(ii)(e))
 1. Right-click anywhere on the arena, including the buttons and on the tower itself. Verify the following:
 	* The two buttons disappear.
 1. Exit the mouse pointer from the tower and left-click on it again.
-1. Left-click on the `destroy the tower` button. Verify the following:
+1. Left-click on the `destroy` button. Verify the following:
 	* The tower is destroyed, i.e. it disappears and no longer exists in the arena. (Regular Task 1(ii)(e)(a))
 	* The *Tower Information* and two buttons disappear.
 	* A portion of the tower cost is refunded to the *Money*.
@@ -149,7 +149,8 @@ Members:
 	* The Penguin monster can regenerate health points each time it moves, up to its maximum value. (Task 3(iii)(v)(c))
 	* Each generation of monsters become stronger (relative to the same monster type) as time goes by. (Task 3(i)(a))
 1. Close the application.	
-1. Open the project using Eclipse IDE and run the Gradle task `FoxTest` which uses JUnit to test the Fox pathfinding algorithm. (Whole of Honors Task 3)
+1. Open the project using Eclipse IDE and run JUnit for the class `FoxTest` to test the Fox pathfinding algorithm. (Whole of Honors Task 3)
+	* ...
 1. Close the project.
 
 ### Grade Extra Tasks

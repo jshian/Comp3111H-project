@@ -1,6 +1,8 @@
 package project.query;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -203,6 +205,24 @@ public class ArenaObjectStorageTest extends JavaFXTester {
             System.out.println("Testing...");
             checkTypeIndex(ArenaManager.getActiveObjectStorage());
             checkXYIndex(ArenaManager.getActiveObjectStorage());
+        }
+
+        for (int n = 0; n < NUM_RANDOM_ACTIONS; n++) {
+            addObjects();
+        }
+        ArenaManager.getActiveObjectStorage().clear();
+        for (int x = 0; x <= ArenaManager.ARENA_WIDTH; x++) {
+            assertTrue(ArenaManager.getActiveObjectStorage().getXIndex().get(x).isEmpty());
+        }
+        for (int y = 0; y <= ArenaManager.ARENA_WIDTH; y++) {
+            assertTrue(ArenaManager.getActiveObjectStorage().getYIndex().get(y).isEmpty());
+        }
+        for (StoredType type : StoredType.values()) {
+            assertTrue(ArenaManager.getActiveObjectStorage().getIndexFor(type).isEmpty());
+        }
+        for (StoredComparableType type : StoredComparableType.values()) {
+            assertTrue(ArenaManager.getActiveObjectStorage().getSortedIndexFor(type, SortOption.ASCENDING).isEmpty());
+            assertTrue(ArenaManager.getActiveObjectStorage().getSortedIndexFor(type, SortOption.DESCENDING).isEmpty());
         }
     }
 }

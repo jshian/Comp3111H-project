@@ -26,6 +26,9 @@ public class ArenaObjectRingSortedSelector<T extends ArenaObject & Comparable<T>
         super(centerX, centerY, minRadius, maxRadius);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<T> select(ArenaObjectStorage storage,

@@ -79,6 +79,9 @@ public class Catapult extends Tower {
         return splashRadius;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void upgrade() {
         super.upgrade();
@@ -89,7 +92,10 @@ public class Catapult extends Tower {
         }
     }
 
-    // Catapult tries to hit the most targets in range of the main target
+    /**
+     * {@inheritDoc}
+     * Catapult tries to hit the most targets in range of the main target.
+     */
     @Override
     protected void shoot(List<Monster> validTargets) {
         List<Monster> closestTargets = new LinkedList<>();
@@ -144,12 +150,18 @@ public class Catapult extends Tower {
         ArenaObjectFactory.createProjectile(this, this, target, deltaX, deltaY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayDetails() {
         return String.format("Attack Power: %d\nSplash Radius: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,
             this.splashRadius, this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/catapult.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true));

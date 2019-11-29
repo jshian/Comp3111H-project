@@ -35,11 +35,17 @@ public class ArenaObjectPropertySelector<T extends ArenaObject> implements Arena
         this.predicate = predicate;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int estimateCost(ArenaObjectStorage storage) {
         return Integer.MAX_VALUE; // So that the query will always search by type
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<ArenaObject> select(ArenaObjectStorage storage, EnumSet<StoredType> types,
@@ -60,6 +66,9 @@ public class ArenaObjectPropertySelector<T extends ArenaObject> implements Arena
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public boolean isInSelection(ArenaObject o) {
@@ -68,6 +77,9 @@ public class ArenaObjectPropertySelector<T extends ArenaObject> implements Arena
         return predicate.test((T) o);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public boolean isInSelectionByDefinition(ArenaObject o) {

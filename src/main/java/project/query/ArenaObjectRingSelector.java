@@ -100,6 +100,9 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
         this.effectiveHeight = (short) (endY - startY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int estimateCost(ArenaObjectStorage storage) {
         // Out of bounds (== 0 means a point search)
@@ -113,6 +116,9 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ArenaObject> select(ArenaObjectStorage storage,
             EnumSet<StoredType> types, List<ArenaObjectSelector> filters) {
@@ -153,6 +159,9 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isInSelection(ArenaObject o) {
         short distX = (short) (o.getX() - centerX);
@@ -163,6 +172,9 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
         return (distSquared >= minRadius * minRadius && distSquared <= maxRadius * maxRadius);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isInSelectionByDefinition(ArenaObject o) {
         short distX = (short) (o.getX() - centerX);

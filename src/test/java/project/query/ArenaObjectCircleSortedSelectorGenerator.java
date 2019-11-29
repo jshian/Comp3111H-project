@@ -14,6 +14,9 @@ import project.entity.Monster;
  */
 public class ArenaObjectCircleSortedSelectorGenerator implements ArenaObjectSortedSelectorGenerator {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArenaObjectSortedSelector<Monster> generateSortedSelector(Object... args) {
         short centerX = (short) args[0];
@@ -23,6 +26,9 @@ public class ArenaObjectCircleSortedSelectorGenerator implements ArenaObjectSort
         return new ArenaObjectCircleSortedSelector<Monster>(centerX, centerY, radius);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateSelectorInfo(Object... args) {
         short centerX = (short) args[0];
@@ -32,6 +38,9 @@ public class ArenaObjectCircleSortedSelectorGenerator implements ArenaObjectSort
         return String.format("centerX = %d, centerY = %d, radius = %d", centerX, centerY, radius);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Object[]> generateArgSets() {
         Object[][] randomParams = new Object[NUM_SELECTORS][];

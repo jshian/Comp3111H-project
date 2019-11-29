@@ -142,12 +142,21 @@ public abstract class Projectile extends ArenaObject implements ObjectWithTarget
         target.takeDamage(damage, this);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public short getTargetLocationX() { return target.getX(); }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public short getTargetLocationY() { return target.getY(); }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getMovementDistanceToDestination() {
         return Geometry.findEuclideanDistance(getX(), getY(), target.getX(), target.getY());

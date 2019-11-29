@@ -29,6 +29,9 @@ public class BasicProjectile extends Projectile {
         super(tower, target, deltaX, deltaY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/basicProjectile.png", ArenaManager.GRID_WIDTH / 8, ArenaManager.GRID_HEIGHT / 8, true, true));

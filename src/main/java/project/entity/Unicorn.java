@@ -33,6 +33,9 @@ public class Unicorn extends Monster {
         this.resourceValue = (int) (difficulty * 1);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/unicorn.png", ArenaManager.GRID_WIDTH / 4, ArenaManager.GRID_HEIGHT / 4, true, true));

@@ -152,6 +152,10 @@ public abstract class ArenaObject {
         this.positionInfo = new ArenaObjectPositionInfo(imageView, getX(), getY());
     }
 
+    /**
+     * Returns the position information.
+     * @return The position information.
+     */
     public ArenaObjectPositionInfo getPositionInfo() {
         return positionInfo;
     }

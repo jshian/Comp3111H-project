@@ -224,9 +224,15 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
         ArenaObjectFactory.createProjectile(this, this, validTargets.get(0), (short) 0, (short) 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayName() { return getClass().getSimpleName(); }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayDetails() {
         return String.format("Attack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.attackPower,

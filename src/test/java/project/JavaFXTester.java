@@ -85,6 +85,9 @@ public class JavaFXTester extends ApplicationTest {
 		return generators;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;

@@ -21,22 +21,37 @@ import project.query.ArenaObjectStorage.StoredType;
  */
 public final class MonsterAttacksToEndField implements ArenaScalarField<Float> {
 
+    /**
+     * The values of the scalar field.
+     */
     protected float[][] values = new float[ArenaManager.ARENA_WIDTH + 1][ArenaManager.ARENA_HEIGHT + 1];
 
+    /**
+     * The scalar field representing the number of tower attacks per frame against a monster at that location.
+     */
     protected class TowerAttacksPerFrameField implements ArenaScalarField<Float> {
 
         protected float[][] values = new float[ArenaManager.ARENA_WIDTH + 1][ArenaManager.ARENA_HEIGHT + 1];
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Float getValueAt(short x, short y) {
             return this.values[x][y];
         }
-        
+
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void setValueAt(short x, short y, Float value) {
             this.values[x][y] = value;
         }
-    
+        
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void setAll(Float value) {
             for (int x = 0; x < ArenaManager.ARENA_WIDTH; x++) {
