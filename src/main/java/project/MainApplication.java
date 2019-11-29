@@ -20,7 +20,7 @@ public class MainApplication extends Application {
     private static ConfigurableApplicationContext context;
 
     /**
-     * initialise the spring boot application.
+     * Initialise the spring boot application.
      */
     @Override
     public void init() {
@@ -36,7 +36,9 @@ public class MainApplication extends Application {
         Manager.setEntityManagerFactory(hc.getEntityManagerFactory());
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/project.fxml"));

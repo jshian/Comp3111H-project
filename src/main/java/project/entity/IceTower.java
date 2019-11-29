@@ -57,6 +57,9 @@ public class IceTower extends Tower {
      */
     public int getSlowDownTime() { return slowDownTime; }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void upgrade() {
         super.upgrade();
@@ -67,12 +70,18 @@ public class IceTower extends Tower {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayDetails() {
         return String.format("Slow Duration: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.slowDownTime,
             this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/iceTower.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true));

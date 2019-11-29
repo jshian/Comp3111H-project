@@ -13,6 +13,9 @@ import project.JavaFXTester;
  */
 public class ArenaObjectRingSelectorGenerator implements ArenaObjectSelectorGenerator {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArenaObjectSelector generateSortedSelector(Object... args) {
         short centerX = (short) args[0];
@@ -23,6 +26,9 @@ public class ArenaObjectRingSelectorGenerator implements ArenaObjectSelectorGene
         return new ArenaObjectRingSelector(centerX, centerY, minRadius, maxRadius);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateSelectorInfo(Object... args) {
         short centerX = (short) args[0];
@@ -33,6 +39,9 @@ public class ArenaObjectRingSelectorGenerator implements ArenaObjectSelectorGene
         return String.format("centerX = %d, centerY = %d, minRadius = %d, maxRadius = %d", centerX, centerY, minRadius, maxRadius);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Object[]> generateArgSets() {
         Object[][] randomParams = new Object[NUM_SELECTORS][];

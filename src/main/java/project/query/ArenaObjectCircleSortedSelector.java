@@ -25,6 +25,9 @@ public class ArenaObjectCircleSortedSelector<T extends ArenaObject & Comparable<
         super(centerX, centerY, radius);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<T> select(ArenaObjectStorage storage,

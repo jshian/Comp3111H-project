@@ -40,12 +40,18 @@ public class IceProjectile extends Projectile {
      */
     public int getSlowDownTime() { return slowDownTime; }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void damageTarget() {
         super.damageTarget();
         target.addStatusEffect(new StatusEffect(StatusEffect.EffectType.Slow, slowDownTime));
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/iceProjectile.png", ArenaManager.GRID_WIDTH / 8, ArenaManager.GRID_HEIGHT / 8, true, true));

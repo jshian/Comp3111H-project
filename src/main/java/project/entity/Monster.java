@@ -145,7 +145,8 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public Monster() {}
 
     /**
-     * initialise healthProperty from health when initialising from jpa.
+     * {@inheritDoc}
+     * Initialise healthProperty from health when initialising from jpa.
      */
     @Override
     @PostLoad
@@ -157,7 +158,8 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     /**
-     * initialise the gradientDescentField of the monster.
+     * {@inheritDoc}
+     * Initialise the gradientDescentField of the monster.
      */
     public void initialiseGradientDescentField() {
         this.gradientDescentField = ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END;
@@ -261,28 +263,49 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      */
     public final void addStatusEffect(StatusEffect statusEffect) { this.statusEffects.add(statusEffect); }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int compareTo(Monster o) {
         return Double.compare(getMovementDistanceToDestination(), o.getMovementDistanceToDestination());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ArenaObjectPositionInfo> getTrail() { return trail; }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public short getTargetLocationX() { return ArenaManager.END_X; }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public short getTargetLocationY() { return ArenaManager.END_Y; }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getMovementDistanceToDestination() {
         return ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END.getValueAt(getX(), getY());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayName() { return getClass().getSimpleName(); }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", getHealth(), maxHealth); }
 }

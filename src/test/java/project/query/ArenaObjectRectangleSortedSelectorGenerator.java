@@ -14,6 +14,9 @@ import project.entity.Monster;
  */
 public class ArenaObjectRectangleSortedSelectorGenerator implements ArenaObjectSortedSelectorGenerator {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArenaObjectSortedSelector<Monster> generateSortedSelector(Object... args) {
         short leftX = (short) args[0];
@@ -24,6 +27,9 @@ public class ArenaObjectRectangleSortedSelectorGenerator implements ArenaObjectS
         return new ArenaObjectRectangleSortedSelector<Monster>(leftX, topY, width, height);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateSelectorInfo(Object... args) {
         short leftX = (short) args[0];
@@ -34,6 +40,9 @@ public class ArenaObjectRectangleSortedSelectorGenerator implements ArenaObjectS
         return String.format("leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Object[]> generateArgSets() {
         Object[][] randomParams = new Object[NUM_SELECTORS][];

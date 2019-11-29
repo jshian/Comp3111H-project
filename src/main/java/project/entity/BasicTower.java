@@ -40,6 +40,9 @@ public class BasicTower extends Tower {
         this.upgradeCost = 10;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void upgrade() {
         super.upgrade();
@@ -50,6 +53,9 @@ public class BasicTower extends Tower {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/basicTower.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true));

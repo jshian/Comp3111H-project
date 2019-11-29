@@ -56,6 +56,9 @@ public class CatapultProjectile extends Projectile {
         return splashRadius;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void damageTarget() {
         // Don't call super method to prevent double hitting
@@ -106,6 +109,9 @@ public class CatapultProjectile extends Projectile {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/catapultProjectile.png", ArenaManager.GRID_WIDTH / 2, ArenaManager.GRID_HEIGHT / 2, true, true));

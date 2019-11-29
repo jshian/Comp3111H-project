@@ -26,6 +26,9 @@ public class ArenaObjectRectangleSortedSelector<T extends ArenaObject & Comparab
         super(leftX, topY, width, height);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<T> select(ArenaObjectStorage storage,

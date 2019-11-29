@@ -13,6 +13,9 @@ import project.JavaFXTester;
  */
 public class ArenaObjectGridSelectorGenerator implements ArenaObjectSelectorGenerator {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArenaObjectSelector generateSortedSelector(Object... args) {
         short x = (short) args[0];
@@ -21,6 +24,9 @@ public class ArenaObjectGridSelectorGenerator implements ArenaObjectSelectorGene
         return new ArenaObjectGridSelector(x, y);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateSelectorInfo(Object... args) {
         short x = (short) args[0];
@@ -29,6 +35,9 @@ public class ArenaObjectGridSelectorGenerator implements ArenaObjectSelectorGene
         return String.format("x = %d, y = %d", x, y);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Object[]> generateArgSets() {
         Object[][] randomParams = new Object[NUM_SELECTORS][];

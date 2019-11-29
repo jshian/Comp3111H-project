@@ -20,7 +20,10 @@ import project.query.ArenaObjectStorage.StoredType;
  * travelled from that point to the end zone.
  */
 public final class MonsterDistanceToEndField implements ArenaScalarField<Integer> {
-    
+
+    /**
+     * The values of the scalar field.
+     */
     protected int[][] values = new int[ArenaManager.ARENA_WIDTH + 1][ArenaManager.ARENA_HEIGHT + 1];
 
     /**
@@ -64,16 +67,25 @@ public final class MonsterDistanceToEndField implements ArenaScalarField<Integer
         register.ARENA_OBJECT_MOVE_END.subscribe(onEndMoveObject);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Integer getValueAt(short x, short y) {
         return values[x][y];
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setValueAt(short x, short y, Integer value) {
         values[x][y] = value;
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAll(Integer value) {
         for (int x = 0; x < ArenaManager.ARENA_WIDTH; x++) {

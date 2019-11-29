@@ -11,4 +11,9 @@ public abstract class ArenaObjectEventArgs extends EventArgs {
      * The subject of the event.
      */
     public ArenaObject subject;
+
+    /**
+     * Default constructor.
+     */
+    public ArenaObjectEventArgs() {}
 }

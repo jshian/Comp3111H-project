@@ -66,6 +66,9 @@ public class LaserTower extends Tower{
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void upgrade() {
         super.upgrade();
@@ -76,7 +79,10 @@ public class LaserTower extends Tower{
         }
     }
 
-    // Laser tower consume currently active player's resource to attack monster.
+    /**
+     * {@inheritDoc}
+     * Laser tower consumes currently active player's resource to attack monster.
+     */
     @Override
     protected void shoot(List<Monster> validTargets) {
         if (consumeResource()) {
@@ -84,12 +90,18 @@ public class LaserTower extends Tower{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDisplayDetails() {
         return String.format("Shooting Cost: %d\nAttack Power: %d\nReload Time: %d\nRange: [%d , %d]\nUpgrade Cost: %d\nBuild Value: %d", this.shootingCost,
             this.attackPower, this.reload,this.minRange,this.maxRange,this.upgradeCost,this.buildValue);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/laserTower.png", ArenaManager.GRID_WIDTH, ArenaManager.GRID_HEIGHT, true, true));

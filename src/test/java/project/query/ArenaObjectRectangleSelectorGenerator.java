@@ -13,6 +13,9 @@ import project.JavaFXTester;
  */
 public class ArenaObjectRectangleSelectorGenerator implements ArenaObjectSelectorGenerator {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ArenaObjectSelector generateSortedSelector(Object... args) {
         short leftX = (short) args[0];
@@ -23,6 +26,9 @@ public class ArenaObjectRectangleSelectorGenerator implements ArenaObjectSelecto
         return new ArenaObjectRectangleSelector(leftX, topY, width, height);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateSelectorInfo(Object... args) {
         short leftX = (short) args[0];
@@ -33,6 +39,9 @@ public class ArenaObjectRectangleSelectorGenerator implements ArenaObjectSelecto
         return String.format("leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Object[]> generateArgSets() {
         Object[][] randomParams = new Object[NUM_SELECTORS][];

@@ -24,6 +24,9 @@ public class ArenaObjectPropertySortedSelector<T extends ArenaObject & Comparabl
         super(objectType, predicate);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @SuppressWarnings("unchecked")
     public List<T> select(ArenaObjectStorage storage, StoredComparableType type,

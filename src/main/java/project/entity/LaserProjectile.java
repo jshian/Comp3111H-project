@@ -41,6 +41,9 @@ public class LaserProjectile extends Projectile {
         super(tower, target, deltaX, deltaY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void damageTarget() {
         // Don't call super method to prevent double hitting
@@ -57,6 +60,9 @@ public class LaserProjectile extends Projectile {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/laserProjectile.png", ArenaManager.GRID_WIDTH / 4, ArenaManager.GRID_HEIGHT / 4, true, true));
