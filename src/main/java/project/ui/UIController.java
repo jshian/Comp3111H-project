@@ -145,14 +145,15 @@ public class UIController {
      */
     private EventHandler<EventArgs> onGameover = (sender, args) -> {
         System.out.println("Gameover");
+
+        if(mode==GameMode.PLAY){
+            RestTemplate restTemplate = new RestTemplate();
+            String url ="http://localhost:8080/players/add_post";
+            Player result =  restTemplate.postForObject(url, player,Player.class);
+            System.out.println(result);
+        }
         mode = GameMode.END;
         enableGameButton();
-
-        RestTemplate restTemplate = new RestTemplate();
-        String url ="http://localhost:8080/players/add_post";
-        Player result =  restTemplate.postForObject(url, player,Player.class);
-        System.out.println(result);
-
         showAlert("Gameover","Gameover").setOnCloseRequest(e -> resetGame());
     };
 
