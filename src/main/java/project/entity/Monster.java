@@ -157,6 +157,13 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     }
 
     /**
+     * initialise the gradientDescentField of the monster.
+     */
+    public void initialiseGradientDescentField() {
+        this.gradientDescentField = ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END;
+    }
+
+    /**
      * Setup tooltip to display hp of monster.
      */
     public void setupTooltip() {

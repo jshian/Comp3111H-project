@@ -162,15 +162,7 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void load(UIController ui, Player player) {
-        for (ArenaObject o : getActiveObjectStorage().getTowers()) {
-            ArenaObjectFactory.removeObject(player, o);
-        }
-        for (ArenaObject o : getActiveObjectStorage().getMonsters()) {
-            ArenaObjectFactory.removeObject(player, o);
-        }
-        for (ArenaObject o : getActiveObjectStorage().getProjectiles()) {
-            ArenaObjectFactory.removeObject(player, o);
-        }
+        getActiveObjectStorage().clear();
 
         activeUIController = ui;
         ArenaInstance newInstance = Manager.load();
@@ -178,14 +170,15 @@ public final class ArenaManager {
         if (newInstance != null) {
             activeArenaInstance = newInstance;
             for (ArenaObject o : getActiveObjectStorage().getTowers()) {
-                ArenaObjectFactory.addObject(player, o);
+                ArenaObjectFactory.addObject(getActiveObjectStorage(), o);
                 ui.setTowerEvent((Tower) o);
             }
             for (ArenaObject o : getActiveObjectStorage().getMonsters()) {
-                ArenaObjectFactory.addObject(player, o);
+                ((Monster)o).initialiseGradientDescentField(); // fix that monster can pass through towers
+                ArenaObjectFactory.addObject(getActiveObjectStorage(), o);
             }
             for (ArenaObject o : getActiveObjectStorage().getProjectiles()) {
-                ArenaObjectFactory.addObject(player, o);
+                ArenaObjectFactory.addObject(getActiveObjectStorage(), o);
             }
             ui.setupNewGame(newInstance);
         }

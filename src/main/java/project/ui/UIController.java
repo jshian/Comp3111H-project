@@ -227,6 +227,7 @@ public class UIController {
         player = arenaInstance.getPlayer();
         remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+        enableGameButton();
     }
 
     /**
