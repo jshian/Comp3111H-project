@@ -3,7 +3,6 @@ package project.entity;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -92,12 +91,12 @@ public class Catapult extends Tower {
 
     // Catapult tries to hit the most targets in range of the main target
     @Override
-    protected void shoot(PriorityQueue<Monster> validTargets) {
+    protected void shoot(List<Monster> validTargets) {
         List<Monster> closestTargets = new LinkedList<>();
-        int closestDistance = (int) validTargets.peek().getMovementDistanceToDestination();
+        int closestDistance = (int) validTargets.get(0).getMovementDistanceToDestination();
 
-        while (closestDistance == (int) validTargets.peek().getMovementDistanceToDestination()) {
-            closestTargets.add(validTargets.poll());
+        while (closestDistance == (int) validTargets.get(0).getMovementDistanceToDestination()) {
+            closestTargets.add(validTargets.remove(0));
             if (validTargets.isEmpty()) break;
         }
 

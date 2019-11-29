@@ -63,8 +63,8 @@ public class CollectionComparator {
 
         boolean isEqual = true;
         while (!q1_cpy.isEmpty()) {
-            T e1 = q1_cpy.poll();
-            T e2 = q2_cpy.poll();
+            T e1 = q1_cpy.remove(0);
+            T e2 = q2_cpy.remove(0);
             if (e1 instanceof ArenaObject && e2 instanceof ArenaObject) {
                 System.out.println(String.format("e1: x = %d, y = %d; e2: x = %d, y = %d", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
                 if (e1 instanceof Monster && e2 instanceof Monster) {
