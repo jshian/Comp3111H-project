@@ -149,7 +149,7 @@ Members:
 	* The Penguin monster can regenerate health points each time it moves, up to its maximum value. (Task 3(iii)(v)(c))
 	* Each generation of monsters become stronger (relative to the same monster type) as time goes by. (Task 3(i)(a))
 1. Close the application.	
-1. Open the project using Eclipse IDE and run the Gradle task `QQQ` which uses JUnit to test the Fox pathfinding algorithm. (Whole of Honors Task 3)
+1. Open the project using Eclipse IDE and run the Gradle task `FoxTest` which uses JUnit to test the Fox pathfinding algorithm. (Whole of Honors Task 3)
 1. Close the project.
 
 ### Grade Extra Tasks
