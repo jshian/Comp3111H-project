@@ -44,8 +44,8 @@ public class ArenaObjectRingSortedSelectorTest extends ArenaObjectSortedSelector
             randomParams[i] = new Object[] {
                 RANDOM_X_COOR.get(),
                 RANDOM_Y_COOR.get(),
-                Math.min(r1, r2),
-                Math.max(r1, r2)
+                (short) Math.min(r1, r2),
+                (short) Math.max(r1, r2)
             };
         }
 
