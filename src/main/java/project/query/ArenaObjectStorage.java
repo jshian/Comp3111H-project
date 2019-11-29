@@ -34,7 +34,7 @@ public final class ArenaObjectStorage {
      * Index for each object in the x-direction.
      */
     @Transient
-    private ArrayList<LinkedList<ArenaObject>> objectsAtX = new ArrayList<>(ArenaManager.ARENA_WIDTH + 1);
+    private ArrayList<List<ArenaObject>> objectsAtX = new ArrayList<>(ArenaManager.ARENA_WIDTH + 1);
     {
         for (int x = 0; x <= ArenaManager.ARENA_WIDTH; x++) {
             objectsAtX.add(new LinkedList<ArenaObject>());
@@ -45,7 +45,7 @@ public final class ArenaObjectStorage {
      * Index for each object in the y-direction.
      */
     @Transient
-    private ArrayList<LinkedList<ArenaObject>> objectsAtY = new ArrayList<>(ArenaManager.ARENA_HEIGHT + 1);
+    private ArrayList<List<ArenaObject>> objectsAtY = new ArrayList<>(ArenaManager.ARENA_HEIGHT + 1);
     {
         for (int y = 0; y <= ArenaManager.ARENA_HEIGHT; y++) {
             objectsAtY.add(new LinkedList<ArenaObject>());
@@ -310,7 +310,7 @@ public final class ArenaObjectStorage {
      * Returns the index for x-coordinate.
      * @return The index for x-coordinate.
      */
-    ArrayList<LinkedList<ArenaObject>> getXIndex() {
+    ArrayList<List<ArenaObject>> getXIndex() {
         return objectsAtX;
     }
 
@@ -318,7 +318,7 @@ public final class ArenaObjectStorage {
      * Returns the index for y-coordinate.
      * @return The index for y-coordinate.
      */
-    ArrayList<LinkedList<ArenaObject>> getYIndex() {
+    ArrayList<List<ArenaObject>> getYIndex() {
         return objectsAtY;
     }
 
