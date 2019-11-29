@@ -2,7 +2,7 @@ package project.query;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.List;
 
 import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.StoredComparableType;
@@ -27,10 +27,10 @@ public class ArenaObjectCircleSortedSelector<T extends ArenaObject & Comparable<
 
     @Override
     @SuppressWarnings("unchecked")
-    public PriorityQueue<T> select(ArenaObjectStorage storage,
-            StoredComparableType type, LinkedList<ArenaObjectSortedSelector<T>> filters, SortOption option) {
+    public List<T> select(ArenaObjectStorage storage,
+            StoredComparableType type, List<ArenaObjectSortedSelector<T>> filters, SortOption option) {
         
-        PriorityQueue<T> result = createPriorityQueue(option);
+        List<T> result = new LinkedList<>();
 
         // Out of bounds (== 0 means a point search)
         if (effectiveWidth < 0 || effectiveHeight < 0) return result;
@@ -57,6 +57,8 @@ public class ArenaObjectCircleSortedSelector<T extends ArenaObject & Comparable<
                 }
             }
         }
+
+        sortResult(result, option);
 
         return result;
     }

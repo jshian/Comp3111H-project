@@ -3,6 +3,7 @@ package project.query;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import project.control.ArenaManager;
 import project.entity.ArenaObject;
@@ -113,10 +114,10 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
     }
 
     @Override
-    public LinkedList<ArenaObject> select(ArenaObjectStorage storage,
-            EnumSet<StoredType> types, LinkedList<ArenaObjectSelector> filters) {
+    public List<ArenaObject> select(ArenaObjectStorage storage,
+            EnumSet<StoredType> types, List<ArenaObjectSelector> filters) {
 
-        LinkedList<ArenaObject> result = new LinkedList<>();
+        List<ArenaObject> result = new LinkedList<>();
 
         // Out of bounds (== 0 means a point search)
         if (effectiveWidth < 0 || effectiveHeight < 0) return result;

@@ -2,6 +2,7 @@ package project.query;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Predicate;
 
 import project.entity.ArenaObject;
@@ -41,10 +42,10 @@ public class ArenaObjectPropertySelector<T extends ArenaObject> implements Arena
 
     @Override
     @SuppressWarnings("unchecked")
-    public LinkedList<ArenaObject> select(ArenaObjectStorage storage, EnumSet<StoredType> types,
-            LinkedList<ArenaObjectSelector> filters) {
+    public List<ArenaObject> select(ArenaObjectStorage storage, EnumSet<StoredType> types,
+            List<ArenaObjectSelector> filters) {
         
-        LinkedList<ArenaObject> result = new LinkedList<>();
+        List<ArenaObject> result = new LinkedList<>();
 
         for (StoredType type : types) {
             if (type.getObjectClass().isAssignableFrom(objectType)) {

@@ -334,23 +334,25 @@ public final class ArenaObjectStorage {
      * @return The index for a supported comparable object type.
      */
     @SuppressWarnings("unchecked")
-    <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedIndexFor(StoredComparableType type, SortOption option) {
-        PriorityQueue<T> result = null;
-        switch (option) {
-        	case ASCENDING: result = new PriorityQueue<>(); break;
-        	case DESCENDING: result = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); break;
-        }
+    <T extends ArenaObject & Comparable<T>> List<T> getSortedIndexFor(StoredComparableType type, SortOption option) {
+        List<T> result = new LinkedList<>();
 
     	switch (type) {
             case MONSTER: {
             	for (Monster o : monsters) {
             		result.add((T) o);
-            	}
-            	return result;
+                }
+                break;
             }
+            default: return null;
         }
 
-        return null;
+        switch (option) {
+        	case ASCENDING: result.sort(null); break;
+        	case DESCENDING: result.sort((o1, o2) -> o2.compareTo(o1)); break;
+        }
+
+        return result;
     }
 
     /**
@@ -429,7 +431,7 @@ public final class ArenaObjectStorage {
      * @param option The sorting option.
      * @return The query result.
      */
-    public <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedQueryResult(ArenaObjectSortedSelector<T> selector, StoredComparableType type, SortOption option) {
+    public <T extends ArenaObject & Comparable<T>> List<T> getSortedQueryResult(ArenaObjectSortedSelector<T> selector, StoredComparableType type, SortOption option) {
         ArenaObjectSortedQuery<T> query = new ArenaObjectSortedQuery<>(selector);
         return query.run(this, type, option);
     }
@@ -442,7 +444,7 @@ public final class ArenaObjectStorage {
      * @param option The sorting option.
      * @return The query result.
      */
-    public <T extends ArenaObject & Comparable<T>> PriorityQueue<T> getSortedQueryResult(LinkedList<ArenaObjectSortedSelector<T>> selectors, StoredComparableType type, SortOption option) {
+    public <T extends ArenaObject & Comparable<T>> List<T> getSortedQueryResult(LinkedList<ArenaObjectSortedSelector<T>> selectors, StoredComparableType type, SortOption option) {
         ArenaObjectSortedQuery<T> query = new ArenaObjectSortedQuery<>(selectors);
         return query.run(this, type, option);
     }

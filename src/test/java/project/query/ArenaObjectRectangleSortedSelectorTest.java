@@ -2,6 +2,8 @@ package project.query;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
 
@@ -68,13 +70,13 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
         int cost = rectangleSortedSelector.estimateCost(storage);
         assertTrue(cost > 0);
         {
-            PriorityQueue<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
-            PriorityQueue<Monster> expected = new PriorityQueue<>(expectedSelection);
+            List<Monster> expected = new LinkedList<>(expectedSelection); expected.sort(null);
+            List<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
             assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
         }
         {
-            PriorityQueue<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
-            PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(expectedSelection);
+            List<Monster> expected = new LinkedList<>(expectedSelection); expected.sort((o1, o2) -> o2.compareTo(o1));
+            List<Monster> result = storage.getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
             assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
         }
     }
@@ -132,13 +134,13 @@ public class ArenaObjectRectangleSortedSelectorTest extends JavaFXTester {
             }
             
             {
-                PriorityQueue<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
-                PriorityQueue<Monster> expected = new PriorityQueue<>(expectedSelection);
+                List<Monster> expected = new LinkedList<>(expectedSelection); expected.sort(null);
+                List<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
                 assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
             {
-                PriorityQueue<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
-                PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(expectedSelection);
+                List<Monster> expected = new LinkedList<>(expectedSelection); expected.sort((o1, o2) -> o2.compareTo(o1));
+                List<Monster> result = ArenaManager.getActiveObjectStorage().getSortedQueryResult(rectangleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
                 assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
         }

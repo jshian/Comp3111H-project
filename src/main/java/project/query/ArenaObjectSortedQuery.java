@@ -1,8 +1,7 @@
 package project.query;
 
 import java.util.LinkedList;
-import java.util.PriorityQueue;
-
+import java.util.List;
 import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.SortOption;
 import project.query.ArenaObjectStorage.StoredComparableType;
@@ -57,10 +56,10 @@ class ArenaObjectSortedQuery<T extends ArenaObject & Comparable<T>> {
      * @return The query result.
      */
     @SuppressWarnings("unchecked")
-    PriorityQueue<T> run(ArenaObjectStorage storage, StoredComparableType type, SortOption option) {
+    List<T> run(ArenaObjectStorage storage, StoredComparableType type, SortOption option) {
         // Return everything if there are no selectors
         if (selectors.isEmpty()) {
-            return new PriorityQueue<T>(storage.getSortedIndexFor(type, option));
+            return storage.getSortedIndexFor(type, option);
         }
 
         // The cost of accessing through type-based index
@@ -79,7 +78,7 @@ class ArenaObjectSortedQuery<T extends ArenaObject & Comparable<T>> {
 
         if (typeIndexCost <= minCost) {
             // Query using the type index and apply each selection as the results are being fetched
-            PriorityQueue<T> result = new PriorityQueue<>();
+            List<T> result = new LinkedList<>();
             ArenaObjectPropertySortedSelector<T> dummySelector = new ArenaObjectPropertySortedSelector<T>(type.getObjectClass(), o -> true);
 
             for (ArenaObject o : storage.getSortedIndexFor(type, option)) {
@@ -91,7 +90,7 @@ class ArenaObjectSortedQuery<T extends ArenaObject & Comparable<T>> {
             return result;
         } else {
             // Query using the minSelector and apply the other selections as the results are being fetched
-            LinkedList<ArenaObjectSortedSelector<T>> otherSelectors = new LinkedList<>(selectors);
+            List<ArenaObjectSortedSelector<T>> otherSelectors = new LinkedList<>(selectors);
             otherSelectors.remove(minSelector);
 
             return minSelector.select(storage, type, otherSelectors, option);

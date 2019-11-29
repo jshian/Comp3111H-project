@@ -3,6 +3,7 @@ package project.util;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import project.entity.ArenaObject;
@@ -54,11 +55,11 @@ public class CollectionComparator {
      * @param l2 The second collection.
      * @return Whether the set of elements of the two queues is equivalent and sorted in the same order.
      */
-    public static <T> boolean isElementSetAndOrderEqual(Queue<T> q1, Queue<T> q2) {
+    public static <T> boolean isElementSetAndOrderEqual(List<T> q1, List<T> q2) {
         if (!isElementSetEqual(q1, q2)) return false;
 
-        LinkedList<T> q1_cpy = new LinkedList<>(q1);
-        LinkedList<T> q2_cpy = new LinkedList<>(q2);
+        List<T> q1_cpy = new LinkedList<>(q1);
+        List<T> q2_cpy = new LinkedList<>(q2);
 
         boolean isEqual = true;
         while (!q1_cpy.isEmpty()) {

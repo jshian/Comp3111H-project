@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -45,15 +45,15 @@ public class ArenaObjectSortedQueryTest extends JavaFXTester {
         }
 
         @Override
-        public LinkedList<ArenaObject> select(ArenaObjectStorage storage, EnumSet<StoredType> types,
-                LinkedList<ArenaObjectSelector> filters) {
+        public List<ArenaObject> select(ArenaObjectStorage storage, EnumSet<StoredType> types,
+                List<ArenaObjectSelector> filters) {
 
             return null;
         }
         
         @Override
-        public PriorityQueue<T> select(ArenaObjectStorage storage, StoredComparableType type,
-                LinkedList<ArenaObjectSortedSelector<T>> filters, SortOption option) {
+        public List<T> select(ArenaObjectStorage storage, StoredComparableType type,
+                List<ArenaObjectSortedSelector<T>> filters, SortOption option) {
 
             selectedSortedSelector = this;
             return null;
@@ -145,14 +145,13 @@ public class ArenaObjectSortedQueryTest extends JavaFXTester {
 
         ArenaObjectSortedQuery<Monster> q = new ArenaObjectSortedQuery<>();
         {
-            PriorityQueue<Monster> expected = new PriorityQueue<>(Arrays.asList(m1, m2, m3, m4, m5));
-            PriorityQueue<Monster> result = q.run(storage, StoredComparableType.MONSTER, SortOption.ASCENDING);
+            List<Monster> expected = Arrays.asList(m1, m2, m3, m4, m5); expected.sort(null);
+            List<Monster> result = q.run(storage, StoredComparableType.MONSTER, SortOption.ASCENDING);
             assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
         }
         {
-            PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1));
-            expected.addAll(Arrays.asList(m1, m2, m3, m4, m5));
-            PriorityQueue<Monster> result = q.run(storage, StoredComparableType.MONSTER, SortOption.DESCENDING);
+            List<Monster> expected = Arrays.asList(m1, m2, m3, m4, m5); expected.sort((o1, o2) -> o2.compareTo(o1));
+            List<Monster> result = q.run(storage, StoredComparableType.MONSTER, SortOption.DESCENDING);
             assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
         }
     }
