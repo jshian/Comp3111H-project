@@ -103,9 +103,9 @@ public class JavaFXTester extends ApplicationTest {
 			Field field_mode = UIController.class.getDeclaredField("mode");
 			field_mode.setAccessible(true);
 			
-			Method method_play = UIController.class.getDeclaredMethod("play");
-			method_play.setAccessible(true);
-			method_play.invoke(appController);
+			Method method_simulate = UIController.class.getDeclaredMethod("simulate");
+			method_simulate.setAccessible(true);
+			method_simulate.invoke(appController);
 
 			WaitForAsyncUtils.waitFor(60, TimeUnit.SECONDS, () -> ((GameMode) field_mode.get(ArenaManager.getActiveEventRegister()) == GameMode.END));
 			WaitForAsyncUtils.waitForFxEvents();
