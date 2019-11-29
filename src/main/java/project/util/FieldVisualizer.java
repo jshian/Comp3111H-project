@@ -45,6 +45,8 @@ public final class FieldVisualizer {
 
     /**
      * Visualizes a scalar field.
+     * @param <T> The type of number stored in the scalar field.
+     * @param type The type of number stored in the scalar field.
      * @param field The scalar field to visualize.
      */
     public static <T extends Number & Comparable<T>> void visualizeArenaScalarField(Class<T> type, ArenaScalarField<T> field) {

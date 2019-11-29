@@ -95,37 +95,37 @@ public class ArenaObjectRectangleSelectorTest extends JavaFXTester {
         {
             List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
             LinkedList<ArenaObject> expected = new LinkedList<>(expectedMonsters);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
             List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER));
             LinkedList<ArenaObject> expected = new LinkedList<>(expectedTowers);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
             List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.PROJECTILE));
             LinkedList<ArenaObject> expected = new LinkedList<>(expectedProjectiles);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
             List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER, StoredType.TOWER));
             LinkedList<ArenaObject> expected = new LinkedList<>(expectedMonsters); expected.addAll(expectedTowers);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
             List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER, StoredType.PROJECTILE));
             LinkedList<ArenaObject> expected = new LinkedList<>(expectedMonsters); expected.addAll(expectedProjectiles);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
             List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER, StoredType.PROJECTILE));
             LinkedList<ArenaObject> expected = new LinkedList<>(expectedTowers); expected.addAll(expectedProjectiles);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
             List<ArenaObject> result = storage.getQueryResult(selector, EnumSet.of(StoredType.TOWER, StoredType.MONSTER, StoredType.PROJECTILE));
             LinkedList<ArenaObject> expected = new LinkedList<>(expectedTowers); expected.addAll(expectedMonsters); expected.addAll(expectedProjectiles);
-            assertTrue(CollectionComparator.isElementSetEqual(result, expected));
+            assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
     }
 
