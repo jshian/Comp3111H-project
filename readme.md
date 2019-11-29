@@ -18,7 +18,7 @@ Members:
 1. Complete `Grade Task 1`, `Grade Task 2` and `Grade Task 3` on *Machine A*. (See below)
 1. Complete `Grade Extra Tasks` on both *Machine A* and *Machine B*. (See below)
 ### Grade Task 1
-1. Run the file `towerDefence-release.jar` to start the application. Verify the following:
+1. Run the `.jar` file found in `/build/libs/` to start the application. Verify the following:
 	* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
 	* The starting position on the arena is represented by the image `show-up.png`. (Regular Task 1(i))
 	* The end zone on the arena is represented by the image `end-zone.png`. (Regular Task 1(i))
