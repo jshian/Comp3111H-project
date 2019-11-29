@@ -16,6 +16,8 @@ import project.ui.UIController;
  * Manager of the arena.
  */
 public final class ArenaManager {
+	
+	private ArenaManager() {}
 
     /**
      * Width of the arena.
@@ -70,23 +72,7 @@ public final class ArenaManager {
     /**
      * The active arena instance.
      */
-    private static ArenaInstance activeArenaInstance;
-
-    /**
-     * Constructs a newly allocated {@link ArenaManager} object.
-     */
-    private ArenaManager() {
-        assert ARENA_WIDTH % GRID_WIDTH == 0;
-        assert ARENA_HEIGHT % GRID_HEIGHT == 0;
-        assert STARTING_X >= 0 && STARTING_X <= ARENA_WIDTH;
-        assert STARTING_Y >= 0 && STARTING_Y <= ARENA_HEIGHT;
-        assert END_X >= 0 && END_X <= ARENA_WIDTH;
-        assert END_Y >= 0 && END_Y <= ARENA_HEIGHT;
-        
-        if ((int) ARENA_WIDTH + (int) ARENA_HEIGHT > Short.MAX_VALUE) {
-            throw new ArithmeticException("The sum of ARENA_WIDTH and ARENA_HEIGHT should not be greater than the max value of a short.");
-        }
-    }
+    private static ArenaInstance activeArenaInstance;    
 
     /**
      * Returns the active UI controller.
@@ -154,12 +140,21 @@ public final class ArenaManager {
      * @param player The player of the arena instance.
      */
     public static void loadNew(UIController ui, Player player) {
+        assert ARENA_WIDTH % GRID_WIDTH == 0;
+        assert ARENA_HEIGHT % GRID_HEIGHT == 0;
+        assert STARTING_X >= 0 && STARTING_X <= ARENA_WIDTH;
+        assert STARTING_Y >= 0 && STARTING_Y <= ARENA_HEIGHT;
+        assert END_X >= 0 && END_X <= ARENA_WIDTH;
+        assert END_Y >= 0 && END_Y <= ARENA_HEIGHT;
+        
+        if ((int) ARENA_WIDTH + (int) ARENA_HEIGHT > Short.MAX_VALUE) {
+            throw new ArithmeticException("The sum of ARENA_WIDTH and ARENA_HEIGHT should not be greater than the max value of a short.");
+        }
+
         activeUIController = ui;
         activeArenaInstance = new ArenaInstance(player);
-
     }
 
-    // TODO
     /**
      * Loads an arena instance.
      * @param ui The UI controller of the arena instance.
@@ -189,7 +184,6 @@ public final class ArenaManager {
 
     }
 
-    // TODO
     // Create a shadow instance of the currently active arena instance (deep copy).
     // As it is not accessible from outside, it will not receive any events.
     // You can use another thread safely at this point.
@@ -314,7 +308,7 @@ public final class ArenaManager {
     /**
      * Returns the y-coordinate of the center of a grid.
      * @param yPos The y-position of the grid.
-     * @return The y-coordinate of the center of the gridt.
+     * @return The y-coordinate of the center of the grid.
      */
     public static short getGridCenterYFromPos(short yPos) {
         return (short) ((yPos + 0.5) * GRID_HEIGHT);
