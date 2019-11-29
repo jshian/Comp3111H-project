@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.*;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Tooltip;
 import project.control.ArenaManager;
@@ -89,7 +88,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * A linked list of references to each status effect that is active against the monster.
      */
-    @OneToMany(cascade = {CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
     protected List<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
