@@ -69,8 +69,14 @@ public class JavaFXTester extends ApplicationTest {
 	/**
 	 * Simulates the next frame of the game.
 	 */
-	protected final void simulateNextFrame() {
+	protected final void simulateNextFrameNoSpawning() {
 		try {
+			Field field_currentFrame = ArenaInstance.class.getDeclaredField("currentFrame");
+			field_currentFrame.setAccessible(true);
+			
+			ArenaInstance arena = ArenaManager.getActiveArenaInstance();
+			field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1);
+
 			Method method_nextFrame = UIController.class.getDeclaredMethod("nextFrame");
 			method_nextFrame.setAccessible(true);
 			method_nextFrame.invoke(appController);

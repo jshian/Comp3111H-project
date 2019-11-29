@@ -20,20 +20,20 @@ public class PenguinTest extends JavaFXTester {
     public void testRegeneration() {
         Penguin p = (Penguin) ArenaObjectFactory.createMonster(this, MonsterType.PENGUIN, ZERO, ZERO, 1);
 
-        double newHealth = p.maxHealth / 2;
-        p.healthProperty.set(newHealth);
+        double newHealth = p.getMaxHealth() / 2;
+        p.setHealth(newHealth);
         p.onNextFrame.handleEvent(this, new EventArgs());
         assertTrue(p.getHealth() > newHealth); // Health should regenerate
         newHealth = p.getHealth();
         p.onNextFrame.handleEvent(this, new EventArgs());
         assertTrue(p.getHealth() > newHealth); // Health should regenerate
 
-        p.healthProperty.set(p.maxHealth);
+        p.setHealth(p.getMaxHealth());
         p.onNextFrame.handleEvent(this, new EventArgs());
-        assertEquals(p.maxHealth, p.getHealth(), MAX_ERROR); // Health should not regenerate beyond max health
+        assertEquals(p.getMaxHealth(), p.getHealth(), MAX_ERROR); // Health should not regenerate beyond max health
 
-        p.healthProperty.set(p.maxHealth + 10);
+        p.setHealth(p.getMaxHealth() + 10);
         p.onNextFrame.handleEvent(this, new EventArgs());
-        assertEquals(p.maxHealth + 10, p.getHealth(), MAX_ERROR); // Health should not regenerate beyond max health, but nor should it be forced back down to max health
+        assertEquals(p.getMaxHealth() + 10, p.getHealth(), MAX_ERROR); // Health should not regenerate beyond max health, but nor should it be forced back down to max health
     }
 }
