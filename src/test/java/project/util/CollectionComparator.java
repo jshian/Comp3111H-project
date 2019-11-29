@@ -54,7 +54,7 @@ public class CollectionComparator {
      * @param l2 The second collection.
      * @return Whether the set of elements of the two queues is equivalent and sorted in the same order.
      */
-    public static <T> boolean isElementSetAndOrderEqual(List<T> q1, List<T> q2) {
+    public static <T extends Comparable<T>> boolean isElementSetAndOrderEqual(List<T> q1, List<T> q2) {
         if (!isElementSetEqual(q1, q2)) return false;
 
         List<T> q1_cpy = new LinkedList<>(q1);
@@ -67,10 +67,12 @@ public class CollectionComparator {
             if (e1 instanceof ArenaObject && e2 instanceof ArenaObject) {
                 System.out.println(String.format("e1: x = %d, y = %d; e2: x = %d, y = %d", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
                 if (e1 instanceof Monster && e2 instanceof Monster) {
-                    System.out.println(String.format("e1: Dist = %.0f; e2:  Dist = %.0f", ((Monster) e1).getMovementDistanceToDestination(), ((Monster) e2).getMovementDistanceToDestination()));
+                    System.out.println(String.format("e1: Dist = %.0f; e2: Dist = %.0f", ((Monster) e1).getMovementDistanceToDestination(), ((Monster) e2).getMovementDistanceToDestination()));
                 }
             }
-            if (e2 != e1) isEqual = false;
+            if (e1 != e2 && e1.compareTo(e2) != 0) {
+                isEqual = false;
+            }
         }
 
         return isEqual;
