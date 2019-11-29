@@ -153,6 +153,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public void loadArenaObject() {
         super.loadArenaObject();
         this.healthProperty.set(health);
+        this.maxHealthProperty.set(maxHealth);
         setupTooltip();
     }
 
