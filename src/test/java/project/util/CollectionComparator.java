@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import project.entity.ArenaObject;
-import project.entity.Monster;
 
 /**
  * Helper class for comparing collections.
@@ -51,6 +50,7 @@ public final class CollectionComparator {
 
     /**
      * Returns whether the set of elements of the two queues is equivalent and sorted in the same order.
+     * Permits different ordering of elements that evaluate {@link Comparable#compareTo(Object)} as <code>0</code>.
      * @param <T> The type of the elements.
      * @param l1 The first collection.
      * @param l2 The second collection.
@@ -66,14 +66,20 @@ public final class CollectionComparator {
         while (!q1_cpy.isEmpty()) {
             T e1 = q1_cpy.remove(0);
             T e2 = q2_cpy.remove(0);
-            if (e1 instanceof ArenaObject && e2 instanceof ArenaObject) {
-                System.out.println(String.format("e1: (%d, %d); e2: (%d, %d)", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
-                if (e1 instanceof Monster && e2 instanceof Monster) {
-                    System.out.println(String.format("e1: Dist = %.0f; e2: Dist = %.0f", ((Monster) e1).getMovementDistanceToDestination(), ((Monster) e2).getMovementDistanceToDestination()));
-                }
-            }
             if (e1 != e2 && e1.compareTo(e2) != 0) {
                 isEqual = false;
+            }
+        }
+
+        if (!isEqual) {
+            System.out.println("The ordering of elements is not equivalent");
+            for (int i = 0; i < q1.size(); i++) {
+                T e1 = q1.get(i);
+                T e2 = q2.get(i);
+
+                if (e1 instanceof ArenaObject && e2 instanceof ArenaObject) {
+                    System.out.println(String.format("e1: (%d, %d); e2: (%d, %d)", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
+                }
             }
         }
 

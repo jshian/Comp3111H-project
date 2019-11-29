@@ -4,16 +4,17 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Test;
 import org.paukov.combinatorics3.Generator;
 
+import project.JavaFXTester;
+
 /**
- * Tests the {@link ArenaObjectGridSelector} class.
+ * Generates the {@link ArenaObjectGridSelector}.
  */
-public class ArenaObjectGridSelectorTest extends ArenaObjectSelectorTest {
+public class ArenaObjectGridSelectorGenerator implements ArenaObjectSelectorGenerator {
 
     @Override
-    protected ArenaObjectSelector createObject(Object... args) {
+    public ArenaObjectSelector generateSortedSelector(Object... args) {
         short x = (short) args[0];
         short y = (short) args[1];
 
@@ -21,7 +22,7 @@ public class ArenaObjectGridSelectorTest extends ArenaObjectSelectorTest {
     }
 
     @Override
-    protected String createObjectInfo(Object... args) {
+    public String generateSelectorInfo(Object... args) {
         short x = (short) args[0];
         short y = (short) args[1];
 
@@ -29,29 +30,23 @@ public class ArenaObjectGridSelectorTest extends ArenaObjectSelectorTest {
     }
 
     @Override
-    protected List<Object[]> generateArgSets() {
-        Object[][] randomParams = new Object[NUM_RANDOM_TEST_CASES][];
+    public List<Object[]> generateArgSets() {
+        Object[][] randomParams = new Object[NUM_SELECTORS][];
 
-        for (int i = 0; i < NUM_RANDOM_TEST_CASES; i++) {
+        for (int i = 0; i < NUM_SELECTORS; i++) {
             randomParams[i] = new Object[] {
-                RANDOM_X_COOR.get(),
-                RANDOM_Y_COOR.get()
+                JavaFXTester.RANDOM_X_COOR.get(),
+                JavaFXTester.RANDOM_Y_COOR.get()
             };
         }
 
         List<Object[]> totalParams = new LinkedList<>(Arrays.asList(randomParams));
 
-        Generator.combination(getCoordinateLengthGenerators())
+        Generator.combination(JavaFXTester.getCoordinateLengthGenerators())
             .simple(2)
             .stream()
             .forEach((o) -> totalParams.add(o.toArray()));
 
         return totalParams;
-    }
-
-    @Override
-    @Test
-    public void test() {
-        super.test();
     }
 }

@@ -2,7 +2,7 @@ package project.field;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import project.arena.ArenaEventRegister;
 import project.arena.ArenaInstance;
@@ -306,7 +306,7 @@ public final class MonsterAttacksToEndField implements ArenaScalarField<Float> {
         setAll(Float.POSITIVE_INFINITY);
 
         // Calculate distance
-    	LinkedList<ScalarFieldPoint> openSet = new LinkedList<>();
+    	PriorityQueue<ScalarFieldPoint> openSet = new PriorityQueue<>((o1, o2) -> Float.compare(getValueAt(o1.getX(), o1.getY()), getValueAt(o2.getX(), o2.getY())));
         openSet.add(new ScalarFieldPoint(ArenaManager.END_X, ArenaManager.END_Y));
 
         setValueAt(ArenaManager.END_X, ArenaManager.END_Y, 0f);
