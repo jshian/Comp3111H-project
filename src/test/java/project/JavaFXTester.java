@@ -43,19 +43,19 @@ public class JavaFXTester extends ApplicationTest {
 	protected UIController appController;
 
 	// For convenience
-	protected static final short ZERO = (short) 0;
+	public static final short ZERO = (short) 0;
 
     // Helper suppliers
-    protected static final Supplier<Short> RANDOM_X_COOR = () -> {
+    public static final Supplier<Short> RANDOM_X_COOR = () -> {
         Random rng = new Random();
         return (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1);
     };
-    protected static final Supplier<Short> RANDOM_Y_COOR = () -> {
+    public static final Supplier<Short> RANDOM_Y_COOR = () -> {
         Random rng = new Random();
         return (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1);
 	};
 	
-	protected static List<Supplier<Short>> getCoordinateLengthGenerators() {
+	public static List<Supplier<Short>> getCoordinateLengthGenerators() {
 		List<Supplier<Short>> generators = new ArrayList<>();
 		generators.add(() -> ZERO);
 		generators.add(() -> ArenaManager.ARENA_WIDTH);
@@ -68,12 +68,12 @@ public class JavaFXTester extends ApplicationTest {
 		return generators;
 	}
 
-    protected static final Supplier<Short> RANDOM_RADIUS = () -> {
+    public static final Supplier<Short> RANDOM_RADIUS = () -> {
         Random rng = new Random();
         return (short) rng.nextInt(Math.max(ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT) + 1);
 	};
 
-	protected static List<Supplier<Short>> getCoordinateRadiusGenerators() {
+	public static List<Supplier<Short>> getCoordinateRadiusGenerators() {
 		List<Supplier<Short>> generators = new ArrayList<>();
 		generators.add(() -> ZERO);
 		generators.add(() -> ArenaManager.ARENA_WIDTH);
