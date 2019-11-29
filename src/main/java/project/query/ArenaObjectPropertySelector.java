@@ -67,4 +67,14 @@ public class ArenaObjectPropertySelector<T extends ArenaObject> implements Arena
 
         return predicate.test((T) o);
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean isInSelectionByDefinition(ArenaObject o) {
+        // Wrong object type, can't apply predicate
+        if (!objectType.isAssignableFrom(o.getClass())) return false;
+
+        // Definition
+        return predicate.test((T) o);
+    }
 } 

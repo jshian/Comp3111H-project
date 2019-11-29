@@ -153,4 +153,16 @@ public class ArenaObjectRectangleSelector implements ArenaObjectSelector {
 
         return true;
     }
+
+    @Override
+    public boolean isInSelectionByDefinition(ArenaObject o) {
+        short x = o.getX();
+        short y = o.getY();
+
+        short rightX = (short) (leftX + width);
+        short bottomY = (short) (topY + height);
+
+        // Equation of rectangle
+        return (x >= leftX && x <= rightX && y >= topY && y <= bottomY);
+    }
 } 

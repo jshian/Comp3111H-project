@@ -151,4 +151,13 @@ public class ArenaObjectCircleSelector implements ArenaObjectSelector {
 
         return (distX * distX + distY * distY <= radius * radius);
     }
+
+    @Override
+    public boolean isInSelectionByDefinition(ArenaObject o) {
+        short distX = (short) (o.getX() - centerX);
+        short distY = (short) (o.getY() - centerY);
+
+        // Equation of circle
+        return (distX * distX + distY * distY <= radius * radius);
+    }
 } 

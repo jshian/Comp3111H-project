@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Entity;
 import project.control.ArenaManager;
 import project.query.ArenaObjectCircleSelector;
 import project.query.ArenaObjectStorage.StoredType;
+import project.util.Geometry;
 
 /**
  * Projectile created by {@link Catapult}.
@@ -59,11 +61,47 @@ public class CatapultProjectile extends Projectile {
         // Don't call super method to prevent double hitting
         // super()
 
-        ArenaManager.getActiveUIController().drawCircle(getX(), getY(), splashRadius, SPLASH_DISPLAY_DURATION);
+        // The hit location
+        short hitX = getX();
+        short hitY = getY();
+        List<Monster> monstersInSplashRange = new LinkedList<>();
 
-        ArenaObjectCircleSelector selector = new ArenaObjectCircleSelector(getX(), getY(), splashRadius);
-        List<ArenaObject> monsters = storage.getQueryResult(selector, EnumSet.of(StoredType.MONSTER));
-        for (ArenaObject m : monsters) {
+        // Run the targeting algorithm on arrival to hit the most monsters next to the originally chosen target
+        int count=0;//count number of monster in the circle
+        double rmsDist=Double.POSITIVE_INFINITY;//To minimize the offset
+
+        for (short i = (short) (target.getX()-splashRadius); i <= target.getX()+splashRadius; i++) {//square width
+            for (short j = (short) (target.getY()-splashRadius); j <= target.getY()+splashRadius; j++) {//square length
+                if (i < 0 || i > ArenaManager.ARENA_WIDTH) continue;
+                if (j < 0 || j > ArenaManager.ARENA_HEIGHT) continue;
+
+                if (Geometry.isInCircle(i,j,target.getX(),target.getY(),splashRadius)){//splash radius in current point
+                    List<ArenaObject> monInCircle = storage.getQueryResult(
+                            new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));
+                    if(count <= monInCircle.size()){
+                        monstersInSplashRange = new LinkedList<>();
+                        double thisRMSDist = 0;
+                        for (ArenaObject o : monInCircle) {
+                            monstersInSplashRange.add((Monster) o);
+                            thisRMSDist += (i - o.getX()) * (i - o.getX()) + (j - o.getY()) * (j - o.getY());
+                        }
+                        thisRMSDist /= monstersInSplashRange.size();
+                        thisRMSDist = Math.sqrt(thisRMSDist);
+
+                        if (thisRMSDist < rmsDist) {
+                            count=monInCircle.size();
+                            hitX = i;
+                            hitY = j;
+                            rmsDist = thisRMSDist;
+                        }
+                    }
+                }
+            }
+        }
+
+        ArenaManager.getActiveUIController().drawCircle(hitX, hitY, splashRadius, SPLASH_DISPLAY_DURATION);
+
+        for (ArenaObject m : monstersInSplashRange) {
             ((Monster) m).takeDamage(damage, this);
         }
     }
