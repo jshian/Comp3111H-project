@@ -54,6 +54,11 @@ public class ArenaObjectQueryTest extends JavaFXTester {
         public boolean isInSelection(ArenaObject o) {
             return true;
         }
+
+        @Override
+        public boolean isInSelectionByDefinition(ArenaObject o) {
+            return true;
+        }
     }
 
     @Test

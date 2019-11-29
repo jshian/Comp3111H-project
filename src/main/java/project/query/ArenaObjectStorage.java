@@ -286,7 +286,7 @@ public final class ArenaObjectStorage {
     }
 
     /**
-     * Clears the storage. For testing only.
+     * Clears the storage.
      */
     void clear() {
         List<ArenaObject> toRemove = new LinkedList<>(towers);

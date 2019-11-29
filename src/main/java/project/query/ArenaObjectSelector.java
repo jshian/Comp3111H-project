@@ -61,4 +61,11 @@ interface ArenaObjectSelector {
      */
     abstract boolean isInSelection(ArenaObject o);
 
+    /**
+     * For testing only. Returns whether an object satisfies the selection by definition.
+     * @param o The object to test.
+     * @return Whether the object satisfies the selection the selection by definition.
+     */
+    abstract boolean isInSelectionByDefinition(ArenaObject o);
+
 }

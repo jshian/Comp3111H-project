@@ -162,4 +162,15 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
 
         return (distSquared >= minRadius * minRadius && distSquared <= maxRadius * maxRadius);
     }
+
+    @Override
+    public boolean isInSelectionByDefinition(ArenaObject o) {
+        short distX = (short) (o.getX() - centerX);
+        short distY = (short) (o.getY() - centerY);
+
+        int distSquared = distX * distX + distY * distY;
+
+        // Equation of circle
+        return (distSquared >= minRadius * minRadius && distSquared <= maxRadius * maxRadius);
+    }
 } 

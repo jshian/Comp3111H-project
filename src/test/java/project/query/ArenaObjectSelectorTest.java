@@ -1,74 +1,36 @@
 package project.query;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
 
 import project.JavaFXTester;
 import project.control.ArenaManager;
-import project.entity.ArenaObject;
-import project.entity.ArenaObjectFactory;
 import project.entity.Monster;
+import project.entity.Projectile;
 import project.entity.Tower;
-import project.entity.ArenaObjectFactory.MonsterType;
-import project.query.ArenaObjectStorage.SortOption;
-import project.query.ArenaObjectStorage.StoredComparableType;
-import project.query.ArenaObjectStorage.StoredType;
-import project.util.CollectionComparator;
 
 /**
  * Tests the classes that implement {@link ArenaObjectSelector} and {@link ArenaObjectSortedSelector}.
  */
 public class ArenaObjectSelectorTest extends JavaFXTester {
+    // The objects to be tested
+    private List<Tower> expectedTowers = new LinkedList<>();
+    private List<Monster> expectedMonsters = new LinkedList<>();
+    private List<Projectile> expectedProjectiles = new LinkedList<>();
 
-    @Test
-    public void testBoundaryCases() {
-        ArenaObjectStorageHelper.disableScalarFieldUpdates();
+    // Number of random test cases
+    private static int NUM_RANDOM_TEST_CASES = 10;
+    private static int NUM_RANDOM_ADDITIONS_PER_RUN = 100;
 
-        ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
-        {
-            {
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 12, (short) 49, 1);
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 47, (short) 29, 1);
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 42, (short) 56, 1);
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 50, (short) 20, 1);
-
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 0, (short) 0, 1);
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, ArenaManager.ARENA_WIDTH, (short) 0, 1);
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 0, ArenaManager.ARENA_HEIGHT, 1);
-                ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT, 1);
-            }
-
-            Monster m1 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 30, (short) 60, 1);
-            Monster m2 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 10, (short) 40, 1);
-            Monster m3 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 31, (short) 21, 1);
-            Monster m4 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 10, (short) 40, 1);
-            Monster m5 = ArenaObjectFactory.createMonster(this, MonsterType.UNICORN, (short) 50, (short) 40, 1);
-
-            ArenaObjectCircleSelector circleSelector = new ArenaObjectCircleSelector((short) 30, (short) 40, (short) 20);
-            int cost = circleSelector.estimateCost(storage);
-            assertTrue(cost > 0);
-
-            {
-                LinkedList<ArenaObject> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5));
-                List<ArenaObject> result = storage.getQueryResult(circleSelector, EnumSet.of(StoredType.MONSTER));
-                assertTrue(CollectionComparator.isElementSetEqual(expected, result));
-            }
-            
-            ArenaObjectCircleSortedSelector<Monster> circleSortedSelector = new ArenaObjectCircleSortedSelector<>((short) 30, (short) 40, (short) 20);
-            {
-                List<Monster> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5)); expected.sort(null);
-                List<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
-                assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
-            }
-            {
-                List<Monster> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5)); expected.sort((o1, o2) -> o2.compareTo(o1));
-                List<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
-                assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
-            }
-        }
+    private void reset() {
+        System.out.println("Resetting...");
+        expectedTowers.clear();
+        expectedMonsters.clear();
+        expectedProjectiles.clear();
+        ArenaManager.getActiveObjectStorage().clear();
+        System.out.println("Reset complete");
     }
 
     @Test
@@ -89,5 +51,16 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
 
         ArenaObjectRingSelector ringSelector;
         ArenaObjectRingSortedSelector<Monster> ringSortedSelector;
+
+        List<Tower> towers = new LinkedList<>();
+        List<Monster> monsters = new LinkedList<>();
+        List<Projectile> projectiles = new LinkedList<>();
+        for (int n = 0; n < NUM_RANDOM_ADDITIONS_PER_RUN; n++) {
+            Tower t = ArenaObjectStorageHelper.addTower(this);
+            
+            Monster m = ArenaObjectStorageHelper.addMonster(this);
+
+            Projectile p = ArenaObjectStorageHelper.addProjectile(this, t, m);
+        }
     }
 }
