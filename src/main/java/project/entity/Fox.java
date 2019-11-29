@@ -38,6 +38,14 @@ public class Fox extends Monster {
         this.resourceValue = (int) (difficulty * 1.5);
     }
 
+    /**
+     * initialise the gradientDescentField of the monster.
+     */
+    @Override
+    public void initialiseGradientDescentField() {
+        gradientDescentField = ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END;
+    }
+
     @Override
     protected ImageView getDefaultImage() {
         return new ImageView(new Image("/fox.png", ArenaManager.GRID_WIDTH / 4, ArenaManager.GRID_HEIGHT / 4, true, true));

@@ -11,8 +11,9 @@ Members:
 
 ## Grading Process
 ### Initialization
+1. Download MySQL, set username to `root` and password to `123456`.
+1. Create a database name called `test`.
 1. Start the database server.
-	1. ...
 1. Clone this repository to two different lab machines. They shall be referred to as *Machine A* and *Machine B* respectively.
 1. Complete `Grade Task 1`, `Grade Task 2` and `Grade Task 3` on *Machine A*. (See below)
 1. Complete `Grade Extra Tasks` on both *Machine A* and *Machine B*. (See below)
@@ -21,27 +22,25 @@ Members:
 	* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
 	* The starting position on the arena is represented by the image `show-up.png`. (Regular Task 1(i))
 	* The end zone on the arena is represented by the image `end-zone.png`. (Regular Task 1(i))
-	* A resource count of *200* (referred to as *Resource Pool*) is displayed.
+	* A resource count of *200* (referred to as *Money*) is displayed.
 1. Left-click and hold on either the `Basic Tower`, `Ice Tower`, `Catapult` or `Laser Tower` button.
 1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
-	* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Regular Task 1(ii)(a))
-		* Basic Tower - `/src/main/resources/basicTower.png`
-		* Ice Tower - `/src/main/resources/iceTower.png`
-		* Catapult - `/src/main/resources/catapult.png`
-		* Laser Tower - `/src/main/resources/LaserTower.png`
-	* The *Tower Sihouette* is located within, but does not exceed, the grid in which the mouse pointer is located (referred to as *The Grid*). (Game Physics Requirement)
 	* If any one of the following is satisfied, *The Grid* glows red, indicating that the tower cannot be built there, i.e. *The Grid* is invalid. (Honors Task 1(i))
 		* *The Grid* is within the starting position.
 		* *The Grid* is within the end-zone.
 		* *The Grid* contains at least one tower.
 		* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
-		* The *Resource Pool* is lower than the tower's cost.
+		* The *Money* is lower than the tower's cost.
 		* *The Grid* contains at least one monster.
 		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
 	* Otherwise, *The Grid* glows blue, indicating that the tower can be built there, i.e. *The Grid* is valid.
 1. Move the mouse pointer to a valid grid before releasing left-click. Verify the behaviour of attempting to build a tower in a valid grid, which are as follows:
-	* The tower is built, i.e. a solid, permament version of the *Tower Sihouette* exactly replaces the *Tower Sihouette*, and begins to exist on the arena. (Regular Task 1(ii))
-	* The cost of the tower is deducted from the *Resource Pool*. (Regular Task 1(ii)(b))
+	* The tower is built and is represented by an image according to the tower type. (Regular Task 1(ii))
+		* Basic Tower - `/src/main/resources/basicTower.png`
+		* Ice Tower - `/src/main/resources/iceTower.png`
+		* Catapult - `/src/main/resources/catapult.png`
+		* Laser Tower - `/src/main/resources/LaserTower.png`
+	* The cost of the tower is deducted from the *Money*. (Regular Task 1(ii)(b))
 	* *Tower Placing Mode* is exited.
 1. Enter *Tower Placing Mode* again, but move the mouse pointer over a tower. Verify that *The Grid* glows red.
 1. Verify the behaviour of attempting to build a tower in an invalid grid for following conditions:
@@ -59,8 +58,8 @@ Members:
 1. Move the mouse pointer away from the above tower. Verify that the pixels within the tower's range are no longer shaded. (Regular Task 1(ii)(c)(a)(a))
 1. Build a few more towers, but this time, try to enclose the starting area with the towers. Upon attempting to place the last tower that finishes the enclosure, verify the behaviour of attempting to build a tower in an invalid grid for the following condition:
 	* *The Grid* disconnects the starting position from the end-zone, i.e. a path can no longer be found between the two.
-1. Build even more towers until the *Resource Pool* is lower than the cost of any one tower. Attempt to build a tower with cost greater than the current *Resource Pool*. Verify the behaviour of attempting to build a tower in an invalid grid for the following condition:
-	* The *Resource Pool* is lower than the tower's cost.
+1. Build even more towers until the *Money* is lower than the cost of any one tower. Attempt to build a tower with cost greater than the current *Resource Pool*. Verify the behaviour of attempting to build a tower in an invalid grid for the following condition:
+	* The *Money* is lower than the tower's cost.
 1. Also verify:
 	* A dialog box appears which prompts that there is insufficient resources to build the tower. (Regular Task 1(ii)(d))
 1. Mouse over any one of the towers previously built, and then left-click on it. Verify the following:
@@ -71,16 +70,16 @@ Members:
 1. Left-click on the `destroy the tower` button. Verify the following:
 	* The tower is destroyed, i.e. it disappears and no longer exists in the arena. (Regular Task 1(ii)(e)(a))
 	* The *Tower Information* and two buttons disappear.
-	* A portion of the tower cost is refunded to the *Resource Pool*.
-1. Destroy more towers until current *Resource Pool* is greater than the upgrade cost of any one tower.
-1. Left-click on a tower with upgrade cost lower than current *Resource Pool*. (Regular Task 1(ii)(e)(b))
+	* A portion of the tower cost is refunded to the *Money*.
+1. Destroy more towers until current *Money* is greater than the upgrade cost of any one tower.
+1. Left-click on a tower with upgrade cost lower than current *Money*. (Regular Task 1(ii)(e)(b))
 	* The tower is upgraded, i.e. its stats are improved.
-	* The upgrade cost is deducted from the *Resource Pool*.
+	* The upgrade cost is deducted from the *Money*.
 	* The line `<tower> is being upgraded`, where `<tower>` is the name of the tower, is printed on the console.
-1. Build towers until current *Resource Pool* is lower than the upgrade cost of any one tower.
-1. Left-click on a tower with upgrade cost greater than current *Resource Pool*.
+1. Build towers until current *Money* is lower than the upgrade cost of any one tower.
+1. Left-click on a tower with upgrade cost greater than current *Money*.
 1. Now left-click on the `upgrade` button. Verify the following: (Regular Task 1(ii)(e)(b)(a))
-	* The tower remains unupgraded, and the *Resource Pool* remains unchanged.
+	* The tower remains unupgraded, and the *Money* remains unchanged.
 	* The line `not enough resource to upgrade <tower>`, where `<tower>` is the name of the tower, is printed on the console.
 1. Click the `Play` button to start the game in `play` mode. Verify the following:
 	* The game is run in real-time. (Game Physics Requirement)
@@ -118,12 +117,12 @@ Members:
 	* After the stone is thrown, the Catapult takes some time to reload. During that time, it cannot fire at any monsters. (Regular Task 2(iv)(c))
 1. Upgrade the Catapult. Verify that the time required to reload it has been reduced. (Regular Task 2(iv)(c)(a))
 1. Verify the following about the Laser Tower:
-	* Every time it fires, the *Resource Pool* is reduced. (Task 2(v)(a))
+	* Every time it fires, the *Money* is reduced (However, the money may increase because the awarded money by killing monster is more than laser tower consumed). (Task 2(v)(a))
 	* When it fires, a line is drawn from the center of the tower to the monster. The line extends to the edge of the arena. (Task 2(v)(b))
 	* Any monster within `3` pixels of the line is hit. (Task 2(v)(b)(a))
 1. Upgrade the Laser Tower. Verify that its attack power has been increased. (Regular Task 2(v)(c))
 1. Close the application.
-1. Open the project using Eclipse IDE and run the Gradle task `PPP` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
+1. Open the project using Eclipse IDE and run the Gradle task `CatapultTest` which uses JUnit to test the Catapult attack algorithm. (Whole of Honors Task 2)
 1. Close the project.
 ### Grade Task 3
 1. Start the application using the same `.jar` file as `Grade Task 1`.
@@ -133,7 +132,8 @@ Members:
 	* The generated monsters move towards the end-zone either horizontally or vertically per frame. (Task 3(ii))
 	* When any monster reaches the end-zone, the game is over and the line `Gameover` is printed on the console. (Task 3(ii)(a))
 	* When the above happens, everything on the arena is frozen and a dialog box informing that the game is over. (Task 3(ii)(a)(a))
-1. After the game is over, submit your score to the leaderboard. Note down the value of this score as *Score A*.
+1. After the game is over, your score is submitted to the leaderboard. Note down the value of this score as *Score A*.
+1. Click OK on the dialog box that shows Gameover.
 1. Verify that the arena has been reset.
 1. This time, build some towers to defend yourself before starting the game in `play` mode.
 1. Verify the following:
@@ -167,7 +167,7 @@ Members:
 	1. Click on either `Simulate` or `Play`. Verify that the game runs accordingly.
 1. On *Machine B*, do the following: (Honors Extra Task 2)
 	1. Set up your towers however you like.
-	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.
+	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.(http://localhost:8080/players/table)
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and is in descending order from top to bottom.
 	1. Playthrough 8 more games in `play` mode but without building any towers, and submit each score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains each new score and remains in descending order from top to bottom.
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and remains in descending order from top to bottom, and that only 10 scores are being displayed.

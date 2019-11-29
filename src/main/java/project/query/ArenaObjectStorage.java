@@ -288,7 +288,7 @@ public final class ArenaObjectStorage {
     /**
      * Clears the storage.
      */
-    void clear() {
+    public void clear() {
         List<ArenaObject> toRemove = new LinkedList<>(towers);
         toRemove.addAll(projectiles);
         toRemove.addAll(monsters);

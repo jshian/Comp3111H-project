@@ -58,6 +58,15 @@ public class UIController {
     private Button buttonPlay;
 
     @FXML
+    private Button buttonPause;
+
+    @FXML
+    private Button buttonLoad;
+
+    @FXML
+    private Button buttonSave;
+
+    @FXML
     private AnchorPane paneArena;
 
     @FXML
@@ -74,6 +83,9 @@ public class UIController {
 
     @FXML
     private Label remainingResources;
+
+    @FXML
+    private Label labelScore;
 
     /**
      * The player of the arena.
@@ -215,6 +227,7 @@ public class UIController {
     private void setupNewGame() {
         player = new Player("name", 200);
         remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        labelScore.textProperty().bind(Bindings.format("Score: %d", player.scoreProperty()));
         ArenaManager.loadNew(this, player);
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }
@@ -226,7 +239,9 @@ public class UIController {
     public void setupNewGame(ArenaInstance arenaInstance) {
         player = arenaInstance.getPlayer();
         remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        labelScore.textProperty().bind(Bindings.format("Score: %d", player.scoreProperty()));
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
+        enableGameButton();
     }
 
     /**
@@ -280,6 +295,8 @@ public class UIController {
             buttonSimulate.setDisable(false);
         } else if (mode == GameMode.PLAY) {
             buttonPlay.setDisable(false);
+            buttonSave.setDisable(false);
+            buttonLoad.setDisable(false);
         }
         buttonNextFrame.setDisable(false);
         timeline.pause();
@@ -336,6 +353,10 @@ public class UIController {
         buttonNextFrame.setDisable(true);
         buttonPlay.setDisable(true);
         buttonSimulate.setDisable(true);
+        buttonLoad.setDisable(true);
+        buttonSave.setDisable(true);
+        if (mode == GameMode.SIMULATE)
+            buttonPause.setDisable(true);
     }
 
     /**
@@ -345,6 +366,9 @@ public class UIController {
         buttonNextFrame.setDisable(false);
         buttonPlay.setDisable(false);
         buttonSimulate.setDisable(false);
+        buttonLoad.setDisable(false);
+        buttonSave.setDisable(false);
+        buttonPause.setDisable(false);
     }
 
     /**
@@ -457,7 +481,7 @@ public class UIController {
         });
 
         iv.setOnMouseClicked(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
+            if (mode != GameMode.SIMULATE && e.getButton() == MouseButton.PRIMARY) {
                 showTowerVBox(t);
             }
         });
