@@ -11,7 +11,9 @@ import project.entity.Monster;
 /**
  * Helper class for comparing collections.
  */
-public class CollectionComparator {
+public final class CollectionComparator {
+
+    private CollectionComparator() {}
 
     /**
      * Returns whether the set of elements of the two collections is equivalent.
@@ -65,7 +67,7 @@ public class CollectionComparator {
             T e1 = q1_cpy.remove(0);
             T e2 = q2_cpy.remove(0);
             if (e1 instanceof ArenaObject && e2 instanceof ArenaObject) {
-                System.out.println(String.format("e1: x = %d, y = %d; e2: x = %d, y = %d", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
+                System.out.println(String.format("e1: (%d, %d); e2: (%d, %d)", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
                 if (e1 instanceof Monster && e2 instanceof Monster) {
                     System.out.println(String.format("e1: Dist = %.0f; e2: Dist = %.0f", ((Monster) e1).getMovementDistanceToDestination(), ((Monster) e2).getMovementDistanceToDestination()));
                 }

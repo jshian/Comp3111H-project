@@ -3,15 +3,14 @@ package project.query;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Test;
+import org.paukov.combinatorics3.Generator;
 
-import project.control.ArenaManager;
 import project.entity.Monster;
 
 /**
- * Tests the {@link ArenaObjectRectangleSelector} class.
+ * Tests the {@link ArenaObjectRectangleSortedSelector} class.
  */
 public class ArenaObjectRectangleSortedSelectorTest extends ArenaObjectSortedSelectorTest {
 
@@ -39,52 +38,21 @@ public class ArenaObjectRectangleSortedSelectorTest extends ArenaObjectSortedSel
     protected List<Object[]> generateArgSets() {
         Object[][] randomParams = new Object[NUM_RANDOM_TEST_CASES][];
 
-        Random rng = new Random();
         for (int i = 0; i < NUM_RANDOM_TEST_CASES; i++) {
             randomParams[i] = new Object[] {
-                (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
-                (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1),
-                (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
-                (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1)
+                RANDOM_X_COOR.get(),
+                RANDOM_Y_COOR.get(),
+                RANDOM_X_COOR.get(),
+                RANDOM_Y_COOR.get()
             };
         }
 
-        LinkedList<Object[]> boundaryParams = new LinkedList<>();
-        boundaryParams.add(new Object[] { ZERO, ZERO, ZERO, ZERO });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ZERO, ZERO, ZERO });
-        boundaryParams.add(new Object[] { ZERO, ArenaManager.ARENA_HEIGHT, ZERO, ZERO });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT, ZERO, ZERO });
-        boundaryParams.add(new Object[] { ZERO, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ZERO, ZERO });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ZERO, ZERO, ZERO });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ZERO, ZERO });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ArenaManager.ARENA_HEIGHT, ZERO, ZERO });
-        boundaryParams.add(new Object[] { ZERO, ZERO, ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ZERO, ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { ZERO, ArenaManager.ARENA_HEIGHT, ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT, ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { ZERO, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ZERO, ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ArenaManager.ARENA_HEIGHT, ArenaManager.ARENA_WIDTH, ZERO });
-        boundaryParams.add(new Object[] { ZERO, ZERO, ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ZERO, ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ZERO, ArenaManager.ARENA_HEIGHT, ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT, ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ZERO, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ZERO, ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ArenaManager.ARENA_HEIGHT, ZERO, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ZERO, ZERO, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ZERO, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ZERO, ArenaManager.ARENA_HEIGHT, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ZERO, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ZERO, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { ArenaManager.ARENA_WIDTH, (short) rng.nextInt(ArenaManager.ARENA_HEIGHT), ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
-        boundaryParams.add(new Object[] { (short) rng.nextInt(ArenaManager.ARENA_WIDTH), ArenaManager.ARENA_HEIGHT, ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT });
+        List<Object[]> totalParams = new LinkedList<>(Arrays.asList(randomParams));
 
-        LinkedList<Object[]> totalParams = new LinkedList<>(Arrays.asList(randomParams));
-        totalParams.addAll(boundaryParams);
+        Generator.combination(getCoordinateLengthGenerators())
+            .simple(4)
+            .stream()
+            .forEach((o) -> totalParams.add(o.toArray()));
 
         return totalParams;
     }

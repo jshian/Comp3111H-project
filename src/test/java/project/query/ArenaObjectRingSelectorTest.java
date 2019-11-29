@@ -8,28 +8,28 @@ import org.junit.Test;
 import org.paukov.combinatorics3.Generator;
 
 /**
- * Tests the {@link ArenaObjectRectangleSelector} class.
+ * Tests the {@link ArenaObjectRingSelector} class.
  */
-public class ArenaObjectRectangleSelectorTest extends ArenaObjectSelectorTest {
+public class ArenaObjectRingSelectorTest extends ArenaObjectSelectorTest {
 
     @Override
     protected ArenaObjectSelector createObject(Object... args) {
-        short leftX = (short) args[0];
-        short topY = (short) args[1];
-        short width = (short) args[2];
-        short height = (short) args[3];
+        short centerX = (short) args[0];
+        short centerY = (short) args[1];
+        short minRadius = (short) args[2];
+        short maxRadius = (short) args[3];
 
-        return new ArenaObjectRectangleSelector(leftX, topY, width, height);
+        return new ArenaObjectRingSelector(centerX, centerY, minRadius, maxRadius);
     }
 
     @Override
     protected String createObjectInfo(Object... args) {
-        short leftX = (short) args[0];
-        short topY = (short) args[1];
-        short width = (short) args[2];
-        short height = (short) args[3];
+        short centerX = (short) args[0];
+        short centerY = (short) args[1];
+        short minRadius = (short) args[2];
+        short maxRadius = (short) args[3];
 
-        return String.format("leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height);
+        return String.format("centerX = %d, centerY = %d, minRadius = %d, maxRadius = %d", centerX, centerY, minRadius, maxRadius);
     }
 
     @Override
@@ -37,17 +37,19 @@ public class ArenaObjectRectangleSelectorTest extends ArenaObjectSelectorTest {
         Object[][] randomParams = new Object[NUM_RANDOM_TEST_CASES][];
 
         for (int i = 0; i < NUM_RANDOM_TEST_CASES; i++) {
+            short r1 = RANDOM_RADIUS.get();
+            short r2 = RANDOM_RADIUS.get();
             randomParams[i] = new Object[] {
                 RANDOM_X_COOR.get(),
                 RANDOM_Y_COOR.get(),
-                RANDOM_X_COOR.get(),
-                RANDOM_Y_COOR.get()
+                Math.min(r1, r2),
+                Math.max(r1, r2)
             };
         }
 
         List<Object[]> totalParams = new LinkedList<>(Arrays.asList(randomParams));
 
-        Generator.combination(getCoordinateLengthGenerators())
+        Generator.combination(getCoordinateRadiusGenerators())
             .simple(4)
             .stream()
             .forEach((o) -> totalParams.add(o.toArray()));

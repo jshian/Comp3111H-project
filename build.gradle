@@ -79,6 +79,9 @@ dependencies {
     // https://search.maven.org/artifact/org.jadira.cloning/cloning/3.1.0.CR10/jar
     implementation 'org.jadira.cloning:cloning:3.1.0.CR10'
 
+    // https://github.com/dpaukov/combinatoricslib3
+    compile group: 'com.github.dpaukov', name: 'combinatoricslib3', version: '3.3.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     runtimeOnly 'com.h2database:h2'

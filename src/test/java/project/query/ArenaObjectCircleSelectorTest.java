@@ -8,28 +8,26 @@ import org.junit.Test;
 import org.paukov.combinatorics3.Generator;
 
 /**
- * Tests the {@link ArenaObjectRectangleSelector} class.
+ * Tests the {@link ArenaObjectCircleSelector} class.
  */
-public class ArenaObjectRectangleSelectorTest extends ArenaObjectSelectorTest {
+public class ArenaObjectCircleSelectorTest extends ArenaObjectSelectorTest {
 
     @Override
     protected ArenaObjectSelector createObject(Object... args) {
-        short leftX = (short) args[0];
-        short topY = (short) args[1];
-        short width = (short) args[2];
-        short height = (short) args[3];
+        short centerX = (short) args[0];
+        short centerY = (short) args[1];
+        short radius = (short) args[2];
 
-        return new ArenaObjectRectangleSelector(leftX, topY, width, height);
+        return new ArenaObjectCircleSelector(centerX, centerY, radius);
     }
 
     @Override
     protected String createObjectInfo(Object... args) {
-        short leftX = (short) args[0];
-        short topY = (short) args[1];
-        short width = (short) args[2];
-        short height = (short) args[3];
+        short centerX = (short) args[0];
+        short centerY = (short) args[1];
+        short radius = (short) args[2];
 
-        return String.format("leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height);
+        return String.format("centerX = %d, centerY = %d, radius = %d", centerX, centerY, radius);
     }
 
     @Override
@@ -40,15 +38,14 @@ public class ArenaObjectRectangleSelectorTest extends ArenaObjectSelectorTest {
             randomParams[i] = new Object[] {
                 RANDOM_X_COOR.get(),
                 RANDOM_Y_COOR.get(),
-                RANDOM_X_COOR.get(),
-                RANDOM_Y_COOR.get()
+                RANDOM_RADIUS.get(),
             };
         }
 
         List<Object[]> totalParams = new LinkedList<>(Arrays.asList(randomParams));
 
-        Generator.combination(getCoordinateLengthGenerators())
-            .simple(4)
+        Generator.combination(getCoordinateRadiusGenerators())
+            .simple(3)
             .stream()
             .forEach((o) -> totalParams.add(o.toArray()));
 
