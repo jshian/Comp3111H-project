@@ -294,16 +294,6 @@ public final class ArenaObjectStorage {
         toRemove.addAll(monsters);
 
         for (ArenaObject o : toRemove) ArenaObjectFactory.removeObject(this, o);
-
-        for (int x = 0; x <= ArenaManager.ARENA_WIDTH; x++) {
-            assert (objectsAtX.get(x).isEmpty());
-        }
-        for (int y = 0; y <= ArenaManager.ARENA_HEIGHT; y++) {
-            assert (objectsAtY.get(y).isEmpty());
-        }
-        assert towers.isEmpty();
-        assert projectiles.isEmpty();
-        assert monsters.isEmpty();
     }
 
     /**
