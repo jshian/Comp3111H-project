@@ -38,7 +38,7 @@ public class ArenaObjectRingSortedSelector<T extends ArenaObject & Comparable<T>
         
         // Determine whether to access through x- or y- index based on number of accesses.
         if (effectiveWidth < effectiveHeight) {
-            ArrayList<LinkedList<ArenaObject>> index = storage.getXIndex();
+            ArrayList<List<ArenaObject>> index = storage.getXIndex();
 
             for (short x = startX; x <= endX; x++) {
                 for (ArenaObject o : index.get(x)) {
@@ -48,7 +48,7 @@ public class ArenaObjectRingSortedSelector<T extends ArenaObject & Comparable<T>
                 }
             }
         } else {
-            ArrayList<LinkedList<ArenaObject>> index = storage.getYIndex();
+            ArrayList<List<ArenaObject>> index = storage.getYIndex();
 
             for (short y = startY; y <= endY; y++) {
                 for (ArenaObject o : index.get(y)) {

@@ -89,7 +89,7 @@ public class ArenaObjectStorageHelper {
             (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
             (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1)
         );
-        System.out.println(String.format("Added tower: x = %d, y = %d", t.getX(), t.getY()));
+        System.out.println(String.format("Added tower: (%d, %d)", t.getX(), t.getY()));
 
         return t;
     }
@@ -107,7 +107,7 @@ public class ArenaObjectStorageHelper {
             (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
             (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1), 1
         );
-        System.out.println(String.format("Added monster: x = %d, y = %d", m.getX(), m.getY()));
+        System.out.println(String.format("Added monster: (%d, %d)", m.getX(), m.getY()));
 
         return m;
     }
@@ -125,7 +125,7 @@ public class ArenaObjectStorageHelper {
         Projectile p = ArenaObjectFactory.createProjectile(creator, tower, monster,
             (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
             (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-        System.out.println(String.format("Added projectile: x = %d, y = %d", p.getX(), p.getY()));
+        System.out.println(String.format("Added projectile: (%d, %d)", p.getX(), p.getY()));
 
         return p;
     }
@@ -146,21 +146,21 @@ public class ArenaObjectStorageHelper {
 
         if (!towers.isEmpty()) {
             Tower t = towers.get(rng.nextInt(towers.size()));
-            System.out.println(String.format("Moving tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moving tower: (%d, %d)", t.getX(), t.getY()));
             t.moveObject(mover, (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moved tower: (%d, %d)", t.getX(), t.getY()));
         }
         if (!monsters.isEmpty()) {
             Monster m = monsters.get(rng.nextInt(monsters.size()));
-            System.out.println(String.format("Moving monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moving monster: (%d, %d)", m.getX(), m.getY()));
             m.moveObject(mover, (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moved monster: (%d, %d)", m.getX(), m.getY()));
         }
         if (!projectiles.isEmpty()) {
             Projectile p = projectiles.get(rng.nextInt(projectiles.size()));
-            System.out.println(String.format("Moving projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moving projectile: (%d, %d)", p.getX(), p.getY()));
             p.moveObject(mover, (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moved projectile: (%d, %d)", p.getX(), p.getY()));
         }
     }
 
@@ -177,7 +177,7 @@ public class ArenaObjectStorageHelper {
         Tower t = ArenaObjectFactory.createTower(creator,
             TowerType.values()[rng.nextInt(TowerType.values().length)], x, y
         );
-        System.out.println(String.format("Added tower: x = %d, y = %d", t.getX(), t.getY()));
+        System.out.println(String.format("Added tower: (%d, %d)", t.getX(), t.getY()));
 
         return t;
     }
@@ -195,7 +195,7 @@ public class ArenaObjectStorageHelper {
         Monster m = ArenaObjectFactory.createMonster(creator,
             MonsterType.values()[rng.nextInt(MonsterType.values().length)], x, y, 1
         );
-        System.out.println(String.format("Added monster: x = %d, y = %d", m.getX(), m.getY()));
+        System.out.println(String.format("Added monster: (%d, %d)", m.getX(), m.getY()));
 
         return m;
     }
@@ -211,7 +211,7 @@ public class ArenaObjectStorageHelper {
      */
     public static Projectile addProjectile(Object creator, Tower tower, Monster monster, short x, short y) {
         Projectile p = ArenaObjectFactory.createProjectile(creator, tower, monster, x, y);
-        System.out.println(String.format("Added projectile: x = %d, y = %d", p.getX(), p.getY()));
+        System.out.println(String.format("Added projectile: (%d, %d)", p.getX(), p.getY()));
 
         return p;
     }
@@ -233,21 +233,21 @@ public class ArenaObjectStorageHelper {
 
         if (!towers.isEmpty()) {
             Tower t = towers.get(rng.nextInt(towers.size()));
-            System.out.println(String.format("Moving tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moving tower: (%d, %d)", t.getX(), t.getY()));
             t.moveObject(mover, x, y);
-            System.out.println(String.format("Moved tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moved tower: (%d, %d)", t.getX(), t.getY()));
         }
         if (!monsters.isEmpty()) {
             Monster m = monsters.get(rng.nextInt(monsters.size()));
-            System.out.println(String.format("Moving monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moving monster: (%d, %d)", m.getX(), m.getY()));
             m.moveObject(mover, x, y);
-            System.out.println(String.format("Moved monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moved monster: (%d, %d)", m.getX(), m.getY()));
         }
         if (!projectiles.isEmpty()) {
             Projectile p = projectiles.get(rng.nextInt(projectiles.size()));
-            System.out.println(String.format("Moving projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moving projectile: (%d, %d)", p.getX(), p.getY()));
             p.moveObject(mover, x, y);
-            System.out.println(String.format("Moved projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moved projectile: (%d, %d)", p.getX(), p.getY()));
         }
     }
 }
