@@ -463,7 +463,7 @@ public class UIController {
         });
 
         iv.setOnMouseClicked(e -> {
-            if (e.getButton() == MouseButton.PRIMARY) {
+            if (mode != GameMode.SIMULATE && e.getButton() == MouseButton.PRIMARY) {
                 showTowerVBox(t);
             }
         });
