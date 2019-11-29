@@ -31,10 +31,9 @@ public class Fox extends Monster {
      */
     public Fox(short x, short y, double difficulty) {
         super(x, y, difficulty);
-        this.maxHealth = 5 + 2 * difficulty;
+        setHealth(5 + 2 * difficulty);
+        setMaxHealth(health);
         this.baseSpeed = 5 + 0.5 * Math.log10(difficulty);
-        this.healthProperty.set(this.maxHealth);
-        this.health = this.healthProperty.get();
         this.speed = this.baseSpeed;
         this.resourceValue = (int) (difficulty * 1.5);
     }

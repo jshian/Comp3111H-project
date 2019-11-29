@@ -21,15 +21,15 @@ public class FoxTest extends JavaFXTester {
     private void generatePathfindingFox() {
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 20, (short) 20, 1);
-            f.healthProperty.set(Double.POSITIVE_INFINITY);
+            f.setHealth(Double.POSITIVE_INFINITY);
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 160, (short) 40, 1);
-            f.healthProperty.set(Double.POSITIVE_INFINITY);
+            f.setHealth(Double.POSITIVE_INFINITY);
         }
         {
             Fox f = (Fox) ArenaObjectFactory.createMonster(this, MonsterType.FOX, (short) 200, (short) 10, 1);
-            f.healthProperty.set(Double.POSITIVE_INFINITY);
+            f.setHealth(Double.POSITIVE_INFINITY);
             f.speed = 1;
         }
     }
