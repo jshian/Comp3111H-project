@@ -153,7 +153,7 @@ Members:
 	* ...
 1. Close the project.
 
-### Grade Extra Tasks
+### Grade Extra Tasks(Demo Video: https://drive.google.com/file/d/1mo7zs-E7VF-9r67MPy_-BBMO1zxT7bnn/view?usp=sharing)
 1. Start the application on both machines using the same `.jar` file as `Grade Task 1`.
 1. On *Machine A*, do the following: (Honors Extra Task 1)
 	1. Set up your towers however you like.
@@ -172,7 +172,7 @@ Members:
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and is in descending order from top to bottom.
 	1. Playthrough 8 more games in `play` mode but without building any towers, and submit each score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains each new score and remains in descending order from top to bottom.
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and remains in descending order from top to bottom, and that only 10 scores are being displayed.
-Demo Video: https://drive.google.com/file/d/1mo7zs-E7VF-9r67MPy_-BBMO1zxT7bnn/view?usp=sharing
+
 
 ### Notes
  * All file paths are relative to the root directory of the project.
