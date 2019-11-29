@@ -58,6 +58,15 @@ public class UIController {
     private Button buttonPlay;
 
     @FXML
+    private Button buttonPause;
+
+    @FXML
+    private Button buttonLoad;
+
+    @FXML
+    private Button buttonSave;
+
+    @FXML
     private AnchorPane paneArena;
 
     @FXML
@@ -286,6 +295,8 @@ public class UIController {
             buttonSimulate.setDisable(false);
         } else if (mode == GameMode.PLAY) {
             buttonPlay.setDisable(false);
+            buttonSave.setDisable(false);
+            buttonLoad.setDisable(false);
         }
         buttonNextFrame.setDisable(false);
         timeline.pause();
@@ -342,6 +353,10 @@ public class UIController {
         buttonNextFrame.setDisable(true);
         buttonPlay.setDisable(true);
         buttonSimulate.setDisable(true);
+        buttonLoad.setDisable(true);
+        buttonSave.setDisable(true);
+        if (mode == GameMode.SIMULATE)
+            buttonPause.setDisable(true);
     }
 
     /**
@@ -351,6 +366,9 @@ public class UIController {
         buttonNextFrame.setDisable(false);
         buttonPlay.setDisable(false);
         buttonSimulate.setDisable(false);
+        buttonLoad.setDisable(false);
+        buttonSave.setDisable(false);
+        buttonPause.setDisable(false);
     }
 
     /**
