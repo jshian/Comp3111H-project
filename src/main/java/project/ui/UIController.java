@@ -75,6 +75,9 @@ public class UIController {
     @FXML
     private Label remainingResources;
 
+    @FXML
+    private Label labelScore;
+
     /**
      * The player of the arena.
      */
@@ -215,6 +218,7 @@ public class UIController {
     private void setupNewGame() {
         player = new Player("name", 200);
         remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        labelScore.textProperty().bind(Bindings.format("Score: %d", player.scoreProperty()));
         ArenaManager.loadNew(this, player);
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }
@@ -226,6 +230,7 @@ public class UIController {
     public void setupNewGame(ArenaInstance arenaInstance) {
         player = arenaInstance.getPlayer();
         remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
+        labelScore.textProperty().bind(Bindings.format("Score: %d", player.scoreProperty()));
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
         enableGameButton();
     }
