@@ -1,7 +1,7 @@
 package project.query;
 
 import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.List;
 import java.util.function.Predicate;
 
 import project.entity.ArenaObject;
@@ -26,10 +26,10 @@ public class ArenaObjectPropertySortedSelector<T extends ArenaObject & Comparabl
 
     @Override
     @SuppressWarnings("unchecked")
-    public PriorityQueue<T> select(ArenaObjectStorage storage, StoredComparableType type,
-            LinkedList<ArenaObjectSortedSelector<T>> filters, SortOption option) {
+    public List<T> select(ArenaObjectStorage storage, StoredComparableType type,
+            List<ArenaObjectSortedSelector<T>> filters, SortOption option) {
         
-        PriorityQueue<T> result = createPriorityQueue(option);
+        List<T> result = new LinkedList<>();
 
         if (type.getObjectClass().isAssignableFrom(objectType)) {
             for (ArenaObject o : storage.getSortedIndexFor(type, option)) {

@@ -3,6 +3,7 @@ package project.util;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import project.entity.ArenaObject;
@@ -54,16 +55,16 @@ public class CollectionComparator {
      * @param l2 The second collection.
      * @return Whether the set of elements of the two queues is equivalent and sorted in the same order.
      */
-    public static <T> boolean isElementSetAndOrderEqual(Queue<T> q1, Queue<T> q2) {
+    public static <T> boolean isElementSetAndOrderEqual(List<T> q1, List<T> q2) {
         if (!isElementSetEqual(q1, q2)) return false;
 
-        LinkedList<T> q1_cpy = new LinkedList<>(q1);
-        LinkedList<T> q2_cpy = new LinkedList<>(q2);
+        List<T> q1_cpy = new LinkedList<>(q1);
+        List<T> q2_cpy = new LinkedList<>(q2);
 
         boolean isEqual = true;
         while (!q1_cpy.isEmpty()) {
-            T e1 = q1_cpy.poll();
-            T e2 = q2_cpy.poll();
+            T e1 = q1_cpy.remove(0);
+            T e2 = q2_cpy.remove(0);
             if (e1 instanceof ArenaObject && e2 instanceof ArenaObject) {
                 System.out.println(String.format("e1: x = %d, y = %d; e2: x = %d, y = %d", ((ArenaObject) e1).getX(), ((ArenaObject) e1).getY(), ((ArenaObject) e2).getX(), ((ArenaObject) e2).getY()));
                 if (e1 instanceof Monster && e2 instanceof Monster) {

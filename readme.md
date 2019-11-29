@@ -21,7 +21,7 @@ Members:
 	* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
 	* The starting position on the arena is represented by the image `show-up.png`. (Regular Task 1(i))
 	* The end zone on the arena is represented by the image `end-zone.png`. (Regular Task 1(i))
-	* A resource count of *???* (referred to as *Resource Pool*) is displayed.
+	* A resource count of *200* (referred to as *Resource Pool*) is displayed.
 1. Left-click and hold on either the `Basic Tower`, `Ice Tower`, `Catapult` or `Laser Tower` button.
 1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
 	* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Regular Task 1(ii)(a))
@@ -167,7 +167,7 @@ Members:
 	1. Click on either `Simulate` or `Play`. Verify that the game runs accordingly.
 1. On *Machine B*, do the following: (Honors Extra Task 2)
 	1. Set up your towers however you like.
-	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.(what is that?)
+	1. Run the game in `simulate` mode. Verify that when the game is over, there is no option to submit your score to the leaderboard, but you can see *Score A* up there.
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and is in descending order from top to bottom.
 	1. Playthrough 8 more games in `play` mode but without building any towers, and submit each score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains each new score and remains in descending order from top to bottom.
 	1. Playthrough a game in `play` mode with built towers. When the game is over, submit your score to the leaderboard. Verify that the leaderboard(http://localhost:8080/players/table) contains the new score and remains in descending order from top to bottom, and that only 10 scores are being displayed.

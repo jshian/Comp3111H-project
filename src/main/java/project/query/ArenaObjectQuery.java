@@ -54,10 +54,10 @@ class ArenaObjectQuery {
      * @param types The types of {@link ArenaObject} to select.
      * @return The query result.
      */
-    LinkedList<ArenaObject> run(ArenaObjectStorage storage, EnumSet<StoredType> types) {
+    List<ArenaObject> run(ArenaObjectStorage storage, EnumSet<StoredType> types) {
         // Return everything if there are no selectors
         if (selectors.isEmpty()) {
-            LinkedList<ArenaObject> result = new LinkedList<>();
+            List<ArenaObject> result = new LinkedList<>();
 
             for (StoredType type : types) {
                 result.addAll(storage.getIndexFor(type));
@@ -83,7 +83,7 @@ class ArenaObjectQuery {
 
         if (typeIndexCost <= minCost) {
             // Query using the type index and apply each selection as the results are being fetched
-            LinkedList<ArenaObject> result = new LinkedList<>();
+            List<ArenaObject> result = new LinkedList<>();
             ArenaObjectPropertySelector<ArenaObject> dummySelector = new ArenaObjectPropertySelector<>(ArenaObject.class, o -> true);
 
             for (StoredType type : types) {
@@ -97,7 +97,7 @@ class ArenaObjectQuery {
             return result;
         } else {
             // Query using the minSelector and apply the other selections as the results are being fetched
-            LinkedList<ArenaObjectSelector> otherSelectors = new LinkedList<>(selectors);
+            List<ArenaObjectSelector> otherSelectors = new LinkedList<>(selectors);
             otherSelectors.remove(minSelector);
 
             return minSelector.select(storage, types, otherSelectors);

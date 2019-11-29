@@ -1,7 +1,6 @@
 package project.query;
 
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.List;
 
 import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.SortOption;
@@ -21,22 +20,8 @@ interface ArenaObjectSortedSelector<T extends ArenaObject & Comparable<T>> exten
      * @param option The sorting option.
      * @return The selection result. Returns an empty collection if nothing is found.
      */
-    abstract PriorityQueue<T> select(ArenaObjectStorage storage, StoredComparableType type,
-            LinkedList<ArenaObjectSortedSelector<T>> filters, SortOption option);
-
-    /**
-     * Returns a new {@link PriorityQueue} based on the sorting option.
-     * @param option The sorting option.
-     * @return A new {@link PriorityQueue} based on the sorting option.
-     */
-    default PriorityQueue<T> createPriorityQueue(SortOption option) {
-        switch (option) {
-            case ASCENDING: return new PriorityQueue<>();
-            case DESCENDING: return new PriorityQueue<>((o1, o2) -> o2.compareTo(o1));
-        }
-
-        return null;
-    }
+    abstract List<T> select(ArenaObjectStorage storage, StoredComparableType type,
+            List<ArenaObjectSortedSelector<T>> filters, SortOption option);
 
     /**
      * Returns whether an {@link ArenaObject} is comparable, matches the given type and passes through a set of filters.
@@ -46,7 +31,7 @@ interface ArenaObjectSortedSelector<T extends ArenaObject & Comparable<T>> exten
      * @return Whether the object satisfies all requirements.
      */
     default boolean isComparableAndAllSatisfied(ArenaObject o, StoredComparableType type,
-            LinkedList<ArenaObjectSortedSelector<T>> filters) {
+            List<ArenaObjectSortedSelector<T>> filters) {
 
         if (!(type.getObjectClass().isAssignableFrom(o.getClass()))) return false;
 
@@ -57,4 +42,15 @@ interface ArenaObjectSortedSelector<T extends ArenaObject & Comparable<T>> exten
         return true;
     }
 
+    /**
+     * Sorts the result of the query.
+     * @param result The result to sort.
+     * @param option The sorting option.
+     */
+    default void sortResult(List<T> result, SortOption option) {
+        switch (option) {
+            case ASCENDING: result.sort(null); return;
+            case DESCENDING: result.sort((o1, o2) -> o2.compareTo(o1)); return;
+        }
+    }
 }

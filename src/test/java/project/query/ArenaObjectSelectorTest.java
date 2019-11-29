@@ -25,6 +25,7 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
 
     @Test
     public void testBoundaryCases() {
+        ArenaObjectStorageHelper.disableScalarFieldUpdates();
 
         ArenaObjectStorage storage = ArenaManager.getActiveObjectStorage();
         {
@@ -51,20 +52,20 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
             assertTrue(cost > 0);
 
             {
-                List<ArenaObject> result = storage.getQueryResult(circleSelector, EnumSet.of(StoredType.MONSTER));
                 LinkedList<ArenaObject> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5));
+                List<ArenaObject> result = storage.getQueryResult(circleSelector, EnumSet.of(StoredType.MONSTER));
                 assertTrue(CollectionComparator.isElementSetEqual(expected, result));
             }
             
             ArenaObjectCircleSortedSelector<Monster> circleSortedSelector = new ArenaObjectCircleSortedSelector<>((short) 30, (short) 40, (short) 20);
             {
-                PriorityQueue<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
-                PriorityQueue<Monster> expected = new PriorityQueue<>(Arrays.asList(m1, m2, m3, m4, m5));
+                List<Monster> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5)); expected.sort(null);
+                List<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.ASCENDING);
                 assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
             {
-                PriorityQueue<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
-                PriorityQueue<Monster> expected = new PriorityQueue<>((o1, o2) -> o2.compareTo(o1)); expected.addAll(Arrays.asList(m1, m2, m3, m4, m5));
+                List<Monster> expected = new LinkedList<>(Arrays.asList(m1, m2, m3, m4, m5)); expected.sort((o1, o2) -> o2.compareTo(o1));
+                List<Monster> result = storage.getSortedQueryResult(circleSortedSelector, StoredComparableType.MONSTER, SortOption.DESCENDING);
                 assertTrue(CollectionComparator.isElementSetAndOrderEqual(expected, result));
             }
         }
@@ -72,6 +73,8 @@ public class ArenaObjectSelectorTest extends JavaFXTester {
 
     @Test
     public void testGeneralCases() {
+        ArenaObjectStorageHelper.disableScalarFieldUpdates();
+        
         ArenaObjectCircleSelector circleSelector;
         ArenaObjectCircleSortedSelector<Monster> circleSortedSelector;
 

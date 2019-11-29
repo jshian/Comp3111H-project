@@ -1,7 +1,6 @@
 package project.query;
 
 import static org.junit.Assert.assertEquals;
-
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -155,6 +154,8 @@ public class ArenaObjectStorageTest extends JavaFXTester {
 
     @Test
     public void test() {
+        ArenaObjectStorageHelper.disableScalarFieldUpdates();
+
         checkTypeIndex(ArenaManager.getActiveObjectStorage());
         checkXYIndex(ArenaManager.getActiveObjectStorage());
 
