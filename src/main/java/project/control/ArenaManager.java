@@ -82,6 +82,10 @@ public final class ArenaManager {
         assert STARTING_Y >= 0 && STARTING_Y <= ARENA_HEIGHT;
         assert END_X >= 0 && END_X <= ARENA_WIDTH;
         assert END_Y >= 0 && END_Y <= ARENA_HEIGHT;
+        
+        if ((int) ARENA_WIDTH + (int) ARENA_HEIGHT > Short.MAX_VALUE) {
+            throw new ArithmeticException("The sum of ARENA_WIDTH and ARENA_HEIGHT should not be greater than the max value of a short.");
+        }
     }
 
     /**

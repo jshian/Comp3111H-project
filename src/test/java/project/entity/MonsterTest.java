@@ -81,23 +81,29 @@ public class MonsterTest extends JavaFXTester {
             trackedMonsterHasDied = false;
             ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE.subscribe(deathEvent);
     
-            m.healthProperty.set(23.45);
+            m.setHealth(23.45);
             assertEquals(23.45, m.getHealth(), MAX_ERROR);
+            assertEquals(23.45, m.healthProperty.get(), MAX_ERROR);
             assertFalse(trackedMonsterHasDied);
             m.takeDamage(23, this);
             assertEquals(0.45, m.getHealth(), MAX_ERROR);
+            assertEquals(0.45, m.healthProperty.get(), MAX_ERROR);
             assertFalse(trackedMonsterHasDied);
             m.takeDamage(-0.01, this);
             assertEquals(0.45, m.getHealth(), MAX_ERROR); // Negative damage taken should do nothing
+            assertEquals(0.45, m.healthProperty.get(), MAX_ERROR);
             assertFalse(trackedMonsterHasDied);
             m.takeDamage(10, this);
             assertEquals(-9.55, m.getHealth(), MAX_ERROR);
+            assertEquals(-9.55, m.healthProperty.get(), MAX_ERROR);
             assertTrue(trackedMonsterHasDied);
             m.takeDamage(-999, this);
             assertEquals(-9.55, m.getHealth(), MAX_ERROR); // Negative damage taken should do nothing
+            assertEquals(-9.55, m.healthProperty.get(), MAX_ERROR);
             assertTrue(trackedMonsterHasDied);
-            m.healthProperty.set(50);
+            m.setHealth(50);
             assertEquals(50, m.getHealth(), MAX_ERROR);
+            assertEquals(50, m.healthProperty.get(), MAX_ERROR);
             assertTrue(trackedMonsterHasDied); // Dead monster is no longer on the arena
         }
     }
@@ -158,8 +164,10 @@ public class MonsterTest extends JavaFXTester {
                 assertTrue(String.format("Trail is not empty for new monster at (%d, %d)", x, y), m.getTrail().isEmpty());
                 assertTrue(String.format("Speed is negative for %s: i = %d", m.getDisplayName(), i), m.getSpeed() > 0);
                 assertTrue(String.format("Health is negative for %s: i = %d", m.getDisplayName(), i), m.getHealth() > 0);
-                assertTrue(String.format("Max health is negative for %s: i = %d", m.getDisplayName(), i), m.maxHealth > 0);
-                assertEquals(String.format("Health is not equal to max health for %s: i = %d", m.getDisplayName(), i), m.getHealth(), m.maxHealth, MAX_ERROR);
+                assertTrue(String.format("Max health is negative for %s: i = %d", m.getDisplayName(), i), m.getMaxHealth() > 0);
+                assertEquals(String.format("Health property not synced for %s: i = %d", m.getDisplayName(), i), m.healthProperty.get(), m.getHealth(), MAX_ERROR);
+                assertEquals(String.format("Max health property not synced for %s: i = %d", m.getDisplayName(), i), m.maxHealthProperty.get(), m.getMaxHealth(), MAX_ERROR);
+                assertEquals(String.format("Health is not equal to max health for %s: i = %d", m.getDisplayName(), i), m.getHealth(), m.getMaxHealth(), MAX_ERROR);
                 assertEquals(String.format("Speed is not equal to base speed for %s: i = %d", m.getDisplayName(), i), m.getSpeed(), m.baseSpeed, MAX_ERROR);
             }
         }

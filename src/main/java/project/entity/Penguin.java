@@ -25,9 +25,8 @@ public class Penguin extends Monster {
             updateStatusEffects();
 
             if (getHealth() + regenerationRate <= maxHealth) {
-                this.healthProperty.set(getHealth() + regenerationRate);
+                setHealth(getHealth() + regenerationRate);
             }
-            this.health = this.healthProperty.get();
         };
     }
 
@@ -44,10 +43,9 @@ public class Penguin extends Monster {
      */
     public Penguin(short x, short y, double difficulty) {
         super(x, y, difficulty);
-        this.maxHealth = 7.5 + 2.5 * difficulty;
+        setHealth(7.5 + 2.5 * difficulty);
+        setMaxHealth(health);
         this.baseSpeed = 3 + 0.3 * Math.log10(difficulty);
-        this.healthProperty.set(this.maxHealth);
-        this.health = this.healthProperty.get();
         this.speed = this.baseSpeed;
         this.resourceValue = (int) (difficulty * 1.25);
         this.regenerationRate = maxHealth * 0.05;

@@ -3,7 +3,6 @@ package project.entity;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -92,20 +91,20 @@ public class Catapult extends Tower {
 
     // Catapult tries to hit the most targets in range of the main target
     @Override
-    protected void shoot(PriorityQueue<Monster> validTargets) {
+    protected void shoot(List<Monster> validTargets) {
         List<Monster> closestTargets = new LinkedList<>();
-        int closestDistance = (int) validTargets.peek().getMovementDistanceToDestination();
+        int closestDistance = (int) validTargets.get(0).getMovementDistanceToDestination();
 
-        while (closestDistance == (int) validTargets.peek().getMovementDistanceToDestination()) {
-            closestTargets.add(validTargets.poll());
+        while (closestDistance == (int) validTargets.get(0).getMovementDistanceToDestination()) {
+            closestTargets.add(validTargets.remove(0));
             if (validTargets.isEmpty()) break;
         }
 
         Monster target = null;
-        if (closestTargets.size() < 1)
-            target = closestTargets.get(0);
+        if (closestTargets.isEmpty()) target = validTargets.get(0);
         for (Monster m :closestTargets) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
+            double rmsDist=Double.POSITIVE_INFINITY;//To minimize the offset
 
             for (short i = (short) (m.getX()-splashRadius); i < m.getX()+splashRadius; i++) {//square width
                 for (short j = (short) (m.getY()-splashRadius); j < m.getY()+splashRadius; j++) {//square length
@@ -116,14 +115,23 @@ public class Catapult extends Tower {
                         List<ArenaObject> monInCircle = storage.getQueryResult(
                                 new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));  
 
-                        if(count < monInCircle.size()){
-                            monstersInSplashRange.clear();
-                            count=monInCircle.size();
-                            target = m;
-                            targetLocationX = i;
-                            targetLocationY = j;
+                        if(count <= monInCircle.size()){
+                            monstersInSplashRange = new LinkedList<>();
+                            double thisRMSDist = 0;
+                          
                             for (ArenaObject o : monInCircle) {
                                 monstersInSplashRange.add((Monster) o);
+                                thisRMSDist += (i - o.getX()) * (i - o.getX()) + (j - o.getY()) * (j - o.getY());
+                            }
+                            thisRMSDist /= monstersInSplashRange.size();
+                            thisRMSDist = Math.sqrt(thisRMSDist);
+
+                            if (thisRMSDist < rmsDist) {
+                                count=monInCircle.size();
+                                target = m;
+                                targetLocationX = i;
+                                targetLocationY = j;
+                                rmsDist = thisRMSDist;
                             }
                         }
                     }

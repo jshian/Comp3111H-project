@@ -3,7 +3,7 @@ package project.entity;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.util.PriorityQueue;
+import java.util.List;
 
 import javax.persistence.Entity;
 
@@ -78,7 +78,7 @@ public class LaserTower extends Tower{
 
     // Laser tower consume currently active player's resource to attack monster.
     @Override
-    protected void shoot(PriorityQueue<Monster> validTargets) {
+    protected void shoot(List<Monster> validTargets) {
         if (consumeResource()) {
             super.shoot(validTargets);
         }

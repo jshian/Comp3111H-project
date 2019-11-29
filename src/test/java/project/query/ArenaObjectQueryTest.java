@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -42,8 +43,8 @@ public class ArenaObjectQueryTest extends JavaFXTester {
         }
 
         @Override
-        public LinkedList<ArenaObject> select(ArenaObjectStorage storage, EnumSet<StoredType> types,
-                LinkedList<ArenaObjectSelector> filters) {
+        public List<ArenaObject> select(ArenaObjectStorage storage, EnumSet<StoredType> types,
+                List<ArenaObjectSelector> filters) {
 
             selectedSelector = this;
             return null;
@@ -51,6 +52,11 @@ public class ArenaObjectQueryTest extends JavaFXTester {
 
         @Override
         public boolean isInSelection(ArenaObject o) {
+            return true;
+        }
+
+        @Override
+        public boolean isInSelectionByDefinition(ArenaObject o) {
             return true;
         }
     }
@@ -126,22 +132,22 @@ public class ArenaObjectQueryTest extends JavaFXTester {
 
         ArenaObjectQuery q = new ArenaObjectQuery();
         {
-            LinkedList<ArenaObject> result = q.run(storage, EnumSet.noneOf(StoredType.class));
+            List<ArenaObject> result = q.run(storage, EnumSet.noneOf(StoredType.class));
             assertTrue(result.isEmpty());
         }
         {
-            LinkedList<ArenaObject> expected = new LinkedList<>(); expected.add(m);
-            LinkedList<ArenaObject> result = q.run(storage, EnumSet.of(StoredType.MONSTER));
+            List<ArenaObject> expected = new LinkedList<>(); expected.add(m);
+            List<ArenaObject> result = q.run(storage, EnumSet.of(StoredType.MONSTER));
             assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
-            LinkedList<ArenaObject> expected = new LinkedList<>(); expected.add(t1); expected.add(t2);
-            LinkedList<ArenaObject> result = q.run(storage, EnumSet.of(StoredType.TOWER));
+            List<ArenaObject> expected = new LinkedList<>(); expected.add(t1); expected.add(t2);
+            List<ArenaObject> result = q.run(storage, EnumSet.of(StoredType.TOWER));
             assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
         {
-            LinkedList<ArenaObject> expected = new LinkedList<>(); expected.add(p);
-            LinkedList<ArenaObject> result = q.run(storage, EnumSet.of(StoredType.PROJECTILE));
+            List<ArenaObject> expected = new LinkedList<>(); expected.add(p);
+            List<ArenaObject> result = q.run(storage, EnumSet.of(StoredType.PROJECTILE));
             assertTrue(CollectionComparator.isElementSetEqual(expected, result));
         }
     }

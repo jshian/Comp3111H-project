@@ -1,7 +1,7 @@
 package project.query;
 
 import java.util.EnumSet;
-import java.util.LinkedList;
+import java.util.List;
 
 import project.entity.ArenaObject;
 import project.query.ArenaObjectStorage.StoredType;
@@ -25,8 +25,8 @@ interface ArenaObjectSelector {
      * @param filters Other selectors to filter the results during the selection, as optimization.
      * @return The selection result. Returns an empty collection if nothing is found.
      */
-    abstract LinkedList<ArenaObject> select(ArenaObjectStorage storage,
-            EnumSet<StoredType> types, LinkedList<ArenaObjectSelector> filters);
+    abstract List<ArenaObject> select(ArenaObjectStorage storage,
+            EnumSet<StoredType> types, List<ArenaObjectSelector> filters);
 
     /**
      * Returns whether an object passes through a set of filters.
@@ -36,7 +36,7 @@ interface ArenaObjectSelector {
      * @return Whether an object passes through all of the filters.
      */
     default boolean isAllSatisfied(ArenaObject o, EnumSet<StoredType> types,
-            LinkedList<ArenaObjectSelector> filters) {
+            List<ArenaObjectSelector> filters) {
 
         boolean satisfiesType = false;
         for (StoredType type : types) {
@@ -60,5 +60,12 @@ interface ArenaObjectSelector {
      * @return Whether the object satisfies the selection.
      */
     abstract boolean isInSelection(ArenaObject o);
+
+    /**
+     * For testing only. Returns whether an object satisfies the selection by definition.
+     * @param o The object to test.
+     * @return Whether the object satisfies the selection the selection by definition.
+     */
+    abstract boolean isInSelectionByDefinition(ArenaObject o);
 
 }

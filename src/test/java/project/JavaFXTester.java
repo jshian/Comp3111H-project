@@ -4,7 +4,11 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -41,6 +45,46 @@ public class JavaFXTester extends ApplicationTest {
 	// For convenience
 	protected static final short ZERO = (short) 0;
 
+    // Helper suppliers
+    protected static final Supplier<Short> RANDOM_X_COOR = () -> {
+        Random rng = new Random();
+        return (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1);
+    };
+    protected static final Supplier<Short> RANDOM_Y_COOR = () -> {
+        Random rng = new Random();
+        return (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1);
+	};
+	
+	protected static List<Supplier<Short>> getCoordinateLengthGenerators() {
+		List<Supplier<Short>> generators = new ArrayList<>();
+		generators.add(() -> ZERO);
+		generators.add(() -> ArenaManager.ARENA_WIDTH);
+		generators.add(() -> ZERO);
+		generators.add(() -> ArenaManager.ARENA_HEIGHT);
+
+		generators.add(RANDOM_X_COOR);
+		generators.add(RANDOM_Y_COOR);
+		
+		return generators;
+	}
+
+    protected static final Supplier<Short> RANDOM_RADIUS = () -> {
+        Random rng = new Random();
+        return (short) rng.nextInt(Math.max(ArenaManager.ARENA_WIDTH, ArenaManager.ARENA_HEIGHT) + 1);
+	};
+
+	protected static List<Supplier<Short>> getCoordinateRadiusGenerators() {
+		List<Supplier<Short>> generators = new ArrayList<>();
+		generators.add(() -> ZERO);
+		generators.add(() -> ArenaManager.ARENA_WIDTH);
+		generators.add(() -> ZERO);
+		generators.add(() -> ArenaManager.ARENA_HEIGHT);
+
+		generators.add(RANDOM_RADIUS);
+		
+		return generators;
+	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
@@ -69,8 +113,14 @@ public class JavaFXTester extends ApplicationTest {
 	/**
 	 * Simulates the next frame of the game.
 	 */
-	protected final void simulateNextFrame() {
+	protected final void simulateNextFrameNoSpawning() {
 		try {
+			Field field_currentFrame = ArenaInstance.class.getDeclaredField("currentFrame");
+			field_currentFrame.setAccessible(true);
+			
+			ArenaInstance arena = ArenaManager.getActiveArenaInstance();
+			field_currentFrame.set(arena, (int) field_currentFrame.get(arena) - 1);
+
 			Method method_nextFrame = UIController.class.getDeclaredMethod("nextFrame");
 			method_nextFrame.setAccessible(true);
 			method_nextFrame.invoke(appController);
@@ -103,9 +153,9 @@ public class JavaFXTester extends ApplicationTest {
 			Field field_mode = UIController.class.getDeclaredField("mode");
 			field_mode.setAccessible(true);
 			
-			Method method_play = UIController.class.getDeclaredMethod("play");
-			method_play.setAccessible(true);
-			method_play.invoke(appController);
+			Method method_simulate = UIController.class.getDeclaredMethod("simulate");
+			method_simulate.setAccessible(true);
+			method_simulate.invoke(appController);
 
 			WaitForAsyncUtils.waitFor(60, TimeUnit.SECONDS, () -> ((GameMode) field_mode.get(ArenaManager.getActiveEventRegister()) == GameMode.END));
 			WaitForAsyncUtils.waitForFxEvents();

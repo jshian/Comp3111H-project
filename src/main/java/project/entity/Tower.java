@@ -1,6 +1,6 @@
 package project.entity;
 
-import java.util.PriorityQueue;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -86,7 +86,7 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
     {
         onNextFrame = (sender, args) -> {
             ArenaObjectRingSortedSelector<Monster> selector = new ArenaObjectRingSortedSelector<>(getX(), getY(), minRange, maxRange);
-            PriorityQueue<Monster> validTargets = storage.getSortedQueryResult(selector, StoredComparableType.MONSTER, SortOption.ASCENDING);
+            List<Monster> validTargets = storage.getSortedQueryResult(selector, StoredComparableType.MONSTER, SortOption.ASCENDING);
 
             if (!validTargets.isEmpty()) {
                 if (counter <= 0) {
@@ -217,11 +217,11 @@ public abstract class Tower extends ArenaObject implements InformativeObject {
 
     /**
      * Shoots a projectile.
-     * @param validTargets The valid targets that the tower can shoot at.
+     * @param validTargets The valid targets that the tower can shoot at. The list is assumed to be sorted in ascending order.
      */
-    protected void shoot(PriorityQueue<Monster> validTargets) {
+    protected void shoot(List<Monster> validTargets) {
         // Target the monster with the shortest path to end zone
-        ArenaObjectFactory.createProjectile(this, this, validTargets.peek(), (short) 0, (short) 0);
+        ArenaObjectFactory.createProjectile(this, this, validTargets.get(0), (short) 0, (short) 0);
     }
 
     @Override

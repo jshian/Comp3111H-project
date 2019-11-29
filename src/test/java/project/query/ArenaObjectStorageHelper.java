@@ -1,5 +1,9 @@
 package project.query;
 
+import static org.junit.Assert.fail;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -10,13 +14,67 @@ import project.entity.Projectile;
 import project.entity.Tower;
 import project.entity.ArenaObjectFactory.MonsterType;
 import project.entity.ArenaObjectFactory.TowerType;
+import project.event.EventHandler;
+import project.event.EventManager;
+import project.event.eventargs.ArenaObjectEventArgs;
+import project.field.MonsterAttacksToEndField;
+import project.field.MonsterDistanceToEndField;
 import project.query.ArenaObjectStorage.StoredType;
 
 /**
- * Helper interface to facilitate mass addition and removal of objects from
+ * Helper class to facilitate mass addition and removal of objects from
  * {@link ArenaObjectStorage}.
  */
-interface ArenaObjectStorageHelper {
+public class ArenaObjectStorageHelper {
+
+    /**
+     * Disables updates to scalar fields to speed up testing.
+     */
+    public static void disableScalarFieldUpdates() {
+
+        try {
+            Field field_onAddObject_distance = MonsterDistanceToEndField.class.getDeclaredField("onAddObject");
+            field_onAddObject_distance.setAccessible(true);
+
+            Field field_onRemoveObject_distance = MonsterDistanceToEndField.class.getDeclaredField("onRemoveObject");
+            field_onRemoveObject_distance.setAccessible(true);
+
+            Field field_onEndMoveObject_distance = MonsterDistanceToEndField.class.getDeclaredField("onEndMoveObject");
+            field_onEndMoveObject_distance.setAccessible(true);
+
+            Field field_onAddObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onAddObject");
+            field_onAddObject_attack.setAccessible(true);
+
+            Field field_onRemoveObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onRemoveObject");
+            field_onRemoveObject_attack.setAccessible(true);
+
+            Field field_onStartMoveObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onStartMoveObject");
+            field_onStartMoveObject_attack.setAccessible(true);
+
+            Field field_onEndMoveObject_attack = MonsterAttacksToEndField.class.getDeclaredField("onEndMoveObject");
+            field_onEndMoveObject_attack.setAccessible(true);
+
+            Method method_unsubscribe = EventManager.class.getDeclaredMethod("unsubscribe", EventHandler.class);
+            method_unsubscribe.setAccessible(true);
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_ADD = ArenaManager.getActiveEventRegister().ARENA_OBJECT_ADD;
+            method_unsubscribe.invoke(ARENA_OBJECT_ADD, field_onAddObject_distance.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END));
+            method_unsubscribe.invoke(ARENA_OBJECT_ADD, field_onAddObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_REMOVE = ArenaManager.getActiveEventRegister().ARENA_OBJECT_REMOVE;
+            method_unsubscribe.invoke(ARENA_OBJECT_REMOVE, field_onRemoveObject_distance.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END));
+            method_unsubscribe.invoke(ARENA_OBJECT_REMOVE, field_onRemoveObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_MOVE_START = ArenaManager.getActiveEventRegister().ARENA_OBJECT_MOVE_START;
+            method_unsubscribe.invoke(ARENA_OBJECT_MOVE_START, field_onStartMoveObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+
+            EventManager<ArenaObjectEventArgs> ARENA_OBJECT_MOVE_END = ArenaManager.getActiveEventRegister().ARENA_OBJECT_MOVE_END;
+            method_unsubscribe.invoke(ARENA_OBJECT_MOVE_END, field_onEndMoveObject_distance.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_DISTANCE_TO_END));
+            method_unsubscribe.invoke(ARENA_OBJECT_MOVE_END, field_onEndMoveObject_attack.get(ArenaManager.getActiveScalarFieldRegister().MONSTER_ATTACKS_TO_END));
+        } catch (Exception e) {
+            fail("An unexpected error has occurred");
+        }
+    }
 
     /**
      * Adds a random {@link Tower} to a random location on the arena on the creator's behalf.
@@ -31,7 +89,7 @@ interface ArenaObjectStorageHelper {
             (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
             (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1)
         );
-        System.out.println(String.format("Added tower: x = %d, y = %d", t.getX(), t.getY()));
+        System.out.println(String.format("Added tower: (%d, %d)", t.getX(), t.getY()));
 
         return t;
     }
@@ -49,7 +107,7 @@ interface ArenaObjectStorageHelper {
             (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
             (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1), 1
         );
-        System.out.println(String.format("Added monster: x = %d, y = %d", m.getX(), m.getY()));
+        System.out.println(String.format("Added monster: (%d, %d)", m.getX(), m.getY()));
 
         return m;
     }
@@ -67,7 +125,7 @@ interface ArenaObjectStorageHelper {
         Projectile p = ArenaObjectFactory.createProjectile(creator, tower, monster,
             (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1),
             (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-        System.out.println(String.format("Added projectile: x = %d, y = %d", p.getX(), p.getY()));
+        System.out.println(String.format("Added projectile: (%d, %d)", p.getX(), p.getY()));
 
         return p;
     }
@@ -88,21 +146,21 @@ interface ArenaObjectStorageHelper {
 
         if (!towers.isEmpty()) {
             Tower t = towers.get(rng.nextInt(towers.size()));
-            System.out.println(String.format("Moving tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moving tower: (%d, %d)", t.getX(), t.getY()));
             t.moveObject(mover, (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moved tower: (%d, %d)", t.getX(), t.getY()));
         }
         if (!monsters.isEmpty()) {
             Monster m = monsters.get(rng.nextInt(monsters.size()));
-            System.out.println(String.format("Moving monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moving monster: (%d, %d)", m.getX(), m.getY()));
             m.moveObject(mover, (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moved monster: (%d, %d)", m.getX(), m.getY()));
         }
         if (!projectiles.isEmpty()) {
             Projectile p = projectiles.get(rng.nextInt(projectiles.size()));
-            System.out.println(String.format("Moving projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moving projectile: (%d, %d)", p.getX(), p.getY()));
             p.moveObject(mover, (short) rng.nextInt(ArenaManager.ARENA_WIDTH + 1), (short) rng.nextInt(ArenaManager.ARENA_HEIGHT + 1));
-            System.out.println(String.format("Moved projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moved projectile: (%d, %d)", p.getX(), p.getY()));
         }
     }
 
@@ -119,7 +177,7 @@ interface ArenaObjectStorageHelper {
         Tower t = ArenaObjectFactory.createTower(creator,
             TowerType.values()[rng.nextInt(TowerType.values().length)], x, y
         );
-        System.out.println(String.format("Added tower: x = %d, y = %d", t.getX(), t.getY()));
+        System.out.println(String.format("Added tower: (%d, %d)", t.getX(), t.getY()));
 
         return t;
     }
@@ -137,7 +195,7 @@ interface ArenaObjectStorageHelper {
         Monster m = ArenaObjectFactory.createMonster(creator,
             MonsterType.values()[rng.nextInt(MonsterType.values().length)], x, y, 1
         );
-        System.out.println(String.format("Added monster: x = %d, y = %d", m.getX(), m.getY()));
+        System.out.println(String.format("Added monster: (%d, %d)", m.getX(), m.getY()));
 
         return m;
     }
@@ -153,7 +211,7 @@ interface ArenaObjectStorageHelper {
      */
     public static Projectile addProjectile(Object creator, Tower tower, Monster monster, short x, short y) {
         Projectile p = ArenaObjectFactory.createProjectile(creator, tower, monster, x, y);
-        System.out.println(String.format("Added projectile: x = %d, y = %d", p.getX(), p.getY()));
+        System.out.println(String.format("Added projectile: (%d, %d)", p.getX(), p.getY()));
 
         return p;
     }
@@ -175,21 +233,21 @@ interface ArenaObjectStorageHelper {
 
         if (!towers.isEmpty()) {
             Tower t = towers.get(rng.nextInt(towers.size()));
-            System.out.println(String.format("Moving tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moving tower: (%d, %d)", t.getX(), t.getY()));
             t.moveObject(mover, x, y);
-            System.out.println(String.format("Moved tower: x = %d, y = %d", t.getX(), t.getY()));
+            System.out.println(String.format("Moved tower: (%d, %d)", t.getX(), t.getY()));
         }
         if (!monsters.isEmpty()) {
             Monster m = monsters.get(rng.nextInt(monsters.size()));
-            System.out.println(String.format("Moving monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moving monster: (%d, %d)", m.getX(), m.getY()));
             m.moveObject(mover, x, y);
-            System.out.println(String.format("Moved monster: x = %d, y = %d", m.getX(), m.getY()));
+            System.out.println(String.format("Moved monster: (%d, %d)", m.getX(), m.getY()));
         }
         if (!projectiles.isEmpty()) {
             Projectile p = projectiles.get(rng.nextInt(projectiles.size()));
-            System.out.println(String.format("Moving projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moving projectile: (%d, %d)", p.getX(), p.getY()));
             p.moveObject(mover, x, y);
-            System.out.println(String.format("Moved projectile: x = %d, y = %d", p.getX(), p.getY()));
+            System.out.println(String.format("Moved projectile: (%d, %d)", p.getX(), p.getY()));
         }
     }
 }

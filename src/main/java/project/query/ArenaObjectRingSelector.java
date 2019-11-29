@@ -3,6 +3,7 @@ package project.query;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import project.control.ArenaManager;
 import project.entity.ArenaObject;
@@ -113,10 +114,10 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
     }
 
     @Override
-    public LinkedList<ArenaObject> select(ArenaObjectStorage storage,
-            EnumSet<StoredType> types, LinkedList<ArenaObjectSelector> filters) {
+    public List<ArenaObject> select(ArenaObjectStorage storage,
+            EnumSet<StoredType> types, List<ArenaObjectSelector> filters) {
 
-        LinkedList<ArenaObject> result = new LinkedList<>();
+        List<ArenaObject> result = new LinkedList<>();
 
         // Out of bounds (== 0 means a point search)
         if (effectiveWidth < 0 || effectiveHeight < 0) return result;
@@ -128,7 +129,7 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
         
         // Determine whether to access through x- or y- index based on number of accesses.
         if (effectiveWidth < effectiveHeight) {
-            ArrayList<LinkedList<ArenaObject>> index = storage.getXIndex();
+            ArrayList<List<ArenaObject>> index = storage.getXIndex();
 
             for (short x = startX; x <= endX; x++) {
                 for (ArenaObject o : index.get(x)) {
@@ -138,7 +139,7 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
                 }
             }
         } else {
-            ArrayList<LinkedList<ArenaObject>> index = storage.getYIndex();
+            ArrayList<List<ArenaObject>> index = storage.getYIndex();
 
             for (short y = startY; y <= endY; y++) {
                 for (ArenaObject o : index.get(y)) {
@@ -159,6 +160,17 @@ public class ArenaObjectRingSelector implements ArenaObjectSelector {
 
         int distSquared = distX * distX + distY * distY;
 
+        return (distSquared >= minRadius * minRadius && distSquared <= maxRadius * maxRadius);
+    }
+
+    @Override
+    public boolean isInSelectionByDefinition(ArenaObject o) {
+        short distX = (short) (o.getX() - centerX);
+        short distY = (short) (o.getY() - centerY);
+
+        int distSquared = distX * distX + distY * distY;
+
+        // Equation of circle
         return (distSquared >= minRadius * minRadius && distSquared <= maxRadius * maxRadius);
     }
 } 

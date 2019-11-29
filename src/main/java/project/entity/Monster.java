@@ -55,7 +55,14 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * The maximum health of the monster.
      */
-    protected double maxHealth = 1;
+    @Transient
+    protected SimpleDoubleProperty maxHealthProperty = new SimpleDoubleProperty(1);
+
+    // use a redundant variable to store hp in jpa so that don't need to add getter/setter for all fields.
+    /**
+     * The maximum health of the monster.
+     */
+    protected double maxHealth = maxHealthProperty.get();
 
     /**
      * The current speed of the monster.
@@ -81,7 +88,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     /**
      * A linked list of references to each status effect that is active against the monster.
      */
-    @OneToMany(cascade = {CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
     protected List<StatusEffect> statusEffects = new LinkedList<>();
 
     /**
@@ -145,6 +152,7 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public void loadArenaObject() {
         super.loadArenaObject();
         this.healthProperty.set(health);
+        this.maxHealthProperty.set(maxHealth);
         setupTooltip();
     }
 
@@ -154,8 +162,9 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public void setupTooltip() {
         // Set up tooltip
         Tooltip tp = new Tooltip();
+
         //getDisplayDetails() is fixed so even you bind it to a property, it wont change.
-        tp.textProperty().bind(Bindings.format("HP: %.2f / %.2f", healthProperty.getValue(), maxHealth));
+        tp.textProperty().bind(Bindings.format("HP: %.2f / %.2f", healthProperty, maxHealthProperty));
         imageView.setOnMouseEntered(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
         imageView.setOnMouseMoved(e -> tp.show(imageView, e.getScreenX()+8, e.getScreenY()+7));
         imageView.setOnMouseExited(e -> tp.hide());
@@ -185,13 +194,38 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
      * Returns the current health of the monster.
      * @return The current health of the monster.
      */
-    public double getHealth() { return healthProperty.get(); }
+    public double getHealth() { return health; }
+
+    /**
+     * Returns the maximum health of the monster.
+     * @return The maximum health of the monster.
+     */
+    protected double getMaxHealth() { return maxHealth; }
 
     /**
      * Accesses the amount of resources granted to the player by the monster on death.
      * @return The amount of resources granted to the player by the monster on death.
      */
     public int getResourceValue() { return resourceValue; }
+
+
+    /**
+     * Sets the current health of the monster.
+     * @param value The new value.
+     */
+    protected void setHealth(double value) {
+        healthProperty.set(value);
+        health = value;
+    }
+
+    /**
+     * Sets the maximum health of the monster.
+     * @param value The new value.
+     */
+    protected void setMaxHealth(double value) {
+         maxHealthProperty.set(value);
+         maxHealth = value;
+    }
 
     /**
      * Reduces the health of the monster, and removes it from the arena if it dies.
@@ -243,5 +277,5 @@ public abstract class Monster extends ArenaObject implements Comparable<Monster>
     public String getDisplayName() { return getClass().getSimpleName(); }
     
     @Override
-    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", healthProperty.getValue(), maxHealth); }
+    public String getDisplayDetails() { return String.format("HP: %.2f / %.2f", getHealth(), maxHealth); }
 }

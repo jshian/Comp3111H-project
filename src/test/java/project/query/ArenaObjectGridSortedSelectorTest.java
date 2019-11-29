@@ -7,29 +7,27 @@ import java.util.List;
 import org.junit.Test;
 import org.paukov.combinatorics3.Generator;
 
+import project.entity.Monster;
+
 /**
- * Tests the {@link ArenaObjectRectangleSelector} class.
+ * Tests the {@link ArenaObjectGridSortedSelector} class.
  */
-public class ArenaObjectRectangleSelectorTest extends ArenaObjectSelectorTest {
+public class ArenaObjectGridSortedSelectorTest extends ArenaObjectSortedSelectorTest {
 
     @Override
-    protected ArenaObjectSelector createObject(Object... args) {
-        short leftX = (short) args[0];
-        short topY = (short) args[1];
-        short width = (short) args[2];
-        short height = (short) args[3];
+    protected ArenaObjectSortedSelector<Monster> createObject(Object... args) {
+        short x = (short) args[0];
+        short y = (short) args[1];
 
-        return new ArenaObjectRectangleSelector(leftX, topY, width, height);
+        return new ArenaObjectGridSortedSelector<Monster>(x, y);
     }
 
     @Override
     protected String createObjectInfo(Object... args) {
-        short leftX = (short) args[0];
-        short topY = (short) args[1];
-        short width = (short) args[2];
-        short height = (short) args[3];
+        short x = (short) args[0];
+        short y = (short) args[1];
 
-        return String.format("leftX = %d, topY = %d, width = %d, height = %d", leftX, topY, width, height);
+        return String.format("x = %d, y = %d", x, y);
     }
 
     @Override
@@ -39,8 +37,6 @@ public class ArenaObjectRectangleSelectorTest extends ArenaObjectSelectorTest {
         for (int i = 0; i < NUM_RANDOM_TEST_CASES; i++) {
             randomParams[i] = new Object[] {
                 RANDOM_X_COOR.get(),
-                RANDOM_Y_COOR.get(),
-                RANDOM_X_COOR.get(),
                 RANDOM_Y_COOR.get()
             };
         }
@@ -48,7 +44,7 @@ public class ArenaObjectRectangleSelectorTest extends ArenaObjectSelectorTest {
         List<Object[]> totalParams = new LinkedList<>(Arrays.asList(randomParams));
 
         Generator.combination(getCoordinateLengthGenerators())
-            .simple(4)
+            .simple(2)
             .stream()
             .forEach((o) -> totalParams.add(o.toArray()));
 

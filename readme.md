@@ -21,7 +21,7 @@ Members:
 	* The arena is displayed as a square with side length 480px. (Game Physics Requirement)
 	* The starting position on the arena is represented by the image `show-up.png`. (Regular Task 1(i))
 	* The end zone on the arena is represented by the image `end-zone.png`. (Regular Task 1(i))
-	* A resource count of *???* (referred to as *Resource Pool*) is displayed.
+	* A resource count of *200* (referred to as *Resource Pool*) is displayed.
 1. Left-click and hold on either the `Basic Tower`, `Ice Tower`, `Catapult` or `Laser Tower` button.
 1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
 	* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Regular Task 1(ii)(a))

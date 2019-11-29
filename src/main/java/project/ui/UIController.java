@@ -2,6 +2,7 @@ package project.ui;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javafx.animation.KeyFrame;
@@ -225,7 +226,6 @@ public class UIController {
     public void setupNewGame(ArenaInstance arenaInstance) {
         player = arenaInstance.getPlayer();
         remainingResources.textProperty().bind(Bindings.format("Money: %d", player.resourcesProperty()));
-        ArenaManager.loadNew(this, player);
         ArenaManager.getActiveEventRegister().ARENA_GAME_OVER.subscribe(onGameover);
     }
 
@@ -235,7 +235,7 @@ public class UIController {
     @FXML
     private void nextFrame() {
         if (mode != GameMode.END) {
-            LinkedList<Node> nodesToRemove = new LinkedList<>();
+            List<Node> nodesToRemove = new LinkedList<>();
             for (Map.Entry<Node, Integer> entry : temporaryNodes.entrySet()) {
                 Node key = entry.getKey();
                 Integer value = entry.getValue();
