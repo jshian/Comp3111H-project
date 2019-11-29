@@ -101,10 +101,10 @@ public class Catapult extends Tower {
         }
 
         Monster target = null;
-        if (closestTargets.size() < 1)
-            target = closestTargets.get(0);
+        if (closestTargets.isEmpty()) target = validTargets.get(0);
         for (Monster m :closestTargets) {//every nearest monster as a center of a circle
             int count=0;//count number of monster in the circle
+            double rmsDist=Double.POSITIVE_INFINITY;//To minimize the offset
 
             for (short i = (short) (m.getX()-splashRadius); i < m.getX()+splashRadius; i++) {//square width
                 for (short j = (short) (m.getY()-splashRadius); j < m.getY()+splashRadius; j++) {//square length
@@ -115,14 +115,22 @@ public class Catapult extends Tower {
                         List<ArenaObject> monInCircle = storage.getQueryResult(
                                 new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));  
 
-                        if(count < monInCircle.size()){
+                        if(count <= monInCircle.size()){
                             monstersInSplashRange.clear();
-                            count=monInCircle.size();
-                            target = m;
-                            targetLocationX = i;
-                            targetLocationY = j;
+                            double thisRMSDist = 0;
                             for (ArenaObject o : monInCircle) {
                                 monstersInSplashRange.add((Monster) o);
+                                thisRMSDist += (i - o.getX()) * (i - o.getX()) + (j - o.getY()) * (j - o.getY());
+                            }
+                            thisRMSDist /= monstersInSplashRange.size();
+                            thisRMSDist = Math.sqrt(thisRMSDist);
+
+                            if (thisRMSDist < rmsDist) {
+                                count=monInCircle.size();
+                                target = m;
+                                targetLocationX = i;
+                                targetLocationY = j;
+                                rmsDist = thisRMSDist;
                             }
                         }
                     }
