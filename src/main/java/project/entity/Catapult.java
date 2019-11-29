@@ -116,7 +116,7 @@ public class Catapult extends Tower {
                                 new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));  
 
                         if(count <= monInCircle.size()){
-                            monstersInSplashRange.clear();
+                            monstersInSplashRange = new LinkedList<>();
                             double thisRMSDist = 0;
                             for (ArenaObject o : monInCircle) {
                                 monstersInSplashRange.add((Monster) o);

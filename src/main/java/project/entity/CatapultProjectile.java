@@ -69,7 +69,7 @@ public class CatapultProjectile extends Projectile {
         // Run the targeting algorithm on arrival to hit the most monsters next to the originally chosen target
         int count=0;//count number of monster in the circle
         double rmsDist=Double.POSITIVE_INFINITY;//To minimize the offset
-        
+
         for (short i = (short) (target.getX()-splashRadius); i <= target.getX()+splashRadius; i++) {//square width
             for (short j = (short) (target.getY()-splashRadius); j <= target.getY()+splashRadius; j++) {//square length
                 if (i < 0 || i > ArenaManager.ARENA_WIDTH) continue;
@@ -79,7 +79,7 @@ public class CatapultProjectile extends Projectile {
                     List<ArenaObject> monInCircle = storage.getQueryResult(
                             new ArenaObjectCircleSelector(i, j, splashRadius), EnumSet.of(StoredType.MONSTER));
                     if(count <= monInCircle.size()){
-                        monstersInSplashRange.clear();
+                        monstersInSplashRange = new LinkedList<>();
                         double thisRMSDist = 0;
                         for (ArenaObject o : monInCircle) {
                             monstersInSplashRange.add((Monster) o);
