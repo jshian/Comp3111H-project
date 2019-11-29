@@ -11,8 +11,9 @@ Members:
 
 ## Grading Process
 ### Initialization
+1. Download MySQL, set username to `root` and password to `123456`.
+1. Create a database name called `test`.
 1. Start the database server.
-	1. ...
 1. Clone this repository to two different lab machines. They shall be referred to as *Machine A* and *Machine B* respectively.
 1. Complete `Grade Task 1`, `Grade Task 2` and `Grade Task 3` on *Machine A*. (See below)
 1. Complete `Grade Extra Tasks` on both *Machine A* and *Machine B*. (See below)
@@ -24,12 +25,6 @@ Members:
 	* A resource count of *200* (referred to as *Resource Pool*) is displayed.
 1. Left-click and hold on either the `Basic Tower`, `Ice Tower`, `Catapult` or `Laser Tower` button.
 1. Continue to hold left-click and move the mouse pointer around the arena. From here onwards, while this action is being done, thet game is asid to be in *Tower Placing Mode*. Verify the behaviour of *Tower Placing Mode*, which are as follows:
-	* A sihouette (referred to as *Tower Sihouette*) is displayed. The *Tower Sihouette* is represented by an image according to the tower type: (Regular Task 1(ii)(a))
-		* Basic Tower - `/src/main/resources/basicTower.png`
-		* Ice Tower - `/src/main/resources/iceTower.png`
-		* Catapult - `/src/main/resources/catapult.png`
-		* Laser Tower - `/src/main/resources/LaserTower.png`
-	* The *Tower Sihouette* is located within, but does not exceed, the grid in which the mouse pointer is located (referred to as *The Grid*). (Game Physics Requirement)
 	* If any one of the following is satisfied, *The Grid* glows red, indicating that the tower cannot be built there, i.e. *The Grid* is invalid. (Honors Task 1(i))
 		* *The Grid* is within the starting position.
 		* *The Grid* is within the end-zone.
@@ -40,7 +35,11 @@ Members:
 		* *The Grid* prevents at least one monster from reaching the end-zone by completely blocking its path.
 	* Otherwise, *The Grid* glows blue, indicating that the tower can be built there, i.e. *The Grid* is valid.
 1. Move the mouse pointer to a valid grid before releasing left-click. Verify the behaviour of attempting to build a tower in a valid grid, which are as follows:
-	* The tower is built, i.e. a solid, permament version of the *Tower Sihouette* exactly replaces the *Tower Sihouette*, and begins to exist on the arena. (Regular Task 1(ii))
+	* The tower is built and is represented by an image according to the tower type. (Regular Task 1(ii))
+		* Basic Tower - `/src/main/resources/basicTower.png`
+		* Ice Tower - `/src/main/resources/iceTower.png`
+		* Catapult - `/src/main/resources/catapult.png`
+		* Laser Tower - `/src/main/resources/LaserTower.png`
 	* The cost of the tower is deducted from the *Resource Pool*. (Regular Task 1(ii)(b))
 	* *Tower Placing Mode* is exited.
 1. Enter *Tower Placing Mode* again, but move the mouse pointer over a tower. Verify that *The Grid* glows red.
@@ -133,7 +132,8 @@ Members:
 	* The generated monsters move towards the end-zone either horizontally or vertically per frame. (Task 3(ii))
 	* When any monster reaches the end-zone, the game is over and the line `Gameover` is printed on the console. (Task 3(ii)(a))
 	* When the above happens, everything on the arena is frozen and a dialog box informing that the game is over. (Task 3(ii)(a)(a))
-1. After the game is over, submit your score to the leaderboard. Note down the value of this score as *Score A*.
+1. After the game is over, your score is submitted to the leaderboard. Note down the value of this score as *Score A*.
+1. Click OK on the dialog box that shows Gameover.
 1. Verify that the arena has been reset.
 1. This time, build some towers to defend yourself before starting the game in `play` mode.
 1. Verify the following:

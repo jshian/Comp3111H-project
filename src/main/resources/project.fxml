@@ -65,6 +65,7 @@
                   <Button fx:id="buttonPause" layoutX="6.0" layoutY="136.0" mnemonicParsing="false" onAction="#pause" text="Pause" />
                   <Button fx:id="buttonLoad" layoutX="6.0" layoutY="174.0" mnemonicParsing="false" onAction="#load" text="Load Game" />
                   <Button fx:id="buttonSave" layoutX="6.0" layoutY="212.0" mnemonicParsing="false" onAction="#save" text="Save Game" />
+                  <Label fx:id="labelScore" layoutX="17.0" layoutY="416.0" text="Score:" />
                </children>
                <padding>
                   <Insets left="10.0" />

@@ -33,13 +33,12 @@ public class Player {
     /**
      * Resources that the player has.
      */
-    @Transient
     private IntegerProperty resources = new SimpleIntegerProperty(0);
 
     /**
      * Score of the player.
      */
-    private int score = 0;
+    private IntegerProperty score = new SimpleIntegerProperty(0);
 
     /**
      * The method invoked when an {@link ArenaObject} is being added.
@@ -67,7 +66,7 @@ public class Player {
         if (sender instanceof Projectile && subject instanceof Monster) {
             int resourceValue = ((Monster) subject).getResourceValue();
             receiveResources(resourceValue);
-            score += resourceValue;
+            score.set(score.get() + resourceValue);
         }
     };
 
@@ -119,11 +118,19 @@ public class Player {
     }
 
     /**
+     * get score Property of player.
+     * @return scores Property of player.
+     */
+    public IntegerProperty scoreProperty() {
+        return score;
+    }
+
+    /**
      * get the score of player.
      * @return the score of player.
      */
     public int getScore() {
-        return score;
+        return score.get();
     }
 
     /**
@@ -199,6 +206,6 @@ public class Player {
      * @return the score of the player.
      */
     private void setScore(int score) {
-        this.score = score;
+        this.score.set(score);
     }
 }
